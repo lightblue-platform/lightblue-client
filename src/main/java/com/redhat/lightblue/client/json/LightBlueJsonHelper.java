@@ -3,7 +3,7 @@ package com.redhat.lightblue.client.json;
 import java.util.Map;
 
 /**
- * Helper for serializing/deserilizing json strings
+ * Helper for serializing/deserializing json strings
  * @author jjunquei
  *
  */

@@ -1,4 +1,4 @@
-package com.redhat.lightblue.client;
+package com.redhat.lightblue.client.json;
 
 import static org.junit.Assert.*;
 
