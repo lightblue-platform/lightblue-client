@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class By {
-    List<SearchCriteria> criteria;
+    private List<SearchCriteria> criteria;
 
     public By () {
         criteria = new ArrayList<SearchCriteria>();
