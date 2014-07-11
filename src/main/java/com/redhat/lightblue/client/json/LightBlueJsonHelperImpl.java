@@ -25,4 +25,11 @@ public class LightBlueJsonHelperImpl implements LightBlueJsonHelper {
 	    return result;
 	    
 	}
+
+	@Override
+	public String createEntityPutRequestJson(String entity, String version,
+			Map<String, Object> data) {
+		
+		return null;
+	}
 }
