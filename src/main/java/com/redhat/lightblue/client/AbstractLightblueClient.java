@@ -91,20 +91,20 @@ public abstract class AbstractLightblueClient implements LightblueClient {
         try {
             /* Load CA-Chain file */
             CertificateFactory cf = CertificateFactory.getInstance("X509");
-            X509Certificate cert = (X509Certificate)cf.generateCertificate(new FileInputStream("/tmp/cacert.pem"));
+            X509Certificate cert = (X509Certificate)cf.generateCertificate(new FileInputStream(this.CA_FILE));
 
             KeyStore ks = KeyStore.getInstance("pkcs12");
             KeyStore jks = KeyStore.getInstance("jks");
 
-            char[] ks_password = "xjg9owvz".toCharArray();
+            char[] ks_password = this.CERT_PASSWORD.toCharArray();
 
-            ks.load(new FileInputStream("/tmp/lightbluedev.pkcs12"), ks_password);
+            ks.load(new FileInputStream(this.CERT_FILE), ks_password);
 
             jks.load(null, ks_password);
 
-            jks.setCertificateEntry("lightbluedev",cert);
-            Key key = ks.getKey("lightbluedev", ks_password);
-            Certificate[] chain = ks.getCertificateChain("lightbluedev");
+            jks.setCertificateEntry(this.CERT_ALIAS,cert);
+            Key key = ks.getKey(this.CERT_ALIAS, ks_password);
+            Certificate[] chain = ks.getCertificateChain(this.CERT_ALIAS);
             jks.setKeyEntry("dparsonsmom", key, ks_password, chain);
 
             TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
