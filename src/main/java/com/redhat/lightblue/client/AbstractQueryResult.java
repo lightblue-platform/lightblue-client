@@ -2,28 +2,34 @@ package com.redhat.lightblue.client;
 
 public class AbstractQueryResult implements QueryResult {
 
-    LightBlueEntity getNext(){
+    public LightBlueEntity getNext(){
         
+        return null;
     }
     
-    Integer count(){
+    public Integer count(){
         
+        return 0;
     }
     
-    Boolean isPaged(){
+    public Boolean isPaged(){
         
+        return false;
     }
     
-    Boolean hasNextPage(){
+    public Boolean hasNextPage(){
         
+        return false;
     }
     
-    Boolean hasNext(){
+    public Boolean hasNext(){
         
+        return false;
     }
     
-    LightBlueEntity getByIndex( final Integer index ){
+    public LightBlueEntity getByIndex( final Integer index ){
         
+        return null;
     }
     
 }
