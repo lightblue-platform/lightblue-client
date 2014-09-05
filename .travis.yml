@@ -7,7 +7,7 @@ before_install:
 after_success:
 - '[[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_JDK_VERSION == "openjdk7" ]] &&
   { mvn clean deploy -DskipTests; };'
-- mvn clean test jacoco:report coveralls:jacoco
+- mvn clean cobertura:cobertura coveralls:cobertura
 notifications:
   email: false
   irc:
