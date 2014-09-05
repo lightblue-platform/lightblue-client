@@ -87,7 +87,9 @@ public class LightblueProxyServlet extends HttpServlet implements Servlet {
                 
                 try (CloseableHttpResponse httpResponse = httpClient.execute(httpOperation)) {
                     HttpEntity entity = httpResponse.getEntity();
-                    LOGGER.debug("Response received from service" + EntityUtils.toString(entity));
+                    String serviceResponse = EntityUtils.toString(entity);
+                    LOGGER.debug("Response received from service" + serviceResponse);
+                    out.println(serviceResponse);
                 }
             }
         } catch (RuntimeException e) {

@@ -1,0 +1,20 @@
+language: java
+jdk:
+- openjdk7
+- oraclejdk8
+before_install:
+- cp ./settings.xml ~/.m2/
+after_success:
+- '[[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_JDK_VERSION == "openjdk7" ]] &&
+  { mvn clean deploy -DskipTests; };'
+- mvn clean cobertura:cobertura coveralls:cobertura
+notifications:
+  email: false
+  irc:
+    channels:
+    - chat.freenode.net#lightblue
+    on_success: always
+env:
+  global:
+  - secure: Uyhizc25gLcSCg+pgkHwMGL1t27/bqNVwKz99dOq7PFrP7TVL3KwU0+ika3PAw/F1cOQP0kgg9Y1HLSQgKT4NK362gUHhxHObaJj1tfv/YEc6TiAGleFQ1EusCcVUtT4FQ6dkOk50vjDVUQkbHLzDAwU3ITZbs+IOw+ozMe0FMM=
+  - secure: SMAeSE7ZQPyPbjQk/4bl7dUbEZ/5KikVZov/R7Ryb7hV91Pd4aD/P1jAjOLu7j9ycUC7hF4w/o/hRQA/XVU+sHJbB8Go82yj5VNaciBD7yHR9QzSfStteq3v6u5FVE/bsCoF0cG1bLmREs4JrHLWoHPewrEicq/+GiPG7Zj+WBw=
