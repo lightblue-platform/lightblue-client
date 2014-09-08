@@ -14,7 +14,3 @@ notifications:
     channels:
     - chat.freenode.net#lightblue
     on_success: always
-env:
-  global:
-  - secure: MFb79OalUMRA5ZDX32MXKOceuolgw5h20vkBG9RtPflMpcyvU/tE5BAutTSKlynG7d+3l+sqm0xC9oB79/BaUQDrD9jaY7ukcHvh4BvBvUIwkqRMUQpJNh5GH3XycLNjrTTNx7AoATCZSSEHmY9FDkqYM1MugLIcFz6q94h41fw=
-  - secure: Mcd3opY533VXHOrINbi4Bkf3LGEK74/91rB4/v4bufrU4+3dgJ6wHqPqUmHAYOHWg3AkjZNvR6XIk3fs54VEVAQy+xS/CjZVMnQ8qxXoqVAcBhgBZpJVMHl44NxHMxTP9/OfvAy/IjWvej7SFcazk1SN1/w76brT1Bk0bAbT5dE=
