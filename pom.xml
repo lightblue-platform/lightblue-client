@@ -9,7 +9,7 @@
   </parent>
   <groupId>com.redhat.lightblue.client</groupId>
   <artifactId>client-pom</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
   <licenses>
