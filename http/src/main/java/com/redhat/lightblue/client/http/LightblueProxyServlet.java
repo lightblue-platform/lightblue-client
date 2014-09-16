@@ -28,22 +28,20 @@ public class LightblueProxyServlet extends HttpServlet implements Servlet {
     private static final long serialVersionUID = 1L;
 
     private String serviceURI;
-    private boolean useCertAuth;
+    private boolean useCertAuth = true;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LightblueProxyServlet.class);
 
     private String serviceURI() {    	
 		try {
-			if (serviceURI == null) {
-				serviceURI = System.getProperty("lightblueServiceURI");
-
-				if (serviceURI == null) {
-					Properties properties = new Properties();
-					properties.load(getClass().getClassLoader().getResourceAsStream("appconfig.properties"));
-					serviceURI = properties.getProperty("serviceURI");
-					useCertAuth = Boolean.getBoolean(properties.getProperty("useCertAuth"));
-				}
+			Properties properties = new Properties();
+			properties.load(getClass().getClassLoader().getResourceAsStream("appconfig.properties"));
+			serviceURI = properties.getProperty("serviceURI");
+			if(serviceURI == null) {
+				throw new RuntimeException("serviceURI must be defined in appconfig.properties");
 			}
+			useCertAuth = Boolean.parseBoolean(properties.getProperty("useCertAuth"));
+			
 		} catch (IOException io) {
 			LOGGER.error("appconfig.properties could not be found/read", io);
 			throw new RuntimeException(io);
@@ -100,8 +98,10 @@ public class LightblueProxyServlet extends HttpServlet implements Servlet {
 
     private CloseableHttpClient getLightblueHttpClient() {
     	if(useCertAuth) {
+    		LOGGER.debug("Using certificate authentication");
     		return new LightblueHttpClientCertAuth().getClient();
     	} else {
+    		LOGGER.debug("Using no authentication");
     		return new LightblueHttpClient().getClient();
     	}
     }
