@@ -21,5 +21,8 @@ package com.redhat.lightblue.client;
 
 public class LightblueClientTest {
 
-   
+  public final static void main(String[] args) throws Exception {
+    LightblueClient client = new LightblueClient();
+    System.out.println("Response: " +  client.getEntityMetadata());
+}
 }
