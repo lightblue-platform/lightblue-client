@@ -1,16 +1,17 @@
 package com.redhat.lightblue.client;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -107,22 +108,36 @@ public abstract class AbstractLightblueClient {
 	private HttpRequestBase getRestRequest(LightblueRequest lightblueRequest) {
 		HttpRequestBase httpOperation;
 
-		if (RequestType.DATA_INSERT.equals(lightblueRequest.getRequestType())) {
-			httpOperation = new HttpPut(getRestURI(lightblueRequest));
-		} if (RequestType.DATA_FIND.equals(lightblueRequest.getRequestType())) {
-			httpOperation = new HttpPost(getRestURI(lightblueRequest));
-		} else if (RequestType.DATA_DELETE.equals(lightblueRequest.getRequestType())) {
-			httpOperation = new HttpDelete(getRestURI(lightblueRequest));
-		} else if (RequestType.DATA_UPDATE.equals(lightblueRequest.getRequestType())) {
-			httpOperation = new HttpPost(getRestURI(lightblueRequest));
-		} else if (RequestType.DATA_SAVE.equals(lightblueRequest.getRequestType())) {
-			httpOperation = new HttpPost(getRestURI(lightblueRequest));
-		} else if (RequestType.METADATA.equals(lightblueRequest.getRequestType())) {
-			httpOperation = new HttpGet(getRestURI(lightblueRequest));
-		} else {
-			httpOperation = new HttpGet(getRestURI(lightblueRequest));
+		try {
+			if (RequestType.DATA_INSERT.equals(lightblueRequest.getRequestType())) {
+				HttpPut httpPut = new HttpPut(getRestURI(lightblueRequest));
+				httpPut.setEntity(new StringEntity(lightblueRequest.getBody()));
+				httpOperation = httpPut;
+			} else if (RequestType.DATA_FIND.equals(lightblueRequest.getRequestType())) {
+				HttpPost httpPost = new HttpPost(getRestURI(lightblueRequest));
+				httpPost.setEntity(new StringEntity(lightblueRequest.getBody()));
+				httpOperation = httpPost;
+			} else if (RequestType.DATA_DELETE.equals(lightblueRequest.getRequestType())) {
+				HttpPost httpPost = new HttpPost(getRestURI(lightblueRequest));
+				httpPost.setEntity(new StringEntity(lightblueRequest.getBody()));
+				httpOperation = httpPost;
+			} else if (RequestType.DATA_UPDATE.equals(lightblueRequest.getRequestType())) {
+				HttpPost httpPost = new HttpPost(getRestURI(lightblueRequest));
+				httpPost.setEntity(new StringEntity(lightblueRequest.getBody()));
+				httpOperation = httpPost;
+			} else if (RequestType.DATA_SAVE.equals(lightblueRequest.getRequestType())) {
+				HttpPost httpPost = new HttpPost(getRestURI(lightblueRequest));
+				httpPost.setEntity(new StringEntity(lightblueRequest.getBody()));
+				httpOperation = httpPost;
+			} else if (RequestType.METADATA.equals(lightblueRequest.getRequestType())) {
+				httpOperation = new HttpGet(getRestURI(lightblueRequest));
+			} else {
+				httpOperation = new HttpGet(getRestURI(lightblueRequest));
+			}	
+		} catch(UnsupportedEncodingException uee) {
+			throw new RuntimeException(uee);
 		}
-
+				
 		return httpOperation;
 	}
 	

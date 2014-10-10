@@ -21,32 +21,80 @@ package com.redhat.lightblue.client;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.redhat.lightblue.client.request.DataDeleteRequest;
+import com.redhat.lightblue.client.request.DataFindRequest;
 import com.redhat.lightblue.client.request.DataInsertRequest;
+import com.redhat.lightblue.client.request.DataUpdateRequest;
 
 
 public class LightblueClientDataTest {
 	
 	@Test
 	public void testInsertData() {
+		String response = insertData();
+		Assert.assertNotNull(response);
+		System.out.println("testInsertData() response: " +  response);
+	}
+	
+	@Test
+	public void testFindData() {
+		insertData();
+		String response = findData();;
+		Assert.assertNotNull(response);
+		System.out.println("testFindData() response: " +  response);
+		deleteData();
+	}
+	
+	@Test
+	public void testUpdateData() {
+		insertData();
+		String response = updateData();
+		Assert.assertNotNull(response);
+		System.out.println("testUpdateData() response: " +  response);
+		deleteData();
+	}
+	
+	@Test
+	public void testDeleteData() {
+		insertData();
+		String response = deleteData();
+		Assert.assertNotNull(response);
+		System.out.println("testDeleteData() response: " +  response);
+	}
+	
+	private String insertData() {
 		LightblueClient client = new LightblueClient();
 		DataInsertRequest request = new DataInsertRequest();
 		request.setEntityName("termsAcknowledgement");
 		request.setEntityVersion("0.5.0-SNAPSHOT");
 		request.setBody("{\"data\":[{\"acknowledgedCode\":\"accepted\",\"acknowledgedDate\":\"20120328T03:19:34.295-0600\",\"objectType\":\"termsAcknowledgement\",\"termsId\":\"16049311\",\"termsVerbageTranslationUid\":\"8675309\",\"userId\":\"060378\"}],\"projection\":[{\"field\":\"*\",\"include\":\"true\"}]}");
-		String response = client.data(request);
-		Assert.assertNotNull(response);
-		System.out.println("testInsertData() response: " +  response);
+		return client.data(request);
 	}
 	
-//	@Test
-//	public void testFindData() {
-//		LightblueClient client = new LightblueClient();
-//		DataFindRequest request = new DataFindRequest();
-//		request.setEntityName("terms");
-//		request.setBody("{\"data\":[{\"acknowledgedCode\":\"accepted\",\"acknowledgedDate\":\"20120328T03:19:34.295-0600\",\"objectType\":\"termsAcknowledgement\",\"termsId\":\"16049311\",\"termsVerbageTranslationUid\":\"8675309\",\"userId\":\"060378\"}],\"projection\":[{\"field\":\"*\",\"include\":\"true\"}]}");
-//		String response = client.data(request);
-//		Assert.assertNotNull(response);
-//		System.out.println("testFindData() response: " +  response);
-//	}
+	private String findData() {
+		LightblueClient client = new LightblueClient();
+		DataFindRequest request = new DataFindRequest();
+		request.setEntityName("termsAcknowledgement");
+		request.setEntityVersion("0.5.0-SNAPSHOT");
+		request.setBody("{\"entity\": \"termsAcknowledgement\",\"entityVersion\": \"0.5.0-SNAPSHOT\",\"query\": {\"field\": \"termsId\",\"op\": \"=\",\"rvalue\": \"16049311\"},\"projection\" : [{  \"field\": \"termsId\", \"include\": true },{ \"field\": \"acknowledgedDate\", \"include\": true } ]}");
+		return client.data(request);
+	}
 	
+	private String updateData() {
+		LightblueClient client = new LightblueClient();
+		DataUpdateRequest request = new DataUpdateRequest();
+		request.setEntityName("termsAcknowledgement");
+		request.setEntityVersion("0.5.0-SNAPSHOT");
+		request.setBody("{\"entity\": \"termsAcknowledgement\",\"entityVersion\": \"0.5.0-SNAPSHOT\",\"query\": {\"field\": \"termsId\",\"op\": \"=\",\"rvalue\": \"16049311\"},\"projection\" : [{  \"field\": \"termsId\", \"include\": true },{ \"field\": \"acknowledgedDate\", \"include\": true } ]}");
+		return client.data(request);
+	}
+	
+	private String deleteData() {
+		LightblueClient client = new LightblueClient();
+		DataDeleteRequest request = new DataDeleteRequest();
+		request.setEntityName("termsAcknowledgement");
+		request.setEntityVersion("0.5.0-SNAPSHOT");
+		request.setBody("{\"entity\": \"termsAcknowledgement\",\"entityVersion\": \"0.5.0-SNAPSHOT\",\"query\": {\"field\": \"termsId\",\"op\": \"=\",\"rvalue\": \"16049311\"},\"projection\" : [{  \"field\": \"termsId\", \"include\": true },{ \"field\": \"acknowledgedDate\", \"include\": true } ]}");
+		return client.data(request);
+	}
 }
