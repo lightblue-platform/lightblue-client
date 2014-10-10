@@ -12,4 +12,10 @@ public interface LightblueRequest {
 	
 	public String getBody();
 	
+	public void setEntityName(String entityName);
+
+	public void setEntityVersion(String entityVersion);
+
+	public void setBody(String body);
+	
 }
