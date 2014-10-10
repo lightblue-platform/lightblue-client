@@ -18,11 +18,18 @@
  */
 package com.redhat.lightblue.client;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 
 public class LightblueClientTest {
-
-  public final static void main(String[] args) throws Exception {
-    LightblueClient client = new LightblueClient();
-    System.out.println("Response: " +  client.getEntityMetadata());
-}
+  
+	@Test
+	public void testGetMetadata() {
+		LightblueClient client = new LightblueClient();
+		String response = client.getEntityMetadata();
+		Assert.assertNotNull(response);
+		System.out.println("Response: " +  response);
+	}
+  
 }
