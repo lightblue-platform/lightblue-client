@@ -31,4 +31,9 @@ public class ValueExpression implements Expression {
         json.append(" }");
         return json.toString();
     }
+
+    @Override
+    public String toString() {
+        return toJson();
+    }
 }
