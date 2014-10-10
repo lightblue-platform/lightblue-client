@@ -3,20 +3,23 @@ package com.redhat.lightblue.client;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.redhat.lightblue.client.enums.RequestType;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
 import com.redhat.lightblue.client.http.LightblueHttpClientCertAuth;
+import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.request.MetadataRequest;
 
 public abstract class AbstractLightblueClient {
 
@@ -72,29 +75,67 @@ public abstract class AbstractLightblueClient {
 			return new LightblueHttpClient().getClient();
 		}
 	}
-	
-	public String getEntityMetadata() {	
-		return callService(new HttpGet(serviceURI + metadataContextPath), null);
-	}
-	
-	public String getEntityMetadata(String entityName) {	
-		return callService(new HttpGet(serviceURI + metadataContextPath + entityName), null);
-	}
-	
-	public String getEntityData(String jsonIn) {	
-		return callService(new HttpGet(serviceURI + dataContextPath), jsonIn);
+
+	public String getEntityMetadata() {
+		return callService(getRestRequest(new MetadataRequest()), null);
 	}
 
-	public String postEntityData(String jsonIn) {	
-		return callService(new HttpPost(serviceURI + dataContextPath), jsonIn);
+	public String getEntityMetadata(LightblueRequest lightblueRequest) {
+		return callService(getRestRequest(lightblueRequest), null);
+	}
+
+	public String getEntityData(LightblueRequest lightblueRequest) {
+		return callService(getRestRequest(lightblueRequest), lightblueRequest.getBody());
 	}
 	
-	public String putEntityData(String jsonIn) {	
-		return callService(new HttpPut(serviceURI + dataContextPath), jsonIn);
+	public String postEntityData(LightblueRequest lightblueRequest) {
+		return callService(getRestRequest(lightblueRequest), lightblueRequest.getBody());
+	}
+
+	public String putEntityData(LightblueRequest lightblueRequest) {
+		return callService(getRestRequest(lightblueRequest), lightblueRequest.getBody());
+	}
+
+	public String deleteEntityData(LightblueRequest lightblueRequest) {
+		return callService(getRestRequest(lightblueRequest), lightblueRequest.getBody());
+	}
+
+	private String getRestURI(LightblueRequest lightblueRequest) {
+		StringBuilder requestURI = new StringBuilder();
+		
+		for (RequestType requestType : RequestType.values()) {
+			if(requestType.equals(lightblueRequest.getRequestType())) {
+				requestURI.append(serviceURI + requestType.getValue());
+			}
+		}
+		
+		if(StringUtils.isNotBlank(lightblueRequest.getEntityName())) {
+			requestURI.append(lightblueRequest.getEntityName() + "/");
+		}
+		
+		if(StringUtils.isNotBlank(lightblueRequest.getEntityVersion())) {
+			requestURI.append(lightblueRequest.getEntityVersion() + "/");
+		}
+		
+		return requestURI.toString();
 	}
 	
-	public String deleteEntityData(String jsonIn) {	
-		return callService(new HttpDelete(serviceURI + dataContextPath), jsonIn);
+	private HttpRequestBase getRestRequest(LightblueRequest lightblueRequest) {
+		HttpRequestBase httpOperation;
+
+		if (RequestType.DATA_FIND.equals(lightblueRequest.getRequestType())) {
+			httpOperation = new HttpPost(getRestURI(lightblueRequest));
+		} else if (RequestType.DATA_DELETE.equals(lightblueRequest.getRequestType())) {
+			httpOperation = new HttpDelete(getRestURI(lightblueRequest));
+		} else if (RequestType.DATA_UPDATE.equals(lightblueRequest.getRequestType())) {
+			httpOperation = new HttpPost(getRestURI(lightblueRequest));
+		} else if (RequestType.DATA_SAVE.equals(lightblueRequest.getRequestType())) {
+			httpOperation = new HttpPost(getRestURI(lightblueRequest));
+		} else {
+			httpOperation = new HttpGet(getRestURI(lightblueRequest));
+		}
+
+		return httpOperation;
 	}
 	
 }
