@@ -1,7 +1,6 @@
-package com.redhat.lightblue.client.expression;
+package com.redhat.lightblue.client.request;
 
 import com.redhat.lightblue.client.enums.SortDirection;
-import com.redhat.lightblue.client.request.SortCondition;
 
 import org.junit.Test;
 import org.junit.Assert;
