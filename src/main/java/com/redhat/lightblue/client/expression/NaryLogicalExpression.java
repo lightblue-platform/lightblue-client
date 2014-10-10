@@ -9,7 +9,7 @@ import java.lang.StringBuffer;
 import java.util.Collection;
 
 /**
- * created by Michael White 10/09/2014
+ * created by Michael White 10/10/2014
  */
 
 public class NaryLogicalExpression implements Expression {

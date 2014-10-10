@@ -8,7 +8,7 @@ import com.redhat.lightblue.client.expression.Expression;
 import java.lang.StringBuffer;
 
 /**
- * created by Michael White 10/09/2014
+ * created by Michael White 10/10/2014
  */
 
 public class UnaryLogicalExpression implements Expression {
