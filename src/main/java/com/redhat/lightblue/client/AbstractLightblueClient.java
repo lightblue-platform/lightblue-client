@@ -82,19 +82,19 @@ public abstract class AbstractLightblueClient {
 	}
 	
 	public String getEntityData(String jsonIn) {	
-		return callService(new HttpGet(serviceURI + dataContextPath), null);
+		return callService(new HttpGet(serviceURI + dataContextPath), jsonIn);
 	}
 
 	public String postEntityData(String jsonIn) {	
-		return callService(new HttpPost(serviceURI + dataContextPath), null);
+		return callService(new HttpPost(serviceURI + dataContextPath), jsonIn);
 	}
 	
 	public String putEntityData(String jsonIn) {	
-		return callService(new HttpPut(serviceURI + dataContextPath), null);
+		return callService(new HttpPut(serviceURI + dataContextPath), jsonIn);
 	}
 	
 	public String deleteEntityData(String jsonIn) {	
-		return callService(new HttpDelete(serviceURI + dataContextPath), null);
+		return callService(new HttpDelete(serviceURI + dataContextPath), jsonIn);
 	}
 	
 }
