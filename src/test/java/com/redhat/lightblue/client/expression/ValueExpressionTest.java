@@ -26,4 +26,11 @@ public class ValueExpressionTest {
 
         Assert.assertEquals(expectedJson, expression.toJson());
     }
+
+    @Test
+    public void testToStringCallsToJson() {
+        ValueExpression expression = new ValueExpression("field1 = value1");
+
+        Assert.assertEquals(expression.toString(), expression.toJson());
+    }
 }
