@@ -22,13 +22,13 @@ public class ValueExpression implements Expression {
     }
 
     public String toJson() {
-        StringBuilder json = new StringBuilder("{ \"field\": ");
-        json.append("\"").append(field).append("\", ");
-        json.append("\"op\": ");
-        json.append("\"").append(operator).append("\", ");
-        json.append("\"rValue\": ");
+        StringBuilder json = new StringBuilder("{\"field\":");
+        json.append("\"").append(field).append("\",");
+        json.append("\"op\":");
+        json.append("\"").append(operator).append("\",");
+        json.append("\"rValue\":");
         json.append("\"").append(rValue).append("\"");
-        json.append(" }");
+        json.append("}");
         return json.toString();
     }
 
