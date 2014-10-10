@@ -26,7 +26,7 @@ public class ValueExpression implements Expression {
         json.append("\"").append(field).append("\",");
         json.append("\"op\":");
         json.append("\"").append(operator).append("\",");
-        json.append("\"rValue\":");
+        json.append("\"rvalue\":");
         json.append("\"").append(rValue).append("\"");
         json.append("}");
         return json.toString();
