@@ -13,6 +13,13 @@ public class DataFindRequest extends AbstractLightblueRequest {
     private Projection[] projections;
     private SortCondition[] sortConditions;
 
+    public DataFindRequest() {}
+
+    public DataFindRequest(String entityName, String entityVersion){
+        this.setEntityName(entityName);
+        this.setEntityVersion(entityVersion);
+    }
+
 	@Override
 	public RequestType getRequestType() {
 		return RequestType.DATA_FIND;
