@@ -21,6 +21,8 @@ package com.redhat.lightblue.client;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.redhat.lightblue.client.expression.Expression;
+import com.redhat.lightblue.client.projection.Projection;
 import com.redhat.lightblue.client.request.DataDeleteRequest;
 import com.redhat.lightblue.client.request.DataFindRequest;
 import com.redhat.lightblue.client.request.DataInsertRequest;
@@ -28,6 +30,24 @@ import com.redhat.lightblue.client.request.DataUpdateRequest;
 
 
 public class LightblueClientDataTest {
+	
+  private Expression insertExpression = new Expression() {
+    public String toJson() {
+        return "{\"data\":[{\"acknowledgedCode\":\"accepted\",\"acknowledgedDate\":\"20120328T03:19:34.295-0600\",\"objectType\":\"termsAcknowledgement\",\"termsId\":\"16049311\",\"termsVerbageTranslationUid\":\"8675309\",\"userId\":\"060378\"}]";
+    }
+};
+
+private Expression testExpression = new Expression() {
+  public String toJson() {
+      return "{\"field\": \"termsId\",\"op\": \"=\",\"rvalue\": \"16049311\"}";
+  }
+};
+
+private Projection testProjection = new Projection () {
+    public String toJson() {
+    	return "{\"field\":\"*\"}";
+    }
+};
 	
 	@Test
 	public void testInsertData() {
@@ -39,7 +59,7 @@ public class LightblueClientDataTest {
 	@Test
 	public void testFindData() {
 		insertData();
-		String response = findData();;
+		String response = findData();
 		Assert.assertNotNull(response);
 		System.out.println("testFindData() response: " +  response);
 		deleteData();
@@ -65,6 +85,7 @@ public class LightblueClientDataTest {
 	private String insertData() {
 		LightblueClient client = new LightblueClient();
 		DataInsertRequest request = new DataInsertRequest();
+		
 		request.setEntityName("termsAcknowledgement");
 		request.setEntityVersion("0.5.0-SNAPSHOT");
 		request.setBody("{\"data\":[{\"acknowledgedCode\":\"accepted\",\"acknowledgedDate\":\"20120328T03:19:34.295-0600\",\"objectType\":\"termsAcknowledgement\",\"termsId\":\"16049311\",\"termsVerbageTranslationUid\":\"8675309\",\"userId\":\"060378\"}],\"projection\":[{\"field\":\"*\",\"include\":\"true\"}]}");
@@ -76,7 +97,8 @@ public class LightblueClientDataTest {
 		DataFindRequest request = new DataFindRequest();
 		request.setEntityName("termsAcknowledgement");
 		request.setEntityVersion("0.5.0-SNAPSHOT");
-		request.setBody("{\"entity\": \"termsAcknowledgement\",\"entityVersion\": \"0.5.0-SNAPSHOT\",\"query\": {\"field\": \"termsId\",\"op\": \"=\",\"rvalue\": \"16049311\"},\"projection\" : [{  \"field\": \"termsId\", \"include\": true },{ \"field\": \"acknowledgedDate\", \"include\": true } ]}");
+		request.select(testProjection);
+    request.where(testExpression);
 		return client.data(request);
 	}
 	
