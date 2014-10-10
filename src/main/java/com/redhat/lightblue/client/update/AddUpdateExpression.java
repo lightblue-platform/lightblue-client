@@ -23,7 +23,7 @@ public class AddUpdateExpression implements UpdateExpression {
         // { "$set" : { path : value } }
         StringBuffer builder = new StringBuffer();
         
-        builder.append("{\"$set\":");
+        builder.append("{\"$add\":");
         if( this.statements.length > 1 ){
             builder.append("[");
         }
