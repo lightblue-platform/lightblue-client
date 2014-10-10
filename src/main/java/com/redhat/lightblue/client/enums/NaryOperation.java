@@ -1,5 +1,5 @@
 package com.redhat.lightblue.client.enums;
 
-public enum NARY_OPERATION {
+public enum NaryOperation {
 	AND, OR, ALL, ANY  
 }

@@ -1,5 +1,5 @@
 package com.redhat.lightblue.client.enums;
 
-public enum SORT_DIRECTION {
+public enum SortDirection {
 	 ASC, DESC, ASCENDING, DESCENDING 
 }
