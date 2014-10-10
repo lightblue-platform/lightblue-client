@@ -38,8 +38,20 @@ public class DataFindRequest extends AbstractLightblueRequest {
         StringBuffer sb = new StringBuffer();
         sb.append("{\"query\":");
         sb.append(expression.toJson());
-        sb.append(",\"project\":");
+        sb.append(",\"projection\":");
         sb.append(projection.toJson());
+
+        if (sortConditions != null && !sortConditions.isEmpty()) {
+            sb.append(",\"sort\":");
+            sb.append("[");
+            sb.append(sortConditions.get(0).toJson());
+
+            for(int i = 1; i < sortConditions.size(); i++) {
+                sb.append(",").append(sortConditions.get(i).toJson());
+            }
+
+            sb.append("]");
+        }
         sb.append("}");
 
         return sb.toString();
