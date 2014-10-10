@@ -6,9 +6,9 @@ import com.redhat.lightblue.client.enums.ExpressionOperation;
  * Created by bmiller on 10/10/14.
  */
 public class ValueExpression implements Expression {
-    String field;
-    String rValue;
-    String operator;
+    private String field;
+    private String rValue;
+    private String operator;
 
     public ValueExpression(String expression) {
         String[] parts = expression.split("\\s");

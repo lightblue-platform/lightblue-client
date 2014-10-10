@@ -4,12 +4,12 @@ package com.redhat.lightblue.client.expression;
  * Created by bmiller on 10/10/14.
  */
 public class RegexExpression implements Expression {
-    String fieldName;
-    String pattern;
-    Boolean isCaseInsensitive;
-    Boolean isExtended;
-    Boolean isMultiline;
-    Boolean isDotAll;
+    private String fieldName;
+    private String pattern;
+    private Boolean isCaseInsensitive;
+    private Boolean isExtended;
+    private Boolean isMultiline;
+    private Boolean isDotAll;
 
     public RegexExpression(String fieldName, String pattern, Boolean isCaseInsensitive, Boolean isExtended, Boolean isMultiline, Boolean isDotAll) {
         this.fieldName = fieldName;
