@@ -43,7 +43,7 @@ public class DataFindRequestTest {
         request.select(testProjection);
         request.where(testExpression);
 
-        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":" + testProjection.toJson() + "}";
+        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":[" + testProjection.toJson() + "]}";
 
         Assert.assertEquals(request.getBody(), expected);
     }
@@ -57,7 +57,7 @@ public class DataFindRequestTest {
         sortConditions.add(sortCondition1);
         request.sort(sortConditions);
 
-        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":" + testProjection.toJson() + ",\"sort\":[" + sortCondition1.toJson() + "]}";
+        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":[" + testProjection.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "]}";
         Assert.assertEquals(request.getBody(), expected);
     }
 
@@ -70,7 +70,7 @@ public class DataFindRequestTest {
         sortConditions.add(sortCondition1);
         request.setSortConditions(sortConditions);
 
-        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":" + testProjection.toJson() + ",\"sort\":[" + sortCondition1.toJson() + "]}";
+        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":[" + testProjection.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "]}";
         Assert.assertEquals(request.getBody(), expected);
     }
 
@@ -84,7 +84,7 @@ public class DataFindRequestTest {
         sortConditions.add(sortCondition2);
         request.sort(sortConditions);
 
-        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":" + testProjection.toJson() + ",\"sort\":[" + sortCondition1.toJson() + "," + sortCondition2.toJson() + "]}";
+        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":[" + testProjection.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "," + sortCondition2.toJson() + "]}";
         Assert.assertEquals(request.getBody(), expected);
     }
 }
