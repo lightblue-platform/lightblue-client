@@ -9,6 +9,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -19,7 +20,6 @@ import com.redhat.lightblue.client.enums.RequestType;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
 import com.redhat.lightblue.client.http.LightblueHttpClientCertAuth;
 import com.redhat.lightblue.client.request.LightblueRequest;
-import com.redhat.lightblue.client.request.MetadataRequest;
 
 public abstract class AbstractLightblueClient {
 
@@ -76,30 +76,14 @@ public abstract class AbstractLightblueClient {
 		}
 	}
 
-	public String getEntityMetadata() {
-		return callService(getRestRequest(new MetadataRequest()), null);
-	}
-
-	public String getEntityMetadata(LightblueRequest lightblueRequest) {
-		return callService(getRestRequest(lightblueRequest), null);
-	}
-
-	public String getEntityData(LightblueRequest lightblueRequest) {
+	public String metadata(LightblueRequest lightblueRequest) {
 		return callService(getRestRequest(lightblueRequest), lightblueRequest.getBody());
 	}
 	
-	public String postEntityData(LightblueRequest lightblueRequest) {
+	public String data(LightblueRequest lightblueRequest) {
 		return callService(getRestRequest(lightblueRequest), lightblueRequest.getBody());
 	}
-
-	public String putEntityData(LightblueRequest lightblueRequest) {
-		return callService(getRestRequest(lightblueRequest), lightblueRequest.getBody());
-	}
-
-	public String deleteEntityData(LightblueRequest lightblueRequest) {
-		return callService(getRestRequest(lightblueRequest), lightblueRequest.getBody());
-	}
-
+	
 	private String getRestURI(LightblueRequest lightblueRequest) {
 		StringBuilder requestURI = new StringBuilder();
 		
@@ -123,7 +107,9 @@ public abstract class AbstractLightblueClient {
 	private HttpRequestBase getRestRequest(LightblueRequest lightblueRequest) {
 		HttpRequestBase httpOperation;
 
-		if (RequestType.DATA_FIND.equals(lightblueRequest.getRequestType())) {
+		if (RequestType.DATA_INSERT.equals(lightblueRequest.getRequestType())) {
+			httpOperation = new HttpPut(getRestURI(lightblueRequest));
+		} if (RequestType.DATA_FIND.equals(lightblueRequest.getRequestType())) {
 			httpOperation = new HttpPost(getRestURI(lightblueRequest));
 		} else if (RequestType.DATA_DELETE.equals(lightblueRequest.getRequestType())) {
 			httpOperation = new HttpDelete(getRestURI(lightblueRequest));
@@ -131,6 +117,8 @@ public abstract class AbstractLightblueClient {
 			httpOperation = new HttpPost(getRestURI(lightblueRequest));
 		} else if (RequestType.DATA_SAVE.equals(lightblueRequest.getRequestType())) {
 			httpOperation = new HttpPost(getRestURI(lightblueRequest));
+		} else if (RequestType.METADATA.equals(lightblueRequest.getRequestType())) {
+			httpOperation = new HttpGet(getRestURI(lightblueRequest));
 		} else {
 			httpOperation = new HttpGet(getRestURI(lightblueRequest));
 		}
