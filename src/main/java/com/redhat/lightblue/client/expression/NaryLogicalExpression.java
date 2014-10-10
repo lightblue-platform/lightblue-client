@@ -34,24 +34,17 @@ public class NaryLogicalExpression implements Expression {
     public String toJson() throws IllegalArgumentException {
         StringBuffer builder = new StringBuffer();
         
-        builder.append("{ \"");
-        // there's only two NARY operators, but....
-        if( this.operation.equals(NaryOperation.AND) ) {
-            builder.append("$and");
-        }else if ( this.operation.equals(NaryOperation.OR) ){
-            builder.append("$or");
-        }else{
-            throw new IllegalArgumentException("This NARY operator is not yet supported.");
-        }
-        builder.append("\" : [ ");
+        builder.append("{\"");
+        builder.append( this.operation.toString() );
+        builder.append("\":[");
         for( int index = 0; index < this.expressions.length; index++ ){
             builder.append( this.expressions[index].toJson() );
             // if there's more than one element left...
             if( ( this.expressions.length - index ) > 1 ){
-                builder.append(", "); // append a comma
+                builder.append(","); // append a comma
             }
         }
-        builder.append(" ] }");
+        builder.append("]}");
         
         return builder.toString();
     }
