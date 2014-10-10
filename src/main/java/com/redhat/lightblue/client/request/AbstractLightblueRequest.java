@@ -8,7 +8,6 @@ public class AbstractLightblueRequest implements LightblueRequest {
 	private String entityVersion;
 	private String body;
 	
-	
 	@Override
 	public RequestType getRequestType() {
 		return null;
@@ -29,14 +28,17 @@ public class AbstractLightblueRequest implements LightblueRequest {
 		return body;
 	}
 	
+	@Override
 	public void setEntityName(String entityName) {
 		this.entityName = entityName;
 	}
 
+	@Override
 	public void setEntityVersion(String entityVersion) {
 		this.entityVersion = entityVersion;
 	}
-
+	
+	@Override
 	public void setBody(String body) {
 		this.body = body;
 	}
