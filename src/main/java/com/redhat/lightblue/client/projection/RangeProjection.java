@@ -8,7 +8,7 @@ public class RangeProjection implements Projection {
     private Integer rangeTo;
     private Projection projection;
 
-    RangeProjection( String field, Boolean isIncluded, Integer rangeFrom, Integer rangeTo, Projection projection ) {
+    public RangeProjection( String field, Boolean isIncluded, Integer rangeFrom, Integer rangeTo, Projection projection ) {
         this.field = field;
         this.isIncluded = isIncluded;
         this.rangeFrom = rangeFrom;

@@ -6,7 +6,7 @@ public class FieldProjection implements Projection {
     private Boolean isIncluded;
     private Boolean isRecursive;
 
-    FieldProjection(String field, Boolean isIncluded, Boolean isRecursive) {
+    public FieldProjection(String field, Boolean isIncluded, Boolean isRecursive) {
         this.field = field;
         this.isIncluded = isIncluded;
         this.isRecursive = isRecursive;

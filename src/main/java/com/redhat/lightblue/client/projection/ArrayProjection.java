@@ -9,7 +9,7 @@ public class ArrayProjection implements Projection {
     private Expression expression;
     private Projection projection;
 
-    ArrayProjection( String field, Boolean isIncluded, Expression expression, Projection projection ) {
+    public ArrayProjection( String field, Boolean isIncluded, Expression expression, Projection projection ) {
         this.field = field;
         this.isIncluded = isIncluded;
         this.expression = expression;
