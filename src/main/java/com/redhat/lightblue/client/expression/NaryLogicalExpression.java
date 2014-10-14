@@ -1,11 +1,7 @@
 package com.redhat.lightblue.client.expression;
 
 import com.redhat.lightblue.client.enums.NaryOperation;
-import com.redhat.lightblue.client.expression.Expression;
 
-
-
-import java.lang.StringBuffer;
 import java.util.Collection;
 
 /**
@@ -47,5 +43,21 @@ public class NaryLogicalExpression implements Expression {
         builder.append("]}");
         
         return builder.toString();
+    }
+
+    public static NaryLogicalExpression and(Expression... expressions){
+        return new NaryLogicalExpression(NaryOperation.AND, expressions);
+    }
+
+    public static NaryLogicalExpression and(Collection<Expression> expressions){
+        return new NaryLogicalExpression(NaryOperation.AND, expressions);
+    }
+
+    public static NaryLogicalExpression or(Expression... expressions){
+        return new NaryLogicalExpression(NaryOperation.OR, expressions);
+    }
+
+    public static NaryLogicalExpression or(Collection<Expression> expressions){
+        return new NaryLogicalExpression(NaryOperation.OR, expressions);
     }
 }

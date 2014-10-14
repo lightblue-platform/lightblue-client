@@ -36,4 +36,8 @@ public class ValueExpression implements Expression {
     public String toString() {
         return toJson();
     }
+
+    public static ValueExpression withValue(String expression){
+        return new ValueExpression(expression);
+    }
 }

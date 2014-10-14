@@ -38,4 +38,8 @@ public class ArrayProjection implements Projection {
         sb.append("]}");
         return sb.toString();
     }
+
+    public static ArrayProjection includeSubfield(String field, Expression expression, Projection... projection){
+        return new ArrayProjection(field, true, expression, projection);
+    }
 }

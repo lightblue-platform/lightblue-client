@@ -50,4 +50,8 @@ public class ArrayExpression implements Expression {
 		return builder.toString();
 	}
 
+    public static ArrayExpression withSubfield(String fieldName, Expression expression){
+        return new ArrayExpression(fieldName, expression);
+    }
+
 }
