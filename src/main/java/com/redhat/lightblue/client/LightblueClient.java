@@ -14,6 +14,8 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +30,7 @@ public class LightblueClient {
 	private String metadataContextPath;
 	private String dataContextPath;
 	private boolean useCertAuth = true;
+    private ObjectMapper mapper = new ObjectMapper();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LightblueClient.class);
 
@@ -84,6 +87,19 @@ public class LightblueClient {
 	public String data(LightblueRequest lightblueRequest) {
 		return callService(getRestRequest(lightblueRequest), lightblueRequest.getBody());
 	}
+
+    public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
+        String response = data(lightblueRequest);
+        JsonNode rootNode = mapper.readTree(response);
+
+        // TODO: handle lightblue errors
+
+        JsonNode objectNode = rootNode.path("processed");
+
+        T object = mapper.readValue(objectNode.traverse(), type);
+
+        return object;
+    }
 	
 	private String getRestURI(LightblueRequest lightblueRequest) {
 		StringBuilder requestURI = new StringBuilder();
