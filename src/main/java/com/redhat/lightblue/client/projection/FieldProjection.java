@@ -28,4 +28,16 @@ public class FieldProjection implements Projection {
         sb.append("}");
         return sb.toString();
     }
+
+    public static FieldProjection includeField(String field){
+        return new FieldProjection(field, true, false);
+    }
+
+    public static FieldProjection includeFieldRecursively(String field){
+        return new FieldProjection(field, true, true);
+    }
+
+    public static FieldProjection excludeField(String field) {
+        return new FieldProjection(field, false, false);
+    }
 }
