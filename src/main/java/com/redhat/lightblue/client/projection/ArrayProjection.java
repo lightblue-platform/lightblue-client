@@ -7,9 +7,9 @@ public class ArrayProjection implements Projection {
     private String field;
     private Boolean isIncluded;
     private Expression expression;
-    private Projection projection;
+    private Projection[] projection;
 
-    public ArrayProjection( String field, Boolean isIncluded, Expression expression, Projection projection ) {
+    public ArrayProjection( String field, Boolean isIncluded, Expression expression, Projection... projection ) {
         this.field = field;
         this.isIncluded = isIncluded;
         this.expression = expression;
@@ -28,9 +28,14 @@ public class ArrayProjection implements Projection {
         }
         sb.append("\"match\":");
         sb.append(expression.toJson());
-        sb.append(",\"project\":");
-        sb.append(projection.toJson());
-        sb.append("}");
+        sb.append(",\"project\":[");
+        for (int i=0;i<projection.length;i++){
+            sb.append(projection[i].toJson());
+            if (i<projection.length-1) {
+                sb.append(",");
+            }
+        }
+        sb.append("]}");
         return sb.toString();
     }
 }

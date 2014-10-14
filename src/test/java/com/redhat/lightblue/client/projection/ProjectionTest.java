@@ -19,7 +19,7 @@ public class ProjectionTest {
 
     @Test
     public void testArrayProjectionToJson() {
-        String expectedJson = "{\"field\":\"termsVerbiage\",\"include\":true,\"match\":{\"field\":\"statusCode\",\"op\":\"=\",\"rvalue\":\"active\"},\"project\":{\"field\":\"*\"}}";
+        String expectedJson = "{\"field\":\"termsVerbiage\",\"include\":true,\"match\":{\"field\":\"statusCode\",\"op\":\"=\",\"rvalue\":\"active\"},\"project\":[{\"field\":\"*\"}]}";
         Projection myProj = new Projection (){
             public String toJson() {
                 return "{\"field\":\"*\"}";
