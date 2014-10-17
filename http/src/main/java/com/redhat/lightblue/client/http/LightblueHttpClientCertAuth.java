@@ -20,7 +20,7 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LightblueHttpClientCertAuth {
+public class LightblueHttpClientCertAuth implements LightblueHttpClient {
 
     private String caFilePath;
     private String certFilePath;
@@ -80,6 +80,7 @@ public class LightblueHttpClientCertAuth {
         return (ctx);
     }
 
+    @Override
     public CloseableHttpClient getClient() {
 
         SSLContext sslcontext = this.getSSLContext();

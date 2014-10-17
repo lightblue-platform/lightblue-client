@@ -102,7 +102,7 @@ public class LightblueProxyServlet extends HttpServlet implements Servlet {
     		return new LightblueHttpClientCertAuth().getClient();
     	} else {
     		LOGGER.debug("Using no authentication");
-    		return new LightblueHttpClient().getClient();
+    		return new LightblueHttpClientNoAuth().getClient();
     	}
     }
     
