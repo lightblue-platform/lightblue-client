@@ -9,4 +9,9 @@ public class MetadataRequest extends AbstractLightblueRequest {
 		return RequestType.METADATA;
 	}
 
+    @Override
+    public String getBody() {
+        return null;
+    }
+
 }

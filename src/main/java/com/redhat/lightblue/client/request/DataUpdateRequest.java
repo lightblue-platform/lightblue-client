@@ -9,4 +9,9 @@ public class DataUpdateRequest extends AbstractLightblueRequest {
 		return RequestType.DATA_UPDATE;
 	}
 
+    @Override
+    public String getBody() {
+        return null;
+    }
+
 }

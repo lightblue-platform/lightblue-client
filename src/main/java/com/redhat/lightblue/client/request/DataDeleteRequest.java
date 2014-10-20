@@ -9,4 +9,9 @@ public class DataDeleteRequest extends AbstractLightblueRequest {
 		return RequestType.DATA_DELETE;
 	}
 
+    @Override
+    public String getBody() {
+        return null;
+    }
+
 }

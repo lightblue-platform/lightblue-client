@@ -9,4 +9,9 @@ public class DataSaveRequest extends AbstractLightblueRequest {
 		return RequestType.DATA_SAVE;
 	}
 
+    @Override
+    public String getBody() {
+        return null;
+    }
+
 }
