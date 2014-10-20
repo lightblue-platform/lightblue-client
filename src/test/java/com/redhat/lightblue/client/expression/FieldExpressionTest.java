@@ -1,9 +1,9 @@
 package com.redhat.lightblue.client.expression;
 
 import com.redhat.lightblue.client.enums.ExpressionOperation;
-
+import org.json.JSONException;
 import org.junit.Test;
-import org.junit.Assert;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 /**
  * Created by vkumar on 10/10/14.
@@ -11,11 +11,11 @@ import org.junit.Assert;
 public class FieldExpressionTest {
 
     @Test
-    public void testToJsonConstructedWithStringsAndExpressionOperation() {
+    public void testToJsonConstructedWithStringsAndExpressionOperation() throws JSONException {
         FieldExpression expression = new FieldExpression("field1", ExpressionOperation.EQUALS, "field2");
 
         String expectedJson = "{\"field\":\"field1\",\"op\":\"=\",\"rfield\":\"field2\"}";
 
-        Assert.assertEquals(expectedJson, expression.toJson());
+        JSONAssert.assertEquals(expectedJson, expression.toJson(), false);
     }
 }

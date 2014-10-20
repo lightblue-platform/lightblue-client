@@ -18,15 +18,15 @@
  */
 package com.redhat.lightblue.client;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.redhat.lightblue.client.expression.Expression;
+import com.redhat.lightblue.client.projection.FieldProjection;
 import com.redhat.lightblue.client.projection.Projection;
 import com.redhat.lightblue.client.request.DataDeleteRequest;
 import com.redhat.lightblue.client.request.DataFindRequest;
 import com.redhat.lightblue.client.request.DataInsertRequest;
 import com.redhat.lightblue.client.request.DataUpdateRequest;
+import org.junit.Assert;
+import org.junit.Test;
 
 
 public class LightblueClientDataTest {
@@ -88,6 +88,7 @@ private Projection testProjection = new Projection () {
 		
 		request.setEntityName("termsAcknowledgement");
 		request.setEntityVersion("0.5.0-SNAPSHOT");
+        request.returns(new FieldProjection("*") );
 		request.setBody("{\"data\":[{\"acknowledgedCode\":\"accepted\",\"acknowledgedDate\":\"20120328T03:19:34.295-0600\",\"objectType\":\"termsAcknowledgement\",\"termsId\":\"16049311\",\"termsVerbageTranslationUid\":\"8675309\",\"userId\":\"060378\"}],\"projection\":[{\"field\":\"*\",\"include\":\"true\"}]}");
 		return client.data(request);
 	}
@@ -98,7 +99,7 @@ private Projection testProjection = new Projection () {
 		request.setEntityName("termsAcknowledgement");
 		request.setEntityVersion("0.5.0-SNAPSHOT");
 		request.select(testProjection);
-    request.where(testExpression);
+        request.where(testExpression);
 		return client.data(request);
 	}
 	

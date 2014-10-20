@@ -1,9 +1,9 @@
 package com.redhat.lightblue.client.expression;
 
 import com.redhat.lightblue.client.enums.UnaryOperation;
-
+import org.json.JSONException;
 import org.junit.Test;
-import org.junit.Assert;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 /**
  * Created by Michael White on 10/10/14.
@@ -17,9 +17,9 @@ public class UnaryLogicalExpressionTest {
     };
     
     @Test
-    public void testToJson(){
+    public void testToJson() throws JSONException {
         Expression expression = new UnaryLogicalExpression( UnaryOperation.NOT, testExpression );
         String expectedJson = "{\"$not\":"+testExpression.toJson()+"}";
-        Assert.assertEquals( expectedJson, expression.toJson() );
+        JSONAssert.assertEquals(expectedJson, expression.toJson(), false);
     }
 }

@@ -1,9 +1,9 @@
 package com.redhat.lightblue.client.expression;
 
 import com.redhat.lightblue.client.enums.ExpressionOperation;
-
+import org.json.JSONException;
 import org.junit.Test;
-import org.junit.Assert;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 /**
  * Created by bmiller on 10/10/14.
@@ -11,26 +11,26 @@ import org.junit.Assert;
 public class ValueExpressionTest {
 
     @Test
-    public void testToJsonConstructedWithStringExpression() {
+    public void testToJsonConstructedWithStringExpression() throws JSONException {
         ValueExpression expression = new ValueExpression("field1 = value1");
         String expectedJson = "{\"field\":\"field1\",\"op\":\"=\",\"rvalue\":\"value1\"}";
 
-        Assert.assertEquals(expectedJson, expression.toJson());
+        JSONAssert.assertEquals(expectedJson, expression.toJson(), false);
     }
 
     @Test
-    public void testToJsonConstructedWithStringsAndExpressionOperation() {
+    public void testToJsonConstructedWithStringsAndExpressionOperation() throws JSONException {
         ValueExpression expression = new ValueExpression("field1", ExpressionOperation.EQUALS, "value1");
 
         String expectedJson = "{\"field\":\"field1\",\"op\":\"=\",\"rvalue\":\"value1\"}";
 
-        Assert.assertEquals(expectedJson, expression.toJson());
+        JSONAssert.assertEquals(expectedJson, expression.toJson(), false);
     }
 
     @Test
-    public void testToStringCallsToJson() {
+    public void testToStringCallsToJson() throws JSONException {
         ValueExpression expression = new ValueExpression("field1 = value1");
 
-        Assert.assertEquals(expression.toString(), expression.toJson());
+        JSONAssert.assertEquals(expression.toString(), expression.toJson(), false);
     }
 }

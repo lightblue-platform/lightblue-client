@@ -1,10 +1,9 @@
 package com.redhat.lightblue.client.expression;
 
 import com.redhat.lightblue.client.enums.ArrayOperation;
-import com.redhat.lightblue.client.enums.ExpressionOperation;
-
+import org.json.JSONException;
 import org.junit.Test;
-import org.junit.Assert;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 /**
  * Created by vkumar on 10/10/14.
@@ -12,7 +11,7 @@ import org.junit.Assert;
 public class ArrayExpressionTest {
 
     @Test
-    public void testToJsonConstructedWithObjectElementExpression() {
+    public void testToJsonConstructedWithObjectElementExpression() throws JSONException {
     	Expression expression = new Expression() {
 			
 			@Override
@@ -24,22 +23,18 @@ public class ArrayExpressionTest {
 		ArrayExpression arrayExpression = new ArrayExpression("someArray", expression);
          String expectedJson = "{\"array\":\"someArray\",\"elemMatch\":{\"field\":\"item\",\"op\":\"=\",\"rvalue\":\"1\"}}";
 
-        Assert.assertEquals(expectedJson, arrayExpression.toJson());
+        JSONAssert.assertEquals(expectedJson, arrayExpression.toJson(), false);
     }
 
     
     @Test
-    public void testToJsonConstructedWithcontainsvalue1andvalue2Expression() {
-    	
-    	
-    	 String expectedJson ="{\"array\":\"someArray\",\"contains\":\"$all\",\"values\":[\"value1\",\"value2\",\"value3\"]}";
-    	
-    
-    	
+    public void testToJsonConstructedWithcontainsvalue1andvalue2Expression() throws JSONException {
+    	String expectedJson ="{\"array\":\"someArray\",\"contains\":\"$all\",\"values\":[\"value1\",\"value2\",\"value3\"]}";
+
     	String[] array = {"value1", "value2", "value3"};
 		ArrayExpression arrayExpression = new ArrayExpression("someArray", ArrayOperation.ALL, array);
       
-        Assert.assertEquals(expectedJson, arrayExpression.toJson());
+        JSONAssert.assertEquals(expectedJson, arrayExpression.toJson(), false);
     }
     
 }
