@@ -31,7 +31,7 @@ public class DataInsertRequestTest {
 
     private Projection testProjection2 = new Projection() {
         public String toJson() {
-            return "{\"field2\";\"address\"}";
+            return "{\"field2\":\"address\"}";
         }
     };
 
