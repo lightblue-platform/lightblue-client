@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestAbstractLightblueDataRequest {
+public class TestAbstractLightblueDataRequest extends AbstractLightblueRequestTest {
 
 		
 	AbstractLightblueDataRequest testRequest = new AbstractLightblueDataRequest() {
@@ -17,25 +17,19 @@ public class TestAbstractLightblueDataRequest {
 
 		@Override
     public String getOperationPathParam() {
-	    return testOperation;
+	    return dataOperation;
     }
 	};
-	
-	private static final String initialEntityName = "lightblueEntity";
-	private static final String initialEntityVersion = "1.2.3";
-	private static final String baseURI = "http://lightblue.io/rest/";
-	private static String testOperation = "dosomething";
-	private static final String finalURI = baseURI + testOperation + "/" + initialEntityName + "/" + initialEntityVersion;
-	
+		
 	@Before
 	public void setUp() throws Exception {
-		testRequest.setEntityName(initialEntityName);
-		testRequest.setEntityVersion(initialEntityVersion);
+		testRequest.setEntityName(entityName);
+		testRequest.setEntityVersion(entityVersion);
 	}
 
 	@Test
 	public void testGetRestURI() {
-		Assert.assertEquals(finalURI, testRequest.getRestURI(baseURI));
+		Assert.assertEquals(finalDataURI, testRequest.getRestURI(baseURI));
 	}
 
 }

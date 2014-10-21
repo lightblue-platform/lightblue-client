@@ -15,7 +15,10 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
 		StringBuilder requestURI = new StringBuilder();
 			
 		requestURI.append(baseServiceURI);
-		appendToURI(requestURI, getOperationPathParam());
+		
+		if (StringUtils.isNotBlank(this.getOperationPathParam())) {
+			appendToURI(requestURI, getOperationPathParam());
+		}
 		
 		if (StringUtils.isNotBlank(this.getEntityName())) {
 			appendToURI(requestURI, this.getEntityName());

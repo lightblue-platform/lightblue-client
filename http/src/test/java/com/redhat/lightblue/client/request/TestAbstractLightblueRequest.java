@@ -3,7 +3,6 @@ package com.redhat.lightblue.client.request;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -14,7 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestAbstractLightblueRequest {
+public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
 
 	AbstractLightblueRequest testRequest = new AbstractLightblueRequest() {
 		@Override
@@ -33,9 +32,6 @@ public class TestAbstractLightblueRequest {
 		}
 	};
 
-	private static final String initialEntityName = "lightblueEntity";
-	private static final String initialEntityVersion = "1.2.3";
-	private static final String initialBody = "{\"name\":\"value\"}";
 	private static final String updatedEntityName = "updatedEntity";
 	private static final String updatedEntityVersion = "3.2.1";
 	private static final String updatedBody = "{\"value\":\"name\"}";
@@ -44,24 +40,24 @@ public class TestAbstractLightblueRequest {
 
 	@Before
 	public void setUp() throws Exception {
-		testRequest.setEntityName(initialEntityName);
-		testRequest.setEntityVersion(initialEntityVersion);
-		testRequest.setBody(initialBody);
+		testRequest.setEntityName(entityName);
+		testRequest.setEntityVersion(entityVersion);
+		testRequest.setBody(body);
 	}
 
 	@Test
 	public void testGetEntityName() {
-		Assert.assertEquals(initialEntityName, testRequest.getEntityName());
+		Assert.assertEquals(entityName, testRequest.getEntityName());
 	}
 
 	@Test
 	public void testGetEntityVersion() {
-		Assert.assertEquals(initialEntityVersion, testRequest.getEntityVersion());
+		Assert.assertEquals(entityVersion, testRequest.getEntityVersion());
 	}
 
 	@Test
 	public void testGetBody() {
-		Assert.assertEquals(initialBody, testRequest.getBody());
+		Assert.assertEquals(body, testRequest.getBody());
 	}
 
 	@Test
@@ -93,17 +89,17 @@ public class TestAbstractLightblueRequest {
 	@Test
 	public void testGetHttpPost() throws UnsupportedEncodingException, IOException {
 		HttpPost testPost = new HttpPost(restURI);
-		testPost.setEntity(new StringEntity(initialBody));
+		testPost.setEntity(new StringEntity(body));
 
-		compareHttpPost(testPost, testRequest.getHttpPost(restURI, initialBody));
+		compareHttpPost(testPost, testRequest.getHttpPost(restURI, body));
 	}
 
 	@Test
 	public void testGetHttpPut() throws UnsupportedEncodingException, IOException {
 		HttpPut testPut = new HttpPut(restURI);
-		testPut.setEntity(new StringEntity(initialBody));
+		testPut.setEntity(new StringEntity(body));
 
-		compareHttpPut(testPut, testRequest.getHttpPut(restURI, initialBody));
+		compareHttpPut(testPut, testRequest.getHttpPut(restURI, body));
 	}
 
 	@Test
@@ -118,19 +114,6 @@ public class TestAbstractLightblueRequest {
 		compareHttpRequestBase(testGet, testRequest.getHttpGet(restURI));
 	}
 
-	public static void compareHttpRequestBase(HttpRequestBase request1, HttpRequestBase request2) {
-		Assert.assertEquals(request1.getMethod(), request2.getMethod());
-		Assert.assertEquals(request1.getURI(), request2.getURI());
-	}
-	
-	public static void compareHttpPost(HttpPost request1, HttpPost request2) throws IOException {
-		compareHttpRequestBase(request1, request2);
-		Assert.assertTrue(IOUtils.contentEquals(request1.getEntity().getContent(), request2.getEntity().getContent()));
-	}
 
-	public static void compareHttpPut(HttpPut request1, HttpPut request2) throws IOException {
-		compareHttpRequestBase(request1, request2);
-		Assert.assertTrue(IOUtils.contentEquals(request1.getEntity().getContent(), request2.getEntity().getContent()));
-	}
 	
 }
