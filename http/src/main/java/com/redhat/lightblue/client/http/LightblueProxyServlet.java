@@ -23,6 +23,9 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.redhat.lightblue.client.http.auth.HttpClientCertAuth;
+import com.redhat.lightblue.client.http.auth.HttpClientNoAuth;
+
 public class LightblueProxyServlet extends HttpServlet implements Servlet {
 
     private static final long serialVersionUID = 1L;
@@ -99,10 +102,10 @@ public class LightblueProxyServlet extends HttpServlet implements Servlet {
     private CloseableHttpClient getLightblueHttpClient() {
     	if(useCertAuth) {
     		LOGGER.debug("Using certificate authentication");
-    		return new LightblueHttpClientCertAuth().getClient();
+    		return new HttpClientCertAuth().getClient();
     	} else {
     		LOGGER.debug("Using no authentication");
-    		return new LightblueHttpClientNoAuth().getClient();
+    		return new HttpClientNoAuth().getClient();
     	}
     }
     
