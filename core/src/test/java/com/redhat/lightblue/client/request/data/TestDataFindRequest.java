@@ -8,11 +8,11 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestDataFindRequest extends AbstractLightblueRequestTest  {
 
-	DataFindRequest request;
+	DataFindRequest request = new DataFindRequest();
 
 	@Before
 	public void setUp() throws Exception {
-		request = new DataFindRequest();
+		request = new DataFindRequest(entityName, entityVersion);
 	}
 
 	@Test

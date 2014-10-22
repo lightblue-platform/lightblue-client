@@ -8,11 +8,11 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataGetEntityVersionsRequest extends AbstractLightblueRequestTest {
 
-	MetadataGetEntityVersionsRequest request;
+	MetadataGetEntityVersionsRequest request = new MetadataGetEntityVersionsRequest();
 
 	@Before
 	public void setUp() throws Exception {
-		request = new MetadataGetEntityVersionsRequest();
+		request = new MetadataGetEntityVersionsRequest(entityName, entityVersion);
 	}
 
 	@Test

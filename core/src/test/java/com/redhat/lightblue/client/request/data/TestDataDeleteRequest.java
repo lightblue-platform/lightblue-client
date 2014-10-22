@@ -8,11 +8,11 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestDataDeleteRequest extends AbstractLightblueRequestTest {
 
-	DataDeleteRequest request;
+	DataDeleteRequest request = new DataDeleteRequest();
 
 	@Before
 	public void setUp() throws Exception {
-		request = new DataDeleteRequest();
+		request = new DataDeleteRequest(entityName, entityVersion);
 	}
 
 	@Test

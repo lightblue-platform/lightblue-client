@@ -8,11 +8,11 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestDataInsertRequest extends AbstractLightblueRequestTest {
 
-	DataInsertRequest request;
+	DataInsertRequest request = new DataInsertRequest();
 	
 	@Before
 	public void setUp() throws Exception {
-		request = new DataInsertRequest();
+		request = new DataInsertRequest(entityName, entityVersion);
 	}
 
 	@Test

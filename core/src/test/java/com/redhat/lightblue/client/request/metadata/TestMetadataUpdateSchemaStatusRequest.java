@@ -8,11 +8,11 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataUpdateSchemaStatusRequest extends AbstractLightblueRequestTest {
 
-	MetadataUpdateSchemaStatusRequest request;
+	MetadataUpdateSchemaStatusRequest request = new MetadataUpdateSchemaStatusRequest();
 
 	@Before
 	public void setUp() throws Exception {
-		request = new MetadataUpdateSchemaStatusRequest();
+		request = new MetadataUpdateSchemaStatusRequest(entityName, entityVersion);
 	}
 
 	@Test

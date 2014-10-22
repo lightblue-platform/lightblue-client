@@ -8,11 +8,11 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataRemoveEntityRequest extends AbstractLightblueRequestTest {
 
-	MetadataRemoveEntityRequest request;
+	MetadataRemoveEntityRequest request = new MetadataRemoveEntityRequest();
 
 	@Before
 	public void setUp() throws Exception {
-		request = new MetadataRemoveEntityRequest();
+		request = new MetadataRemoveEntityRequest(entityName, entityVersion);
 	}
 
 	@Test

@@ -6,13 +6,13 @@ import org.junit.Test;
 
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
-public class TestMetadataGetEntityNamesRequest extends AbstractLightblueRequestTest  {
+public class TestMetadataGetEntityNamesRequest extends AbstractLightblueRequestTest {
 
-	MetadataGetEntityNamesRequest request;
-	
+	MetadataGetEntityNamesRequest request = new MetadataGetEntityNamesRequest();
+
 	@Before
 	public void setUp() throws Exception {
-		request = new MetadataGetEntityNamesRequest();
+		request = new MetadataGetEntityNamesRequest(entityName, entityVersion);
 	}
 
 	@Test

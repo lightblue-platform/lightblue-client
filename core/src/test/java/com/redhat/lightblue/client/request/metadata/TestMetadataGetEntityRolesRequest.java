@@ -8,11 +8,11 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataGetEntityRolesRequest extends AbstractLightblueRequestTest {
 
-	MetadataGetEntityRolesRequest request;
+	MetadataGetEntityRolesRequest request = new MetadataGetEntityRolesRequest();
 
 	@Before
 	public void setUp() throws Exception {
-		request = new MetadataGetEntityRolesRequest();
+		request = new MetadataGetEntityRolesRequest(entityName, entityVersion);
 	}
 
 	@Test
