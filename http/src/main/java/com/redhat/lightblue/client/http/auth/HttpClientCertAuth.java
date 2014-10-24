@@ -1,4 +1,4 @@
-package com.redhat.lightblue.client.http;
+package com.redhat.lightblue.client.http.auth;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -20,16 +20,16 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LightblueHttpClientCertAuth {
+public class HttpClientCertAuth implements HttpClientAuth {
 
     private String caFilePath;
     private String certFilePath;
     private String certPassword;
     private String certAlias;
 
-    private final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClientCertAuth.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(HttpClientCertAuth.class);
 
-    public LightblueHttpClientCertAuth() {
+    public HttpClientCertAuth() {
         try {
             Properties properties = new Properties();
             properties.load(getClass().getClassLoader().getResourceAsStream("appconfig.properties"));
@@ -80,6 +80,10 @@ public class LightblueHttpClientCertAuth {
         return (ctx);
     }
 
+    /* (non-Javadoc)
+		 * @see com.redhat.lightblue.client.http.auth.HttpClientAuth#getClient()
+		 */
+    @Override
     public CloseableHttpClient getClient() {
 
         SSLContext sslcontext = this.getSSLContext();
