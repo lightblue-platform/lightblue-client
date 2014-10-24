@@ -38,15 +38,15 @@ public class LightblueProxyServlet extends HttpServlet implements Servlet {
     private String serviceURI() {    	
 		try {
 			Properties properties = new Properties();
-			properties.load(getClass().getClassLoader().getResourceAsStream("appconfig.properties"));
+			properties.load(getClass().getClassLoader().getResourceAsStream("lightblue-cilent.properties"));
 			serviceURI = properties.getProperty("serviceURI");
 			if(serviceURI == null) {
-				throw new RuntimeException("serviceURI must be defined in appconfig.properties");
+				throw new RuntimeException("serviceURI must be defined in lightblue-client.properties");
 			}
 			useCertAuth = Boolean.parseBoolean(properties.getProperty("useCertAuth"));
 			
 		} catch (IOException io) {
-			LOGGER.error("appconfig.properties could not be found/read", io);
+			LOGGER.error("lightblue-client.properties could not be found/read", io);
 			throw new RuntimeException(io);
 		}
 

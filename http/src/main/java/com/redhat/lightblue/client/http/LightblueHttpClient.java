@@ -21,7 +21,7 @@ import com.redhat.lightblue.client.response.LightblueResponse;
 
 public class LightblueHttpClient implements LightblueClient {
 
-	private String configFilePath = "clientconfig.properties";
+	private String configFilePath = "lightblue-client.properties";
 	private String dataServiceURI;
 	private String metadataServiceURI;
 	private boolean useCertAuth = false;
@@ -39,7 +39,7 @@ public class LightblueHttpClient implements LightblueClient {
 			}
 			useCertAuth = Boolean.parseBoolean(properties.getProperty("useCertAuth"));
 		} catch (IOException io) {
-			LOGGER.error("appconfig.properties could not be found/read", io);
+			LOGGER.error("lightblue-client.properties could not be found/read", io);
 			throw new RuntimeException(io);
 		}
 	}
