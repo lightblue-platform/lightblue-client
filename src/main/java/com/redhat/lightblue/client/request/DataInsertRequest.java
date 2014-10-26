@@ -10,8 +10,9 @@ import com.redhat.lightblue.client.projection.Projection;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
+
+import static com.redhat.lightblue.client.LightblueClient.lightblueDateFormat;
 
 public class DataInsertRequest extends AbstractLightblueRequest {
 
@@ -19,7 +20,6 @@ public class DataInsertRequest extends AbstractLightblueRequest {
     private Object[] objects;
     private static ObjectMapper mapper = new ObjectMapper();
     private static JsonFactory jf = new JsonFactory();
-    public static final SimpleDateFormat lightblueDateFormat = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss.sssZ");
     static {
         mapper.setDateFormat(lightblueDateFormat);
     }

@@ -23,6 +23,7 @@ import com.redhat.lightblue.client.enums.RequestType;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
 import com.redhat.lightblue.client.http.LightblueHttpClientCertAuth;
 import com.redhat.lightblue.client.request.LightblueRequest;
+import java.text.SimpleDateFormat;
 
 public class LightblueClient {
 
@@ -33,6 +34,7 @@ public class LightblueClient {
     private ObjectMapper mapper = new ObjectMapper();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LightblueClient.class);
+    public static final SimpleDateFormat lightblueDateFormat = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss.sssZ");
 
 	public LightblueClient() {
 		try {
