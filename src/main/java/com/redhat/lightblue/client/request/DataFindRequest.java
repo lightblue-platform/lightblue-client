@@ -12,6 +12,8 @@ public class DataFindRequest extends AbstractLightblueRequest {
     private QueryExpression queryExpression;
     private Projection[] projections;
     private SortCondition[] sortConditions;
+    private Integer begin;
+    private Integer end;
 
     public DataFindRequest() {}
 
@@ -48,6 +50,10 @@ public class DataFindRequest extends AbstractLightblueRequest {
     public void sort(Collection<SortCondition> sortConditions) {
         this.sortConditions = sortConditions.toArray( new SortCondition[ sortConditions.size() ] );
     }
+    public void range(Integer begin, Integer end) {
+        this.begin = begin;
+        this.end = end;
+    }
 
     @Override
     public String getBody() {
@@ -72,6 +78,13 @@ public class DataFindRequest extends AbstractLightblueRequest {
                 sb.append(",").append(sortConditions[i].toJson());
             }
 
+            sb.append("]");
+        }
+        if (begin != null && end != null){
+            sb.append(", \"range\": [");
+            sb.append(begin);
+            sb.append(",");
+            sb.append(end);
             sb.append("]");
         }
         sb.append("}");
