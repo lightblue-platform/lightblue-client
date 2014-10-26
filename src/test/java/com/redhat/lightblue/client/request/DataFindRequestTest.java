@@ -2,7 +2,7 @@ package com.redhat.lightblue.client.request;
 
 import com.redhat.lightblue.client.enums.RequestType;
 import com.redhat.lightblue.client.enums.SortDirection;
-import com.redhat.lightblue.client.expression.Expression;
+import com.redhat.lightblue.client.query.QueryExpression;
 import com.redhat.lightblue.client.projection.Projection;
 import org.json.JSONException;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class DataFindRequestTest {
     private static final String TEST_ENTITY_NAME = "testEntity";
     private static final String TEST_ENTITY_VERSION = "0.0.1";
 
-    private Expression testExpression = new Expression() {
+    private QueryExpression testQueryExpression = new QueryExpression() {
         public String toJson() {
             return "{\"field1\":\"test\",\"op\":\"$ne\",\"rValue\":\"hack\"}";
         }
@@ -51,9 +51,9 @@ public class DataFindRequestTest {
     public void testRequestWithExpressionAndSingleProjectionFormsProperBody() throws JSONException {
         DataFindRequest request = new DataFindRequest(TEST_ENTITY_NAME, TEST_ENTITY_VERSION);
         request.select(testProjection1);
-        request.where(testExpression);
+        request.where(testQueryExpression);
 
-        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "]}";
 
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
@@ -62,9 +62,9 @@ public class DataFindRequestTest {
     public void testRequestWithMultipleProjectionsPassedAsArgumentsFormsProperBody() throws JSONException {
         DataFindRequest request = new DataFindRequest(TEST_ENTITY_NAME, TEST_ENTITY_VERSION);
         request.select(testProjection1, testProjection2);
-        request.where(testExpression);
+        request.where(testQueryExpression);
 
-        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "," + testProjection2.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "," + testProjection2.toJson() + "]}";
 
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
@@ -77,9 +77,9 @@ public class DataFindRequestTest {
         projections.add(testProjection2);
 
         request.select(projections);
-        request.where(testExpression);
+        request.where(testQueryExpression);
 
-        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "," + testProjection2.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "," + testProjection2.toJson() + "]}";
 
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
@@ -88,12 +88,12 @@ public class DataFindRequestTest {
     public void testRequestWithExpressionProjectionAndSingleSortFormsProperBody() throws JSONException {
         DataFindRequest request = new DataFindRequest(TEST_ENTITY_NAME, TEST_ENTITY_VERSION);
         request.select(testProjection1);
-        request.where(testExpression);
+        request.where(testQueryExpression);
         List<SortCondition> sortConditions = new ArrayList<SortCondition>();
         sortConditions.add(sortCondition1);
         request.sort(sortConditions);
 
-        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "]}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
 
@@ -101,10 +101,10 @@ public class DataFindRequestTest {
     public void testRequestWithSingleSortPassedAsArgumentFormsProperBody() throws JSONException {
         DataFindRequest request = new DataFindRequest(TEST_ENTITY_NAME, TEST_ENTITY_VERSION);
         request.select(testProjection1);
-        request.where(testExpression);
+        request.where(testQueryExpression);
         request.sort(sortCondition1);
 
-        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "]}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
 
@@ -112,12 +112,12 @@ public class DataFindRequestTest {
     public void testSetSortConditionsIsPassthroughForSort() throws JSONException {
         DataFindRequest request = new DataFindRequest(TEST_ENTITY_NAME, TEST_ENTITY_VERSION);
         request.select(testProjection1);
-        request.where(testExpression);
+        request.where(testQueryExpression);
         List<SortCondition> sortConditions = new ArrayList<SortCondition>();
         sortConditions.add(sortCondition1);
         request.setSortConditions(sortConditions);
 
-        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "]}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
 
@@ -125,13 +125,13 @@ public class DataFindRequestTest {
     public void testRequestWithExpressionProjectionAndMultiSortFormsProperBody() throws JSONException {
         DataFindRequest request = new DataFindRequest(TEST_ENTITY_NAME, TEST_ENTITY_VERSION);
         request.select(testProjection1);
-        request.where(testExpression);
+        request.where(testQueryExpression);
         List<SortCondition> sortConditions = new ArrayList<SortCondition>();
         sortConditions.add(sortCondition1);
         sortConditions.add(sortCondition2);
         request.sort(sortConditions);
 
-        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "," + sortCondition2.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "," + sortCondition2.toJson() + "]}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
 
@@ -139,10 +139,10 @@ public class DataFindRequestTest {
     public void testRequestWithMultiSortPassedAsParametersFormsProperBody() throws JSONException {
         DataFindRequest request = new DataFindRequest(TEST_ENTITY_NAME, TEST_ENTITY_VERSION);
         request.select(testProjection1);
-        request.where(testExpression);
+        request.where(testQueryExpression);
         request.sort(sortCondition1, sortCondition2);
 
-        String expected = "{\"query\":" + testExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "," + sortCondition2.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "," + sortCondition2.toJson() + "]}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
 }

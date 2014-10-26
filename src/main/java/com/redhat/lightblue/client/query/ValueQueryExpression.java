@@ -1,23 +1,23 @@
-package com.redhat.lightblue.client.expression;
+package com.redhat.lightblue.client.query;
 
 import com.redhat.lightblue.client.enums.ExpressionOperation;
 
 /**
  * Created by bmiller on 10/10/14.
  */
-public class ValueExpression implements Expression {
+public class ValueQueryExpression implements QueryExpression {
     private String field;
     private String rValue;
     private String operator;
 
-    public ValueExpression(String expression) {
+    public ValueQueryExpression(String expression) {
         String[] parts = expression.split("\\s");
         field = parts[0];
         operator = parts[1];
         rValue = parts[2];
     }
 
-    public ValueExpression(String field, ExpressionOperation operation, String rValue) {
+    public ValueQueryExpression(String field, ExpressionOperation operation, String rValue) {
         this(field + " " + operation.toString() + " " + rValue);
     }
 
@@ -37,7 +37,7 @@ public class ValueExpression implements Expression {
         return toJson();
     }
 
-    public static ValueExpression withValue(String expression){
-        return new ValueExpression(expression);
+    public static ValueQueryExpression withValue(String expression){
+        return new ValueQueryExpression(expression);
     }
 }

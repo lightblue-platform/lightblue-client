@@ -1,8 +1,6 @@
-package com.redhat.lightblue.client.expression;
+package com.redhat.lightblue.client.query;
 
 import com.redhat.lightblue.client.enums.UnaryOperation;
-import com.redhat.lightblue.client.expression.Expression;
-
 
 
 import java.lang.StringBuffer;
@@ -11,15 +9,15 @@ import java.lang.StringBuffer;
  * created by Michael White 10/10/2014
  */
 
-public class UnaryLogicalExpression implements Expression {
+public class UnaryLogicalQueryExpression implements QueryExpression {
     
     private UnaryOperation operation;
-    private Expression expression;
+    private QueryExpression queryExpression;
     
     // used for NOT
-    public UnaryLogicalExpression( UnaryOperation operation, Expression expression ) {
+    public UnaryLogicalQueryExpression(UnaryOperation operation, QueryExpression queryExpression) {
         this.operation = operation;
-        this.expression = expression;
+        this.queryExpression = queryExpression;
     }
     
     public String toJson() throws IllegalArgumentException {
@@ -28,7 +26,7 @@ public class UnaryLogicalExpression implements Expression {
         builder.append("{\"");
         builder.append( this.operation.toString() );
         builder.append("\":");
-        builder.append( this.expression.toJson() );
+        builder.append( this.queryExpression.toJson() );
         builder.append("}");
         
         return builder.toString();

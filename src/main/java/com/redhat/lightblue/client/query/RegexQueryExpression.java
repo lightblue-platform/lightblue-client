@@ -1,9 +1,9 @@
-package com.redhat.lightblue.client.expression;
+package com.redhat.lightblue.client.query;
 
 /**
  * Created by bmiller on 10/10/14.
  */
-public class RegexExpression implements Expression {
+public class RegexQueryExpression implements QueryExpression {
     private String fieldName;
     private String pattern;
     private Boolean isCaseInsensitive;
@@ -11,7 +11,7 @@ public class RegexExpression implements Expression {
     private Boolean isMultiline;
     private Boolean isDotAll;
 
-    public RegexExpression(String fieldName, String pattern, Boolean isCaseInsensitive, Boolean isExtended, Boolean isMultiline, Boolean isDotAll) {
+    public RegexQueryExpression(String fieldName, String pattern, Boolean isCaseInsensitive, Boolean isExtended, Boolean isMultiline, Boolean isDotAll) {
         this.fieldName = fieldName;
         this.pattern = pattern;
         this.isCaseInsensitive = isCaseInsensitive;

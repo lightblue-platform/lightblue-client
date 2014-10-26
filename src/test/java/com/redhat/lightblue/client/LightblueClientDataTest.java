@@ -18,9 +18,9 @@
  */
 package com.redhat.lightblue.client;
 
-import com.redhat.lightblue.client.expression.Expression;
 import com.redhat.lightblue.client.projection.FieldProjection;
 import com.redhat.lightblue.client.projection.Projection;
+import com.redhat.lightblue.client.query.QueryExpression;
 import com.redhat.lightblue.client.request.DataDeleteRequest;
 import com.redhat.lightblue.client.request.DataFindRequest;
 import com.redhat.lightblue.client.request.DataInsertRequest;
@@ -34,13 +34,13 @@ import org.junit.Test;
 
 public class LightblueClientDataTest {
 	
-  private Expression insertExpression = new Expression() {
+  private QueryExpression insertQueryExpression = new QueryExpression() {
     public String toJson() {
         return "{\"data\":[{\"acknowledgedCode\":\"accepted\",\"acknowledgedDate\":\"20120328T03:19:34.295-0600\",\"objectType\":\"termsAcknowledgement\",\"termsId\":\"16049311\",\"termsVerbageTranslationUid\":\"8675309\",\"userId\":\"060378\"}]";
     }
 };
 
-private Expression testExpression = new Expression() {
+private QueryExpression testQueryExpression = new QueryExpression() {
   public String toJson() {
       return "{\"field\": \"termsId\",\"op\": \"=\",\"rvalue\": \"16049311\"}";
   }
@@ -100,7 +100,7 @@ private Projection testProjection = new Projection () {
 		request.setEntityName("termsAcknowledgement");
 		request.setEntityVersion("0.5.0-SNAPSHOT");
 		request.select(testProjection);
-        request.where(testExpression);
+        request.where(testQueryExpression);
 		return client.data(request);
 	}
 	

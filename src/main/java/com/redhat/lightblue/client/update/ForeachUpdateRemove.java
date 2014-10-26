@@ -1,6 +1,6 @@
 package com.redhat.lightblue.client.update;
 
-import com.redhat.lightblue.client.expression.Expression;
+import com.redhat.lightblue.client.query.QueryExpression;
 
 /**
  * created by Michael White 10/10/2014
@@ -8,7 +8,7 @@ import com.redhat.lightblue.client.expression.Expression;
 
 public class ForeachUpdateRemove implements UpdateExpression {
     
-    public ForeachUpdateRemove( Expression expression ){
+    public ForeachUpdateRemove( QueryExpression queryExpression){
         
     }
     

@@ -1,7 +1,7 @@
 package com.redhat.lightblue.client.request;
 
 import com.redhat.lightblue.client.enums.RequestType;
-import com.redhat.lightblue.client.expression.Expression;
+import com.redhat.lightblue.client.query.QueryExpression;
 import com.redhat.lightblue.client.projection.Projection;
 
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DataFindRequest extends AbstractLightblueRequest {
 
-    private Expression expression;
+    private QueryExpression queryExpression;
     private Projection[] projections;
     private SortCondition[] sortConditions;
 
@@ -25,8 +25,8 @@ public class DataFindRequest extends AbstractLightblueRequest {
 		return RequestType.DATA_FIND;
 	}
 
-    public void where(Expression expression){
-        this.expression = expression;
+    public void where(QueryExpression queryExpression){
+        this.queryExpression = queryExpression;
     }
 
     public void select(Projection... projection){
@@ -53,7 +53,7 @@ public class DataFindRequest extends AbstractLightblueRequest {
     public String getBody() {
         StringBuffer sb = new StringBuffer();
         sb.append("{\"query\":");
-        sb.append(expression.toJson());
+        sb.append(queryExpression.toJson());
         sb.append(",\"projection\":[");
         sb.append(projections[0].toJson());
 

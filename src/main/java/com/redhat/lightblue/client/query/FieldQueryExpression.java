@@ -1,14 +1,14 @@
-package com.redhat.lightblue.client.expression;
+package com.redhat.lightblue.client.query;
 
 import com.redhat.lightblue.client.enums.ExpressionOperation;
 
-public class FieldExpression implements Expression{
+public class FieldQueryExpression implements QueryExpression {
 
 	protected String lefthandField;
 	protected String righthandField;
 	protected ExpressionOperation operation;
 	
-	public FieldExpression(String lefthandField,ExpressionOperation operation,  String righthandField){
+	public FieldQueryExpression(String lefthandField, ExpressionOperation operation, String righthandField){
 		this.lefthandField = lefthandField;
 		this.righthandField = righthandField;
 		this.operation = operation;

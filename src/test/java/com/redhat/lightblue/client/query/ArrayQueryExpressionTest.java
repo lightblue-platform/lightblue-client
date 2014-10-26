@@ -1,4 +1,4 @@
-package com.redhat.lightblue.client.expression;
+package com.redhat.lightblue.client.query;
 
 import com.redhat.lightblue.client.enums.ArrayOperation;
 import org.json.JSONException;
@@ -8,11 +8,11 @@ import org.skyscreamer.jsonassert.JSONAssert;
 /**
  * Created by vkumar on 10/10/14.
  */
-public class ArrayExpressionTest {
+public class ArrayQueryExpressionTest {
 
     @Test
     public void testToJsonConstructedWithObjectElementExpression() throws JSONException {
-    	Expression expression = new Expression() {
+    	QueryExpression queryExpression = new QueryExpression() {
 			
 			@Override
 			public String toJson() {
@@ -20,7 +20,7 @@ public class ArrayExpressionTest {
 				return json;
 			}
 		};
-		ArrayExpression arrayExpression = new ArrayExpression("someArray", expression);
+		ArrayQueryExpression arrayExpression = new ArrayQueryExpression("someArray", queryExpression);
          String expectedJson = "{\"array\":\"someArray\",\"elemMatch\":{\"field\":\"item\",\"op\":\"=\",\"rvalue\":\"1\"}}";
 
         JSONAssert.assertEquals(expectedJson, arrayExpression.toJson(), false);
@@ -32,7 +32,7 @@ public class ArrayExpressionTest {
     	String expectedJson ="{\"array\":\"someArray\",\"contains\":\"$all\",\"values\":[\"value1\",\"value2\",\"value3\"]}";
 
     	String[] array = {"value1", "value2", "value3"};
-		ArrayExpression arrayExpression = new ArrayExpression("someArray", ArrayOperation.ALL, array);
+		ArrayQueryExpression arrayExpression = new ArrayQueryExpression("someArray", ArrayOperation.ALL, array);
       
         JSONAssert.assertEquals(expectedJson, arrayExpression.toJson(), false);
     }

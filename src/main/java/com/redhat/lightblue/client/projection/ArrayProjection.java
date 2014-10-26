@@ -1,18 +1,18 @@
 package com.redhat.lightblue.client.projection;
 
-import com.redhat.lightblue.client.expression.Expression;
+import com.redhat.lightblue.client.query.QueryExpression;
 
 public class ArrayProjection implements Projection {
 
     private String field;
     private Boolean isIncluded;
-    private Expression expression;
+    private QueryExpression queryExpression;
     private Projection[] projection;
 
-    public ArrayProjection( String field, Boolean isIncluded, Expression expression, Projection... projection ) {
+    public ArrayProjection( String field, Boolean isIncluded, QueryExpression queryExpression, Projection... projection ) {
         this.field = field;
         this.isIncluded = isIncluded;
-        this.expression = expression;
+        this.queryExpression = queryExpression;
         this.projection = projection;
     }
 
@@ -27,7 +27,7 @@ public class ArrayProjection implements Projection {
             sb.append(",");
         }
         sb.append("\"match\":");
-        sb.append(expression.toJson());
+        sb.append(queryExpression.toJson());
         sb.append(",\"project\":[");
         for (int i=0;i<projection.length;i++){
             sb.append(projection[i].toJson());
@@ -39,7 +39,7 @@ public class ArrayProjection implements Projection {
         return sb.toString();
     }
 
-    public static ArrayProjection includeSubfield(String field, Expression expression, Projection... projection){
-        return new ArrayProjection(field, true, expression, projection);
+    public static ArrayProjection includeSubfield(String field, QueryExpression queryExpression, Projection... projection){
+        return new ArrayProjection(field, true, queryExpression, projection);
     }
 }

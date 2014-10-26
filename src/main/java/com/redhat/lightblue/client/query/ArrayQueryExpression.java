@@ -1,21 +1,21 @@
-package com.redhat.lightblue.client.expression;
+package com.redhat.lightblue.client.query;
 
 import com.redhat.lightblue.client.enums.ArrayOperation;
 
-public class ArrayExpression implements Expression {
+public class ArrayQueryExpression implements QueryExpression {
 
 	   String fieldName;
 	   ArrayOperation arrayOperation;
 	   String[] array;
-	   Expression expression;
-	    public ArrayExpression( String fieldName, Expression expression ) 
+	   QueryExpression queryExpression;
+	    public ArrayQueryExpression(String fieldName, QueryExpression queryExpression)
 	    {
 	     this.fieldName = fieldName;
-	     this.expression = expression;
+	     this.queryExpression = queryExpression;
 	     
 	    }  
 	  
-	    ArrayExpression( String fieldName, ArrayOperation operation, String... values ) {
+	    ArrayQueryExpression(String fieldName, ArrayOperation operation, String... values) {
 	      this.fieldName = fieldName;
 	      this.arrayOperation = operation;
 	      this.array = values;
@@ -24,10 +24,10 @@ public class ArrayExpression implements Expression {
 	@Override
 	public String toJson() {
 		StringBuilder builder = new StringBuilder("{");
-		if(expression!=null) {
+		if(queryExpression !=null) {
 			builder.append("\"array\":\""+fieldName+"\",");
 			builder.append("\"elemMatch\":");
-			builder.append(expression.toJson());
+			builder.append(queryExpression.toJson());
 		}
 		else {
 			builder.append("\"array\":\""+fieldName+"\",");
@@ -50,8 +50,8 @@ public class ArrayExpression implements Expression {
 		return builder.toString();
 	}
 
-    public static ArrayExpression withSubfield(String fieldName, Expression expression){
-        return new ArrayExpression(fieldName, expression);
+    public static ArrayQueryExpression withSubfield(String fieldName, QueryExpression queryExpression){
+        return new ArrayQueryExpression(fieldName, queryExpression);
     }
 
 }
