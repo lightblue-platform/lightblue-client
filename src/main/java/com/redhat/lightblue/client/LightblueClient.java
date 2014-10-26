@@ -1,29 +1,25 @@
 package com.redhat.lightblue.client;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Properties;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.redhat.lightblue.client.enums.RequestType;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
 import com.redhat.lightblue.client.http.LightblueHttpClientCertAuth;
 import com.redhat.lightblue.client.request.LightblueRequest;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.*;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.Properties;
 
 public class LightblueClient {
 
@@ -47,6 +43,8 @@ public class LightblueClient {
 			metadataContextPath = properties.getProperty("metadataContextPath");
 			dataContextPath = properties.getProperty("dataContextPath");
 			useCertAuth = Boolean.parseBoolean(properties.getProperty("useCertAuth"));
+            mapper.setDateFormat(lightblueDateFormat);
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		} catch (IOException io) {
 			LOGGER.error("appconfig.properties could not be found/read", io);
 			throw new RuntimeException(io);
