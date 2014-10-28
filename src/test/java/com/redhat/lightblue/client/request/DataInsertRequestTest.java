@@ -36,7 +36,7 @@ public class DataInsertRequestTest {
     };
 
     @Test
-    public void testRequestHasDataFindRequestType() {
+    public void testRequestHasDataInsertRequestType() {
         DataInsertRequest request = new DataInsertRequest(TEST_ENTITY_NAME, TEST_ENTITY_VERSION);
         assertEquals(RequestType.DATA_INSERT, request.getRequestType());
     }
