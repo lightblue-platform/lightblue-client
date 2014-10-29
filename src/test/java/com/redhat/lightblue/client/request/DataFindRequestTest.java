@@ -2,7 +2,7 @@ package com.redhat.lightblue.client.request;
 
 import com.redhat.lightblue.client.enums.RequestType;
 import com.redhat.lightblue.client.enums.SortDirection;
-import com.redhat.lightblue.client.query.QueryExpression;
+import com.redhat.lightblue.client.expression.query.Query;
 import com.redhat.lightblue.client.projection.Projection;
 import org.json.JSONException;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class DataFindRequestTest {
     private static final String TEST_ENTITY_NAME = "testEntity";
     private static final String TEST_ENTITY_VERSION = "0.0.1";
 
-    private QueryExpression testQueryExpression = new QueryExpression() {
+    private Query testQueryExpression = new Query() {
         public String toJson() {
             return "{\"field1\":\"test\",\"op\":\"$ne\",\"rValue\":\"hack\"}";
         }

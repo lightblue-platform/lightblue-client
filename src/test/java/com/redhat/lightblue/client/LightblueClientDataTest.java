@@ -20,7 +20,7 @@ package com.redhat.lightblue.client;
 
 import com.redhat.lightblue.client.projection.FieldProjection;
 import com.redhat.lightblue.client.projection.Projection;
-import com.redhat.lightblue.client.query.QueryExpression;
+import com.redhat.lightblue.client.expression.query.Query;
 import com.redhat.lightblue.client.request.DataDeleteRequest;
 import com.redhat.lightblue.client.request.DataFindRequest;
 import com.redhat.lightblue.client.request.DataInsertRequest;
@@ -34,13 +34,13 @@ import org.junit.Test;
 
 public class LightblueClientDataTest {
 	
-  private QueryExpression insertQueryExpression = new QueryExpression() {
+  private Query insertQueryExpression = new Query() {
     public String toJson() {
         return "{\"data\":[{\"acknowledgedCode\":\"accepted\",\"acknowledgedDate\":\"20120328T03:19:34.295-0600\",\"objectType\":\"termsAcknowledgement\",\"termsId\":\"16049311\",\"termsVerbageTranslationUid\":\"8675309\",\"userId\":\"060378\"}]";
     }
 };
 
-private QueryExpression testQueryExpression = new QueryExpression() {
+private Query testQueryExpression = new Query() {
   public String toJson() {
       return "{\"field\": \"termsId\",\"op\": \"=\",\"rvalue\": \"16049311\"}";
   }

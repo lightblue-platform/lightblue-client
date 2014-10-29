@@ -1,11 +1,11 @@
 package com.redhat.lightblue.client.request;
 
 import com.redhat.lightblue.client.enums.RequestType;
-import com.redhat.lightblue.client.query.QueryExpression;
+import com.redhat.lightblue.client.expression.query.Query;
 
 public class DataDeleteRequest extends AbstractLightblueRequest {
 
-    private QueryExpression queryExpression;
+    private Query queryExpression;
 
     public DataDeleteRequest () {}
 
@@ -14,7 +14,7 @@ public class DataDeleteRequest extends AbstractLightblueRequest {
         this.setEntityVersion(entityVersion);
     }
 
-    public void where(QueryExpression queryExpression){
+    public void where(Query queryExpression){
         this.queryExpression = queryExpression;
     }
 

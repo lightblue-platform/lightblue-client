@@ -1,6 +1,6 @@
 package com.redhat.lightblue.client.projection;
 
-import com.redhat.lightblue.client.query.QueryExpression;
+import com.redhat.lightblue.client.expression.query.Query;
 import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -25,7 +25,7 @@ public class ProjectionTest {
                 return "{\"field\":\"*\"}";
             }
         };
-        QueryExpression myEx = new QueryExpression() {
+        Query myEx = new Query() {
             public String toJson() {
                 return "{\"field\":\"statusCode\",\"op\":\"=\",\"rvalue\":\"active\"}";
             }
