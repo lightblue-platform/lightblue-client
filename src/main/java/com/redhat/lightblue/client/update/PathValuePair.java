@@ -17,9 +17,8 @@ public class PathValuePair {
     public String toJson() {
         StringBuffer builder = new StringBuffer();
         
-        builder.append("{path:");
+        builder.append(path+":");
         builder.append( value.toJson() );
-        builder.append("}");
         
         return builder.toString();
     }

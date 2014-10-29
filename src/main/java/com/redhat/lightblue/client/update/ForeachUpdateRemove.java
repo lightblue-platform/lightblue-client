@@ -8,12 +8,27 @@ import com.redhat.lightblue.client.query.QueryExpression;
 
 public class ForeachUpdateRemove implements UpdateExpression {
     
-    public ForeachUpdateRemove( QueryExpression queryExpression){
-        
+    private String path;
+    private QueryExpression queryExpression;
+    
+    public ForeachUpdateRemove( String path, QueryExpression queryExpression){
+        this.path = path;
+        this.queryExpression = queryExpression;
     }
     
     public String toJson() {
-        return "";
+        /*
+         * { $foreach : { path : update_query_expression, $update : foreach_update_expression } }
+         * update_query_expression := $all | query_expression
+         * foreach_update_expression := $remove | update_expression
+         */
+        StringBuilder json = new StringBuilder("{");
+        json.append("$foreach:{");
+        json.append(this.path);
+        json.append(":");
+        json.append( this.queryExpression.toJson() );
+        json.append( ", $update : $remove } }");
+        return json.toString();
     }
     
 }

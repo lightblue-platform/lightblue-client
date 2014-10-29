@@ -6,12 +6,23 @@ package com.redhat.lightblue.client.update;
 
 public class ForeachUpdateRemoveAll implements UpdateExpression {
     
-    public ForeachUpdateRemoveAll( ){
-        
+    private String path;
+    
+    public ForeachUpdateRemoveAll( String path ){
+        this.path = path;
     }
     
     public String toJson() {
-        return "";
+        /*
+         * { $foreach : { path : update_query_expression, $update : foreach_update_expression } }
+         * update_query_expression := $all | query_expression
+         * foreach_update_expression := $remove | update_expression
+         */
+        StringBuilder json = new StringBuilder("{");
+        json.append("$foreach:{");
+        json.append(this.path);
+        json.append(": $all, $update : $remove } }");
+        return json.toString();
     }
     
 }

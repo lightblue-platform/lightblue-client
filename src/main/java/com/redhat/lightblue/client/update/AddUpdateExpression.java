@@ -24,18 +24,12 @@ public class AddUpdateExpression implements UpdateExpression {
         StringBuffer builder = new StringBuffer();
         
         builder.append("{\"$add\":");
-        if( this.statements.length > 1 ){
-            builder.append("[");
-        }
         for( int index = 0; index < this.statements.length; index++ ){
             builder.append( this.statements[index].toJson() );
             // if there's more than one element left...
             if( ( this.statements.length - index ) > 1 ){
                 builder.append(","); // append a comma
             }
-        }
-        if( this.statements.length > 1 ){
-            builder.append("]");
         }
         builder.append("}");
         
