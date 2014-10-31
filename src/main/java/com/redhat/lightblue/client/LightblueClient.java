@@ -51,6 +51,22 @@ public class LightblueClient {
 		}
 	}
 
+    public LightblueClient(String serviceURI) {
+        this.serviceURI = serviceURI;
+        try {
+            Properties properties = new Properties();
+            properties.load(getClass().getClassLoader().getResourceAsStream("appconfig.properties"));
+            metadataContextPath = properties.getProperty("metadataContextPath");
+            dataContextPath = properties.getProperty("dataContextPath");
+            useCertAuth = Boolean.parseBoolean(properties.getProperty("useCertAuth"));
+            mapper.setDateFormat(lightblueDateFormat);
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        } catch (IOException io) {
+            LOGGER.error("appconfig.properties could not be found/read", io);
+            throw new RuntimeException(io);
+        }
+    }
+
 	private String callService(HttpRequestBase httpOperation, String jsonIn) {
 		String jsonOut;
 		try {
