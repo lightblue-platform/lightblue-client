@@ -1,4 +1,3 @@
-secant
-======
-
-Java client for lightblue.
+lightblue-client
+================
+Clients for lightblue-enabled services

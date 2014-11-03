@@ -1,18 +1,25 @@
 package com.redhat.lightblue.client.request;
 
-import com.redhat.lightblue.client.enums.RequestType;
+import java.text.SimpleDateFormat;
 
 public interface LightblueRequest {
-	
-	public RequestType getRequestType();
-	
-	public String getEntityName();
-	
-	public String getEntityVersion();
-	
-	public String getBody();
-	
-	public void setEntityName(String entityName);
 
-	public void setEntityVersion(String entityVersion);
+    public static final SimpleDateFormat lightblueDateFormat = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss.sssZ");
+	
+	String getEntityName();
+	
+	String getEntityVersion();
+	
+	String getBody();
+	
+	void setEntityName(String entityName);
+
+	void setEntityVersion(String entityVersion);
+
+    void setBody(String body);
+	
+	String getRestURI(String baseServiceURI);
+	
+	String getOperationPathParam();
+	
 }
