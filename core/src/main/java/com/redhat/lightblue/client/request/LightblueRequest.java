@@ -1,7 +1,10 @@
 package com.redhat.lightblue.client.request;
 
+import java.text.SimpleDateFormat;
 
 public interface LightblueRequest {
+
+    public static final SimpleDateFormat lightblueDateFormat = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss.sssZ");
 	
 	String getEntityName();
 	
@@ -13,7 +16,7 @@ public interface LightblueRequest {
 
 	void setEntityVersion(String entityVersion);
 
-	void setBody(String body);
+    void setBody(String body);
 	
 	String getRestURI(String baseServiceURI);
 	
