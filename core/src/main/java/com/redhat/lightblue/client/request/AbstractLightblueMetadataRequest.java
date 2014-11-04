@@ -38,5 +38,4 @@ public abstract class AbstractLightblueMetadataRequest extends AbstractLightblue
 
 		return requestURI.toString();
 	}
-	
 }

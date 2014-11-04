@@ -7,6 +7,7 @@ import org.junit.Test;
 public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
 
 	AbstractLightblueRequest testRequest = new AbstractLightblueRequest() {
+        private String body;
 		@Override
 		public String getRestURI(String baseServiceURI) {
 			return null;
@@ -16,6 +17,14 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
 		public String getOperationPathParam() {
 			return null;
 		}
+
+        public void setBody(String body) {
+            this.body = body;
+        }
+
+        public String getBody() {
+            return body;
+        }
 	};
 
 	private static final String updatedEntityName = "updatedEntity";
