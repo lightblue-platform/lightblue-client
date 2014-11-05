@@ -1,9 +1,11 @@
 package com.redhat.lightblue.client.http;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
@@ -29,10 +31,13 @@ public class LightblueHttpClient implements LightblueClient {
 	private String metadataServiceURI;
 	private boolean useCertAuth = false;
     private ObjectMapper mapper = new ObjectMapper();
+    public static final SimpleDateFormat lightblueDateFormat = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss.sssZ");
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
 	public LightblueHttpClient() {
+        mapper.setDateFormat(lightblueDateFormat);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		try {
 			Properties properties = new Properties();
 			properties.load(getClass().getClassLoader().getResourceAsStream(configFilePath));
@@ -49,6 +54,8 @@ public class LightblueHttpClient implements LightblueClient {
 	}
 
     public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
+        mapper.setDateFormat(lightblueDateFormat);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.metadataServiceURI = metadataServiceURI;
         this.dataServiceURI = dataServiceURI;
         if (metadataServiceURI == null && dataServiceURI == null) {
