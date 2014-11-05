@@ -48,6 +48,15 @@ public class LightblueHttpClient implements LightblueClient {
 		}
 	}
 
+    public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
+        this.metadataServiceURI = metadataServiceURI;
+        this.dataServiceURI = dataServiceURI;
+        if (metadataServiceURI == null && dataServiceURI == null) {
+            throw new RuntimeException("Either metadataServiceURI or dataServiceURI must be defined in appconfig.properties");
+        }
+        this.useCertAuth = useCertAuth;
+    }
+
 	/* (non-Javadoc)
 	 * @see com.redhat.lightblue.client.LightblueClient#setConfigFilePath(java.lang.String)
 	 */
