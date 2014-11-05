@@ -1,10 +1,8 @@
 package com.redhat.lightblue.client.http;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Properties;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +29,6 @@ public class LightblueHttpClient implements LightblueClient {
 	private String metadataServiceURI;
 	private boolean useCertAuth = false;
     private ObjectMapper mapper = new ObjectMapper();
-    public static final SimpleDateFormat lightblueDateFormat = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss.sssZ");
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
