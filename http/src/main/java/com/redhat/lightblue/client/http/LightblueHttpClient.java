@@ -3,6 +3,9 @@ package com.redhat.lightblue.client.http;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -18,6 +21,7 @@ import com.redhat.lightblue.client.http.request.LightblueHttpDataRequest;
 import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
+import com.redhat.lightblue.metadata.types.DateType;
 
 public class LightblueHttpClient implements LightblueClient {
 
@@ -25,10 +29,13 @@ public class LightblueHttpClient implements LightblueClient {
 	private String dataServiceURI;
 	private String metadataServiceURI;
 	private boolean useCertAuth = false;
+    private ObjectMapper mapper = new ObjectMapper();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
 	public LightblueHttpClient() {
+        mapper.setDateFormat(DateType.getDateFormat());
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		try {
 			Properties properties = new Properties();
 			properties.load(getClass().getClassLoader().getResourceAsStream(configFilePath));
@@ -43,6 +50,17 @@ public class LightblueHttpClient implements LightblueClient {
 			throw new RuntimeException(io);
 		}
 	}
+
+    public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
+        mapper.setDateFormat(DateType.getDateFormat());
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.metadataServiceURI = metadataServiceURI;
+        this.dataServiceURI = dataServiceURI;
+        if (metadataServiceURI == null && dataServiceURI == null) {
+            throw new RuntimeException("Either metadataServiceURI or dataServiceURI must be defined in appconfig.properties");
+        }
+        this.useCertAuth = useCertAuth;
+    }
 
 	/* (non-Javadoc)
 	 * @see com.redhat.lightblue.client.LightblueClient#setConfigFilePath(java.lang.String)
@@ -77,6 +95,16 @@ public class LightblueHttpClient implements LightblueClient {
 		LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
 		return callService(new LightblueHttpDataRequest(lightblueRequest).getRestRequest(dataServiceURI));
 	}
+
+    public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
+        LightblueResponse response = data(lightblueRequest);
+
+        JsonNode objectNode = response.getJson().path("processed");
+
+        T object = mapper.readValue(objectNode.traverse(), type);
+
+        return object;
+    }
 
 	private LightblueResponse callService(HttpRequestBase httpOperation) {
 		String jsonOut;
