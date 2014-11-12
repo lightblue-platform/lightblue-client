@@ -89,7 +89,7 @@
         <dependency>
             <groupId>com.redhat.lightblue</groupId>
             <artifactId>metadata</artifactId>
-            <version>${project.version}</version>
+            <version>${lightblue-core.version}</version>
         </dependency>
     </dependencies>
     <modules>
@@ -104,8 +104,7 @@
         <sonar.host.url>http://127.0.0.1:8080</sonar.host.url>
         <sonar.projectName>lightblue-client</sonar.projectName>
         <rpm.install.basedir>/usr/share/jbossas/standalone/deployments</rpm.install.basedir>
-        <lightblue-core.version>0.9.1-SNAPSHOT</lightblue-core.version>
-        <lightblue-mongo.version>0.9.1-SNAPSHOT</lightblue-mongo.version>
+        <lightblue-core.version>1.1.1</lightblue-core.version>
     </properties>
     <build>
         <plugins>
