@@ -4,11 +4,8 @@ import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
 public interface LightblueClient {
-
-    SimpleDateFormat lightblueDateFormat = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss.sssZ");
 
 	public abstract void setConfigFilePath(String configFilePath);
 

@@ -21,6 +21,7 @@ import com.redhat.lightblue.client.http.request.LightblueHttpDataRequest;
 import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
+import com.redhat.lightblue.metadata.types.DateType;
 
 public class LightblueHttpClient implements LightblueClient {
 
@@ -33,7 +34,7 @@ public class LightblueHttpClient implements LightblueClient {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
 	public LightblueHttpClient() {
-        mapper.setDateFormat(lightblueDateFormat);
+        mapper.setDateFormat(DateType.getDateFormat());
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		try {
 			Properties properties = new Properties();
@@ -51,7 +52,7 @@ public class LightblueHttpClient implements LightblueClient {
 	}
 
     public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
-        mapper.setDateFormat(lightblueDateFormat);
+        mapper.setDateFormat(DateType.getDateFormat());
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.metadataServiceURI = metadataServiceURI;
         this.dataServiceURI = dataServiceURI;

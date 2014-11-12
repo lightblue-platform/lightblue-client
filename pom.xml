@@ -86,6 +86,11 @@
             <version>1.2.3</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.redhat.lightblue</groupId>
+            <artifactId>metadata</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <modules>
         <module>http</module>

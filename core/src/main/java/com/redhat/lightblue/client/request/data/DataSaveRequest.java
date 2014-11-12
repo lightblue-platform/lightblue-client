@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.lightblue.client.projection.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.metadata.types.DateType;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -20,7 +21,7 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
     private static ObjectMapper mapper = new ObjectMapper();
     private static JsonFactory jf = new JsonFactory();
     static {
-        mapper.setDateFormat(lightblueDateFormat);
+        mapper.setDateFormat(DateType.getDateFormat());
     }
 
 	public DataSaveRequest() {
