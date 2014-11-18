@@ -22,7 +22,7 @@ public class LightblueHttpDataRequest extends AbstractLightblueHttpRequest imple
 		HttpRequestBase httpRequest = null;
 
 		if (request instanceof DataDeleteRequest) {
-			return getHttpDelete(request.getRestURI(baseServiceURI));
+			return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
 		} else if (request instanceof DataFindRequest) {
 			return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
 		} else if (request instanceof DataInsertRequest) {
