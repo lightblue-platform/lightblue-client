@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 
 public class AbstractLightblueHttpRequestTest {
@@ -26,12 +27,12 @@ public class AbstractLightblueHttpRequestTest {
 	
 	public void compareHttpPost(HttpPost request1, HttpPost request2) throws IOException {
 		compareHttpRequestBase(request1, request2);
-		Assert.assertTrue(IOUtils.contentEquals(request1.getEntity().getContent(), request2.getEntity().getContent()));
+		Assert.assertEquals(EntityUtils.toString(request1.getEntity()), EntityUtils.toString(request2.getEntity()));
 	}
 
 	public void compareHttpPut(HttpPut request1, HttpPut request2) throws IOException {
 		compareHttpRequestBase(request1, request2);
-		Assert.assertTrue(IOUtils.contentEquals(request1.getEntity().getContent(), request2.getEntity().getContent()));
+		Assert.assertEquals(EntityUtils.toString(request1.getEntity()), EntityUtils.toString(request2.getEntity()));
 	}
 	
 }
