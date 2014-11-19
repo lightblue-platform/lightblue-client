@@ -6,8 +6,10 @@ import java.util.Properties;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -108,9 +110,19 @@ public class LightblueHttpClient implements LightblueClient {
 
 	private LightblueResponse callService(HttpRequestBase httpOperation) {
 		String jsonOut;
+
+		LOGGER.debug("Calling "+httpOperation);
 		try {
 			try (CloseableHttpClient httpClient = getLightblueHttpClient()) {
 				httpOperation.setHeader("Content-Type", "application/json");
+
+				if (LOGGER.isDebugEnabled()) {
+					try {
+						LOGGER.debug("Request body: "+(EntityUtils.toString(((HttpEntityEnclosingRequestBase)httpOperation).getEntity())));
+					} catch (ClassCastException e) {
+						LOGGER.debug("Request body: None");
+					}
+				}
 
 				try (CloseableHttpResponse httpResponse = httpClient.execute(httpOperation)) {
 					HttpEntity entity = httpResponse.getEntity();

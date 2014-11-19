@@ -1,12 +1,10 @@
 package com.redhat.lightblue.client.http.request;
 
+import static com.redhat.lightblue.client.expression.query.ValueQuery.withValue;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import com.redhat.lightblue.client.http.request.stub.DataFindRequestStub;
-import com.redhat.lightblue.client.http.request.stub.DataInsertRequestStub;
-import com.redhat.lightblue.client.http.request.stub.DataSaveRequestStub;
-import com.redhat.lightblue.client.http.request.stub.DataUpdateRequestStub;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -14,6 +12,10 @@ import org.apache.http.entity.StringEntity;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.redhat.lightblue.client.http.request.stub.DataFindRequestStub;
+import com.redhat.lightblue.client.http.request.stub.DataInsertRequestStub;
+import com.redhat.lightblue.client.http.request.stub.DataSaveRequestStub;
+import com.redhat.lightblue.client.http.request.stub.DataUpdateRequestStub;
 import com.redhat.lightblue.client.request.data.DataDeleteRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
@@ -30,30 +32,36 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
 	}
 	
 	@Test
-	public void testGetRestRequestWithDataDeleteRequest() {
+	public void testGetRestRequestWithDataDeleteRequest() throws IOException {
 		DataDeleteRequest deleteRequest = new DataDeleteRequest();
+		deleteRequest.where(withValue("_id = 1234abc"));
 		httpRequest = new LightblueHttpDataRequest(deleteRequest);
-		HttpDelete expectedRequest = new HttpDelete(baseURI + DataDeleteRequest.PATH_PARAM_DELETE);
-		HttpDelete actualRequest = (HttpDelete) httpRequest.getRestRequest(baseURI);
-		compareHttpRequestBase(expectedRequest, actualRequest);
+		HttpPost expectedRequest = new HttpPost(baseURI + DataDeleteRequest.PATH_PARAM_DELETE);
+		expectedRequest.setEntity(new StringEntity("{\"query\":{\"field\":\"_id\",\"op\":\"=\",\"rvalue\":\"1234abc\"}}"));
+		HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
+		compareHttpPost(expectedRequest, actualRequest);
 	}
 	
 	@Test
-	public void testGetRestRequestWithDataDeleteRequestWithEntityName() {
+	public void testGetRestRequestWithDataDeleteRequestWithEntityName() throws IOException {
 		DataDeleteRequest deleteRequest = new DataDeleteRequest(entityName, null);
+		deleteRequest.where(withValue("_id = 1234abc"));
 		httpRequest = new LightblueHttpDataRequest(deleteRequest);
-		HttpDelete expectedRequest = new HttpDelete(baseURI + DataDeleteRequest.PATH_PARAM_DELETE + "/" + entityName);
-		HttpDelete actualRequest = (HttpDelete) httpRequest.getRestRequest(baseURI);
-		compareHttpRequestBase(expectedRequest, actualRequest);
+		HttpPost expectedRequest = new HttpPost(baseURI + DataDeleteRequest.PATH_PARAM_DELETE + "/" + entityName);
+		expectedRequest.setEntity(new StringEntity("{\"query\":{\"field\":\"_id\",\"op\":\"=\",\"rvalue\":\"1234abc\"}}"));
+		HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
+		compareHttpPost(expectedRequest, actualRequest);
 	}
 
 	@Test
-	public void testGetRestRequestWithDataDeleteRequestWithEntityNameAndVersion() {
+	public void testGetRestRequestWithDataDeleteRequestWithEntityNameAndVersion() throws IOException {
 		DataDeleteRequest deleteRequest = new DataDeleteRequest(entityName, entityVersion);
+		deleteRequest.where(withValue("_id = 1234abc"));
 		httpRequest = new LightblueHttpDataRequest(deleteRequest);
-		HttpDelete expectedRequest = new HttpDelete(baseURI + DataDeleteRequest.PATH_PARAM_DELETE + "/" + entityName + "/" + entityVersion);
-		HttpDelete actualRequest = (HttpDelete) httpRequest.getRestRequest(baseURI);
-		compareHttpRequestBase(expectedRequest, actualRequest);
+		HttpPost expectedRequest = new HttpPost(baseURI + DataDeleteRequest.PATH_PARAM_DELETE + "/" + entityName + "/" + entityVersion);
+		expectedRequest.setEntity(new StringEntity("{\"query\":{\"field\":\"_id\",\"op\":\"=\",\"rvalue\":\"1234abc\"}}"));
+		HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
+		compareHttpPost(expectedRequest, actualRequest);
 	}
 	
 
