@@ -1,5 +1,9 @@
 package com.redhat.lightblue.client.request.data;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Collection;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -7,11 +11,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.lightblue.client.projection.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-import com.redhat.lightblue.metadata.types.DateType;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Collection;
+import com.redhat.lightblue.client.types.DateType;
 
 public class DataSaveRequest extends AbstractLightblueDataRequest {
 

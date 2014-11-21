@@ -3,10 +3,6 @@ package com.redhat.lightblue.client.http;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -16,6 +12,9 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.http.auth.HttpClientCertAuth;
 import com.redhat.lightblue.client.http.auth.HttpClientNoAuth;
@@ -23,7 +22,7 @@ import com.redhat.lightblue.client.http.request.LightblueHttpDataRequest;
 import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
-import com.redhat.lightblue.metadata.types.DateType;
+import com.redhat.lightblue.client.types.DateType;
 
 public class LightblueHttpClient implements LightblueClient {
 
