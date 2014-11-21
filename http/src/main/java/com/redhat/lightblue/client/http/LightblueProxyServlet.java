@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.redhat.lightblue.client.http.auth.HttpClientCertAuth;
 import com.redhat.lightblue.client.http.auth.HttpClientNoAuth;
+import com.redhat.lightblue.client.util.ClientConstants;
 
 public class LightblueProxyServlet extends HttpServlet implements Servlet {
 
@@ -38,15 +39,15 @@ public class LightblueProxyServlet extends HttpServlet implements Servlet {
     private String serviceURI() {    	
 		try {
 			Properties properties = new Properties();
-			properties.load(getClass().getClassLoader().getResourceAsStream("lightblue-cilent.properties"));
+			properties.load(getClass().getClassLoader().getResourceAsStream(ClientConstants.DEFAULT_CONFIG_FILE));
 			serviceURI = properties.getProperty("serviceURI");
 			if(serviceURI == null) {
-				throw new RuntimeException("serviceURI must be defined in lightblue-client.properties");
+				throw new RuntimeException("serviceURI must be defined in " + ClientConstants.DEFAULT_CONFIG_FILE);
 			}
 			useCertAuth = Boolean.parseBoolean(properties.getProperty("useCertAuth"));
 			
 		} catch (IOException io) {
-			LOGGER.error("lightblue-client.properties could not be found/read", io);
+			LOGGER.error(ClientConstants.DEFAULT_CONFIG_FILE + " could not be found/read", io);
 			throw new RuntimeException(io);
 		}
 

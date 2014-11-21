@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
 public class ClientConstants {
+	public static final String DEFAULT_CONFIG_FILE = "lightblue-client.properties";
 	
 	private static final DateFormat DATE_FORMAT;
 	private static final String DATE_FORMAT_STR = "yyyyMMdd'T'HH:mm:ss.SSSZ";
