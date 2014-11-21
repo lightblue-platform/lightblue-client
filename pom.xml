@@ -86,11 +86,6 @@
             <version>1.2.3</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.redhat.lightblue</groupId>
-            <artifactId>metadata</artifactId>
-            <version>${lightblue-core.version}</version>
-        </dependency>
     </dependencies>
     <modules>
         <module>http</module>
@@ -104,7 +99,6 @@
         <sonar.host.url>http://127.0.0.1:8080</sonar.host.url>
         <sonar.projectName>lightblue-client</sonar.projectName>
         <rpm.install.basedir>/usr/share/jbossas/standalone/deployments</rpm.install.basedir>
-        <lightblue-core.version>1.1.1</lightblue-core.version>
     </properties>
     <build>
         <plugins>
