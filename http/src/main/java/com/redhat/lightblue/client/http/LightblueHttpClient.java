@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client.http;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.lightblue.client.LightblueClient;
+import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.http.auth.HttpClientCertAuth;
 import com.redhat.lightblue.client.http.auth.HttpClientNoAuth;
 import com.redhat.lightblue.client.http.request.LightblueHttpDataRequest;
@@ -26,98 +28,134 @@ import com.redhat.lightblue.client.util.ClientConstants;
 
 public class LightblueHttpClient implements LightblueClient {
 
-	private String configFilePath = "lightblue-client.properties";
+	LightblueClientConfiguration configuration;
+	
 	private String dataServiceURI;
 	private String metadataServiceURI;
 	private boolean useCertAuth = false;
-    private ObjectMapper mapper = new ObjectMapper();
+	private ObjectMapper mapper = new ObjectMapper();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
+	/**
+	 * This constructor will attempt to read the configuration from the default properties file on the classpath
+	 */
 	public LightblueHttpClient() {
-        mapper.setDateFormat(ClientConstants.getDateFormat());
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		setObjectMapperDefaults();
 		try {
 			Properties properties = new Properties();
-			properties.load(getClass().getClassLoader().getResourceAsStream(configFilePath));
-			metadataServiceURI = properties.getProperty("metadataServiceURI");
-			dataServiceURI = properties.getProperty("dataServiceURI");
-			if (metadataServiceURI == null && dataServiceURI == null) {
-				throw new RuntimeException("Either metadataServiceURI or dataServiceURI must be defined in appconfig.properties");
-			}
-			useCertAuth = Boolean.parseBoolean(properties.getProperty("useCertAuth"));
+			properties.load(getClass().getClassLoader().getResourceAsStream(ClientConstants.DEFAULT_CONFIG_FILE));
+			loadConfigFromProperties(properties);
 		} catch (IOException io) {
-			LOGGER.error("lightblue-client.properties could not be found/read", io);
+			LOGGER.error(ClientConstants.DEFAULT_CONFIG_FILE + " could not be found/read", io);
+			throw new RuntimeException(io);
+		}
+	}
+	
+	/**
+	 * This constructor will attempt to read the configuration from the specified properties file on the file system
+	 */
+	public LightblueHttpClient(String configFilePath) {
+		setObjectMapperDefaults();
+		try {
+			Properties properties = new Properties();
+			properties.load(new FileInputStream(configFilePath));
+			loadConfigFromProperties(properties);
+		} catch (IOException io) {
+			LOGGER.error(configFilePath + " could not be found/read", io);
 			throw new RuntimeException(io);
 		}
 	}
 
-    public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
-        mapper.setDateFormat(ClientConstants.getDateFormat());
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        this.metadataServiceURI = metadataServiceURI;
-        this.dataServiceURI = dataServiceURI;
-        if (metadataServiceURI == null && dataServiceURI == null) {
-            throw new RuntimeException("Either metadataServiceURI or dataServiceURI must be defined in appconfig.properties");
-        }
-        this.useCertAuth = useCertAuth;
-    }
-
-	/* (non-Javadoc)
-	 * @see com.redhat.lightblue.client.LightblueClient#setConfigFilePath(java.lang.String)
+	/**
+	 * This constructor will use the specified object and not attempt to read from a properties file at all 
+	 * 
+	 * @param configuration
 	 */
-	@Override
-  public void setConfigFilePath(String configFilePath) {
-		this.configFilePath = configFilePath;
+	public LightblueHttpClient(LightblueClientConfiguration configuration) {
+		setObjectMapperDefaults();
+		metadataServiceURI = configuration.getMetadataServiceURI();
+		dataServiceURI = configuration.getDataServiceURI();
+		useCertAuth = configuration.useCertAuth();
+	}
+	
+	private void setObjectMapperDefaults() {
+		mapper.setDateFormat(ClientConstants.getDateFormat());
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	}
+	
+	private void loadConfigFromProperties(Properties properties) {
+		metadataServiceURI = properties.getProperty("metadataServiceURI");
+		dataServiceURI = properties.getProperty("dataServiceURI");
+		if (metadataServiceURI == null && dataServiceURI == null) {
+			throw new RuntimeException("Either metadataServiceURI or dataServiceURI must be defined in configuration");
+		}
+		useCertAuth = Boolean.parseBoolean(properties.getProperty("useCertAuth"));
+	}
+	
+	/**
+	 * @deprecated
+	 * Use LightblueHttpClient(String configFilePath) if you want to specify a config file location not on the classpath
+	 * Use LightblueHttpClient(LightblueClientConfiguration configuration) if you don't want to use config files at all
+	 */
+	public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
+		mapper.setDateFormat(ClientConstants.getDateFormat());
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		this.metadataServiceURI = metadataServiceURI;
+		this.dataServiceURI = dataServiceURI;
+		if (metadataServiceURI == null && dataServiceURI == null) {
+			throw new RuntimeException("Either metadataServiceURI or dataServiceURI must be defined in appconfig.properties");
+		}
+		this.useCertAuth = useCertAuth;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.redhat.lightblue.client.LightblueClient#getConfigFilePath()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.redhat.lightblue.client.LightblueClient#metadata(com.redhat.lightblue
+	 * .client.request.LightblueRequest)
 	 */
 	@Override
-  public String getConfigFilePath() {
-		return configFilePath;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.redhat.lightblue.client.LightblueClient#metadata(com.redhat.lightblue.client.request.LightblueRequest)
-	 */
-	@Override
-  public LightblueResponse metadata(LightblueRequest lightblueRequest) {
+	public LightblueResponse metadata(LightblueRequest lightblueRequest) {
 		LOGGER.debug("Calling metadata service with lightblueRequest: " + lightblueRequest.toString());
 		return callService(new LightblueHttpMetadataRequest(lightblueRequest).getRestRequest(metadataServiceURI));
 	}
 
-	/* (non-Javadoc)
-	 * @see com.redhat.lightblue.client.LightblueClient#data(com.redhat.lightblue.client.request.LightblueRequest)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.redhat.lightblue.client.LightblueClient#data(com.redhat.lightblue.client
+	 * .request.LightblueRequest)
 	 */
 	@Override
-  public LightblueResponse data(LightblueRequest lightblueRequest) {
+	public LightblueResponse data(LightblueRequest lightblueRequest) {
 		LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
 		return callService(new LightblueHttpDataRequest(lightblueRequest).getRestRequest(dataServiceURI));
 	}
 
-    public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
-        LightblueResponse response = data(lightblueRequest);
+	public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
+		LightblueResponse response = data(lightblueRequest);
 
-        JsonNode objectNode = response.getJson().path("processed");
+		JsonNode objectNode = response.getJson().path("processed");
 
-        T object = mapper.readValue(objectNode.traverse(), type);
+		T object = mapper.readValue(objectNode.traverse(), type);
 
-        return object;
-    }
+		return object;
+	}
 
 	private LightblueResponse callService(HttpRequestBase httpOperation) {
 		String jsonOut;
 
-		LOGGER.debug("Calling "+httpOperation);
+		LOGGER.debug("Calling " + httpOperation);
 		try {
 			try (CloseableHttpClient httpClient = getLightblueHttpClient()) {
 				httpOperation.setHeader("Content-Type", "application/json");
 
 				if (LOGGER.isDebugEnabled()) {
 					try {
-						LOGGER.debug("Request body: "+(EntityUtils.toString(((HttpEntityEnclosingRequestBase)httpOperation).getEntity())));
+						LOGGER.debug("Request body: " + (EntityUtils.toString(((HttpEntityEnclosingRequestBase) httpOperation).getEntity())));
 					} catch (ClassCastException e) {
 						LOGGER.debug("Request body: None");
 					}
@@ -136,15 +174,19 @@ public class LightblueHttpClient implements LightblueClient {
 		}
 	}
 
-	
 	private CloseableHttpClient getLightblueHttpClient() {
+		CloseableHttpClient httpClient;
 		if (useCertAuth) {
 			LOGGER.debug("Using certificate authentication");
-			return new HttpClientCertAuth().getClient();
+			if(configuration != null) {
+				httpClient = new HttpClientCertAuth(configuration).getClient();
+			} else 
+				httpClient = new HttpClientCertAuth().getClient();
 		} else {
 			LOGGER.debug("Using no authentication");
-			return new HttpClientNoAuth().getClient();
+			httpClient = new HttpClientNoAuth().getClient();
 		}
+		return httpClient;
 	}
 
 }
