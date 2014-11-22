@@ -7,7 +7,7 @@
         <version>7</version>
     </parent>
     <groupId>com.redhat.lightblue.client</groupId>
-    <artifactId>client-pom</artifactId>
+    <artifactId>lightblue-client-pom</artifactId>
     <version>1.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
