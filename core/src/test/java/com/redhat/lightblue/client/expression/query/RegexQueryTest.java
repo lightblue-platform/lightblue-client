@@ -11,7 +11,7 @@ public class RegexQueryTest {
     @Test
     public void testToJsonCreatesWellFormedJson() throws JSONException {
         RegexQuery expression = new RegexQuery("field1", ".+pattern.*", false, true, false, true);
-        String expectedJson = "{\"field\":\"field1\",\"pattern\":\".+pattern.*\","
+        String expectedJson = "{\"field\":\"field1\",\"regex\":\".+pattern.*\","
                               + "\"caseInsensitive\":\"false\",\"extended\":\"true\","
                               + "\"multiline\":\"false\",\"dotall\":\"true\"}";
 
