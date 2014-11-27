@@ -23,11 +23,11 @@ public class ForeachUpdateRemove implements Update {
          * foreach_update_expression := $remove | update_expression
          */
         StringBuilder json = new StringBuilder("{");
-        json.append("$foreach:{");
-        json.append(this.path);
+        json.append("\"$foreach\":{");
+        json.append("\""+this.path+"\"");
         json.append(":");
         json.append( this.queryExpression.toJson() );
-        json.append( ", $update : $remove } }");
+        json.append( ", \"$update\" : \"$remove\" } }");
         return json.toString();
     }
     
