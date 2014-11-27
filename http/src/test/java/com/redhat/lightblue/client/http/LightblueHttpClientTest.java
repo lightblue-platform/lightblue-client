@@ -49,7 +49,7 @@ public class LightblueHttpClientTest {
 
 			Assert.fail();
 		} catch (RuntimeException e) {
-			e.getMessage().equals(response);
+			Assert.assertTrue(e.getMessage().startsWith("Error parsing lightblue response"));
 		}
 
 	}
