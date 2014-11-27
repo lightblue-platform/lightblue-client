@@ -45,6 +45,9 @@ public class LightblueHttpClient implements LightblueClient {
 		setObjectMapperDefaults();
 		try {
 			Properties properties = new Properties();
+			if (getClass().getClassLoader().getResource(ClientConstants.DEFAULT_CONFIG_FILE) == null) {
+				throw new RuntimeException(ClientConstants.DEFAULT_CONFIG_FILE + " could not be found in the classpath");
+			}
 			properties.load(getClass().getClassLoader().getResourceAsStream(ClientConstants.DEFAULT_CONFIG_FILE));
 			loadConfigFromProperties(properties);
 		} catch (IOException io) {
@@ -60,6 +63,9 @@ public class LightblueHttpClient implements LightblueClient {
 		setObjectMapperDefaults();
 		try {
 			Properties properties = new Properties();
+			if (configFilePath == null) {
+				throw new RuntimeException(configFilePath+ " could not be found in the classpath");
+			}
 			properties.load(new FileInputStream(configFilePath));
 			loadConfigFromProperties(properties);
 		} catch (IOException io) {
