@@ -27,8 +27,8 @@ public class AppendUpdate implements Update {
          * { "$append" : { pathToArray : value } }
          */
         StringBuilder json = new StringBuilder("{");
-        json.append("$append:{");
-        json.append(this.path);
+        json.append("\"$append\":{");
+        json.append("\""+this.path+"\":");
         if( expressions.length > 1 ){
             json.append("[");
         }
@@ -41,7 +41,8 @@ public class AppendUpdate implements Update {
         if( expressions.length > 1 ){
             json.append("]");
         }
-        json.append("}");
+        json.append("}"); // close append
+        json.append("}"); // close main block
         return json.toString();
     }
     
