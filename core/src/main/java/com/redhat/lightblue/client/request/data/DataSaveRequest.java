@@ -1,28 +1,16 @@
 package com.redhat.lightblue.client.request.data;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Collection;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.lightblue.client.projection.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-import com.redhat.lightblue.client.util.ClientConstants;
+import com.redhat.lightblue.client.util.JSON;
 
 public class DataSaveRequest extends AbstractLightblueDataRequest {
 
     private Projection[] projections;
     private Object[] objects;
     private Boolean upsert;
-    private static ObjectMapper mapper = new ObjectMapper();
-    private static JsonFactory jf = new JsonFactory();
-    static {
-        mapper.setDateFormat(ClientConstants.getDateFormat());
-    }
 
 	public DataSaveRequest() {
 
@@ -57,18 +45,18 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
         this.upsert = upsert;
     }
 
-	@Override
+    @Override
     public String getOperationPathParam() {
-	  return PATH_PARAM_SAVE;
-  }
+        return PATH_PARAM_SAVE;
+    }
 
     @Override
     public String getBody() {
         StringBuffer sb = new StringBuffer();
         sb.append("{\"data\":[");
-        sb.append(toJson(objects[0]));
+        sb.append(JSON.toJson(objects[0]));
         for (int i = 1; i < objects.length; i++) {
-            sb.append(",").append(toJson(objects[i]));
+            sb.append(",").append(JSON.toJson(objects[i]));
         }
         sb.append("],\"projection\":[");
         sb.append(projections[0].toJson());
@@ -86,21 +74,6 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
         sb.append("}");
 
         return sb.toString();
-    }
-
-    private static String toJson(Object obj) {
-        StringWriter sw = new StringWriter();
-        try {
-            JsonGenerator jg = jf.createGenerator(sw);
-            mapper.writeValue(jg, obj);
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return sw.toString();
     }
 
 }

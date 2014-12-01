@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.lightblue.client.LightblueClient;
@@ -44,6 +45,9 @@ public class LightblueHttpClient implements LightblueClient {
 		setObjectMapperDefaults();
 		try {
 			Properties properties = new Properties();
+			if (getClass().getClassLoader().getResource(ClientConstants.DEFAULT_CONFIG_FILE) == null) {
+				throw new RuntimeException(ClientConstants.DEFAULT_CONFIG_FILE + " could not be found in the classpath");
+			}
 			properties.load(getClass().getClassLoader().getResourceAsStream(ClientConstants.DEFAULT_CONFIG_FILE));
 			loadConfigFromProperties(properties);
 		} catch (IOException io) {
@@ -59,6 +63,9 @@ public class LightblueHttpClient implements LightblueClient {
 		setObjectMapperDefaults();
 		try {
 			Properties properties = new Properties();
+			if (configFilePath == null) {
+				throw new RuntimeException(configFilePath+ " could not be found in the classpath");
+			}
 			properties.load(new FileInputStream(configFilePath));
 			loadConfigFromProperties(properties);
 		} catch (IOException io) {
@@ -140,12 +147,17 @@ public class LightblueHttpClient implements LightblueClient {
 
 		JsonNode objectNode = response.getJson().path("processed");
 
-		T object = mapper.readValue(objectNode.traverse(), type);
+		try {
+			T object = mapper.readValue(objectNode.traverse(), type);
 
-		return object;
+			return object;
+		} catch (JsonMappingException e) {
+			LOGGER.error("Error parsing lightblue response: " + response.getJson().toString(), e);
+			throw new RuntimeException("Error parsing lightblue response: " + response.getJson().toString());
+		}
 	}
 
-	private LightblueResponse callService(HttpRequestBase httpOperation) {
+	protected LightblueResponse callService(HttpRequestBase httpOperation) {
 		String jsonOut;
 
 		LOGGER.debug("Calling " + httpOperation);

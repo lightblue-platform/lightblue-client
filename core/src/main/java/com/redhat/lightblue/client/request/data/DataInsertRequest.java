@@ -1,27 +1,15 @@
 package com.redhat.lightblue.client.request.data;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Collection;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.lightblue.client.projection.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-import com.redhat.lightblue.client.util.ClientConstants;
+import com.redhat.lightblue.client.util.JSON;
 
 public class DataInsertRequest extends AbstractLightblueDataRequest {
 
     private Projection[] projections;
     private Object[] objects;
-    private static ObjectMapper mapper = new ObjectMapper();
-    private static JsonFactory jf = new JsonFactory();
-    static {
-        mapper.setDateFormat(ClientConstants.getDateFormat());
-    }
 
 	public DataInsertRequest() {
 
@@ -52,9 +40,9 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     public String getBody() {
         StringBuffer sb = new StringBuffer();
         sb.append("{\"data\":[");
-        sb.append(toJson(objects[0]));
+        sb.append(JSON.toJson(objects[0]));
         for (int i = 1; i < objects.length; i++) {
-            sb.append(",").append(toJson(objects[i]));
+            sb.append(",").append(JSON.toJson(objects[i]));
         }
         sb.append("],\"projection\":[");
         sb.append(projections[0].toJson());
@@ -70,24 +58,9 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
         return sb.toString();
     }
 
-    private static String toJson(Object obj) {
-        StringWriter sw = new StringWriter();
-        try {
-            JsonGenerator jg = jf.createGenerator(sw);
-            mapper.writeValue(jg, obj);
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return sw.toString();
+    @Override
+    public String getOperationPathParam() {
+        return PATH_PARAM_INSERT;
     }
-
-	@Override
-  public String getOperationPathParam() {
-	  return PATH_PARAM_INSERT;
-  }
 
 }

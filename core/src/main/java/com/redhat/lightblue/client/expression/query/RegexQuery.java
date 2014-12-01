@@ -24,7 +24,7 @@ public class RegexQuery implements Query {
         StringBuilder json = new StringBuilder("{");
         json.append("\"field\":");
         json.append("\"").append(fieldName).append("\",");
-        json.append("\"pattern\":");
+        json.append("\"regex\":");
         json.append("\"").append(pattern).append("\",");
         json.append("\"caseInsensitive\":");
         json.append("\"").append(isCaseInsensitive).append("\",");
