@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.redhat.lightblue.client</groupId>
-    <artifactId>client-pom</artifactId>
+    <artifactId>lightblue-client-pom</artifactId>
     <version>1.2.0-SNAPSHOT</version>
   </parent>
-  <artifactId>core</artifactId>
+  <artifactId>lightblue-client-core</artifactId>
   <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
 </project>
