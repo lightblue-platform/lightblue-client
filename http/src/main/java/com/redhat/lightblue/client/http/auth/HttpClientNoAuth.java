@@ -6,6 +6,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.slf4j.Logger;
@@ -20,22 +21,23 @@ public class HttpClientNoAuth implements HttpClientAuth {
 		 */
     @Override
     public CloseableHttpClient getClient() {
-    	CloseableHttpClient httpClient = null;
-    	SSLConnectionSocketFactory sslsf = null;
-    	try {
-    		SSLContextBuilder builder = new SSLContextBuilder();
-            builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-            sslsf = new SSLConnectionSocketFactory(
-                    builder.build());	
-            
-            httpClient = HttpClients.custom()
+    	return getClient(HttpClients.custom());
+    }
+
+    @Override
+    public CloseableHttpClient getClient(HttpClientBuilder builder) {
+        try {
+            SSLContextBuilder sslCtxBuilder = new SSLContextBuilder();
+            sslCtxBuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslCtxBuilder.build());
+
+            return builder
                     .setRedirectStrategy(new LaxRedirectStrategy())
                     .setSSLSocketFactory(sslsf)
                     .build();
-    	} catch (GeneralSecurityException e) {
-    		LOGGER.error("Error creating jks from certificates: ", e);
+        } catch (GeneralSecurityException e) {
+            LOGGER.error("Error creating jks from certificates: ", e);
             throw new RuntimeException(e);
-    	}
-        return httpClient;
+        }
     }
 }

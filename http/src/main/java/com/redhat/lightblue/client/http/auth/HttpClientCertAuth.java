@@ -1,6 +1,20 @@
 package com.redhat.lightblue.client.http.auth;
 
-import java.io.FileInputStream;
+import com.redhat.lightblue.client.LightblueClientConfiguration;
+import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
+
+import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
@@ -9,22 +23,6 @@ import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Properties;
-
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
-
-import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.redhat.lightblue.client.LightblueClientConfiguration;
-import com.redhat.lightblue.client.util.ClientConstants;
 
 public class HttpClientCertAuth implements HttpClientAuth {
 
@@ -94,12 +92,17 @@ public class HttpClientCertAuth implements HttpClientAuth {
 	 */
 	@Override
 	public CloseableHttpClient getClient() {
+		return getClient(HttpClients.custom());
+	}
+
+	@Override
+	public CloseableHttpClient getClient(HttpClientBuilder builder) {
 		SSLContext sslcontext = this.getSSLContext();
 
 		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1" }, null,
-		    SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+				SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
-		return HttpClients.custom()
+		return builder
 				.setSSLSocketFactory(sslsf)
 				.setRedirectStrategy(new LaxRedirectStrategy())
 				.build();
