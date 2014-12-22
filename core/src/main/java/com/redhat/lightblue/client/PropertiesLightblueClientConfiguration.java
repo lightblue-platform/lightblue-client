@@ -32,7 +32,7 @@ import java.util.Properties;
  * </dl>
  */
 public class PropertiesLightblueClientConfiguration extends LightblueClientConfiguration {
-    private static final String DEFAULT_CONFIG_FILE = "lightblue-client.properties";
+    public static final String DEFAULT_CONFIG_FILE = "lightblue-client.properties";
 
     private static final String DATA_SERVICE_URI_KEY = "dataServiceURI";
     private static final String METADATA_SERVICE_URI_KEY = "metadataServiceURI";

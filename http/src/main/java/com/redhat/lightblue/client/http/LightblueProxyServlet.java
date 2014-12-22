@@ -1,57 +1,52 @@
 package com.redhat.lightblue.client.http;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Properties;
-
-import javax.servlet.Servlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
+import com.redhat.lightblue.client.http.auth.HttpClientCertAuth;
+import com.redhat.lightblue.client.http.auth.HttpClientNoAuth;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.redhat.lightblue.client.http.auth.HttpClientCertAuth;
-import com.redhat.lightblue.client.http.auth.HttpClientNoAuth;
-import com.redhat.lightblue.client.util.ClientConstants;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Properties;
 
 public class LightblueProxyServlet extends HttpServlet implements Servlet {
+    private static final String CONFIG_FILE = PropertiesLightblueClientConfiguration.DEFAULT_CONFIG_FILE;
 
     private static final long serialVersionUID = 1L;
 
     private String serviceURI;
-    private boolean useCertAuth = true;
+    private boolean useCertAuth;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LightblueProxyServlet.class);
 
-    private String serviceURI() {    	
-		try {
+    @Override
+    public void init() throws ServletException {
+        try {
 			Properties properties = new Properties();
-			properties.load(getClass().getClassLoader().getResourceAsStream(ClientConstants.DEFAULT_CONFIG_FILE));
+			properties.load(getClass().getClassLoader().getResourceAsStream(CONFIG_FILE));
 			serviceURI = properties.getProperty("serviceURI");
 			if(serviceURI == null) {
-				throw new RuntimeException("serviceURI must be defined in " + ClientConstants.DEFAULT_CONFIG_FILE);
+				throw new RuntimeException("serviceURI must be defined in " + CONFIG_FILE);
 			}
 			useCertAuth = Boolean.parseBoolean(properties.getProperty("useCertAuth"));
 			
 		} catch (IOException io) {
-			LOGGER.error(ClientConstants.DEFAULT_CONFIG_FILE + " could not be found/read", io);
+			LOGGER.error(CONFIG_FILE + " could not be found/read", io);
 			throw new RuntimeException(io);
 		}
-
-		return serviceURI;
     }
 
     @Override
@@ -111,6 +106,6 @@ public class LightblueProxyServlet extends HttpServlet implements Servlet {
     }
     
 	private String serviceURI(HttpServletRequest request) throws IOException {
-		return serviceURI() + request.getRequestURI().replace(request.getContextPath() + "/rest-request", "");
+		return serviceURI + request.getRequestURI().replace(request.getContextPath() + "/rest-request", "");
 	}
 }
