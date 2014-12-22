@@ -10,6 +10,22 @@ public class LightblueClientConfiguration {
 	private String certPassword;
 	private String certAlias;
 
+	public LightblueClientConfiguration() {
+	}
+
+	/**
+	 * Copy constructor.
+	 */
+	public LightblueClientConfiguration(LightblueClientConfiguration configuration) {
+		this.dataServiceURI = configuration.dataServiceURI;
+		this.metadataServiceURI = configuration.metadataServiceURI;
+		this.useCertAuth = configuration.useCertAuth;
+		this.caFilePath = configuration.caFilePath;
+		this.certFilePath = configuration.certFilePath;
+		this.certPassword = configuration.certPassword;
+		this.certAlias = configuration.certAlias;
+	}
+
 	public String getDataServiceURI() {
 		return dataServiceURI;
 	}

@@ -1,9 +1,8 @@
 package com.redhat.lightblue.client.http;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Properties;
+import java.util.Objects;
 
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import org.apache.http.HttpEntity;
@@ -30,12 +29,8 @@ import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.util.ClientConstants;
 
 public class LightblueHttpClient implements LightblueClient {
+	private final LightblueClientConfiguration configuration;
 
-	LightblueClientConfiguration configuration;
-	
-	private String dataServiceURI;
-	private String metadataServiceURI;
-	private boolean useCertAuth = false;
 	private ObjectMapper mapper = new ObjectMapper();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
@@ -65,23 +60,14 @@ public class LightblueHttpClient implements LightblueClient {
 	 */
 	public LightblueHttpClient(LightblueClientConfiguration configuration) {
 		setObjectMapperDefaults();
-		metadataServiceURI = configuration.getMetadataServiceURI();
-		dataServiceURI = configuration.getDataServiceURI();
-		useCertAuth = configuration.useCertAuth();
+		// Make a defensive copy because configuration is mutable. This prevents alterations to the
+		// config object from affecting this client after instantiation.
+		this.configuration = new LightblueClientConfiguration(configuration);
 	}
 
 	private void setObjectMapperDefaults() {
 		mapper.setDateFormat(ClientConstants.getDateFormat());
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-	}
-	
-	private void loadConfigFromProperties(Properties properties) {
-		metadataServiceURI = properties.getProperty("metadataServiceURI");
-		dataServiceURI = properties.getProperty("dataServiceURI");
-		if (metadataServiceURI == null && dataServiceURI == null) {
-			throw new RuntimeException("Either metadataServiceURI or dataServiceURI must be defined in configuration");
-		}
-		useCertAuth = Boolean.parseBoolean(properties.getProperty("useCertAuth"));
 	}
 	
 	/**
@@ -92,12 +78,13 @@ public class LightblueHttpClient implements LightblueClient {
 	public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
 		mapper.setDateFormat(ClientConstants.getDateFormat());
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		this.metadataServiceURI = metadataServiceURI;
-		this.dataServiceURI = dataServiceURI;
-		if (metadataServiceURI == null && dataServiceURI == null) {
-			throw new RuntimeException("Either metadataServiceURI or dataServiceURI must be defined in appconfig.properties");
-		}
-		this.useCertAuth = useCertAuth;
+
+		LightblueClientConfiguration configuration = new LightblueClientConfiguration();
+		configuration.setDataServiceURI(dataServiceURI);
+		configuration.setMetadataServiceURI(metadataServiceURI);
+		configuration.setUseCertAuth(useCertAuth);
+
+		this.configuration = configuration;
 	}
 
 	/*
@@ -110,7 +97,8 @@ public class LightblueHttpClient implements LightblueClient {
 	@Override
 	public LightblueResponse metadata(LightblueRequest lightblueRequest) {
 		LOGGER.debug("Calling metadata service with lightblueRequest: " + lightblueRequest.toString());
-		return callService(new LightblueHttpMetadataRequest(lightblueRequest).getRestRequest(metadataServiceURI));
+		return callService(new LightblueHttpMetadataRequest(lightblueRequest)
+				.getRestRequest(configuration.getMetadataServiceURI()));
 	}
 
 	/*
@@ -123,7 +111,8 @@ public class LightblueHttpClient implements LightblueClient {
 	@Override
 	public LightblueResponse data(LightblueRequest lightblueRequest) {
 		LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
-		return callService(new LightblueHttpDataRequest(lightblueRequest).getRestRequest(dataServiceURI));
+		return callService(new LightblueHttpDataRequest(lightblueRequest)
+				.getRestRequest(configuration.getDataServiceURI()));
 	}
 
 	public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
@@ -172,12 +161,9 @@ public class LightblueHttpClient implements LightblueClient {
 
 	private CloseableHttpClient getLightblueHttpClient() {
 		CloseableHttpClient httpClient;
-		if (useCertAuth) {
+		if (configuration.useCertAuth()) {
 			LOGGER.debug("Using certificate authentication");
-			if(configuration != null) {
-				httpClient = new HttpClientCertAuth(configuration).getClient();
-			} else 
-				httpClient = new HttpClientCertAuth().getClient();
+			httpClient = new HttpClientCertAuth(configuration).getClient();
 		} else {
 			LOGGER.debug("Using no authentication");
 			httpClient = new HttpClientNoAuth().getClient();
