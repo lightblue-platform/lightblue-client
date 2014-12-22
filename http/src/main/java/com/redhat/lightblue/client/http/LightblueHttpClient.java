@@ -30,8 +30,18 @@ import com.redhat.lightblue.client.util.ClientConstants;
 
 public class LightblueHttpClient implements LightblueClient {
 	private final LightblueClientConfiguration configuration;
+	private final ObjectMapper mapper;
 
-	private ObjectMapper mapper = new ObjectMapper();
+	/**
+	 * It is safe and encouraged to share the same mapper among threads. It is thread safe. So,
+	 * this default instance is static.
+	 *
+	 * @see <a href="http://stackoverflow.com/a/3909846">The developer of the Jackson library's own
+	 * quote.</a>
+	 */
+	private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper()
+			.setDateFormat(ClientConstants.getDateFormat())
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
@@ -56,18 +66,27 @@ public class LightblueHttpClient implements LightblueClient {
 	}
 
 	/**
-	 * This constructor will use the specified configuration object.
+	 * This constructor will use a copy of specified configuration object.
 	 */
 	public LightblueHttpClient(LightblueClientConfiguration configuration) {
-		setObjectMapperDefaults();
+		this(configuration, DEFAULT_MAPPER);
+	}
+
+	/**
+	 * This constructor will use a copy of specified configuration object and object mapper.
+	 *
+	 * <p>Without supplying an {@link com.fasterxml.jackson.databind.ObjectMapper} explicitly, a
+	 * default is shared among all threads ({@link #mapper}). It is injectable here because of best
+	 * practices: for further configuration support and unit testing.
+	 */
+	public LightblueHttpClient(LightblueClientConfiguration configuration, ObjectMapper mapper) {
+		Objects.requireNonNull(configuration, "configuration");
+		Objects.requireNonNull(mapper, "mapper");
+
 		// Make a defensive copy because configuration is mutable. This prevents alterations to the
 		// config object from affecting this client after instantiation.
 		this.configuration = new LightblueClientConfiguration(configuration);
-	}
-
-	private void setObjectMapperDefaults() {
-		mapper.setDateFormat(ClientConstants.getDateFormat());
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		this.mapper = mapper;
 	}
 	
 	/**
@@ -76,15 +95,13 @@ public class LightblueHttpClient implements LightblueClient {
 	 * Use LightblueHttpClient(LightblueClientConfiguration configuration) if you don't want to use config files at all
 	 */
 	public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
-		mapper.setDateFormat(ClientConstants.getDateFormat());
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
 		LightblueClientConfiguration configuration = new LightblueClientConfiguration();
 		configuration.setDataServiceURI(dataServiceURI);
 		configuration.setMetadataServiceURI(metadataServiceURI);
 		configuration.setUseCertAuth(useCertAuth);
 
 		this.configuration = configuration;
+		this.mapper = DEFAULT_MAPPER;
 	}
 
 	/*
@@ -121,9 +138,7 @@ public class LightblueHttpClient implements LightblueClient {
 		JsonNode objectNode = response.getJson().path("processed");
 
 		try {
-			T object = mapper.readValue(objectNode.traverse(), type);
-
-			return object;
+			return mapper.readValue(objectNode.traverse(), type);
 		} catch (JsonMappingException e) {
 			LOGGER.error("Error parsing lightblue response: " + response.getJson().toString(), e);
 			throw new RuntimeException("Error parsing lightblue response: " + response.getJson().toString());
