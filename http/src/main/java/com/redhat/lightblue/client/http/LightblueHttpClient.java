@@ -2,8 +2,10 @@ package com.redhat.lightblue.client.http;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Properties;
 
+import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -39,45 +41,27 @@ public class LightblueHttpClient implements LightblueClient {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
 	/**
-	 * This constructor will attempt to read the configuration from the default properties file on the classpath
+	 * This constructor will attempt to read the configuration from the default properties file on
+	 * the classpath.
+	 *
+	 * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
 	 */
 	public LightblueHttpClient() {
-		setObjectMapperDefaults();
-		try {
-			Properties properties = new Properties();
-			if (getClass().getClassLoader().getResource(ClientConstants.DEFAULT_CONFIG_FILE) == null) {
-				throw new RuntimeException(ClientConstants.DEFAULT_CONFIG_FILE + " could not be found in the classpath");
-			}
-			properties.load(getClass().getClassLoader().getResourceAsStream(ClientConstants.DEFAULT_CONFIG_FILE));
-			loadConfigFromProperties(properties);
-		} catch (IOException io) {
-			LOGGER.error(ClientConstants.DEFAULT_CONFIG_FILE + " could not be found/read", io);
-			throw new RuntimeException(io);
-		}
+		this(new PropertiesLightblueClientConfiguration());
 	}
 	
 	/**
-	 * This constructor will attempt to read the configuration from the specified properties file on the file system
+	 * This constructor will attempt to read the configuration from the specified properties file on
+	 * the file system.
+	 *
+	 * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
 	 */
 	public LightblueHttpClient(String configFilePath) {
-		setObjectMapperDefaults();
-		try {
-			Properties properties = new Properties();
-			if (configFilePath == null) {
-				throw new RuntimeException(configFilePath+ " could not be found in the classpath");
-			}
-			properties.load(new FileInputStream(configFilePath));
-			loadConfigFromProperties(properties);
-		} catch (IOException io) {
-			LOGGER.error(configFilePath + " could not be found/read", io);
-			throw new RuntimeException(io);
-		}
+		this(new PropertiesLightblueClientConfiguration(Paths.get(configFilePath)));
 	}
 
 	/**
-	 * This constructor will use the specified object and not attempt to read from a properties file at all 
-	 * 
-	 * @param configuration
+	 * This constructor will use the specified configuration object.
 	 */
 	public LightblueHttpClient(LightblueClientConfiguration configuration) {
 		setObjectMapperDefaults();
@@ -85,7 +69,7 @@ public class LightblueHttpClient implements LightblueClient {
 		dataServiceURI = configuration.getDataServiceURI();
 		useCertAuth = configuration.useCertAuth();
 	}
-	
+
 	private void setObjectMapperDefaults() {
 		mapper.setDateFormat(ClientConstants.getDateFormat());
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

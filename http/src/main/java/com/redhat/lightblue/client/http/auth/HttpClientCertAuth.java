@@ -2,6 +2,7 @@ package com.redhat.lightblue.client.http.auth;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyStore;
@@ -14,6 +15,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -26,33 +28,19 @@ import com.redhat.lightblue.client.util.ClientConstants;
 
 public class HttpClientCertAuth implements HttpClientAuth {
 
-	private String caFilePath;
-	private String certFilePath;
-	private String certPassword;
-	private String certAlias;
+	private final String caFilePath;
+	private final String certFilePath;
+	private final String certPassword;
+	private final String certAlias;
 
 	private final Logger LOGGER = LoggerFactory.getLogger(HttpClientCertAuth.class);
 
 	public HttpClientCertAuth() {
-		try {
-			Properties properties = new Properties();
-			properties.load(getClass().getClassLoader().getResourceAsStream(ClientConstants.DEFAULT_CONFIG_FILE));
-			loadConfigFromProperties(properties);
-		} catch (IOException io) {
-			LOGGER.error(ClientConstants.DEFAULT_CONFIG_FILE + " could not be found/read", io);
-			throw new RuntimeException(io);
-		}
+		this(new PropertiesLightblueClientConfiguration());
 	}
 
 	public HttpClientCertAuth(String configFilePath) {
-		try {
-			Properties properties = new Properties();
-			properties.load(new FileInputStream(configFilePath));
-			loadConfigFromProperties(properties);
-		} catch (IOException io) {
-			LOGGER.error(configFilePath + " could not be found/read", io);
-			throw new RuntimeException(io);
-		}
+		this(new PropertiesLightblueClientConfiguration(Paths.get(configFilePath)));
 	}
 
 	public HttpClientCertAuth(LightblueClientConfiguration configuration) {
@@ -60,13 +48,6 @@ public class HttpClientCertAuth implements HttpClientAuth {
 		certFilePath = configuration.getCertFilePath();
 		certPassword = configuration.getCertPassword();
 		certAlias = configuration.getCertAlias();
-	}
-
-	private void loadConfigFromProperties(Properties properties) {
-		caFilePath = properties.getProperty("caFilePath");
-		certFilePath = properties.getProperty("certFilePath");
-		certPassword = properties.getProperty("certPassword");
-		certAlias = properties.getProperty("certAlias");
 	}
 
 	private SSLContext getSSLContext() {
@@ -113,15 +94,15 @@ public class HttpClientCertAuth implements HttpClientAuth {
 	 */
 	@Override
 	public CloseableHttpClient getClient() {
-
 		SSLContext sslcontext = this.getSSLContext();
 
 		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1" }, null,
 		    SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
-		CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).setRedirectStrategy(new LaxRedirectStrategy()).build();
-
-		return httpclient;
+		return HttpClients.custom()
+				.setSSLSocketFactory(sslsf)
+				.setRedirectStrategy(new LaxRedirectStrategy())
+				.build();
 	}
 
 }
