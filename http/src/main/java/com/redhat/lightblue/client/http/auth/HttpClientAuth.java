@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client.http.auth;
 
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
@@ -10,4 +11,5 @@ public interface HttpClientAuth {
 	/** Allows for a preconfigured client. Configuration may be overwritten. */
 	public abstract CloseableHttpClient getClient(HttpClientBuilder builder);
 
+	public abstract SSLConnectionSocketFactory getSSLConnectionSocketFactory();
 }

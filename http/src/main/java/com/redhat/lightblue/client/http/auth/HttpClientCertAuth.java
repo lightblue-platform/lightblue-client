@@ -3,7 +3,6 @@ package com.redhat.lightblue.client.http.auth;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 
-import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -25,13 +24,10 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 public class HttpClientCertAuth implements HttpClientAuth {
+	private final SSLConnectionSocketFactory sslSocketFactory;
 
-	private final String caFilePath;
-	private final String certFilePath;
-	private final String certPassword;
-	private final String certAlias;
-
-	private final Logger LOGGER = LoggerFactory.getLogger(HttpClientCertAuth.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientCertAuth.class);
+	private static final String[] TLS_V1 = new String[] { "TLSv1" };
 
 	public HttpClientCertAuth() {
 		this(new PropertiesLightblueClientConfiguration());
@@ -42,14 +38,11 @@ public class HttpClientCertAuth implements HttpClientAuth {
 	}
 
 	public HttpClientCertAuth(LightblueClientConfiguration configuration) {
-		caFilePath = configuration.getCaFilePath();
-		certFilePath = configuration.getCertFilePath();
-		certPassword = configuration.getCertPassword();
-		certAlias = configuration.getCertAlias();
-	}
+		String caFilePath = configuration.getCaFilePath();
+		String certFilePath = configuration.getCertFilePath();
+		String certPassword = configuration.getCertPassword();
+		String certAlias = configuration.getCertAlias();
 
-	private SSLContext getSSLContext() {
-		SSLContext ctx = null;
 		try {
 			/* Load CA-Chain file */
 			CertificateFactory cf = CertificateFactory.getInstance("X509");
@@ -59,15 +52,15 @@ public class HttpClientCertAuth implements HttpClientAuth {
 			KeyStore ks = KeyStore.getInstance("pkcs12");
 			KeyStore jks = KeyStore.getInstance("jks");
 
-			char[] ks_password = this.certPassword.toCharArray();
+			char[] ks_password = certPassword.toCharArray();
 
 			ks.load(getClass().getClassLoader().getResourceAsStream(certFilePath), ks_password);
 
 			jks.load(null, ks_password);
 
-			jks.setCertificateEntry(this.certAlias, cert);
-			Key key = ks.getKey(this.certAlias, ks_password);
-			Certificate[] chain = ks.getCertificateChain(this.certAlias);
+			jks.setCertificateEntry(certAlias, cert);
+			Key key = ks.getKey(certAlias, ks_password);
+			Certificate[] chain = ks.getCertificateChain(certAlias);
 			jks.setKeyEntry("anykey", key, ks_password, chain);
 
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
@@ -76,13 +69,15 @@ public class HttpClientCertAuth implements HttpClientAuth {
 			KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
 			kmf.init(ks, ks_password);
 
-			ctx = SSLContext.getInstance("TLSv1");
+			SSLContext ctx = SSLContext.getInstance("TLSv1");
 			ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+
+			sslSocketFactory = new SSLConnectionSocketFactory(ctx, TLS_V1, null,
+					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 		} catch (GeneralSecurityException | IOException e) {
 			LOGGER.error("Error creating jks from certificates: ", e);
 			throw new RuntimeException(e);
 		}
-		return (ctx);
 	}
 
 	/*
@@ -97,15 +92,14 @@ public class HttpClientCertAuth implements HttpClientAuth {
 
 	@Override
 	public CloseableHttpClient getClient(HttpClientBuilder builder) {
-		SSLContext sslcontext = this.getSSLContext();
-
-		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1" }, null,
-				SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
 		return builder
-				.setSSLSocketFactory(sslsf)
+				.setSSLSocketFactory(sslSocketFactory)
 				.setRedirectStrategy(new LaxRedirectStrategy())
 				.build();
 	}
 
+	@Override
+	public SSLConnectionSocketFactory getSSLConnectionSocketFactory() {
+		return sslSocketFactory;
+	}
 }
