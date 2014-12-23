@@ -29,6 +29,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public abstract class AbstractLightblueProxyServlet extends HttpServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractLightblueProxyServlet.class);
@@ -171,7 +173,16 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
                 new BasicHttpEntityEnclosingRequest(request.getMethod(), newUri);
         httpRequest.setEntity(new InputStreamEntity(request.getInputStream()));
 
-        return HttpRequestWrapper.wrap(httpRequest);
+        try {
+            // Sadly have to do this to set the URI; it is not derive from the original httpRequest
+            HttpRequestWrapper wrappedRequest = HttpRequestWrapper.wrap(httpRequest);
+            wrappedRequest.setURI(new URI(newUri));
+
+            return wrappedRequest;
+        } catch (URISyntaxException e) {
+            LOGGER.error("Syntax exception in service URI, " + newUri, e);
+            throw new LightblueServletException("Syntax exception in service URI, " + newUri, e);
+        }
     }
 
     /**
