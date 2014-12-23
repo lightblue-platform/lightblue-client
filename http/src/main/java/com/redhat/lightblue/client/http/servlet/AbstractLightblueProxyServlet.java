@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
@@ -93,21 +94,19 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,
             IOException {
-        HttpEntity entity;
+        res.setContentType("application/json");
 
         try {
             HttpUriRequest apacheHttpRequest = proxyRequest(req);
 
             try (CloseableHttpResponse httpResponse = httpClient.execute(apacheHttpRequest)) {
-                entity = httpResponse.getEntity();
+                HttpEntity entity = httpResponse.getEntity();
+                entity.writeTo(res.getOutputStream());
             }
         } catch (IOException | ServletException e) {
-            entity = ERROR_RESPONSE;
+            ERROR_RESPONSE.writeTo(res.getOutputStream());
             LOGGER.error("There was a problem calling the lightblue service", e);
         }
-
-        res.setContentType("application/json");
-        entity.writeTo(res.getOutputStream());
     }
 
     /**
@@ -171,10 +170,12 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
 
         BasicHttpEntityEnclosingRequest httpRequest =
                 new BasicHttpEntityEnclosingRequest(request.getMethod(), newUri);
-        httpRequest.setEntity(new InputStreamEntity(request.getInputStream()));
+        HttpEntity entity = new InputStreamEntity(request.getInputStream(),
+                request.getContentLength());
+        httpRequest.setEntity(entity);
 
         try {
-            // Sadly have to do this to set the URI; it is not derive from the original httpRequest
+            // Sadly have to do this to set the URI; it is not derived from the original httpRequest
             HttpRequestWrapper wrappedRequest = HttpRequestWrapper.wrap(httpRequest);
             wrappedRequest.setURI(new URI(newUri));
 
@@ -198,6 +199,7 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
         SSLConnectionSocketFactory sslSocketFactory = getSocketFactory();
         Registry<ConnectionSocketFactory> socketFactoryRegistry;
         socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", new PlainConnectionSocketFactory())
                 .register("https", sslSocketFactory)
                 .build();
         PoolingHttpClientConnectionManager connectionManager =
