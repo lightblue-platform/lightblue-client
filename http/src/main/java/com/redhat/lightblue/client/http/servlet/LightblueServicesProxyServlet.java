@@ -4,8 +4,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 public class LightblueServicesProxyServlet extends PropertiesLightblueProxyServlet {
+    /** The path to match in the incoming request to indicate it is a data service request. */
     private String dataServicePath;
+
+    /** The path to match in the incoming request to indicate it is a metadata service request. */
     private String metadataServicePath;
+
+    private String dataServiceUri;
+    private String metadataServiceUri;
 
     @Override
     public void init() throws ServletException {
@@ -14,6 +20,23 @@ public class LightblueServicesProxyServlet extends PropertiesLightblueProxyServl
         dataServicePath = getInitParamWithDefault("dataServicePath", "/data").replaceAll("/+$", "");
         metadataServicePath = getInitParamWithDefault("metadataServicePath", "/metadata")
                 .replaceAll("/+$", "");
+
+        dataServiceUri = configuration().getDataServiceURI();
+        metadataServiceUri= configuration().getMetadataServiceURI();
+
+        if (dataServiceUri == null) {
+            throw new LightblueServletException("No dataServiceURI defined in configuration, " +
+                    configuration());
+        }
+
+        if (metadataServiceUri == null) {
+            throw new LightblueServletException("No metadataServiceURI defined in configuration, " +
+                    configuration());
+        }
+
+        // Get rid of trailing slashes.
+        dataServiceUri = dataServiceUri.replaceAll("/+$", "");
+        metadataServiceUri = metadataServiceUri.replaceAll("/+$", "");
     }
 
     @Override
@@ -21,12 +44,12 @@ public class LightblueServicesProxyServlet extends PropertiesLightblueProxyServl
         String firstPathSegment = firstPathSegment(request);
 
         if (firstPathSegment.equals(dataServicePath)) {
-            return configuration().getDataServiceURI() + servicePathForRequest(request)
+            return dataServiceUri + servicePathForRequest(request)
                     .substring(firstPathSegment.length());
         }
 
         if (firstPathSegment.equals(metadataServicePath)) {
-            return configuration().getMetadataServiceURI() + servicePathForRequest(request)
+            return metadataServiceUri + servicePathForRequest(request)
                     .substring(firstPathSegment.length());
         }
 

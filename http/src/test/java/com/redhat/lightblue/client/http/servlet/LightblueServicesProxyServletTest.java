@@ -53,6 +53,7 @@ public class LightblueServicesProxyServletTest {
     public void shouldConstuctProxyUrlsForDataRequestsStartingWithSlashDataByDefault()
             throws ServletException {
         config.setDataServiceURI("http://url.to.data/service");
+        config.setMetadataServiceURI("http://url.to.metadata/service");
 
         servlet.init(new FakeServletConfig());
 
@@ -66,6 +67,7 @@ public class LightblueServicesProxyServletTest {
     @Test
     public void shouldConstuctProxyUrlsForDataRequests() throws ServletException {
         config.setDataServiceURI("http://url.to.data/service");
+        config.setMetadataServiceURI("http://url.to.metadata/service");
 
         servlet.init(new FakeServletConfig()
                 .setInitParameter("dataServicePath", "/alt-data-path"));
@@ -80,6 +82,7 @@ public class LightblueServicesProxyServletTest {
     @Test
     public void shouldConstuctProxyUrlsForMetadataRequestsStartingWithSlashMetadataByDefault()
             throws ServletException {
+        config.setDataServiceURI("http://url.to.data/service");
         config.setMetadataServiceURI("http://url.to.metadata/service");
 
         servlet.init(new FakeServletConfig());
@@ -93,6 +96,7 @@ public class LightblueServicesProxyServletTest {
 
     @Test
     public void shouldConstuctProxyUrlsForMetadataRequests() throws ServletException {
+        config.setDataServiceURI("http://url.to.data/service");
         config.setMetadataServiceURI("http://url.to.metadata/service");
 
         servlet.init(new FakeServletConfig()
@@ -100,6 +104,34 @@ public class LightblueServicesProxyServletTest {
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getPathInfo()).thenReturn("/alt-metadata-path/myentity/1.0.0");
+
+        assertEquals("http://url.to.metadata/service/myentity/1.0.0",
+                servlet.serviceUriForRequest(request));
+    }
+
+    @Test
+    public void shouldStripTrailingSlashesInDataServiceUri() throws ServletException {
+        config.setDataServiceURI("http://url.to.data/service/");
+        config.setMetadataServiceURI("http://url.to.metadata/service");
+
+        servlet.init(new FakeServletConfig());
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getPathInfo()).thenReturn("/data/find/myentity/1.0.0");
+
+        assertEquals("http://url.to.data/service/find/myentity/1.0.0",
+                servlet.serviceUriForRequest(request));
+    }
+
+    @Test
+    public void shouldStripTrailingSlashesInMetadataServiceUri() throws ServletException {
+        config.setDataServiceURI("http://url.to.data/service");
+        config.setMetadataServiceURI("http://url.to.metadata/service/");
+
+        servlet.init(new FakeServletConfig());
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getPathInfo()).thenReturn("/metadata/myentity/1.0.0");
 
         assertEquals("http://url.to.metadata/service/myentity/1.0.0",
                 servlet.serviceUriForRequest(request));
