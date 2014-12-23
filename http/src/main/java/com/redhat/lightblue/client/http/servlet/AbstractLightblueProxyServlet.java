@@ -6,7 +6,6 @@ import com.redhat.lightblue.client.http.auth.HttpClientCertAuth;
 import com.redhat.lightblue.client.http.auth.HttpClientNoAuth;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -15,12 +14,13 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.message.BasicHttpRequest;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,10 +163,15 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
      *
      * @throws javax.servlet.ServletException
      */
-    private HttpUriRequest proxyRequest(HttpServletRequest request) throws ServletException {
+    private HttpUriRequest proxyRequest(HttpServletRequest request) throws ServletException,
+            IOException {
         String newUri = serviceUriForRequest(request);
-        HttpRequest apacheHttpRequest = new BasicHttpRequest(request.getMethod(), newUri);
-        return HttpRequestWrapper.wrap(apacheHttpRequest);
+
+        BasicHttpEntityEnclosingRequest httpRequest =
+                new BasicHttpEntityEnclosingRequest(request.getMethod(), newUri);
+        httpRequest.setEntity(new InputStreamEntity(request.getInputStream()));
+
+        return HttpRequestWrapper.wrap(httpRequest);
     }
 
     /**
