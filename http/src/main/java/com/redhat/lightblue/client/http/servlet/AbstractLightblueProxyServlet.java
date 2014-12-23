@@ -175,13 +175,15 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
     }
 
     /**
+     * <em>Package scope for testing only.</em>
+     *
      * @param maxPerRoute The amount of concurrent http connections per route.
      * @param maxTotal The amount of total concurrent http connections.
      *
      * @see org.apache.http.impl.conn.PoolingHttpClientConnectionManager
      * @see org.apache.http.pool.ConnPoolControl
      */
-    private CloseableHttpClient getLightblueHttpClient(int maxPerRoute, int maxTotal) {
+    CloseableHttpClient getLightblueHttpClient(int maxPerRoute, int maxTotal) {
         SSLConnectionSocketFactory sslSocketFactory = getSocketFactory();
         Registry<ConnectionSocketFactory> socketFactoryRegistry;
         socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()

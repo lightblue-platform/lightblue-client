@@ -18,12 +18,16 @@ public class LightblueServicesProxyServlet extends PropertiesLightblueProxyServl
 
     @Override
     protected String serviceUriForRequest(HttpServletRequest request) throws ServletException {
-        if (firstPathSegment(request).equals(dataServicePath)) {
-            return dataServicePath + servicePathForRequest(request);
+        String firstPathSegment = firstPathSegment(request);
+
+        if (firstPathSegment.equals(dataServicePath)) {
+            return configuration().getDataServiceURI() + servicePathForRequest(request)
+                    .substring(firstPathSegment.length());
         }
 
-        if (firstPathSegment(request).equals(metadataServicePath)) {
-            return metadataServicePath + servicePathForRequest(request);
+        if (firstPathSegment.equals(metadataServicePath)) {
+            return configuration().getMetadataServiceURI() + servicePathForRequest(request)
+                    .substring(firstPathSegment.length());
         }
 
         throw new LightblueServletException("Could not match request path to data service or " +
