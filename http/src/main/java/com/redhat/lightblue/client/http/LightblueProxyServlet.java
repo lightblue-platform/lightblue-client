@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
 
+@Deprecated
 public class LightblueProxyServlet extends HttpServlet implements Servlet {
     private static final String CONFIG_FILE = PropertiesLightblueClientConfiguration.DEFAULT_CONFIG_FILE;
 
