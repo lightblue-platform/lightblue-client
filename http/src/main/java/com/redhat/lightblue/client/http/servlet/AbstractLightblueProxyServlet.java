@@ -165,11 +165,6 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
      */
     private HttpUriRequest proxyRequest(HttpServletRequest request) throws ServletException {
         String newUri = serviceUriForRequest(request);
-
-        if (newUri == null) {
-            return null;
-        }
-
         HttpRequest apacheHttpRequest = new BasicHttpRequest(request.getMethod(), newUri);
         return HttpRequestWrapper.wrap(apacheHttpRequest);
     }
