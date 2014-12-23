@@ -4,10 +4,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 public class LightblueServicesProxyServlet extends PropertiesLightblueProxyServlet {
-    /** The path to match in the incoming request to indicate it is a data service request. */
+    /**
+     * The first path segment to match in the incoming request to indicate it is a data service
+     * request.
+     */
     private String dataServicePath;
 
-    /** The path to match in the incoming request to indicate it is a metadata service request. */
+    /**
+     * The first path segment to match in the incoming request to indicate it is a metadata service
+     * request.
+     */
     private String metadataServicePath;
 
     private String dataServiceUri;
