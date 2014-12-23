@@ -33,11 +33,16 @@ import java.io.IOException;
 public abstract class AbstractLightblueProxyServlet extends HttpServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractLightblueProxyServlet.class);
 
-    /** @see #init() */
-    private LightblueClientConfiguration configuration;
+    /**
+     * This is okay to share because of isRepeatable. Just don't go modifying the headers or
+     * something willy nilly.
+     */
+    private static final HttpEntity ERROR_RESPONSE = new StringEntity(
+            "{\"error\":\"There was a problem calling the lightblue service\"}",
+            ContentType.APPLICATION_JSON);
 
     /** @see #init() */
-    private String serviceUri;
+    private LightblueClientConfiguration configuration;
 
     /** @see #init() */
     private CloseableHttpClient httpClient;
@@ -67,7 +72,6 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         configuration = configuration();
-        serviceUri = baseServiceUri();
 
         int maxPerRoute = Integer.parseInt(getInitParamWithDefault("maxConnectionsPerRoute", "5"));
         int maxTotal = Integer.parseInt(getInitParamWithDefault("maxConnectionsTotal", "30"));
@@ -87,14 +91,16 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,
             IOException {
-        HttpUriRequest apacheHttpRequest = proxyRequest(req);
         HttpEntity entity;
 
-        try (CloseableHttpResponse httpResponse = httpClient.execute(apacheHttpRequest)) {
-            entity = httpResponse.getEntity();
-        } catch (IOException e) {
-            entity = new StringEntity("{\"error\":\"There was a problem calling the lightblue service\"}",
-                    ContentType.APPLICATION_JSON);
+        try {
+            HttpUriRequest apacheHttpRequest = proxyRequest(req);
+
+            try (CloseableHttpResponse httpResponse = httpClient.execute(apacheHttpRequest)) {
+                entity = httpResponse.getEntity();
+            }
+        } catch (IOException | ServletException e) {
+            entity = ERROR_RESPONSE;
             LOGGER.error("There was a problem calling the lightblue service", e);
         }
 
@@ -104,15 +110,47 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
 
     /**
      * The configuration is used to determine the authentication details.
+     * @see #getSocketFactory()
      */
     protected abstract LightblueClientConfiguration configuration();
 
     /**
-     * @return The base service URI to use (data or metadata). Should <em>not</em> end with a /
-     * character. Ex: http://my.lightblue.com/rest/data
+     * Constructs a service URI from the given request. The request will have a path for the
+     * servlet, which will contain information we need to pass on to the service. For convenience,
+     * see {@link #servicePathForRequest(javax.servlet.http.HttpServletRequest)}.
+     *
+     * @throws javax.servlet.ServletException
      */
-    protected abstract String baseServiceUri();
+    protected abstract String serviceUriForRequest(HttpServletRequest request) throws ServletException;
 
+    /**
+     * @return The url for the request with the context and the servlet path stripped out, which
+     * leaves whatever wild cards were left that matched this servlet.
+     *
+     * <p>For example:
+     * <ul>
+     *     <li>Given the request, "http://my.site.com/app/get/the/thing?foo=bar"</li>
+     *     <li>and some servlet which maps to, "/get/*"</li>
+     *     <li>in an application with context, "/app"</li>
+     *     <li>then this method would return, "/the/thing?foo=bar"</li>
+     * </ul>
+     */
+    protected final String servicePathForRequest(HttpServletRequest request) {
+        String pathInfo = request.getPathInfo();
+        String queryString = request.getQueryString();
+
+        String path = "";
+
+        if (pathInfo != null) {
+            path += pathInfo;
+        }
+
+        if (queryString != null) {
+            path += "?" + queryString;
+        }
+
+        return path;
+    }
 
     protected final String getInitParamWithDefault(String key, String defaultValue) {
         String value = getInitParameter(key);
@@ -122,40 +160,26 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
     /**
      * For the given servlet request, return a new request object (for use with Apache HttpClient),
      * that may be executed in place of the original request to make the real service call.
+     *
+     * @throws javax.servlet.ServletException
      */
-    private HttpUriRequest proxyRequest(HttpServletRequest request) {
+    private HttpUriRequest proxyRequest(HttpServletRequest request) throws ServletException {
         String newUri = serviceUriForRequest(request);
+
+        if (newUri == null) {
+            return null;
+        }
+
         HttpRequest apacheHttpRequest = new BasicHttpRequest(request.getMethod(), newUri);
         return HttpRequestWrapper.wrap(apacheHttpRequest);
     }
 
     /**
-     * Constructs a service URI from the given request. The request will have a path for the
-     * servlet, which will contain information we need to pass on to the service. So, the service
-     * URI for the request is constructed from the base service URI ({@link #baseServiceUri()}) and
-     * the path and query string information from the request.
-     */
-    private String serviceUriForRequest(HttpServletRequest request) {
-        String pathInfo = request.getPathInfo();
-        String queryString = request.getQueryString();
-
-        // Don't overwrite the field.
-        String serviceUri = this.serviceUri;
-
-        if (pathInfo != null) {
-            serviceUri += pathInfo;
-        }
-
-        if (queryString != null) {
-            serviceUri += "?" + queryString;
-        }
-
-        return serviceUri;
-    }
-
-    /**
      * @param maxPerRoute The amount of concurrent http connections per route.
      * @param maxTotal The amount of total concurrent http connections.
+     *
+     * @see org.apache.http.impl.conn.PoolingHttpClientConnectionManager
+     * @see org.apache.http.pool.ConnPoolControl
      */
     private CloseableHttpClient getLightblueHttpClient(int maxPerRoute, int maxTotal) {
         SSLConnectionSocketFactory sslSocketFactory = getSocketFactory();

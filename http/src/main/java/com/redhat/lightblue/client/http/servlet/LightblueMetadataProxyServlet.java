@@ -1,8 +1,11 @@
 package com.redhat.lightblue.client.http.servlet;
 
-public class LightblueMetadataProxyServlet extends PropertiesLightblueProxyServlet {
+import javax.servlet.http.HttpServletRequest;
+
+public final class LightblueMetadataProxyServlet extends PropertiesLightblueProxyServlet {
     @Override
-    protected String baseServiceUri() {
-        return configuration().getMetadataServiceURI().replaceAll("/+$", "");
+    protected String serviceUriForRequest(HttpServletRequest request) {
+        return configuration().getMetadataServiceURI().replaceAll("/+$", "") +
+                servicePathForRequest(request);
     }
 }
