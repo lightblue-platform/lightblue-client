@@ -1,5 +1,8 @@
 package com.redhat.lightblue.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -42,6 +45,8 @@ public class PropertiesLightblueClientConfiguration extends LightblueClientConfi
     private static final String CERT_PASSWORD_KEY = "certPassword";
     private static final String CERT_ALIAS_KEY = "certAlias";
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesLightblueClientConfiguration.class);
+
     /**
      * Assumes a lightblue-client.properties file at the root of the classpath.
      *
@@ -49,13 +54,28 @@ public class PropertiesLightblueClientConfiguration extends LightblueClientConfi
      * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration}.
      */
     public PropertiesLightblueClientConfiguration() {
-        this(Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream(DEFAULT_CONFIG_FILE));
+        this(DEFAULT_CONFIG_FILE);
     }
 
     /**
      * For client configuration property keys, see
      * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration}.
+     *
+     * @param resourcePath Follows the semantics of
+     *         {@link java.lang.ClassLoader#getResourceAsStream(String)},
+     *         which is to say it is a relative / separated path from the root of the class path and
+     *         should <em>not</em> start with a forward slash (/).
+     */
+    public PropertiesLightblueClientConfiguration(String resourcePath) {
+        this(propertiesFromResource(resourcePath));
+    }
+
+    /**
+     * For client configuration property keys, see
+     * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration}.
+     *
+     * @param pathToProperties A file system path, relative to the working directory of the java
+     *         process.
      */
     public PropertiesLightblueClientConfiguration(Path pathToProperties) {
         this(propertiesFromPath(pathToProperties));
@@ -83,23 +103,38 @@ public class PropertiesLightblueClientConfiguration extends LightblueClientConfi
         setUseCertAuth(Boolean.parseBoolean(properties.getProperty(USE_CERT_AUTH_KEY)));
     }
 
-    private static Properties propertiesFromInputStream(InputStream propertiesStream) {
-        try {
-            Properties properties = new Properties();
-            properties.load(propertiesStream);
-            return properties;
-        } catch (IOException e) {
-            throw new LightblueClientConfigurationException("Could not read properties file from " +
-                    "input stream, " + propertiesStream, e);
+    private static Properties propertiesFromResource(String resourcePath) {
+        InputStream propertiesStream = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(resourcePath);
+
+        if (propertiesStream == null) {
+            LOGGER.error("Could not find properties resource at " + resourcePath);
+            throw new LightblueClientConfigurationException("Could not find properties resource " +
+                    "at " + resourcePath);
         }
+
+        return propertiesFromInputStream(propertiesStream);
     }
 
     private static Properties propertiesFromPath(Path pathToProperties) {
         try {
             return propertiesFromInputStream(Files.newInputStream(pathToProperties));
         } catch (IOException e) {
+            LOGGER.error(pathToProperties + " could not be found/read", e);
             throw new LightblueClientConfigurationException("Could not read properties file from " +
                     "path, " + pathToProperties, e);
+        }
+    }
+
+    private static Properties propertiesFromInputStream(InputStream propertiesStream) {
+        try {
+            Properties properties = new Properties();
+            properties.load(propertiesStream);
+            return properties;
+        } catch (IOException e) {
+            LOGGER.error(propertiesStream + " could not be read", e);
+            throw new LightblueClientConfigurationException("Could not read properties file from " +
+                    "input stream, " + propertiesStream, e);
         }
     }
 }
