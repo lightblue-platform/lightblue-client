@@ -1,30 +1,21 @@
 package com.redhat.lightblue.client.http.servlet;
 
 import com.redhat.lightblue.client.LightblueClientConfiguration;
-import com.redhat.lightblue.client.http.auth.HttpClientAuth;
-import com.redhat.lightblue.client.http.auth.HttpClientCertAuth;
-import com.redhat.lightblue.client.http.auth.HttpClientNoAuth;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -44,51 +35,19 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
             "{\"error\":\"There was a problem calling the lightblue service\"}",
             ContentType.APPLICATION_JSON);
 
-    /** @see #init() */
-    private LightblueClientConfiguration configuration;
-
-    /** @see #init() */
-    private CloseableHttpClient httpClient;
+    private final CloseableHttpClient httpClient;
+    private final Instance<LightblueClientConfiguration> configuration;
 
     /**
-     * Accepts parameters for the connection pool used for the http client. For example:
-     *
-     * <pre><code>
-     *     {@code<servlet>}
-     *         {@code<servlet-name>}lightblueDataService{@code</servlet-name>}
-     *         {@code<servlet-class>}com.redhat.lightblue.client.http.servlet.LightblueDataProxyServlet{@code</servlet-class>}
-     *         {@code<init-param>}
-     *             {@code<param-name>}maxConnectionsPerRoute{@code</param-name>}
-     *             {@code<param-value>}10{@code</param-value>}
-     *         {@code</init-param>}
-     *         {@code<init-param>}
-     *             {@code<param-name>}maxConnectionsTotal{@code</param-name>}
-     *             {@code<param-value>}50{@code</param-value>}
-     *         {@code</init-param>}
-     *     {@code</servlet>}
-     * </code></pre>
-     *
-     * By default, the maxConnectionsPerRoute is 5, and maxConnectionsTotal is 30.
-     *
-     * @throws ServletException
+     * @param httpClient The http client to use for this servlet. Servlets <em>should not</em>
+     *         manage (e.g. close) the client; the client should manage its own lifecycle with
+     *         regards to the container.
      */
-    @Override
-    public void init() throws ServletException {
-        configuration = configuration();
-
-        int maxPerRoute = Integer.parseInt(getInitParamWithDefault("maxConnectionsPerRoute", "5"));
-        int maxTotal = Integer.parseInt(getInitParamWithDefault("maxConnectionsTotal", "30"));
-
-        httpClient = getLightblueHttpClient(maxPerRoute, maxTotal);
-    }
-
-    @Override
-    public void destroy() {
-        try {
-            httpClient.close();
-        } catch (IOException e) {
-            LOGGER.debug("Error closing http client.", e);
-        }
+    @Inject
+    public AbstractLightblueProxyServlet(CloseableHttpClient httpClient,
+            Instance<LightblueClientConfiguration> configuration) {
+        this.httpClient = httpClient;
+        this.configuration = configuration;
     }
 
     @Override
@@ -110,12 +69,6 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
     }
 
     /**
-     * The configuration is used to determine the authentication details.
-     * @see #getSocketFactory()
-     */
-    protected abstract LightblueClientConfiguration configuration();
-
-    /**
      * Constructs a service URI from the given request. The request will have a path for the
      * servlet, which will contain information we need to pass on to the service. For convenience,
      * see {@link #servicePathForRequest(javax.servlet.http.HttpServletRequest)}.
@@ -123,6 +76,19 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
      * @throws javax.servlet.ServletException
      */
     protected abstract String serviceUriForRequest(HttpServletRequest request) throws ServletException;
+
+    protected LightblueClientConfiguration configuration() {
+        if (configuration.isUnsatisfied()) {
+            return defaultConfiguration();
+        }
+
+        return configuration.get();
+    }
+
+    protected LightblueClientConfiguration defaultConfiguration() {
+        return new LightblueServletContextConfiguration(getServletContext())
+                .lightblueClientConfiguration();
+    }
 
     /**
      * @return The url for the request with the context and the servlet path stripped out, which
@@ -153,7 +119,7 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
         return path;
     }
 
-    protected final String getInitParamWithDefault(String key, String defaultValue) {
+    protected final String getInitParamOrDefault(String key, String defaultValue) {
         String value = getInitParameter(key);
         return value == null ? defaultValue : value;
     }
@@ -184,53 +150,5 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
             LOGGER.error("Syntax exception in service URI, " + newUri, e);
             throw new LightblueServletException("Syntax exception in service URI, " + newUri, e);
         }
-    }
-
-    /**
-     * <em>Package scope for testing only.</em>
-     *
-     * @param maxPerRoute The amount of concurrent http connections per route.
-     * @param maxTotal The amount of total concurrent http connections.
-     *
-     * @see org.apache.http.impl.conn.PoolingHttpClientConnectionManager
-     * @see org.apache.http.pool.ConnPoolControl
-     */
-    CloseableHttpClient getLightblueHttpClient(int maxPerRoute, int maxTotal) {
-        SSLConnectionSocketFactory sslSocketFactory = getSocketFactory();
-        Registry<ConnectionSocketFactory> socketFactoryRegistry;
-        socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", new PlainConnectionSocketFactory())
-                .register("https", sslSocketFactory)
-                .build();
-        PoolingHttpClientConnectionManager connectionManager =
-                new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-
-        connectionManager.setDefaultMaxPerRoute(maxPerRoute);
-        connectionManager.setMaxTotal(maxTotal);
-
-        return HttpClients.custom()
-                .setConnectionManager(connectionManager)
-                // I don't think this is necessary?
-                .setSSLSocketFactory(sslSocketFactory)
-                .setRedirectStrategy(new LaxRedirectStrategy())
-                .build();
-    }
-
-    /**
-     * @return An SSL socket factory to use based on whether or not {@link #configuration}
-     * .useCertAuth() is true.
-     */
-    private SSLConnectionSocketFactory getSocketFactory() {
-        HttpClientAuth clientAuth;
-
-        if(configuration.useCertAuth()) {
-            LOGGER.debug("Using certificate authentication");
-            clientAuth = new HttpClientCertAuth(configuration);
-        } else {
-            LOGGER.debug("Using no authentication");
-            clientAuth = new HttpClientNoAuth();
-        }
-
-        return clientAuth.getSSLConnectionSocketFactory();
     }
 }
