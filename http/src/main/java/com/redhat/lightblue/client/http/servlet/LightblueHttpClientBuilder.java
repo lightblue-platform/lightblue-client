@@ -2,7 +2,6 @@ package com.redhat.lightblue.client.http.servlet;
 
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
-import com.redhat.lightblue.client.http.LightblueHttpClient;
 import com.redhat.lightblue.client.http.auth.HttpClientAuth;
 import com.redhat.lightblue.client.http.auth.HttpClientCertAuth;
 import com.redhat.lightblue.client.http.auth.HttpClientNoAuth;
@@ -100,8 +99,6 @@ public class LightblueHttpClientBuilder {
 
         return HttpClients.custom()
                 .setConnectionManager(connectionManager)
-                        // I don't think this is necessary?
-                .setSSLSocketFactory(sslSocketFactory)
                 .setRedirectStrategy(new LaxRedirectStrategy())
                 .build();
     }
