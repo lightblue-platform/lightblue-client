@@ -25,7 +25,7 @@ public class PropertiesLightblueClientConfigurationTest {
 
     @Test
     public void shouldUseLightblueDashClientDotPropertiesAtRootOfClassPathByDefault() {
-        LightblueClientConfiguration config = new PropertiesLightblueClientConfiguration();
+        LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromDefault();
 
         // see src/test/resources/lightblue-client.properties
         assertEquals("http://this.is.a/test/metadata", config.getMetadataServiceURI());
@@ -41,7 +41,7 @@ public class PropertiesLightblueClientConfigurationTest {
         exception.expectCause(CoreMatchers.<Throwable>instanceOf(IOException.class));
         exception.expectMessage(CoreMatchers.equalTo("Could not read properties file from input stream, " + inputStream));
 
-        new PropertiesLightblueClientConfiguration(inputStream);
+        PropertiesLightblueClientConfiguration.fromInputStream(inputStream);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class PropertiesLightblueClientConfigurationTest {
         exception.expectMessage(CoreMatchers.equalTo("Could not find properties resource at " +
                 bogusResource));
 
-        new PropertiesLightblueClientConfiguration(bogusResource);
+        PropertiesLightblueClientConfiguration.fromResource(bogusResource);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class PropertiesLightblueClientConfigurationTest {
         exception.expectCause(CoreMatchers.<Throwable>instanceOf(IOException.class));
         exception.expectMessage(CoreMatchers.equalTo("Could not read properties file from path, " + bogusPath));
 
-        new PropertiesLightblueClientConfiguration(bogusPath);
+        PropertiesLightblueClientConfiguration.fromPath(bogusPath);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class PropertiesLightblueClientConfigurationTest {
         Properties properties = new Properties();
         properties.setProperty("caFilePath", "theFilePath");
 
-        LightblueClientConfiguration config = new PropertiesLightblueClientConfiguration(properties);
+        LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
 
         assertEquals("theFilePath", config.getCaFilePath());
     }
@@ -81,7 +81,7 @@ public class PropertiesLightblueClientConfigurationTest {
         Properties properties = new Properties();
         properties.setProperty("certFilePath", "theFilePath");
 
-        LightblueClientConfiguration config = new PropertiesLightblueClientConfiguration(properties);
+        LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
 
         assertEquals("theFilePath", config.getCertFilePath());
     }
@@ -91,7 +91,7 @@ public class PropertiesLightblueClientConfigurationTest {
         Properties properties = new Properties();
         properties.setProperty("certPassword", "thePassword");
 
-        LightblueClientConfiguration config = new PropertiesLightblueClientConfiguration(properties);
+        LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
 
         assertEquals("thePassword", config.getCertPassword());
     }
@@ -101,7 +101,7 @@ public class PropertiesLightblueClientConfigurationTest {
         Properties properties = new Properties();
         properties.setProperty("certAlias", "theAlias");
 
-        LightblueClientConfiguration config = new PropertiesLightblueClientConfiguration(properties);
+        LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
 
         assertEquals("theAlias", config.getCertAlias());
     }
@@ -111,7 +111,7 @@ public class PropertiesLightblueClientConfigurationTest {
         Properties properties = new Properties();
         properties.setProperty("metadataServiceURI", "http://service.com/metadata");
 
-        LightblueClientConfiguration config = new PropertiesLightblueClientConfiguration(properties);
+        LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
 
         assertEquals("http://service.com/metadata", config.getMetadataServiceURI());
     }
@@ -121,7 +121,7 @@ public class PropertiesLightblueClientConfigurationTest {
         Properties properties = new Properties();
         properties.setProperty("dataServiceURI", "http://service.com/data");
 
-        LightblueClientConfiguration config = new PropertiesLightblueClientConfiguration(properties);
+        LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
 
         assertEquals("http://service.com/data", config.getDataServiceURI());
     }
@@ -131,7 +131,7 @@ public class PropertiesLightblueClientConfigurationTest {
         Properties properties = new Properties();
         properties.setProperty("useCertAuth", "true");
 
-        LightblueClientConfiguration config = new PropertiesLightblueClientConfiguration(properties);
+        LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
 
         assertEquals(true, config.useCertAuth());
     }

@@ -164,19 +164,19 @@ public class LightblueServletContextConfiguration {
 
     /**
      * Returns
-     * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration#PropertiesLightblueClientConfiguration()}
+     * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration#fromDefault()}
      * by default if no context parameter with key {@link #LIGHTBLUE_CLIENT_PROPERTIES_PATH_KEY} is
      * specified. Otherwise, the path is used with
-     * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration#PropertiesLightblueClientConfiguration(java.nio.file.Path)}.
+     * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration#fromPath(java.nio.file.Path)}.
      */
     protected LightblueClientConfiguration baseLightblueClientConfiguration() {
         String propertiesFilePath = context.getInitParameter(LIGHTBLUE_CLIENT_PROPERTIES_PATH_KEY);
 
         if (propertiesFilePath == null) {
-            return new PropertiesLightblueClientConfiguration();
+            return PropertiesLightblueClientConfiguration.fromDefault();
         }
 
-        return new PropertiesLightblueClientConfiguration(Paths.get(propertiesFilePath));
+        return PropertiesLightblueClientConfiguration.fromPath(Paths.get(propertiesFilePath));
     }
 
     protected final String getInitParameter(String parameter) {

@@ -30,11 +30,11 @@ public class HttpClientCertAuth implements HttpClientAuth {
 	private static final String[] TLS_V1 = new String[] { "TLSv1" };
 
 	public HttpClientCertAuth() {
-		this(new PropertiesLightblueClientConfiguration());
+		this(PropertiesLightblueClientConfiguration.fromDefault());
 	}
 
 	public HttpClientCertAuth(String configFilePath) {
-		this(new PropertiesLightblueClientConfiguration(Paths.get(configFilePath)));
+		this(PropertiesLightblueClientConfiguration.fromPath(Paths.get(configFilePath)));
 	}
 
 	public HttpClientCertAuth(LightblueClientConfiguration configuration) {

@@ -34,7 +34,8 @@ public class LightblueHttpClientBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClientBuilder.class);
 
     // Defaults
-    private LightblueClientConfiguration lightblueClientConfig = new PropertiesLightblueClientConfiguration();
+    private LightblueClientConfiguration lightblueClientConfig =
+            PropertiesLightblueClientConfiguration.fromDefault();
     private int maxConnections = 100;
     private int maxConnectionsPerRoute = 20;
 
@@ -76,7 +77,7 @@ public class LightblueHttpClientBuilder {
         return this;
     }
 
-    public CloseableHttpClient build() {;
+    public CloseableHttpClient build() {
         return getLightblueHttpClient();
     }
 

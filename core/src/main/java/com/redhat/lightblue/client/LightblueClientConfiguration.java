@@ -81,5 +81,4 @@ public class LightblueClientConfiguration {
 	public void setCertAlias(String certAlias) {
 		this.certAlias = certAlias;
 	}
-
 }

@@ -52,7 +52,7 @@ public class LightblueHttpClient implements LightblueClient {
 	 * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
 	 */
 	public LightblueHttpClient() {
-		this(new PropertiesLightblueClientConfiguration());
+		this(PropertiesLightblueClientConfiguration.fromDefault());
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class LightblueHttpClient implements LightblueClient {
 	 * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
 	 */
 	public LightblueHttpClient(String configFilePath) {
-		this(new PropertiesLightblueClientConfiguration(Paths.get(configFilePath)));
+		this(PropertiesLightblueClientConfiguration.fromPath(Paths.get(configFilePath)));
 	}
 
 	/**
