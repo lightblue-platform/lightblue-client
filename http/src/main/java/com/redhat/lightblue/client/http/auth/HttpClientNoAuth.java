@@ -1,8 +1,6 @@
 package com.redhat.lightblue.client.http.auth;
 
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -12,6 +10,13 @@ import org.slf4j.LoggerFactory;
 
 import java.security.GeneralSecurityException;
 
+/**
+ * @deprecated Use {@link com.redhat.lightblue.client.http.auth.ApacheHttpClients} instead, or
+ * create your own client using {@link org.apache.http.impl.client.HttpClients}. If you need an
+ * {@link org.apache.http.conn.ssl.SSLConnectionSocketFactory}, see
+ * {@link com.redhat.lightblue.client.http.auth.SslSocketFactories}.
+ */
+@Deprecated
 public class HttpClientNoAuth implements HttpClientAuth {
     private final SSLConnectionSocketFactory sslSocketFactory;
 
@@ -19,9 +24,7 @@ public class HttpClientNoAuth implements HttpClientAuth {
 
     public HttpClientNoAuth() {
         try {
-            SSLContextBuilder sslCtxBuilder = new SSLContextBuilder();
-            sslCtxBuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-            sslSocketFactory = new SSLConnectionSocketFactory(sslCtxBuilder.build());
+            sslSocketFactory = SslSocketFactories.defaultNoAuthSocketFactory();
         } catch (GeneralSecurityException e) {
             LOGGER.error("Error creating jks from certificates: ", e);
             throw new RuntimeException(e);
@@ -33,19 +36,9 @@ public class HttpClientNoAuth implements HttpClientAuth {
      */
     @Override
     public CloseableHttpClient getClient() {
-        return getClient(HttpClients.custom());
-    }
-
-    @Override
-    public CloseableHttpClient getClient(HttpClientBuilder builder) {
-        return builder
-                .setRedirectStrategy(new LaxRedirectStrategy())
+        return HttpClients.custom()
                 .setSSLSocketFactory(sslSocketFactory)
+                .setRedirectStrategy(new LaxRedirectStrategy())
                 .build();
-    }
-
-    @Override
-    public SSLConnectionSocketFactory getSSLConnectionSocketFactory() {
-        return sslSocketFactory;
     }
 }
