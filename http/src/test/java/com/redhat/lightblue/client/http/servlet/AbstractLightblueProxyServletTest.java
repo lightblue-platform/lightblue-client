@@ -2,39 +2,43 @@ package com.redhat.lightblue.client.http.servlet;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.redhat.lightblue.client.LightblueClientConfiguration;
+import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
+import com.redhat.lightblue.client.http.testing.doubles.FakeServletConfig;
 import com.redhat.lightblue.client.http.testing.doubles.FakeServletOutputStream;
 import com.redhat.lightblue.client.http.testing.doubles.StubHttpServletRequest;
 import com.redhat.lightblue.client.http.testing.doubles.StubInstance;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
+import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 import javax.enterprise.inject.Instance;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -71,7 +75,7 @@ public class AbstractLightblueProxyServletTest {
     }
 
     @Test
-    public void shouldProxyTheRequest() throws ServletException, IOException, URISyntaxException {
+    public void shouldProxyTheRequestMethodUriAndBody() throws ServletException, IOException, URISyntaxException {
         CloseableHttpClient mockHttpClient = mock(CloseableHttpClient.class, Mockito.RETURNS_DEEP_STUBS);
 
         AbstractLightblueProxyServlet servlet = getTestServlet(mockHttpClient, null, "http://myservice.com", null);
@@ -105,10 +109,113 @@ public class AbstractLightblueProxyServletTest {
         assertEquals(new String(expectedEntityBytes), entityOutStream.toString());
     }
 
-    private AbstractLightblueProxyServlet getTestServlet(CloseableHttpClient httpClient,
-            LightblueClientConfiguration clientconfig, final String serviceUri,
+    @Test
+    public void shouldUseInjectedClientConfigurationIfSatisfied() throws ServletException {
+        CloseableHttpClient mockHttpClient = mock(CloseableHttpClient.class, Mockito.RETURNS_DEEP_STUBS);
+        LightblueClientConfiguration config = new LightblueClientConfiguration();
+
+        AbstractLightblueProxyServlet servlet = getTestServlet(mockHttpClient, config, null, null);
+
+        assertSame(config, servlet.configuration());
+    }
+
+    @Test
+    public void shouldDefaultToDefaultPropertiesFileForClientConfigIfNoneIsInjected() throws ServletException {
+        CloseableHttpClient mockHttpClient = mock(CloseableHttpClient.class, Mockito.RETURNS_DEEP_STUBS);
+
+        ServletConfig servletConfig = new FakeServletConfig()
+                .setServletContext(mock(ServletContext.class));
+        AbstractLightblueProxyServlet servlet = getTestServlet(mockHttpClient, null, null, servletConfig);
+
+        LightblueClientConfiguration expected = PropertiesLightblueClientConfiguration.fromDefault();
+
+        assertEquals(expected, servlet.configuration());
+    }
+
+    @Test
+    public void shouldRespondWithErrorWhenBadServiceUri() throws ServletException, IOException {
+        CloseableHttpClient mockHttpClient = mock(CloseableHttpClient.class, Mockito.RETURNS_DEEP_STUBS);
+
+        AbstractLightblueProxyServlet servlet = getTestServlet(mockHttpClient, null, "bad service uri",
+                null);
+
+        HttpServletRequest stubRequest = new StubHttpServletRequest("http://my.site.com/app",
+                "GET", "{test:0}", "application/json", "/app/*");
+
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        ServletOutputStream outputStream = new FakeServletOutputStream(new ByteArrayOutputStream());
+        when(mockResponse.getOutputStream()).thenReturn(outputStream);
+
+        servlet.service(stubRequest, mockResponse);
+
+        String expectedError = "{\"error\":\"There was a problem calling the lightblue service\"}";
+
+        assertEquals(expectedError, mockResponse.getOutputStream().toString());
+    }
+
+    @Test
+    public void shouldRespondWithErrorWhenProxyRequestFails() throws ServletException, IOException {
+        CloseableHttpClient mockHttpClient = mock(CloseableHttpClient.class, Mockito.RETURNS_DEEP_STUBS);
+        when(mockHttpClient.execute(any(HttpUriRequest.class))).thenThrow(IOException.class);
+
+        AbstractLightblueProxyServlet servlet = getTestServlet(mockHttpClient, null,
+                "http://myservice.com", null);
+
+        HttpServletRequest stubRequest = new StubHttpServletRequest("http://my.site.com/app",
+                "GET", "{test:0}", "application/json", "/app/*");
+
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        ServletOutputStream outputStream = new FakeServletOutputStream(new ByteArrayOutputStream());
+        when(mockResponse.getOutputStream()).thenReturn(outputStream);
+
+        servlet.service(stubRequest, mockResponse);
+
+        String expectedError = "{\"error\":\"There was a problem calling the lightblue service\"}";
+
+        assertEquals(expectedError, mockResponse.getOutputStream().toString());
+    }
+
+    @Test
+    public void shouldRespondWithLightblueServiceResponseBodyThenCloseResponse() throws IOException, ServletException {
+        CloseableHttpClient mockHttpClient = mock(CloseableHttpClient.class);
+        CloseableHttpResponse mockLightblueResponse = mock(CloseableHttpResponse.class);
+        HttpEntity mockEntity = mock(HttpEntity.class);
+
+        when(mockHttpClient.execute(any(HttpUriRequest.class))).thenReturn(mockLightblueResponse);
+        when(mockLightblueResponse.getEntity()).thenReturn(mockEntity);
+
+        AbstractLightblueProxyServlet servlet = getTestServlet(mockHttpClient, null,
+                "http://myservice.com", null);
+
+        HttpServletRequest stubRequest = new StubHttpServletRequest("http://test.com/servlet/file",
+                "GET", "{test:0}", "application/json", "/servlet/*");
+
+        HttpServletResponse mockProxyResponse = mock(HttpServletResponse.class);
+        ServletOutputStream outputStream = new FakeServletOutputStream(new ByteArrayOutputStream());
+        when(mockProxyResponse.getOutputStream()).thenReturn(outputStream);
+
+        servlet.service(stubRequest, mockProxyResponse);
+
+        InOrder inOrder = inOrder(mockEntity, mockLightblueResponse);
+        inOrder.verify(mockEntity).writeTo(outputStream);
+        inOrder.verify(mockLightblueResponse).close();
+    }
+
+    @Test
+    public void shouldGetServletInitParamOrDefault() throws ServletException {
+        ServletConfig fakeServletConfig = new FakeServletConfig()
+                .setInitParameter("testParam", "testValue");
+        AbstractLightblueProxyServlet servlet = getTestServlet(mock(CloseableHttpClient.class),
+                null, null, fakeServletConfig);
+
+        assertEquals("testValue", servlet.getInitParamOrDefault("testParam", "defaultValue"));
+        assertEquals("testDefaultValue", servlet.getInitParamOrDefault("nullParam", "testDefaultValue"));
+    }
+
+    protected AbstractLightblueProxyServlet getTestServlet(CloseableHttpClient httpClient,
+            LightblueClientConfiguration clientConfig, final String serviceUri,
             ServletConfig servletConfig) throws ServletException {
-        Instance<LightblueClientConfiguration> instance = new StubInstance<>(clientconfig);
+        Instance<LightblueClientConfiguration> instance = new StubInstance<>(clientConfig);
 
         AbstractLightblueProxyServlet servlet;
         servlet = new AbstractLightblueProxyServlet(httpClient, instance) {
