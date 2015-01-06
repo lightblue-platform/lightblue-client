@@ -45,7 +45,7 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
     private final Instance<LightblueClientConfiguration> configuration;
 
     /**
-     * An {@code @Inject}able constructor for the servlet. To setup the dependency for the servlet,
+     * An {@link javax.inject.Inject @Inject}able constructor for the servlet. To setup the dependency for the servlet,
      * you will have to use Java CDI, providing a {@link javax.enterprise.inject.Produces}-annotated
      * method whch instantiates an appropriately configured
      * {@link org.apache.http.impl.client.CloseableHttpClient} to use inside the servlets, with a
