@@ -61,7 +61,8 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
      * defined via
      * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration#fromDefault()}.
      *
-     * Example producer and disposer:
+     * <p>Example producer and disposer:
+     * 
      * <pre><code>
      * public class ApplicationContext {
      *     {@literal@}Produces {@literal@}ApplicationScoped
