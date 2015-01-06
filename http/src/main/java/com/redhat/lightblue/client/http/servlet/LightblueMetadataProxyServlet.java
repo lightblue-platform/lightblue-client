@@ -15,6 +15,23 @@ import javax.servlet.http.HttpServletRequest;
  * to, or will fall back to the metadata service URI defines in the [possibly injected]
  * {@link com.redhat.lightblue.client.LightblueClientConfiguration}.
  *
+ * <p>Example usage in web.xml:
+ *
+ * <pre><code>
+ *   {@code<}servlet{@code>}
+ *       {@code<}servlet-name>metadata-request{@code<}/servlet-name{@code>}
+ *       {@code<}servlet-class>com.redhat.lightblue.client.http.servlet.LightblueMetadataProxyServlet{@code<}/servlet-class{@code>}
+ *       {@code<}init-param{@code>}
+ *           {@code<}param-name>metadataServiceURI{@code<}/param-name{@code>}
+ *           {@code<}param-value>http://lightblue.mycompany.com/metadata{@code<}/param-value{@code>}
+ *        {@code<}/init-param{@code>}
+ *   {@code<}/servlet{@code>}
+ *   {@code<}servlet-mapping{@code>}
+ *       {@code<}servlet-name>metadata-request{@code<}/servlet-name{@code>}
+ *       {@code<}url-pattern>/rest-request/metadata/*{@code<}/url-pattern{@code>}
+ *   {@code<}/servlet-mapping{@code>}
+ * </code></pre>
+ *
  * @see com.redhat.lightblue.client.http.servlet.AbstractLightblueProxyServlet
  */
 public final class LightblueMetadataProxyServlet extends AbstractLightblueProxyServlet {

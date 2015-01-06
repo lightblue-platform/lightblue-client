@@ -15,6 +15,23 @@ import javax.servlet.http.HttpServletRequest;
  * or will fall back to the data service URI defines in the [possibly injected]
  * {@link com.redhat.lightblue.client.LightblueClientConfiguration}.
  *
+ * <p>Example usage in web.xml:
+ *
+ * <pre><code>
+ *   {@code<}servlet{@code>}
+ *       {@code<}servlet-name>data-request{@code<}/servlet-name{@code>}
+ *       {@code<}servlet-class>com.redhat.lightblue.client.http.servlet.LightblueDataProxyServlet{@code<}/servlet-class{@code>}
+ *       {@code<}init-param{@code>}
+ *           {@code<}param-name>dataServiceURI{@code<}/param-name{@code>}
+ *           {@code<}param-value>http://lightblue.mycompany.com/data{@code<}/param-value{@code>}
+ *        {@code<}/init-param{@code>}
+ *   {@code<}/servlet{@code>}
+ *   {@code<}servlet-mapping{@code>}
+ *       {@code<}servlet-name>data-request{@code<}/servlet-name{@code>}
+ *       {@code<}url-pattern>/rest-request/data/*{@code<}/url-pattern{@code>}
+ *   {@code<}/servlet-mapping{@code>}
+ * </code></pre>
+ *
  * @see com.redhat.lightblue.client.http.servlet.AbstractLightblueProxyServlet
  */
 public final class LightblueDataProxyServlet extends AbstractLightblueProxyServlet {
