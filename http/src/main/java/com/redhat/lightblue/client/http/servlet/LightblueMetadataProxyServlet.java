@@ -9,13 +9,19 @@ import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * A Lightblue service proxy servlet, specifically for the metadata service, which adds a
+ * {@code "metadataServiceURI"} init parameter to define the data service URI to forward requests
+ * to, or will fall back to the metadata service URI defines in the [possibly injected]
+ * {@link com.redhat.lightblue.client.LightblueClientConfiguration}.
+ *
+ * @see com.redhat.lightblue.client.http.servlet.AbstractLightblueProxyServlet
+ */
 public final class LightblueMetadataProxyServlet extends AbstractLightblueProxyServlet {
     private String metadataServiceUri;
 
     /**
-     * @param httpClient The http client to use for this servlet. Servlets <em>should not</em>
-     *         manage (e.g. close) the client; the client should manage its own lifecycle with
-     *         regards to the container.
+     * @see AbstractLightblueProxyServlet#AbstractLightblueProxyServlet(CloseableHttpClient, Instance)
      */
     @Inject
     public LightblueMetadataProxyServlet(CloseableHttpClient httpClient,

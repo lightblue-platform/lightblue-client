@@ -9,13 +9,19 @@ import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * A Lightblue service proxy servlet, specifically for the data service, which adds a
+ * {@code "dataServiceURI"} init parameter to define the data service URI to forward requests to,
+ * or will fall back to the data service URI defines in the [possibly injected]
+ * {@link com.redhat.lightblue.client.LightblueClientConfiguration}.
+ *
+ * @see com.redhat.lightblue.client.http.servlet.AbstractLightblueProxyServlet
+ */
 public final class LightblueDataProxyServlet extends AbstractLightblueProxyServlet {
     private String dataServiceUri;
 
     /**
-     * @param httpClient The http client to use for this servlet. Servlets <em>should not</em>
-     *         manage (e.g. close) the client; the client should manage its own lifecycle with
-     *         regards to the container.
+     * @see AbstractLightblueProxyServlet#AbstractLightblueProxyServlet(CloseableHttpClient, Instance)
      */
     @Inject
     public LightblueDataProxyServlet(CloseableHttpClient httpClient,

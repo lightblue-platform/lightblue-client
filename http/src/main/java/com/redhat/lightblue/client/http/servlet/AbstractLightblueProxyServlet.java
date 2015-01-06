@@ -24,6 +24,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * An injectable Lightblue proxy servlet, powered by Apache
+ * {@link org.apache.http.impl.client.CloseableHttpClient}. See
+ * {@link AbstractLightblueProxyServlet#AbstractLightblueProxyServlet(CloseableHttpClient, Instance)}
+ * for how to setup the injection.
+ */
 public abstract class AbstractLightblueProxyServlet extends HttpServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractLightblueProxyServlet.class);
 
@@ -39,9 +45,45 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
     private final Instance<LightblueClientConfiguration> configuration;
 
     /**
+     * An {@code @Inject}able constructor for the servlet. To setup the dependency for the servlet,
+     * you will have to use Java CDI, providing a {@link javax.enterprise.inject.Produces}-annotated
+     * method whch instantiates an appropriately configured
+     * {@link org.apache.http.impl.client.CloseableHttpClient} to use inside the servlets, with a
+     * preferred scope (ideally {@link javax.enterprise.context.ApplicationScoped}). To shutdown
+     * the servlet, a "disposer" must also be provided using the
+     * {@link javax.enterprise.inject.Disposes} annotation.
+     *
+     * <p>For convenience, lightblue-client provides factory methods for default http clients with
+     * basic configuration. Of course, you are free to configure the client however you need.
+     *
+     * <p>An instance of {@link com.redhat.lightblue.client.LightblueClientConfiguration} may also
+     * be injected here, but it is optional. By default, this servlet will use the configuration
+     * defined via
+     * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration#fromDefault()}.
+     *
+     * Example producer and disposer:
+     * <pre><code>
+     * public class ApplicationContext {
+     *     {@literal@}Produces {@literal@}ApplicationScoped
+     *     public LightblueClientConfiguration getLightblueClientConfiguration() {
+     *         return PropertiesLightblueClientConfiguration.fromDefault();
+     *     }
+     *
+     *     {@literal@}Produces {@literal@}ApplicationScoped
+     *     public CloseableHttpClient getClient(LightblueClientConfiguration config) throws Exception {
+     *         return ApacheHttpClients.fromLightblueClientConfiguration(config);
+     *     }
+     *
+     *     public void closeHttpClient({@literal@}Disposes CloseableHttpClient client) throws IOException {
+     *         client.close();
+     *     }
+     * }
+     * </code></pre>
      * @param httpClient The http client to use for this servlet. Servlets <em>should not</em>
      *         manage (e.g. close) the client; the client should manage its own lifecycle with
      *         regards to the container.
+     *
+     * @see <a href="http://docs.oracle.com/javaee/6/tutorial/doc/giwhl.html">Overview of CDI &mdash; The Java EE 6 Tutorial</a>
      */
     @Inject
     public AbstractLightblueProxyServlet(CloseableHttpClient httpClient,
