@@ -23,9 +23,6 @@ public abstract class ApacheHttpClients {
     /** Same as Apache's default in {@link org.apache.http.impl.client.HttpClientBuilder}. */
     private static final String DEFAULT_MAX_CONNECTIONS_PER_ROUTE = "5";
 
-    /** Same as Apache's default in {@link org.apache.http.impl.client.HttpClientBuilder}. */
-    private static final String DEFAULT_MAX_CONNECTIONS = "10";
-
     /**
      * Same as java.net's defaults for persistent connections. What it calls "maxConnections" is
      * really max connections per route in Apache HTTP client terms:
@@ -84,8 +81,12 @@ public abstract class ApacheHttpClients {
     }
 
     private static int defaultMaxConnections() {
-        String maxConnections = System.getProperty(DEFAULT_MAX_CONNECTIONS_TOTAL_SYSTEM_PROPERTY,
-                DEFAULT_MAX_CONNECTIONS);
+        String maxConnections = System.getProperty(DEFAULT_MAX_CONNECTIONS_TOTAL_SYSTEM_PROPERTY);
+
+        if (maxConnections == null) {
+            return defaultMaxConnectionsPerRoute() * 2;
+        }
+
         return Integer.parseInt(maxConnections);
     }
 }
