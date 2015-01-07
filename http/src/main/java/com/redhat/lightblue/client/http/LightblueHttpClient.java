@@ -1,9 +1,10 @@
 package com.redhat.lightblue.client.http;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Properties;
+import java.nio.file.Paths;
+import java.util.Objects;
 
+import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -28,76 +29,64 @@ import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.util.ClientConstants;
 
 public class LightblueHttpClient implements LightblueClient {
+	private final LightblueClientConfiguration configuration;
+	private final ObjectMapper mapper;
 
-	LightblueClientConfiguration configuration;
-	
-	private String dataServiceURI;
-	private String metadataServiceURI;
-	private boolean useCertAuth = false;
-	private ObjectMapper mapper = new ObjectMapper();
+	/**
+	 * It is safe and encouraged to share the same mapper among threads. It is thread safe. So,
+	 * this default instance is static.
+	 *
+	 * @see <a href="http://stackoverflow.com/a/3909846">The developer of the Jackson library's own
+	 * quote.</a>
+	 */
+	private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper()
+			.setDateFormat(ClientConstants.getDateFormat())
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
 	/**
-	 * This constructor will attempt to read the configuration from the default properties file on the classpath
+	 * This constructor will attempt to read the configuration from the default properties file on
+	 * the classpath.
+	 *
+	 * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
 	 */
 	public LightblueHttpClient() {
-		setObjectMapperDefaults();
-		try {
-			Properties properties = new Properties();
-			if (getClass().getClassLoader().getResource(ClientConstants.DEFAULT_CONFIG_FILE) == null) {
-				throw new RuntimeException(ClientConstants.DEFAULT_CONFIG_FILE + " could not be found in the classpath");
-			}
-			properties.load(getClass().getClassLoader().getResourceAsStream(ClientConstants.DEFAULT_CONFIG_FILE));
-			loadConfigFromProperties(properties);
-		} catch (IOException io) {
-			LOGGER.error(ClientConstants.DEFAULT_CONFIG_FILE + " could not be found/read", io);
-			throw new RuntimeException(io);
-		}
+		this(PropertiesLightblueClientConfiguration.fromDefault());
 	}
 	
 	/**
-	 * This constructor will attempt to read the configuration from the specified properties file on the file system
+	 * This constructor will attempt to read the configuration from the specified properties file on
+	 * the file system.
+	 *
+	 * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
 	 */
 	public LightblueHttpClient(String configFilePath) {
-		setObjectMapperDefaults();
-		try {
-			Properties properties = new Properties();
-			if (configFilePath == null) {
-				throw new RuntimeException(configFilePath+ " could not be found in the classpath");
-			}
-			properties.load(new FileInputStream(configFilePath));
-			loadConfigFromProperties(properties);
-		} catch (IOException io) {
-			LOGGER.error(configFilePath + " could not be found/read", io);
-			throw new RuntimeException(io);
-		}
+		this(PropertiesLightblueClientConfiguration.fromPath(Paths.get(configFilePath)));
 	}
 
 	/**
-	 * This constructor will use the specified object and not attempt to read from a properties file at all 
-	 * 
-	 * @param configuration
+	 * This constructor will use a copy of specified configuration object.
 	 */
 	public LightblueHttpClient(LightblueClientConfiguration configuration) {
-		setObjectMapperDefaults();
-		metadataServiceURI = configuration.getMetadataServiceURI();
-		dataServiceURI = configuration.getDataServiceURI();
-		useCertAuth = configuration.useCertAuth();
+		this(configuration, DEFAULT_MAPPER);
 	}
-	
-	private void setObjectMapperDefaults() {
-		mapper.setDateFormat(ClientConstants.getDateFormat());
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-	}
-	
-	private void loadConfigFromProperties(Properties properties) {
-		metadataServiceURI = properties.getProperty("metadataServiceURI");
-		dataServiceURI = properties.getProperty("dataServiceURI");
-		if (metadataServiceURI == null && dataServiceURI == null) {
-			throw new RuntimeException("Either metadataServiceURI or dataServiceURI must be defined in configuration");
-		}
-		useCertAuth = Boolean.parseBoolean(properties.getProperty("useCertAuth"));
+
+	/**
+	 * This constructor will use a copy of specified configuration object and object mapper.
+	 *
+	 * <p>Without supplying an {@link com.fasterxml.jackson.databind.ObjectMapper} explicitly, a
+	 * default is shared among all threads ({@link #mapper}). It is injectable here because of best
+	 * practices: for further configuration support and unit testing.
+	 */
+	public LightblueHttpClient(LightblueClientConfiguration configuration, ObjectMapper mapper) {
+		Objects.requireNonNull(configuration, "configuration");
+		Objects.requireNonNull(mapper, "mapper");
+
+		// Make a defensive copy because configuration is mutable. This prevents alterations to the
+		// config object from affecting this client after instantiation.
+		this.configuration = new LightblueClientConfiguration(configuration);
+		this.mapper = mapper;
 	}
 	
 	/**
@@ -106,14 +95,13 @@ public class LightblueHttpClient implements LightblueClient {
 	 * Use LightblueHttpClient(LightblueClientConfiguration configuration) if you don't want to use config files at all
 	 */
 	public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
-		mapper.setDateFormat(ClientConstants.getDateFormat());
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		this.metadataServiceURI = metadataServiceURI;
-		this.dataServiceURI = dataServiceURI;
-		if (metadataServiceURI == null && dataServiceURI == null) {
-			throw new RuntimeException("Either metadataServiceURI or dataServiceURI must be defined in appconfig.properties");
-		}
-		this.useCertAuth = useCertAuth;
+		LightblueClientConfiguration configuration = new LightblueClientConfiguration();
+		configuration.setDataServiceURI(dataServiceURI);
+		configuration.setMetadataServiceURI(metadataServiceURI);
+		configuration.setUseCertAuth(useCertAuth);
+
+		this.configuration = configuration;
+		this.mapper = DEFAULT_MAPPER;
 	}
 
 	/*
@@ -126,7 +114,8 @@ public class LightblueHttpClient implements LightblueClient {
 	@Override
 	public LightblueResponse metadata(LightblueRequest lightblueRequest) {
 		LOGGER.debug("Calling metadata service with lightblueRequest: " + lightblueRequest.toString());
-		return callService(new LightblueHttpMetadataRequest(lightblueRequest).getRestRequest(metadataServiceURI));
+		return callService(new LightblueHttpMetadataRequest(lightblueRequest)
+				.getRestRequest(configuration.getMetadataServiceURI()));
 	}
 
 	/*
@@ -139,7 +128,8 @@ public class LightblueHttpClient implements LightblueClient {
 	@Override
 	public LightblueResponse data(LightblueRequest lightblueRequest) {
 		LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
-		return callService(new LightblueHttpDataRequest(lightblueRequest).getRestRequest(dataServiceURI));
+		return callService(new LightblueHttpDataRequest(lightblueRequest)
+				.getRestRequest(configuration.getDataServiceURI()));
 	}
 
 	public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
@@ -148,9 +138,7 @@ public class LightblueHttpClient implements LightblueClient {
 		JsonNode objectNode = response.getJson().path("processed");
 
 		try {
-			T object = mapper.readValue(objectNode.traverse(), type);
-
-			return object;
+			return mapper.readValue(objectNode.traverse(), type);
 		} catch (JsonMappingException e) {
 			LOGGER.error("Error parsing lightblue response: " + response.getJson().toString(), e);
 			throw new RuntimeException("Error parsing lightblue response: " + response.getJson().toString());
@@ -188,12 +176,9 @@ public class LightblueHttpClient implements LightblueClient {
 
 	private CloseableHttpClient getLightblueHttpClient() {
 		CloseableHttpClient httpClient;
-		if (useCertAuth) {
+		if (configuration.useCertAuth()) {
 			LOGGER.debug("Using certificate authentication");
-			if(configuration != null) {
-				httpClient = new HttpClientCertAuth(configuration).getClient();
-			} else 
-				httpClient = new HttpClientCertAuth().getClient();
+			httpClient = new HttpClientCertAuth(configuration).getClient();
 		} else {
 			LOGGER.debug("Using no authentication");
 			httpClient = new HttpClientNoAuth().getClient();
