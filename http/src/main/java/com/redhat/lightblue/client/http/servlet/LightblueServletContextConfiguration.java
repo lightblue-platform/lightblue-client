@@ -18,7 +18,6 @@ public class LightblueServletContextConfiguration {
     private static final String CA_FILE_PATH_KEY = "caFilePath";
     private static final String CERT_FILE_PATH_KEY = "certFilePath";
     private static final String CERT_PASSWORD_KEY = "certPassword";
-    private static final String CERT_ALIAS_KEY = "certAlias";
     private static final String MAX_CONNECTIONS_PER_ROUTE_KEY = "maxConnectionsPerRoute";
     private static final String MAX_CONNECTIONS_TOTAL_KEY = "maxConnectionsTotal";
 
@@ -126,7 +125,6 @@ public class LightblueServletContextConfiguration {
         String dataServiceUriParam = getInitParameter(DATA_SERVICE_URI_KEY);
         String metadataServiceUriParam = getInitParameter(METADATA_SERVICE_URI_KEY);
         String useCertAuthParam = getInitParameter(USE_CERT_AUTH_KEY);
-        String certAliasParam = getInitParameter(CERT_ALIAS_KEY);
         String caFilePathParam = getInitParameter(CA_FILE_PATH_KEY);
         String certFilePathParm = getInitParameter(CERT_FILE_PATH_KEY);
         String certPasswordParam = getInitParameter(CERT_PASSWORD_KEY);
@@ -141,10 +139,6 @@ public class LightblueServletContextConfiguration {
 
         if (useCertAuthParam != null) {
             configuration.setUseCertAuth(parseBoolean(useCertAuthParam));
-        }
-
-        if (certAliasParam != null) {
-            configuration.setCertAlias(certAliasParam);
         }
 
         if (caFilePathParam != null) {

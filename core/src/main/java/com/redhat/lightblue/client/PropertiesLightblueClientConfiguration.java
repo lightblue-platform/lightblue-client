@@ -1,13 +1,13 @@
 package com.redhat.lightblue.client;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides factory methods for {@link com.redhat.lightblue.client.LightblueClientConfiguration}
@@ -44,7 +44,6 @@ public final class PropertiesLightblueClientConfiguration {
     private static final String CA_FILE_PATH_KEY = "caFilePath";
     private static final String CERT_FILE_PATH_KEY = "certFilePath";
     private static final String CERT_PASSWORD_KEY = "certPassword";
-    private static final String CERT_ALIAS_KEY = "certAlias";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesLightblueClientConfiguration.class);
 
@@ -141,7 +140,6 @@ public final class PropertiesLightblueClientConfiguration {
         LightblueClientConfiguration config = new LightblueClientConfiguration();
 
         config.setCaFilePath(properties.getProperty(CA_FILE_PATH_KEY));
-        config.setCertAlias(properties.getProperty(CERT_ALIAS_KEY));
         config.setCertFilePath(properties.getProperty(CERT_FILE_PATH_KEY));
         config.setCertPassword(properties.getProperty(CERT_PASSWORD_KEY));
         config.setDataServiceURI(properties.getProperty(DATA_SERVICE_URI_KEY));

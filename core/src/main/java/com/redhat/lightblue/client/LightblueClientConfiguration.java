@@ -2,6 +2,8 @@ package com.redhat.lightblue.client;
 
 import java.util.Objects;
 
+import org.apache.commons.io.FilenameUtils;
+
 public class LightblueClientConfiguration {
 	
 	private String dataServiceURI;
@@ -10,7 +12,7 @@ public class LightblueClientConfiguration {
 	private String caFilePath;
 	private String certFilePath;
 	private String certPassword;
-	private String certAlias;
+	private String certAlias; 
 
 	public LightblueClientConfiguration() {
 	}
@@ -25,7 +27,7 @@ public class LightblueClientConfiguration {
 		this.caFilePath = configuration.caFilePath;
 		this.certFilePath = configuration.certFilePath;
 		this.certPassword = configuration.certPassword;
-		this.certAlias = configuration.certAlias;
+		this.certAlias = FilenameUtils.getBaseName(this.certFilePath);
 	}
 
 	public String getDataServiceURI() {
@@ -66,6 +68,7 @@ public class LightblueClientConfiguration {
 
 	public void setCertFilePath(String certFilePath) {
 		this.certFilePath = certFilePath;
+		this.certAlias = FilenameUtils.getBaseName(this.certFilePath);
 	}
 
 	public String getCertPassword() {
@@ -78,10 +81,6 @@ public class LightblueClientConfiguration {
 
 	public String getCertAlias() {
 		return certAlias;
-	}
-
-	public void setCertAlias(String certAlias) {
-		this.certAlias = certAlias;
 	}
 
 	@Override

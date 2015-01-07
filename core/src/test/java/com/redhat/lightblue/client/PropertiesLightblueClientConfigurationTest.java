@@ -99,11 +99,11 @@ public class PropertiesLightblueClientConfigurationTest {
     @Test
     public void shouldLookup_certAlias_PropertyForCertAlias() {
         Properties properties = new Properties();
-        properties.setProperty("certAlias", "theAlias");
+        properties.setProperty("certFilePath", "/path/to/theCert.pkcs12"); 
 
         LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
 
-        assertEquals("theAlias", config.getCertAlias());
+        assertEquals("theCert", config.getCertAlias());
     }
 
     @Test
