@@ -4,6 +4,7 @@ import com.redhat.lightblue.client.LightblueClientConfiguration;
 
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -68,6 +69,10 @@ public abstract class ApacheHttpClients {
         connManager.setDefaultMaxPerRoute(maxConnectionsPerRoute);
         connManager.setMaxTotal(maxConnections);
 
+        return forConnectionManager(connManager);
+    }
+
+    public static CloseableHttpClient forConnectionManager(HttpClientConnectionManager connManager) {
         return HttpClients.custom()
                 .setConnectionManager(connManager)
                 .setRedirectStrategy(new LaxRedirectStrategy())

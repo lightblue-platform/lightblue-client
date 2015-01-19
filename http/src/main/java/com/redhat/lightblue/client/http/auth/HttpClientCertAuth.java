@@ -3,11 +3,17 @@ package com.redhat.lightblue.client.http.auth;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,10 +30,9 @@ import java.security.GeneralSecurityException;
  */
 @Deprecated
 public class HttpClientCertAuth implements HttpClientAuth {
-	private final SSLConnectionSocketFactory sslSocketFactory;
+    private final Registry<ConnectionSocketFactory> socketFactoryRegistry;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientCertAuth.class);
-	private static final String[] TLS_V1 = new String[] { "TLSv1" };
 
 	public HttpClientCertAuth() {
 		this(PropertiesLightblueClientConfiguration.fromDefault());
@@ -43,6 +48,8 @@ public class HttpClientCertAuth implements HttpClientAuth {
 		String certPassword = configuration.getCertPassword();
 		String certAlias = configuration.getCertAlias();
 
+        SSLConnectionSocketFactory sslSocketFactory;
+
 		try {
 			InputStream caFile = getClass().getClassLoader().getResourceAsStream(caFilePath);
 			InputStream certFile = getClass().getClassLoader().getResourceAsStream(certFilePath);
@@ -53,6 +60,11 @@ public class HttpClientCertAuth implements HttpClientAuth {
 			LOGGER.error("Error creating jks from certificates: ", e);
 			throw new RuntimeException(e);
 		}
+
+        socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", sslSocketFactory)
+                .build();
 	}
 
 	/*
@@ -62,9 +74,8 @@ public class HttpClientCertAuth implements HttpClientAuth {
 	 */
 	@Override
 	public CloseableHttpClient getClient() {
-		return HttpClients.custom()
-				.setSSLSocketFactory(sslSocketFactory)
-				.setRedirectStrategy(new LaxRedirectStrategy())
-				.build();
+        HttpClientConnectionManager connManager;
+        connManager = new BasicHttpClientConnectionManager(socketFactoryRegistry);
+		return ApacheHttpClients.forConnectionManager(connManager);
 	}
 }
