@@ -1,20 +1,26 @@
 language: java
 jdk:
-- openjdk7
-- oraclejdk8
+    - openjdk7
+    - oraclejdk8
 before_install:
-- cp ./settings.xml ~/.m2/
-after_success:
-- '[[ $TRAVIS_BRANCH == "master" ]] && [[ $TRAVIS_JDK_VERSION == "openjdk7" ]] &&
-  { mvn clean deploy -DskipTests; };'
-- mvn clean cobertura:cobertura coveralls:cobertura
+    - cp ./etc/settings.xml ~/.m2/
+    - cp ./etc/settings-arquillian.xml ~/
+    - cp ./etc/onFailure.sh  ~/
+    - cp ./etc/onSuccess.sh  ~/
+    - cp ./etc/logging.properties  ~/
+    - chmod 777 ~/onFailure.sh
+    - chmod 777 ~/onSuccess.sh
+script:
+    - mvn -B clean verify cobertura:cobertura coveralls:cobertura -Dorg.apache.maven.user-settings=~/settings-arquillian.xml -Dorg.apache.maven.global-settings=~/settings-arquillian.xml
+after_failure: ~/onFailure.sh
+after_success: ~/onSuccess.sh
 notifications:
-  email: false
-  irc:
-    channels:
-    - chat.freenode.net#lightblue
+    email: false
+    irc:
+        channels:
+            - chat.freenode.net#lightblue
     on_success: always
 env:
-  global:
-  - secure: EC03JdXmUCFanVswRuCQvUg7vMX3UHRh+a28xghODt9xp9jaVwNZqNes+CeGfY6CENi+UF5fZoUgBEaos81pd/DGhKTCIYrXEwe630nW172L3/UXU+N9oxTpXBz+nZomEsxv/HUIljEQDww4bt3vIqPH4/OiWVL6JC86uYjzpRE=
-  - secure: iaASQIGRPT6Tl6BxTH2LEXmNzJ9cwabC7Ekb44TgJfzDE3kgO0TJeBR481farYDG+XlTrUvlPG4lzQK9UUXMzzyprCKl86/l2BRhCQTla38gN+sVHJEw1J8CcJkjyDZg8Bfk0zMRCM11C9hoX+2VME0o2U8/EGecydcrkQ+z8R8=
+    global:
+        - secure: EC03JdXmUCFanVswRuCQvUg7vMX3UHRh+a28xghODt9xp9jaVwNZqNes+CeGfY6CENi+UF5fZoUgBEaos81pd/DGhKTCIYrXEwe630nW172L3/UXU+N9oxTpXBz+nZomEsxv/HUIljEQDww4bt3vIqPH4/OiWVL6JC86uYjzpRE=
+        - secure: iaASQIGRPT6Tl6BxTH2LEXmNzJ9cwabC7Ekb44TgJfzDE3kgO0TJeBR481farYDG+XlTrUvlPG4lzQK9UUXMzzyprCKl86/l2BRhCQTla38gN+sVHJEw1J8CcJkjyDZg8Bfk0zMRCM11C9hoX+2VME0o2U8/EGecydcrkQ+z8R8=
