@@ -49,7 +49,8 @@ public class LightblueHttpClientTest {
 
             Assert.fail();
         } catch (RuntimeException e) {
-            Assert.assertTrue(e.getMessage().startsWith("Error parsing lightblue response"));
+            Assert.assertTrue(e.getMessage().startsWith("Error sending lightblue request"));
+            Assert.assertTrue(e.getCause().getMessage().startsWith("Error parsing lightblue response:"));
         }
 
     }
