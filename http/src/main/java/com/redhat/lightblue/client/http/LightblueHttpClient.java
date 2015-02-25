@@ -147,7 +147,7 @@ public class LightblueHttpClient implements LightblueClient {
             }
         }
         catch(RuntimeException e){
-            throw new RuntimeException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
+            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
         }
     }
 
