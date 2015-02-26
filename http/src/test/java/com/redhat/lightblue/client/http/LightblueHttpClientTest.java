@@ -28,12 +28,12 @@ public class LightblueHttpClientTest {
                 SimpleModelObject[].class);
 
         Assert.assertEquals(1, results.length);
-        ;
+
         Assert.assertTrue(new SimpleModelObject("idhash", "value")
         .equals(results[0]));
     }
 
-    @Test
+    @Test(expected = LightblueHttpClientException.class)
     public void testPojoMappingWithParsingError() throws IOException {
         DataFindRequest findRequest = new DataFindRequest("foo", "bar");
 
@@ -44,15 +44,7 @@ public class LightblueHttpClientTest {
 
         client.setLightblueResponse(response);
 
-        try {
-            client.data(findRequest, SimpleModelObject[].class);
-
-            Assert.fail();
-        } catch (RuntimeException e) {
-            Assert.assertTrue(e.getMessage().startsWith("Error sending lightblue request"));
-            Assert.assertTrue(e.getCause().getMessage().startsWith("Error parsing lightblue response:"));
-        }
-
+        client.data(findRequest, SimpleModelObject[].class);
     }
 
 }

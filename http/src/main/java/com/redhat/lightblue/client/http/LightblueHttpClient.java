@@ -135,19 +135,21 @@ public class LightblueHttpClient implements LightblueClient {
 
     @Override
     public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
+        LightblueResponse response = null;
         try{
-            LightblueResponse response = data(lightblueRequest);
+            response = data(lightblueRequest);
 
             JsonNode objectNode = response.getJson().path("processed");
 
-            try {
-                return mapper.readValue(objectNode.traverse(), type);
-            } catch (JsonMappingException e) {
-                throw new RuntimeException("Error parsing lightblue response: " + response.getJson().toString(), e);
-            }
+            return mapper.readValue(objectNode.traverse(), type);
         }
-        catch(RuntimeException e){
-            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
+        catch(RuntimeException | JsonMappingException e) {
+            StringBuilder buff = new StringBuilder();
+            if (e instanceof JsonMappingException) {
+                buff.append("Error parsing lightblue response: " + ((response == null) ? "null" : response.getJson().toString() + "\n"));
+            }
+            buff.append("Error sending lightblue request: " + lightblueRequest.getBody());
+            throw new LightblueHttpClientException(buff.toString(), e);
         }
     }
 
