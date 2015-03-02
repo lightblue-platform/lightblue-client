@@ -106,8 +106,8 @@ public final class PropertiesLightblueClientConfiguration {
      *         process.
      */
     public static LightblueClientConfiguration fromPath(Path pathToProperties) {
-        try {
-            return fromInputStream(Files.newInputStream(pathToProperties));
+        try(InputStream inStream = Files.newInputStream(pathToProperties)) {
+            return fromInputStream(inStream);
         } catch (IOException e) {
             LOGGER.error(pathToProperties + " could not be found/read", e);
             throw new LightblueClientConfigurationException("Could not read properties file from " +
