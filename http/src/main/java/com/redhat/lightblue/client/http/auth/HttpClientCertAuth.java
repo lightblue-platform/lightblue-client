@@ -1,21 +1,25 @@
 package com.redhat.lightblue.client.http.auth;
 
+import com.redhat.lightblue.client.LightblueClientConfiguration;
+import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
+
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
-
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.redhat.lightblue.client.LightblueClientConfiguration;
-import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 
 /**
  * @deprecated Use {@link com.redhat.lightblue.client.http.auth.ApacheHttpClients} instead, or
@@ -25,10 +29,9 @@ import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
  */
 @Deprecated
 public class HttpClientCertAuth implements HttpClientAuth {
-    private final SSLConnectionSocketFactory sslSocketFactory;
+    private final Registry<ConnectionSocketFactory> socketFactoryRegistry;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientCertAuth.class);
-    private static final String[] TLS_V1 = new String[] { "TLSv1" };
     private static final String FILE_PROTOCOL = "file://";
 
     public HttpClientCertAuth() {
@@ -45,6 +48,8 @@ public class HttpClientCertAuth implements HttpClientAuth {
         String certPassword = configuration.getCertPassword();
         String certAlias = configuration.getCertAlias();
 
+        SSLConnectionSocketFactory sslSocketFactory;
+
         try {
             InputStream caFile = loadFile(caFilePath);
             InputStream certFile = loadFile(certFilePath);
@@ -55,25 +60,24 @@ public class HttpClientCertAuth implements HttpClientAuth {
             LOGGER.error("Error creating jks from certificates: ", e);
             throw new RuntimeException(e);
         }
+
+        socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", sslSocketFactory)
+                .build();
     }
 
-    private InputStream loadFile(String filePath) throws FileNotFoundException{
-        if(filePath.startsWith(FILE_PROTOCOL)){
+    @Override
+    public CloseableHttpClient getClient() {
+        HttpClientConnectionManager connManager;
+        connManager = new BasicHttpClientConnectionManager(socketFactoryRegistry);
+        return ApacheHttpClients.forConnectionManager(connManager);
+    }
+
+    private InputStream loadFile(String filePath) throws FileNotFoundException {
+        if (filePath.startsWith(FILE_PROTOCOL)) {
             return new FileInputStream(filePath.substring(FILE_PROTOCOL.length()));
         }
         return getClass().getClassLoader().getResourceAsStream(filePath);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.redhat.lightblue.client.http.auth.HttpClientAuth#getClient()
-     */
-    @Override
-    public CloseableHttpClient getClient() {
-        return HttpClients.custom()
-                .setSSLSocketFactory(sslSocketFactory)
-                .setRedirectStrategy(new LaxRedirectStrategy())
-                .build();
     }
 }
