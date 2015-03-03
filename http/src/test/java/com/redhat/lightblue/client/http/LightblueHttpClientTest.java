@@ -13,45 +13,38 @@ import com.redhat.lightblue.client.request.data.DataFindRequest;
 
 public class LightblueHttpClientTest {
 
-	LightblueHttpClientMock client = new LightblueHttpClientMock();
+    LightblueHttpClientMock client = new LightblueHttpClientMock();
 
-	@Test
-	public void testPojoMapping() throws IOException {
-		DataFindRequest findRequest = new DataFindRequest("foo", "bar");
+    @Test
+    public void testPojoMapping() throws IOException {
+        DataFindRequest findRequest = new DataFindRequest("foo", "bar");
 
-		findRequest.where(withValue("foo = bar"));
-		findRequest.select(includeField("_id"));
+        findRequest.where(withValue("foo = bar"));
+        findRequest.select(includeField("_id"));
 
-		client.setLightblueResponse("{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}");
+        client.setLightblueResponse("{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}");
 
-		SimpleModelObject[] results = client.data(findRequest,
-		        SimpleModelObject[].class);
+        SimpleModelObject[] results = client.data(findRequest,
+                SimpleModelObject[].class);
 
-		Assert.assertEquals(1, results.length);
-		;
-		Assert.assertTrue(new SimpleModelObject("idhash", "value")
-		        .equals(results[0]));
-	}
+        Assert.assertEquals(1, results.length);
 
-	@Test
-	public void testPojoMappingWithParsingError() throws IOException {
-		DataFindRequest findRequest = new DataFindRequest("foo", "bar");
+        Assert.assertTrue(new SimpleModelObject("idhash", "value")
+        .equals(results[0]));
+    }
 
-		findRequest.where(withValue("foo = bar"));
-		findRequest.select(includeField("_id"));
+    @Test(expected = LightblueHttpClientException.class)
+    public void testPojoMappingWithParsingError() throws IOException {
+        DataFindRequest findRequest = new DataFindRequest("foo", "bar");
 
-		String response = "{\"context\": \"rest/FindCommand/esbMessage\", \"errorCode\": \"rest-crud:RestFindError\", \"msg\": \"java.lang.IllegalArgumentException: Cannot call method public static com.redhat.lightblue.crud.FindRequest com.redhat.lightblue.crud.FindRequest.fromJson(com.fasterxml.jackson.databind.node.ObjectNode)\", \"objectType\": \"error\"}";
+        findRequest.where(withValue("foo = bar"));
+        findRequest.select(includeField("_id"));
 
-		client.setLightblueResponse(response);
+        String response = "{\"context\": \"rest/FindCommand/esbMessage\", \"errorCode\": \"rest-crud:RestFindError\", \"msg\": \"java.lang.IllegalArgumentException: Cannot call method public static com.redhat.lightblue.crud.FindRequest com.redhat.lightblue.crud.FindRequest.fromJson(com.fasterxml.jackson.databind.node.ObjectNode)\", \"objectType\": \"error\"}";
 
-		try {
-			client.data(findRequest, SimpleModelObject[].class);
+        client.setLightblueResponse(response);
 
-			Assert.fail();
-		} catch (RuntimeException e) {
-			Assert.assertTrue(e.getMessage().startsWith("Error parsing lightblue response"));
-		}
-
-	}
+        client.data(findRequest, SimpleModelObject[].class);
+    }
 
 }
