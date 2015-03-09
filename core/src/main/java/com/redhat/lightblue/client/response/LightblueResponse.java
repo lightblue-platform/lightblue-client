@@ -40,4 +40,13 @@ public class LightblueResponse {
         this.json = json;
     }
 
+    public boolean hasError(){
+        JsonNode objectTypeNode = json.get("status");
+        if(objectTypeNode == null){
+            return false;
+        }
+
+        return objectTypeNode.textValue().equalsIgnoreCase("error");
+    }
+
 }
