@@ -1,6 +1,7 @@
 package com.redhat.lightblue.client.http;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Paths;
 import java.util.Objects;
 
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
@@ -133,6 +135,7 @@ public class LightblueHttpClient implements LightblueClient {
         .getRestRequest(configuration.getDataServiceURI()));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
         LightblueResponse response = null;
@@ -140,6 +143,15 @@ public class LightblueHttpClient implements LightblueClient {
             response = data(lightblueRequest);
 
             JsonNode objectNode = response.getJson().path("processed");
+            //if null or an empty array
+            if(objectNode == null
+                    || objectNode.isNull()
+                    || (objectNode.isArray() && !((ArrayNode) objectNode).iterator().hasNext())){
+                if(type.isArray()){
+                    return (T)Array.newInstance(type.getComponentType(), 0);
+                }
+                return null;
+            }
 
             return mapper.readValue(objectNode.traverse(), type);
         }
