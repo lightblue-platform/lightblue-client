@@ -47,6 +47,13 @@
                 <artifactId>hystrix-servo-metrics-publisher</artifactId>
                 <version>1.4.0</version>
             </dependency>
+            <!-- The io.reactivex dependency is necessary to be available on the compile time due an issue found (on java/maven) -->
+            <dependency>
+                <groupId>io.reactivex</groupId>
+                <artifactId>rxjava</artifactId>
+                <version>1.0.7</version>
+                <scope>compile</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -87,6 +94,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>1.0.7</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
