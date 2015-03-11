@@ -30,52 +30,7 @@ public class LightblueHttpClientTest {
         Assert.assertEquals(1, results.length);
 
         Assert.assertTrue(new SimpleModelObject("idhash", "value")
-        .equals(results[0]));
-    }
-
-    @Test
-    public void testPojoMapping_EmptyProcessed_ForArrayGeneric() throws IOException {
-        DataFindRequest findRequest = new DataFindRequest("foo", "bar");
-
-        findRequest.where(withValue("foo = bar"));
-        findRequest.select(includeField("_id"));
-
-        client.setLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"processed\": [], \"status\": \"COMPLETE\"}");
-
-        SimpleModelObject[] results = client.data(findRequest,
-                SimpleModelObject[].class);
-
-        Assert.assertEquals(0, results.length);
-    }
-
-    @Test
-    public void testPojoMapping_EmptyProcessed_ForSimpleGeneric() throws IOException {
-        DataFindRequest findRequest = new DataFindRequest("foo", "bar");
-
-        findRequest.where(withValue("foo = bar"));
-        findRequest.select(includeField("_id"));
-
-        client.setLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"processed\": [], \"status\": \"COMPLETE\"}");
-
-        SimpleModelObject results = client.data(findRequest,
-                SimpleModelObject.class);
-
-        Assert.assertNull(results);
-    }
-
-    @Test
-    public void testPojoMapping_NullProcessedNode() throws IOException {
-        DataFindRequest findRequest = new DataFindRequest("foo", "bar");
-
-        findRequest.where(withValue("foo = bar"));
-        findRequest.select(includeField("_id"));
-
-        client.setLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"processed\": null, \"status\": \"COMPLETE\"}");
-
-        SimpleModelObject results = client.data(findRequest,
-                SimpleModelObject.class);
-
-        Assert.assertNull(results);
+                .equals(results[0]));
     }
 
     @Test(expected = LightblueHttpClientException.class)

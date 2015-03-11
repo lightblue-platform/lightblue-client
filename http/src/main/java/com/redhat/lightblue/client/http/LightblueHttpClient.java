@@ -1,7 +1,6 @@
 package com.redhat.lightblue.client.http;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Paths;
 import java.util.Objects;
 
@@ -15,10 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
@@ -28,6 +24,7 @@ import com.redhat.lightblue.client.http.request.LightblueHttpDataRequest;
 import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
+import com.redhat.lightblue.client.response.LightblueResponseParseException;
 import com.redhat.lightblue.client.util.ClientConstants;
 
 public class LightblueHttpClient implements LightblueClient {
@@ -135,36 +132,21 @@ public class LightblueHttpClient implements LightblueClient {
     @Override
     public LightblueResponse data(LightblueRequest lightblueRequest) {
         LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
-        return callService(new LightblueHttpDataRequest(lightblueRequest)
-                .getRestRequest(configuration.getDataServiceURI()));
+        try {
+            return callService(new LightblueHttpDataRequest(lightblueRequest)
+                    .getRestRequest(configuration.getDataServiceURI()));
+        } catch (RuntimeException e) {
+            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
+        }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
-        LightblueResponse response = null;
         try {
-            response = data(lightblueRequest);
-
-            JsonNode objectNode = response.getJson().path("processed");
-            //if null or an empty array
-            if (objectNode == null
-                    || objectNode.isNull()
-                    || (objectNode.isArray() && !((ArrayNode) objectNode).iterator().hasNext())) {
-                if (type.isArray()) {
-                    return (T) Array.newInstance(type.getComponentType(), 0);
-                }
-                return null;
-            }
-
-            return mapper.readValue(objectNode.traverse(), type);
-        } catch (RuntimeException | JsonMappingException e) {
-            StringBuilder buff = new StringBuilder();
-            if (e instanceof JsonMappingException) {
-                buff.append("Error parsing lightblue response: ").append(((response == null) ? "null" : response.getJson().toString() + "\n"));
-            }
-            buff.append("Error sending lightblue request: ").append(lightblueRequest.getBody());
-            throw new LightblueHttpClientException(buff.toString(), e);
+            LightblueResponse response = data(lightblueRequest);
+            return response.parseProcessed(mapper, type);
+        } catch (RuntimeException | LightblueResponseParseException e) {
+            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
         }
     }
 

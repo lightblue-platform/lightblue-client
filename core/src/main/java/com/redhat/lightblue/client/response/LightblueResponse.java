@@ -1,9 +1,11 @@
 package com.redhat.lightblue.client.response;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class LightblueResponse {
 
@@ -40,13 +42,54 @@ public class LightblueResponse {
         this.json = json;
     }
 
-    public boolean hasError(){
+    public boolean hasError() {
         JsonNode objectTypeNode = json.get("status");
-        if(objectTypeNode == null){
+        if (objectTypeNode == null) {
             return false;
         }
 
         return objectTypeNode.textValue().equalsIgnoreCase("error");
+    }
+
+    public int parseModifiedCount() {
+        return parseInt("modifiedCount");
+    }
+
+    public int parseMatchCount() {
+        return parseInt("matchCount");
+    }
+
+    private int parseInt(String fieldName) {
+        JsonNode field = json.findValue(fieldName);
+        if (field == null || field.isNull()) {
+            return 0;
+        }
+        return field.asInt();
+    }
+
+    public <T> T parseProcessed(final Class<T> type) throws LightblueResponseParseException {
+        return parseProcessed(new ObjectMapper(), type);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T parseProcessed(final ObjectMapper mapper, final Class<T> type)
+            throws LightblueResponseParseException {
+        JsonNode processedNode = json.path("processed");
+        try {
+            //if null or an empty array
+            if (processedNode == null
+                    || processedNode.isNull()
+                    || (processedNode.isArray() && !((ArrayNode) processedNode).iterator().hasNext())) {
+                if (type.isArray()) {
+                    return (T) Array.newInstance(type.getComponentType(), 0);
+                }
+                return null;
+            }
+
+            return mapper.readValue(processedNode.traverse(), type);
+        } catch (RuntimeException | IOException e) {
+            throw new LightblueResponseParseException("Error parsing lightblue response: " + json.toString() + "\n", e);
+        }
     }
 
 }
