@@ -13,7 +13,6 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
@@ -25,22 +24,10 @@ import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponseParseException;
-import com.redhat.lightblue.client.util.ClientConstants;
 
 public class LightblueHttpClient implements LightblueClient {
     private final LightblueClientConfiguration configuration;
     private final ObjectMapper mapper;
-
-    /**
-     * It is safe and encouraged to share the same mapper among threads. It is
-     * thread safe. So, this default instance is static.
-     *
-     * @see <a href="http://stackoverflow.com/a/3909846">The developer of the
-     * Jackson library's own quote.</a>
-     */
-    private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper()
-            .setDateFormat(ClientConstants.getDateFormat())
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
@@ -68,7 +55,7 @@ public class LightblueHttpClient implements LightblueClient {
      * This constructor will use a copy of specified configuration object.
      */
     public LightblueHttpClient(LightblueClientConfiguration configuration) {
-        this(configuration, DEFAULT_MAPPER);
+        this(configuration, LightblueResponse.DEFAULT_MAPPER);
     }
 
     /**
@@ -105,7 +92,7 @@ public class LightblueHttpClient implements LightblueClient {
         configuration.setMetadataServiceURI(metadataServiceURI);
         configuration.setUseCertAuth(useCertAuth);
 
-        this.mapper = DEFAULT_MAPPER;
+        this.mapper = LightblueResponse.DEFAULT_MAPPER;
     }
 
     /*
