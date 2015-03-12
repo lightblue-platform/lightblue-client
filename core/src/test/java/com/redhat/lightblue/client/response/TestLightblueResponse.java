@@ -68,6 +68,7 @@ public class TestLightblueResponse {
 
         Object[] results = response.parseProcessed(Object[].class);
 
+        Assert.assertNotNull(results);
         Assert.assertEquals(0, results.length);
     }
 
@@ -86,9 +87,10 @@ public class TestLightblueResponse {
 
         SimpleModelObject[] results = response.parseProcessed(SimpleModelObject[].class);
 
+        Assert.assertNotNull(results);
         Assert.assertEquals(1, results.length);
 
-        Assert.assertTrue(new SimpleModelObject("idhash", "value").equals(results[0]));
+        Assert.assertEquals(new SimpleModelObject("idhash", "value"), results[0]);
     }
 
     @Test
@@ -100,9 +102,18 @@ public class TestLightblueResponse {
         Assert.assertNull(results);
     }
 
+    @Test
+    public void testParseProcessedWithParsingError_DoesNotExist() throws LightblueResponseParseException {
+        LightblueResponse response = new LightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"status\": \"COMPLETE\"}");
+
+        Object[] results = response.parseProcessed(Object[].class);
+        Assert.assertNotNull(results);
+        Assert.assertEquals(0, results.length);
+    }
+
     @Test(expected = LightblueResponseParseException.class)
-    public void testParseProcessedWithParsingError() throws LightblueResponseParseException {
-        LightblueResponse response = new LightblueResponse("{\"context\": \"rest/FindCommand/esbMessage\", \"errorCode\": \"rest-crud:RestFindError\", \"msg\": \"java.lang.IllegalArgumentException: Cannot call method public static com.redhat.lightblue.crud.FindRequest com.redhat.lightblue.crud.FindRequest.fromJson(com.fasterxml.jackson.databind.node.ObjectNode)\", \"objectType\": \"error\"}");
+    public void testParseProcessedWithParsingError_InvalidJson() throws LightblueResponseParseException {
+        LightblueResponse response = new LightblueResponse("{\"processed\":\"<p>This is not json</p>\"}");
 
         response.parseProcessed(Object[].class);
     }

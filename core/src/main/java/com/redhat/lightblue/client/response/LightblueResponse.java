@@ -74,11 +74,13 @@ public class LightblueResponse {
     @SuppressWarnings("unchecked")
     public <T> T parseProcessed(final ObjectMapper mapper, final Class<T> type)
             throws LightblueResponseParseException {
-        JsonNode processedNode = json.path("processed");
         try {
+            JsonNode processedNode = json.path("processed");
+
             //if null or an empty array
             if (processedNode == null
                     || processedNode.isNull()
+                    || processedNode.isMissingNode()
                     || (processedNode.isArray() && !((ArrayNode) processedNode).iterator().hasNext())) {
                 if (type.isArray()) {
                     return (T) Array.newInstance(type.getComponentType(), 0);

@@ -40,7 +40,7 @@ public class LightblueHttpClientTest {
         findRequest.where(withValue("foo = bar"));
         findRequest.select(includeField("_id"));
 
-        String response = "{\"context\": \"rest/FindCommand/esbMessage\", \"errorCode\": \"rest-crud:RestFindError\", \"msg\": \"java.lang.IllegalArgumentException: Cannot call method public static com.redhat.lightblue.crud.FindRequest com.redhat.lightblue.crud.FindRequest.fromJson(com.fasterxml.jackson.databind.node.ObjectNode)\", \"objectType\": \"error\"}";
+        String response = "{\"processed\":\"<p>This is not json</p>\"}";
 
         client.setLightblueResponse(response);
 
