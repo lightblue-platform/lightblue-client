@@ -1,7 +1,6 @@
 package com.redhat.lightblue.client.http;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Paths;
 import java.util.Objects;
 
@@ -14,11 +13,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
@@ -28,22 +23,11 @@ import com.redhat.lightblue.client.http.request.LightblueHttpDataRequest;
 import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
-import com.redhat.lightblue.client.util.ClientConstants;
+import com.redhat.lightblue.client.response.LightblueResponseParseException;
 
 public class LightblueHttpClient implements LightblueClient {
     private final LightblueClientConfiguration configuration;
     private final ObjectMapper mapper;
-
-    /**
-     * It is safe and encouraged to share the same mapper among threads. It is
-     * thread safe. So, this default instance is static.
-     *
-     * @see <a href="http://stackoverflow.com/a/3909846">The developer of the
-     * Jackson library's own quote.</a>
-     */
-    private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper()
-            .setDateFormat(ClientConstants.getDateFormat())
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
@@ -71,7 +55,7 @@ public class LightblueHttpClient implements LightblueClient {
      * This constructor will use a copy of specified configuration object.
      */
     public LightblueHttpClient(LightblueClientConfiguration configuration) {
-        this(configuration, DEFAULT_MAPPER);
+        this(configuration, LightblueResponse.DEFAULT_MAPPER);
     }
 
     /**
@@ -108,7 +92,7 @@ public class LightblueHttpClient implements LightblueClient {
         configuration.setMetadataServiceURI(metadataServiceURI);
         configuration.setUseCertAuth(useCertAuth);
 
-        this.mapper = DEFAULT_MAPPER;
+        this.mapper = LightblueResponse.DEFAULT_MAPPER;
     }
 
     /*
@@ -135,36 +119,21 @@ public class LightblueHttpClient implements LightblueClient {
     @Override
     public LightblueResponse data(LightblueRequest lightblueRequest) {
         LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
-        return callService(new LightblueHttpDataRequest(lightblueRequest)
-                .getRestRequest(configuration.getDataServiceURI()));
+        try {
+            return callService(new LightblueHttpDataRequest(lightblueRequest)
+                    .getRestRequest(configuration.getDataServiceURI()));
+        } catch (RuntimeException e) {
+            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
+        }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
-        LightblueResponse response = null;
         try {
-            response = data(lightblueRequest);
-
-            JsonNode objectNode = response.getJson().path("processed");
-            //if null or an empty array
-            if (objectNode == null
-                    || objectNode.isNull()
-                    || (objectNode.isArray() && !((ArrayNode) objectNode).iterator().hasNext())) {
-                if (type.isArray()) {
-                    return (T) Array.newInstance(type.getComponentType(), 0);
-                }
-                return null;
-            }
-
-            return mapper.readValue(objectNode.traverse(), type);
-        } catch (RuntimeException | JsonMappingException e) {
-            StringBuilder buff = new StringBuilder();
-            if (e instanceof JsonMappingException) {
-                buff.append("Error parsing lightblue response: ").append(((response == null) ? "null" : response.getJson().toString() + "\n"));
-            }
-            buff.append("Error sending lightblue request: ").append(lightblueRequest.getBody());
-            throw new LightblueHttpClientException(buff.toString(), e);
+            LightblueResponse response = data(lightblueRequest);
+            return response.parseProcessed(type);
+        } catch (RuntimeException | LightblueResponseParseException e) {
+            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
         }
     }
 
@@ -188,12 +157,12 @@ public class LightblueHttpClient implements LightblueClient {
                     HttpEntity entity = httpResponse.getEntity();
                     jsonOut = EntityUtils.toString(entity);
                     LOGGER.debug("Response received from service" + jsonOut);
-                    return new LightblueResponse(jsonOut);
+                    return new LightblueResponse(jsonOut, mapper);
                 }
             }
         } catch (IOException e) {
             LOGGER.error("There was a problem calling the lightblue service", e);
-            return new LightblueResponse("{\"error\":\"There was a problem calling the lightblue service\"}");
+            return new LightblueResponse("{\"error\":\"There was a problem calling the lightblue service\"}", mapper);
         }
     }
 
