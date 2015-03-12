@@ -24,14 +24,26 @@ public class LightblueResponse {
 
     private String text;
     private JsonNode json;
+    private final ObjectMapper mapper;
+
+    public LightblueResponse(ObjectMapper mapper) {
+        if (mapper == null) {
+            throw new NullPointerException("ObjectMapper instance cannot be null");
+        }
+        this.mapper = mapper;
+    }
 
     public LightblueResponse() {
-
+        this(DEFAULT_MAPPER);
     }
 
     public LightblueResponse(String responseText) {
+        this(responseText, DEFAULT_MAPPER);
+    }
+
+    public LightblueResponse(String responseText, ObjectMapper mapper) {
+        this(mapper);
         this.text = responseText;
-        ObjectMapper mapper = new ObjectMapper();
         try {
             json = mapper.readTree(responseText);
         } catch (IOException e) {
@@ -80,12 +92,8 @@ public class LightblueResponse {
         return field.asInt();
     }
 
-    public <T> T parseProcessed(final Class<T> type) throws LightblueResponseParseException {
-        return parseProcessed(DEFAULT_MAPPER, type);
-    }
-
     @SuppressWarnings("unchecked")
-    public <T> T parseProcessed(final ObjectMapper mapper, final Class<T> type)
+    public <T> T parseProcessed(final Class<T> type)
             throws LightblueResponseParseException {
         try {
             JsonNode processedNode = json.path("processed");

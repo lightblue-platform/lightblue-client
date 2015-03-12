@@ -131,7 +131,7 @@ public class LightblueHttpClient implements LightblueClient {
     public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
         try {
             LightblueResponse response = data(lightblueRequest);
-            return response.parseProcessed(mapper, type);
+            return response.parseProcessed(type);
         } catch (RuntimeException | LightblueResponseParseException e) {
             throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
         }
@@ -157,12 +157,12 @@ public class LightblueHttpClient implements LightblueClient {
                     HttpEntity entity = httpResponse.getEntity();
                     jsonOut = EntityUtils.toString(entity);
                     LOGGER.debug("Response received from service" + jsonOut);
-                    return new LightblueResponse(jsonOut);
+                    return new LightblueResponse(jsonOut, mapper);
                 }
             }
         } catch (IOException e) {
             LOGGER.error("There was a problem calling the lightblue service", e);
-            return new LightblueResponse("{\"error\":\"There was a problem calling the lightblue service\"}");
+            return new LightblueResponse("{\"error\":\"There was a problem calling the lightblue service\"}", mapper);
         }
     }
 
