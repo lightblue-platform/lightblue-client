@@ -1,10 +1,13 @@
 package com.redhat.lightblue.client.http.auth;
 
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,17 +21,24 @@ import java.security.GeneralSecurityException;
  */
 @Deprecated
 public class HttpClientNoAuth implements HttpClientAuth {
-    private final SSLConnectionSocketFactory sslSocketFactory;
+    private final Registry<ConnectionSocketFactory> socketFactoryRegistry;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientNoAuth.class);
 
     public HttpClientNoAuth() {
+        SSLConnectionSocketFactory sslSocketFactory;
+
         try {
             sslSocketFactory = SslSocketFactories.defaultNoAuthSocketFactory();
         } catch (GeneralSecurityException e) {
             LOGGER.error("Error creating jks from certificates: ", e);
             throw new RuntimeException(e);
         }
+
+        socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", sslSocketFactory)
+                .build();
     }
 
     /* (non-Javadoc)
@@ -36,9 +46,8 @@ public class HttpClientNoAuth implements HttpClientAuth {
      */
     @Override
     public CloseableHttpClient getClient() {
-        return HttpClients.custom()
-                .setSSLSocketFactory(sslSocketFactory)
-                .setRedirectStrategy(new LaxRedirectStrategy())
-                .build();
+        HttpClientConnectionManager connManager;
+        connManager = new BasicHttpClientConnectionManager(socketFactoryRegistry);
+        return ApacheHttpClients.forConnectionManager(connManager);
     }
 }
