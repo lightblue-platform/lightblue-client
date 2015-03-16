@@ -30,7 +30,7 @@ public class TestLightblueResponse {
         new LightblueResponse("bad json");
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NullPointerException.class)
     public void testConstructor_NullObjectMapper() {
         ObjectMapper om = null;
         new LightblueResponse(om);
