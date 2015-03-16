@@ -73,7 +73,8 @@ public class LightblueResponse {
             return false;
         }
 
-        return objectTypeNode.textValue().equalsIgnoreCase("error");
+        return objectTypeNode.textValue().equalsIgnoreCase("error")
+                || objectTypeNode.textValue().equalsIgnoreCase("partial");
     }
 
     public int parseModifiedCount() {

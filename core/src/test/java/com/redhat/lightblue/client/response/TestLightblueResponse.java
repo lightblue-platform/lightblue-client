@@ -63,6 +63,12 @@ public class TestLightblueResponse {
     }
 
     @Test
+    public void testHasError_Partial_True() {
+        LightblueResponse response = new LightblueResponse("{\"status\":\"partial\"}");
+        assertTrue(response.hasError());
+    }
+
+    @Test
     public void testParseProcessed_EmptyProcessed_ForArrayGeneric() throws LightblueResponseParseException {
         LightblueResponse response = new LightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"processed\": [], \"status\": \"COMPLETE\"}");
 
