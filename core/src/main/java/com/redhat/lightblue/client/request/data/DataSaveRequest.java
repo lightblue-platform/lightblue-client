@@ -30,11 +30,12 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
     }
 
     public void create(Object... objects){
-        this.objects = objects;
-    }
-
-    public void create(Collection<Object> objects){
-        this.objects = objects.toArray(new Object[objects.size()]);
+        if (objects[0] instanceof java.util.Collection<?>) {
+            this.objects = ((Collection<?>)objects[0]).toArray();
+        }
+        else {
+            this.objects = objects;
+        }
     }
 
     public Boolean isUpsert() {

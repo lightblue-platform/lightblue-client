@@ -73,7 +73,8 @@ public class LightblueResponse {
             return false;
         }
 
-        return objectTypeNode.textValue().equalsIgnoreCase("error");
+        return objectTypeNode.textValue().equalsIgnoreCase("error")
+                || objectTypeNode.textValue().equalsIgnoreCase("partial");
     }
 
     public int parseModifiedCount() {
@@ -95,6 +96,10 @@ public class LightblueResponse {
     @SuppressWarnings("unchecked")
     public <T> T parseProcessed(final Class<T> type)
             throws LightblueResponseParseException {
+        if (hasError()) {
+            throw new LightblueErrorResponseException("Error returned in response: " + getText());
+        }
+
         try {
             JsonNode processedNode = json.path("processed");
 
@@ -111,7 +116,7 @@ public class LightblueResponse {
 
             return mapper.readValue(processedNode.traverse(), type);
         } catch (RuntimeException | IOException e) {
-            throw new LightblueResponseParseException("Error parsing lightblue response: " + json.toString() + "\n", e);
+            throw new LightblueResponseParseException("Error parsing lightblue response: " + getText() + "\n", e);
         }
     }
 

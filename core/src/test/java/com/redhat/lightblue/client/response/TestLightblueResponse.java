@@ -25,6 +25,17 @@ public class TestLightblueResponse {
         testResponse = new LightblueResponse(initialResponseText);
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testConstructor_BadJson() {
+        new LightblueResponse("bad json");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testConstructor_NullObjectMapper() {
+        ObjectMapper om = null;
+        new LightblueResponse(om);
+    }
+
     @Test
     public void testGetText() {
         Assert.assertEquals(initialResponseText, testResponse.getText());
@@ -59,6 +70,17 @@ public class TestLightblueResponse {
     @Test
     public void testHasError_True() {
         LightblueResponse response = new LightblueResponse("{\"status\":\"error\"}");
+        assertTrue(response.hasError());
+    }
+
+    @Test(expected = LightblueErrorResponseException.class)
+    public void testParseProcessed_LightblueReturnsError() throws LightblueResponseParseException {
+        new LightblueResponse("{\"status\":\"error\", \"errors\":[{\"errorCode\": \"metadata:InvalidFieldReference\"}]}").parseProcessed(Object.class);
+    }
+
+    @Test
+    public void testHasError_Partial_True() {
+        LightblueResponse response = new LightblueResponse("{\"status\":\"partial\"}");
         assertTrue(response.hasError());
     }
 
