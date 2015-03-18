@@ -1,7 +1,6 @@
 package com.redhat.lightblue.client.http.auth;
 
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 
 /**
  * @deprecated Use {@link com.redhat.lightblue.client.http.auth.ApacheHttpClients} instead, or

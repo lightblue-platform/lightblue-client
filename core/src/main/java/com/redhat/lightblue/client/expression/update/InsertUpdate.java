@@ -32,7 +32,7 @@ public class InsertUpdate implements Update {
          */
         StringBuilder json = new StringBuilder("{");
         json.append("$insert:{");
-        json.append(this.path+"."+this.index.toString()+":");
+        json.append(this.path).append(".").append(this.index.toString()).append(":");
         if( expressions.length > 1 ){
             json.append("[");
         }

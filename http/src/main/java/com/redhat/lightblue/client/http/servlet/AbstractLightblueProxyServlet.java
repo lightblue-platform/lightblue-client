@@ -1,7 +1,6 @@
 package com.redhat.lightblue.client.http.servlet;
 
 import com.redhat.lightblue.client.LightblueClientConfiguration;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpRequestWrapper;

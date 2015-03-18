@@ -1,11 +1,11 @@
 package com.redhat.lightblue.client.json;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LightBlueJsonHelperImpl implements LightBlueJsonHelper {
 	public Map<String,Object> getJsonMap(String json) {

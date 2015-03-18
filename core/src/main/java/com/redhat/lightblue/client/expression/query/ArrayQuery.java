@@ -25,21 +25,21 @@ public class ArrayQuery implements Query {
 	public String toJson() {
 		StringBuilder builder = new StringBuilder("{");
 		if(queryExpression !=null) {
-			builder.append("\"array\":\""+fieldName+"\",");
+			builder.append("\"array\":\"").append(fieldName).append("\",");
 			builder.append("\"elemMatch\":");
 			builder.append(queryExpression.toJson());
 		}
 		else {
-			builder.append("\"array\":\""+fieldName+"\",");
-			builder.append("\"contains\":\""+arrayOperation.toString()+"\",");
+			builder.append("\"array\":\"").append(fieldName).append("\",");
+			builder.append("\"contains\":\"").append(arrayOperation.toString()).append("\",");
 			builder.append("\"values\":[");
 			builder.append("");
 			
-			builder.append("\""+array[0]+"\"");
+			builder.append("\"").append(array[0]).append("\"");
 			
 			if (array.length > 1) {
 				for (int i = 1; i < array.length; i++) {
-					builder.append(",\""+array[i]+"\"");
+					builder.append(",\"").append(array[i]).append("\"");
 				}
 			}
 

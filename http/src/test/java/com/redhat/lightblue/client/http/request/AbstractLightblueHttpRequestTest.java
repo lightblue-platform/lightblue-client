@@ -1,13 +1,12 @@
 package com.redhat.lightblue.client.http.request;
 
-import java.io.IOException;
-
-import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
+
+import java.io.IOException;
 
 public class AbstractLightblueHttpRequestTest {
 

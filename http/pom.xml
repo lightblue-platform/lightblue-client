@@ -5,7 +5,6 @@
     <artifactId>lightblue-client-pom</artifactId>
     <version>1.2.0-SNAPSHOT</version>
   </parent>
-  <groupId>com.redhat.lightblue.client</groupId>
   <artifactId>lightblue-client-http</artifactId>
   <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
   <dependencies>

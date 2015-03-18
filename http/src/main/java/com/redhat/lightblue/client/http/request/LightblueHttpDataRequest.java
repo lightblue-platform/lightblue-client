@@ -1,13 +1,8 @@
 package com.redhat.lightblue.client.http.request;
 
-import org.apache.http.client.methods.HttpRequestBase;
-
 import com.redhat.lightblue.client.request.LightblueRequest;
-import com.redhat.lightblue.client.request.data.DataDeleteRequest;
-import com.redhat.lightblue.client.request.data.DataFindRequest;
-import com.redhat.lightblue.client.request.data.DataInsertRequest;
-import com.redhat.lightblue.client.request.data.DataSaveRequest;
-import com.redhat.lightblue.client.request.data.DataUpdateRequest;
+import com.redhat.lightblue.client.request.data.*;
+import org.apache.http.client.methods.HttpRequestBase;
 
 public class LightblueHttpDataRequest extends AbstractLightblueHttpRequest implements LightblueHttpRequest {
 
@@ -19,8 +14,6 @@ public class LightblueHttpDataRequest extends AbstractLightblueHttpRequest imple
 	
 	@Override
 	public HttpRequestBase getRestRequest(String baseServiceURI) {
-		HttpRequestBase httpRequest = null;
-
 		if (request instanceof DataDeleteRequest) {
 			return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
 		} else if (request instanceof DataFindRequest) {
@@ -32,7 +25,7 @@ public class LightblueHttpDataRequest extends AbstractLightblueHttpRequest imple
 		} else if (request instanceof DataUpdateRequest) {
 			return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
 		}
-		return httpRequest;
+		return null;
 	}
 
 }

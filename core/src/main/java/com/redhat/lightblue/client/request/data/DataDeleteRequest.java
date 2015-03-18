@@ -22,7 +22,7 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
 
     @Override
     public String getBody() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("{\"query\":");
         sb.append(queryExpression.toJson());
         sb.append("}");

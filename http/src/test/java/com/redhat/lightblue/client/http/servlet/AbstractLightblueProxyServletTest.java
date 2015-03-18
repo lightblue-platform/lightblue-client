@@ -1,22 +1,11 @@
 package com.redhat.lightblue.client.http.servlet;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import com.redhat.lightblue.client.http.testing.doubles.FakeServletConfig;
 import com.redhat.lightblue.client.http.testing.doubles.FakeServletOutputStream;
 import com.redhat.lightblue.client.http.testing.doubles.StubHttpServletRequest;
 import com.redhat.lightblue.client.http.testing.doubles.StubInstance;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -38,9 +27,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(JUnit4.class)
 public class AbstractLightblueProxyServletTest {
@@ -222,7 +215,7 @@ public class AbstractLightblueProxyServletTest {
             @Override
             protected String serviceUriForRequest(HttpServletRequest request) throws ServletException {
                 return serviceUri + servicePathForRequest(request);
-            };
+            }
         };
 
         if (servletConfig == null) {

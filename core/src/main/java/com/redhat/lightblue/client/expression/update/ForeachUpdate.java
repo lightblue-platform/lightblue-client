@@ -26,7 +26,7 @@ public class ForeachUpdate implements Update {
          */
         StringBuilder json = new StringBuilder("{");
         json.append("\"$foreach\":{");
-        json.append("\""+this.path+"\"");
+        json.append("\"").append(this.path).append("\"");
         json.append(":");
         json.append( this.query.toJson() );
         json.append( ", \"$update\" :");

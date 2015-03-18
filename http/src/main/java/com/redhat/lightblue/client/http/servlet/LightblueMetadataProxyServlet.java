@@ -1,7 +1,6 @@
 package com.redhat.lightblue.client.http.servlet;
 
 import com.redhat.lightblue.client.LightblueClientConfiguration;
-
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import javax.enterprise.inject.Instance;

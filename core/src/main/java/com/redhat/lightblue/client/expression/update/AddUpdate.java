@@ -1,6 +1,5 @@
 package com.redhat.lightblue.client.expression.update;
 
-import java.lang.StringBuffer;
 import java.util.Collection;
 
 /**

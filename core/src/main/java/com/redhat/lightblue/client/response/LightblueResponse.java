@@ -1,13 +1,13 @@
 package com.redhat.lightblue.client.response;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.util.ClientConstants;
+
+import java.io.IOException;
+import java.lang.reflect.Array;
 
 public class LightblueResponse {
 

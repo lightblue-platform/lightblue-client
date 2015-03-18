@@ -17,9 +17,9 @@ public class FieldQuery implements Query {
 	@Override
 	public String toJson() {
 		StringBuilder json = new StringBuilder("{");
-		json.append("\"field\":\""+lefthandField+ "\",");
-		json.append("\"op\":\"" +operation.toString()+ "\",");
-		json.append("\"rfield\":\""+righthandField+"\"");
+		json.append("\"field\":\"").append(lefthandField).append("\",");
+		json.append("\"op\":\"").append(operation.toString()).append("\",");
+		json.append("\"rfield\":\"").append(righthandField).append("\"");
 		json.append("}");
 		return json.toString();
 	}

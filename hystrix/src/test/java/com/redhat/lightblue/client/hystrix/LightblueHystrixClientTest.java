@@ -8,9 +8,10 @@ package com.redhat.lightblue.client.hystrix;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
-import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.IOException;
 
 /**
  *

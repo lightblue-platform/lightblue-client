@@ -1,19 +1,18 @@
 package com.redhat.lightblue.client.http.servlet;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.http.testing.doubles.FakeServletConfig;
 import com.redhat.lightblue.client.http.testing.doubles.StubHttpServletRequest;
 import com.redhat.lightblue.client.http.testing.doubles.StubInstance;
-
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Test;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class LightblueMetadataProxyServletTest {
     @Test

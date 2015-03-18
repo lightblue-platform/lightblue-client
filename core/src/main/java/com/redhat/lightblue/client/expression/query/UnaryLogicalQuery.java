@@ -19,7 +19,7 @@ public class UnaryLogicalQuery implements Query {
 
     @Override
     public String toJson() throws IllegalArgumentException {
-        StringBuffer builder = new StringBuffer();
+        StringBuilder builder = new StringBuilder();
 
         builder.append("{\"");
         builder.append( this.operation.toString() );

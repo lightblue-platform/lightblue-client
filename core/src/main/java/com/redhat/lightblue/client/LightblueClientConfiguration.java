@@ -1,8 +1,8 @@
 package com.redhat.lightblue.client;
 
-import java.util.Objects;
-
 import org.apache.commons.io.FilenameUtils;
+
+import java.util.Objects;
 
 public class LightblueClientConfiguration {
 	

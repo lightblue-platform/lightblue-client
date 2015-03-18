@@ -1,8 +1,5 @@
 package com.redhat.lightblue.client.http.request;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -10,6 +7,9 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 public class TestAbstractLightblueHttpRequest extends AbstractLightblueHttpRequestTest {
 

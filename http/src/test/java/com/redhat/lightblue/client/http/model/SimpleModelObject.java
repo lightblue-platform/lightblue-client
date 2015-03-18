@@ -29,11 +29,23 @@ public class SimpleModelObject {
 		this.field = field;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		SimpleModelObject o = (SimpleModelObject) obj;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SimpleModelObject)) return false;
 
-		return _id.equals(o._id) && field.equals(o.field);
-	}
+        SimpleModelObject that = (SimpleModelObject) o;
 
+        if (!_id.equals(that._id)) return false;
+        if (!field.equals(that.field)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = _id.hashCode();
+        result = 31 * result + field.hashCode();
+        return result;
+    }
 }

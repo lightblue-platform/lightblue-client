@@ -1,10 +1,10 @@
 package com.redhat.lightblue.client.request.data;
 
-import java.util.Collection;
-
 import com.redhat.lightblue.client.projection.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.util.JSON;
+
+import java.util.Collection;
 
 public class DataInsertRequest extends AbstractLightblueDataRequest {
 

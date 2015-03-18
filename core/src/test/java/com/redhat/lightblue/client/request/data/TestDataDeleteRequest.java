@@ -1,12 +1,11 @@
 package com.redhat.lightblue.client.request.data;
 
 import com.redhat.lightblue.client.expression.query.Query;
+import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 public class TestDataDeleteRequest extends AbstractLightblueRequestTest {

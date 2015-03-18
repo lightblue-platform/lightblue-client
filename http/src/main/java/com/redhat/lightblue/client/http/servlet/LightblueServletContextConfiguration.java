@@ -1,13 +1,13 @@
 package com.redhat.lightblue.client.http.servlet;
 
-import static java.lang.Boolean.parseBoolean;
-import static java.lang.Integer.parseInt;
-
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 
 import javax.servlet.ServletContext;
 import java.nio.file.Paths;
+
+import static java.lang.Boolean.parseBoolean;
+import static java.lang.Integer.parseInt;
 
 public class LightblueServletContextConfiguration {
     private static final String LIGHTBLUE_CLIENT_PROPERTIES_PATH_KEY = "lightblueClientPropertiesPath";

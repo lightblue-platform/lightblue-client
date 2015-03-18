@@ -28,7 +28,7 @@ public class AppendUpdate implements Update {
          */
         StringBuilder json = new StringBuilder("{");
         json.append("\"$append\":{");
-        json.append("\""+this.path+"\":");
+        json.append("\"").append(this.path).append("\":");
         if( expressions.length > 1 ){
             json.append("[");
         }
