@@ -102,7 +102,7 @@ public class LightblueHttpClientTest {
     }
 
     @Test
-    public void testPojoMappingWithEmptyProcessedResults_ForSingleResult() throws IOException {
+    public void testPojoMappingWithEmptyProcessedResults_ForEmptyJsonNode() throws IOException {
         DataFindRequest findRequest = new DataFindRequest("foo", "bar");
 
         findRequest.where(withValue("foo = bar"));

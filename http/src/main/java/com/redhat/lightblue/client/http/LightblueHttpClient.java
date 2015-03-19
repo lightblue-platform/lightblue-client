@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client.http;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -117,28 +118,26 @@ public class LightblueHttpClient implements LightblueClient {
                 .getRestRequest(configuration.getMetadataServiceURI()));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.redhat.lightblue.client.LightblueClient#data(com.redhat.lightblue.client
-     * .request.LightblueRequest)
-     */
     @Override
     public LightblueResponse data(LightblueRequest lightblueRequest) {
         LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
-        return callService(new LightblueHttpDataRequest(lightblueRequest)
-                .getRestRequest(configuration.getDataServiceURI()));
+        try {
+            return callService(new LightblueHttpDataRequest(lightblueRequest)
+                    .getRestRequest(configuration.getDataServiceURI()));
+        } catch (RuntimeException e) {
+            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
+        }
     }
 
     @Override
     public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
-        LightblueResponse response = data(lightblueRequest);
+        LightblueResponse response = data(lightblueRequest); // it already handles RuntimeException and LightblueResponseParseException & LightblueHttpClientException should be handled by the client
+
         JsonNode responseJson = response.getJson();
 
         JsonNode objectType = responseJson.get("objectType");
         if (objectType != null && "error".equalsIgnoreCase(objectType.textValue())) {
-            throw new RuntimeException("Error in lightblue response: " + responseJson.toString());
+            throw new LightblueHttpClientException("Error in lightblue response: " + responseJson.toString());
         }
 
         JsonNode responseNode = responseJson.path("processed");
@@ -148,9 +147,9 @@ public class LightblueHttpClient implements LightblueClient {
 
         try {
             return mapper.readValue(responseNode.traverse(), type);
-        } catch (JsonMappingException e) {
+        } catch (JsonParseException | JsonMappingException e) {
             LOGGER.error("Error parsing lightblue response: " + responseJson.toString(), e);
-            throw new RuntimeException("Error parsing lightblue response: " + responseJson.toString());
+            throw new LightblueHttpClientException("Error parsing lightblue response: " + responseJson.toString());
         }
     }
 

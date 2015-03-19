@@ -1,7 +1,7 @@
 package com.redhat.lightblue.client.http;
 
 /**
- * Exception indicating an error ocurred while communicating with lightblue.
+ * Exception indicating an error occurred while communicating with lightblue.
  *
  * @author dcrissman
  */
