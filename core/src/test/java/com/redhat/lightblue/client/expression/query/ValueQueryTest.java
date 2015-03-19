@@ -45,6 +45,16 @@ public class ValueQueryTest {
         JSONAssert.assertEquals(expectedJson, expression.toJson(), false);
     }
 
+    @Test
+    public void testFieldInArray() throws JSONException {
+        ValueQuery expression = new ValueQuery("foo.*.bar.*.uid = id");
+
+        String expectedJson = "{\"field\":\"foo.*.bar.*.uid\",\"op\":\"=\",\"rvalue\":\"id\"}";
+
+        JSONAssert.assertEquals(expectedJson, expression.toJson(), false);
+
+    }
+
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidExpression() {
         new ValueQuery("fie ld1 = Red Hat Enterprise Linux");

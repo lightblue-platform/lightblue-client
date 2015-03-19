@@ -19,7 +19,7 @@ public class ValueQuery implements Query {
     private String rValue;
     private String operator;
 
-    public static final Pattern expressionPattern = Pattern.compile("(\\w+)\\s*(\\S+)\\s*(.+)$");
+    public static final Pattern expressionPattern = Pattern.compile("([\\w|\\*|\\.]+)\\s*(\\S+)\\s*(.+)$");
 
     // binary_comparison_operator := "=" | "!=" | "<" | ">" | "<=" | ">=" |
     //        "$eq" | "$neq" | "$lt" | "$gt" | "$lte" | "$gte
