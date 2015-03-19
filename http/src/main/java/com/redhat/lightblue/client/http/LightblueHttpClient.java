@@ -16,6 +16,7 @@ import com.redhat.lightblue.client.http.request.LightblueHttpDataRequest;
 import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
+import com.redhat.lightblue.client.response.LightblueResponseParseException;
 import com.redhat.lightblue.client.util.ClientConstants;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -131,25 +132,11 @@ public class LightblueHttpClient implements LightblueClient {
 
     @Override
     public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
-        LightblueResponse response = data(lightblueRequest); // it already handles RuntimeException and LightblueResponseParseException & LightblueHttpClientException should be handled by the client
-
-        JsonNode responseJson = response.getJson();
-
-        JsonNode objectType = responseJson.get("objectType");
-        if (objectType != null && "error".equalsIgnoreCase(objectType.textValue())) {
-            throw new LightblueHttpClientException("Error in lightblue response: " + responseJson.toString());
-        }
-
-        JsonNode responseNode = responseJson.path("processed");
-        if (responseNode instanceof MissingNode || (responseNode instanceof ArrayNode && responseNode.size() == 0 && !type.isArray())) {
-            return null;
-        }
-
+        LightblueResponse response = data(lightblueRequest);
         try {
-            return mapper.readValue(responseNode.traverse(), type);
-        } catch (JsonParseException | JsonMappingException e) {
-            LOGGER.error("Error parsing lightblue response: " + responseJson.toString(), e);
-            throw new LightblueHttpClientException("Error parsing lightblue response: " + responseJson.toString());
+            return response.parseProcessed(type);
+        } catch (RuntimeException | LightblueResponseParseException e) {
+            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
         }
     }
 
@@ -173,12 +160,12 @@ public class LightblueHttpClient implements LightblueClient {
                     HttpEntity entity = httpResponse.getEntity();
                     jsonOut = EntityUtils.toString(entity);
                     LOGGER.debug("Response received from service" + jsonOut);
-                    return new LightblueResponse(jsonOut);
+                    return new LightblueResponse(jsonOut, mapper);
                 }
             }
         } catch (IOException e) {
             LOGGER.error("There was a problem calling the lightblue service", e);
-            return new LightblueResponse("{\"error\":\"There was a problem calling the lightblue service\"}");
+            return new LightblueResponse("{\"error\":\"There was a problem calling the lightblue service\"}", mapper);
         }
     }
 
