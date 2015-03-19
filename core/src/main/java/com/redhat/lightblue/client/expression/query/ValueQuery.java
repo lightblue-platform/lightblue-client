@@ -23,8 +23,8 @@ public class ValueQuery implements Query {
 
     // binary_comparison_operator := "=" | "!=" | "<" | ">" | "<=" | ">=" |
     //        "$eq" | "$neq" | "$lt" | "$gt" | "$lte" | "$gte
-    public static final String[] allowedOperators = new String[]{"=", "!=", "<", ">", "<=", ">=", "$eq", "$neq", "$lt", "$lte", "$gte" };
-    public static final Set<String> allowedOperatorsSet = new HashSet<String>(Arrays.asList(allowedOperators));
+    public static final Set<String> allowedOperatorsSet = new HashSet<String>(Arrays.asList(
+            new String[]{"=", "!=", "<", ">", "<=", ">=", "$eq", "$neq", "$lt", "$lte", "$gte" }));
 
     public ValueQuery(String expression) {
         Matcher m = expressionPattern.matcher(expression);

@@ -1,7 +1,6 @@
 package com.redhat.lightblue.client.expression.query;
 
 import org.json.JSONException;
-import org.junit.Assert;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -56,14 +55,12 @@ public class ValueQueryTest {
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void testInvalidExpression() {
+    public void testInvalidExpressionSpaceInFieldName() {
         new ValueQuery("fie ld1 = Red Hat Enterprise Linux");
-        Assert.fail();
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void testInvalidOperator() {
+    public void testInvalidExpressionUnrecognizedOperator() {
         new ValueQuery("field1 ~= Red Hat Enterprise Linux");
-        Assert.fail();
     }
 }
