@@ -2,6 +2,7 @@ package com.redhat.lightblue.client.http;
 
 import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
+import com.redhat.lightblue.client.response.LightblueResponseParseException;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,8 +39,8 @@ public class LightblueHttpClientTest {
 
     @Test
     public void testPojoMappingWithErrorInResponse() throws IOException {
-        expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Error in lightblue response");
+        expectedEx.expect(LightblueHttpClientException.class);
+        expectedEx.expectMessage("Error sending lightblue request:");
 
         DataFindRequest findRequest = new DataFindRequest("foo", "bar");
 
@@ -58,8 +59,8 @@ public class LightblueHttpClientTest {
      */
     @Test
     public void testPojoMappingWithParsingError() throws IOException {
-        expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Error parsing lightblue response");
+        expectedEx.expect(LightblueHttpClientException.class);
+        expectedEx.expectMessage("Error sending lightblue request:");
 
         DataFindRequest findRequest = new DataFindRequest("foo", "bar");
 
@@ -84,7 +85,8 @@ public class LightblueHttpClientTest {
 
         SimpleModelObject[] results = client.data(findRequest, SimpleModelObject[].class);
 
-        Assert.assertNull(results);
+        Assert.assertNotNull(results);
+        Assert.assertEquals(0, results.length);
     }
 
     @Test

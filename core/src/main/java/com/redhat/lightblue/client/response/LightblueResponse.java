@@ -96,6 +96,11 @@ public class LightblueResponse {
     public <T> T parseProcessed(final Class<T> type)
             throws LightblueResponseParseException {
         try {
+            JsonNode errorCode = json.path("errorCode");
+            if (errorCode != null && !errorCode.isNull() && !errorCode.isMissingNode()){
+                throw new LightblueResponseParseException("Error parsing lightblue response: Error returned. JSON returned:" + json.toString() + "\n");
+            }
+
             JsonNode processedNode = json.path("processed");
 
             //if null or an empty array
