@@ -70,7 +70,7 @@ public class LightblueHttpClient implements LightblueClient {
      * This constructor will use a copy of specified configuration object.
      */
     public LightblueHttpClient(LightblueClientConfiguration configuration) {
-        this(configuration, DEFAULT_MAPPER);
+        this(configuration, LightblueResponse.DEFAULT_MAPPER);
     }
 
     /**
