@@ -11,35 +11,34 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     private Projection[] projections;
     private Object[] objects;
 
-	public DataInsertRequest() {
+    public DataInsertRequest() {
 
-	}
+    }
 
-	public DataInsertRequest(String entityName, String entityVersion) {
-		this.setEntityName(entityName);
-		this.setEntityVersion(entityVersion);
-	}
+    public DataInsertRequest(String entityName, String entityVersion) {
+        this.setEntityName(entityName);
+        this.setEntityVersion(entityVersion);
+    }
 
-    public void returns(Projection... projection){
+    public void returns(Projection... projection) {
         this.projections = projection;
     }
 
     public void returns(Collection<Projection> projections) {
-        this.projections = projections.toArray( new Projection[ projections.size() ] );
+        this.projections = projections.toArray(new Projection[projections.size()]);
     }
 
-    public void create(Object... objects){
+    public void create(Object... objects) {
         if (objects[0] instanceof java.util.Collection<?>) {
-            this.objects = ((Collection<?>)objects[0]).toArray();
-        }
-        else {
+            this.objects = ((Collection<?>) objects[0]).toArray();
+        } else {
             this.objects = objects;
         }
     }
 
     @Override
     public String getBody() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("{\"data\":[");
         sb.append(JSON.toJson(objects[0]));
         for (int i = 1; i < objects.length; i++) {
@@ -63,5 +62,4 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     public String getOperationPathParam() {
         return PATH_PARAM_INSERT;
     }
-
 }

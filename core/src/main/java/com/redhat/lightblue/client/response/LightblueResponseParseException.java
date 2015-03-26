@@ -1,8 +1,7 @@
 package com.redhat.lightblue.client.response;
 
 /**
- * Exception thrown when a response from lightblue is not able
- * to be parsed.
+ * Exception thrown when a response from lightblue is not able to be parsed.
  *
  * @author dcrissman
  */

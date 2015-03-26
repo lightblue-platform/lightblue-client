@@ -18,12 +18,14 @@ public abstract class JSON {
 
     private static ObjectMapper mapper = new ObjectMapper();
     private static JsonFactory jf = new JsonFactory();
+
     static {
         mapper.setDateFormat(ClientConstants.getDateFormat());
     }
 
     /**
-     * Convert object to json. If object contains fields of type date, they will be converted to strings using lightblue date format.
+     * Convert object to json. If object contains fields of type date, they will
+     * be converted to strings using lightblue date format.
      *
      * @param obj
      * @return

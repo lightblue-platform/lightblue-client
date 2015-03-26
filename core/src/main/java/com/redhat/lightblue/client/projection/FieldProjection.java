@@ -1,10 +1,9 @@
 package com.redhat.lightblue.client.projection;
 
 public class FieldProjection implements Projection {
-
-    private String field;
-    private Boolean isIncluded;
-    private Boolean isRecursive;
+    private final String field;
+    private final Boolean isIncluded;
+    private final Boolean isRecursive;
 
     public FieldProjection(String field, Boolean isIncluded, Boolean isRecursive) {
         this.field = field;
@@ -12,8 +11,10 @@ public class FieldProjection implements Projection {
         this.isRecursive = isRecursive;
 
     }
+
+    @Override
     public String toJson() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("{\"field\":\"");
         sb.append(field);
         sb.append("\"");
@@ -29,11 +30,11 @@ public class FieldProjection implements Projection {
         return sb.toString();
     }
 
-    public static FieldProjection includeField(String field){
+    public static FieldProjection includeField(String field) {
         return new FieldProjection(field, true, false);
     }
 
-    public static FieldProjection includeFieldRecursively(String field){
+    public static FieldProjection includeFieldRecursively(String field) {
         return new FieldProjection(field, true, true);
     }
 

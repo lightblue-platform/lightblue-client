@@ -15,16 +15,16 @@ import com.redhat.lightblue.client.enums.ExpressionOperation;
  * @author mpatercz
  */
 public class ValueQuery implements Query {
-    private String field;
-    private String rValue;
-    private String operator;
+    private final String field;
+    private final String rValue;
+    private final String operator;
 
     public static final Pattern expressionPattern = Pattern.compile("([\\w|\\*|\\.]+)\\s*(\\S+)\\s*(.+)$");
 
     // binary_comparison_operator := "=" | "!=" | "<" | ">" | "<=" | ">=" |
     //        "$eq" | "$neq" | "$lt" | "$gt" | "$lte" | "$gte
-    public static final Set<String> allowedOperatorsSet = new HashSet<String>(Arrays.asList(
-            new String[]{"=", "!=", "<", ">", "<=", ">=", "$eq", "$neq", "$lt", "$lte", "$gte" }));
+    public static final Set<String> allowedOperatorsSet = new HashSet<>(Arrays.asList(
+            new String[]{"=", "!=", "<", ">", "<=", ">=", "$eq", "$neq", "$lt", "$lte", "$gte"}));
 
     public ValueQuery(String expression) {
         Matcher m = expressionPattern.matcher(expression);
@@ -34,11 +34,10 @@ public class ValueQuery implements Query {
             rValue = m.group(3);
 
             if (!allowedOperatorsSet.contains(operator)) {
-                throw new IllegalArgumentException(operator+" operator is not allowed. Allowed options are: "+allowedOperatorsSet.toString());
+                throw new IllegalArgumentException(operator + " operator is not allowed. Allowed options are: " + allowedOperatorsSet.toString());
             }
-        }
-        else {
-            throw new IllegalArgumentException("'"+expression +"' is incorrect");
+        } else {
+            throw new IllegalArgumentException("'" + expression + "' is incorrect");
         }
     }
 
@@ -46,6 +45,7 @@ public class ValueQuery implements Query {
         this(field + " " + operation.toString() + " " + rValue);
     }
 
+    @Override
     public String toJson() {
         StringBuilder json = new StringBuilder("{\"field\":");
         json.append("\"").append(field).append("\",");
@@ -64,13 +64,14 @@ public class ValueQuery implements Query {
 
     /**
      * Expression must follow this pattern: field op value, where field cannot
-     * contain any whitespace characters (value can) and op is one of the following
-     * operators: {"=", "!=", "<", ">", "<=", ">=", "$eq", "$neq", "$lt", "$lte", "$gte" }
+     * contain any whitespace characters (value can) and op is one of the
+     * following operators: {"=", "!=", "<", ">", "<=", ">=", "$eq", "$neq",
+     * "$lt", "$lte", "$gte" }
      *
      * @param expression
      * @return
      */
-    public static ValueQuery withValue(String expression){
+    public static ValueQuery withValue(String expression) {
         return new ValueQuery(expression);
     }
 }
