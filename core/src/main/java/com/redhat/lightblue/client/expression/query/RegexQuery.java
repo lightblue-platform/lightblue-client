@@ -4,12 +4,12 @@ package com.redhat.lightblue.client.expression.query;
  * Created by bmiller on 10/10/14.
  */
 public class RegexQuery implements Query {
-    private String fieldName;
-    private String pattern;
-    private Boolean isCaseInsensitive;
-    private Boolean isExtended;
-    private Boolean isMultiline;
-    private Boolean isDotAll;
+    private final String fieldName;
+    private final String pattern;
+    private final Boolean isCaseInsensitive;
+    private final Boolean isExtended;
+    private final Boolean isMultiline;
+    private final Boolean isDotAll;
 
     public RegexQuery(String fieldName, String pattern, Boolean isCaseInsensitive, Boolean isExtended, Boolean isMultiline, Boolean isDotAll) {
         this.fieldName = fieldName;
@@ -20,6 +20,7 @@ public class RegexQuery implements Query {
         this.isDotAll = isDotAll;
     }
 
+    @Override
     public String toJson() {
         StringBuilder json = new StringBuilder("{");
         json.append("\"field\":");

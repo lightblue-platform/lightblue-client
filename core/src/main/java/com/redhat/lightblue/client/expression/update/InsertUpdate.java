@@ -5,48 +5,44 @@ import java.util.Collection;
 /**
  * created by Michael White 10/10/2014
  */
-
 public class InsertUpdate implements Update {
-    
-    private String path;
-    private Integer index;
-    private RValue[] expressions;
-    
-    public InsertUpdate( String path, Integer index, RValue... expressions ){
+
+    private final String path;
+    private final Integer index;
+    private final RValue[] expressions;
+
+    public InsertUpdate(String path, Integer index, RValue... expressions) {
         this.path = path;
         this.index = index;
         this.expressions = expressions;
     }
-    
-    public InsertUpdate( String path, Integer index, Collection<RValue> expressions ){
+
+    public InsertUpdate(String path, Integer index, Collection<RValue> expressions) {
         this.path = path;
         this.index = index;
-        this.expressions = expressions.toArray( new RValue[ expressions.size() ] );
+        this.expressions = expressions.toArray(new RValue[expressions.size()]);
     }
-    
+
+    @Override
     public String toJson() {
-        
-        /*
-         * { $insert : { path : rvalue_expression } }
-         * { $insert : { path : [ rvalue_expression,...] }}
-         */
+        // http://jewzaam.gitbooks.io/lightblue-specifications/content/language_specification/update.html#array-updates
         StringBuilder json = new StringBuilder("{");
         json.append("$insert:{");
-        json.append(this.path+"."+this.index.toString()+":");
-        if( expressions.length > 1 ){
+        json.append(this.path).append(".").append(this.index.toString()).append(":");
+        if (expressions.length > 1) {
             json.append("[");
         }
-        for(int index=0; index<expressions.length;index++){
-            json.append(expressions[index].toJson());
-            if( ( this.expressions.length - index ) > 1 ){
+        for (int i = 0; i < expressions.length; i++) {
+            json.append(expressions[i].toJson());
+            if ((this.expressions.length - i) > 1) {
                 json.append(","); // append a comma
             }
         }
-        if( expressions.length > 1 ){
+        if (expressions.length > 1) {
             json.append("]");
         }
         json.append("}");
         return json.toString();
     }
-    
+
 }

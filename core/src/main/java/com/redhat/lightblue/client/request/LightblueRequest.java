@@ -2,14 +2,14 @@ package com.redhat.lightblue.client.request;
 
 public interface LightblueRequest {
 
-	String getEntityName();
+    String getEntityName();
 
-	String getEntityVersion();
+    String getEntityVersion();
 
-	String getBody();
+    String getBody();
 
-	String getRestURI(String baseServiceURI);
+    String getRestURI(String baseServiceURI);
 
-	String getOperationPathParam();
+    String getOperationPathParam();
 
 }

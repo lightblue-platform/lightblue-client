@@ -4,7 +4,7 @@ import com.redhat.lightblue.client.util.JSON;
 
 public class ObjectRValue implements RValue {
 
-    private String json;
+    private final String json;
 
     public ObjectRValue(Object o) {
         this.json = JSON.toJson(o);
@@ -14,5 +14,4 @@ public class ObjectRValue implements RValue {
     public String toJson() {
         return json;
     }
-
 }

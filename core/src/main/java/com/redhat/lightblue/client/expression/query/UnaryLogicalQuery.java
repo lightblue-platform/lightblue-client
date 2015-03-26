@@ -5,9 +5,7 @@ import com.redhat.lightblue.client.enums.UnaryOperation;
 /**
  * created by Michael White 10/10/2014
  */
-
 public class UnaryLogicalQuery implements Query {
-
     private final UnaryOperation operation;
     private final Query queryExpression;
 
@@ -19,18 +17,18 @@ public class UnaryLogicalQuery implements Query {
 
     @Override
     public String toJson() throws IllegalArgumentException {
-        StringBuffer builder = new StringBuffer();
+        StringBuilder builder = new StringBuilder();
 
         builder.append("{\"");
-        builder.append( this.operation.toString() );
+        builder.append(this.operation.toString());
         builder.append("\":");
-        builder.append( this.queryExpression.toJson() );
+        builder.append(this.queryExpression.toJson());
         builder.append("}");
 
         return builder.toString();
     }
 
-    public static UnaryLogicalQuery not(Query queryExpression){
+    public static UnaryLogicalQuery not(Query queryExpression) {
         return new UnaryLogicalQuery(UnaryOperation.NOT, queryExpression);
     }
 }
