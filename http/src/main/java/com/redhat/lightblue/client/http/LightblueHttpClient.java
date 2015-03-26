@@ -129,8 +129,8 @@ public class LightblueHttpClient implements LightblueClient {
 
     @Override
     public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
+        LightblueResponse response = data(lightblueRequest);
         try {
-            LightblueResponse response = data(lightblueRequest);
             return response.parseProcessed(type);
         } catch (RuntimeException | LightblueResponseParseException e) {
             throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
