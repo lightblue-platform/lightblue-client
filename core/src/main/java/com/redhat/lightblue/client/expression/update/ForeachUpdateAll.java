@@ -14,12 +14,7 @@ public class ForeachUpdateAll implements Update {
 
     @Override
     public String toJson() {
-        /*
-         * Examples:
-         * { $foreach : { path : update_query_expression, $update : foreach_update_expression } }
-         * update_query_expression := $all | query_expression
-         * foreach_update_expression := $remove | update_expression
-         */
+        // http://jewzaam.gitbooks.io/lightblue-specifications/content/language_specification/update.html#examples-of-foreach
         StringBuilder json = new StringBuilder("{");
         json.append("$foreach:{");
         json.append(this.path);

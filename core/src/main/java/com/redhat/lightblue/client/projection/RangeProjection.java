@@ -1,14 +1,13 @@
 package com.redhat.lightblue.client.projection;
 
 public class RangeProjection implements Projection {
+    private final String field;
+    private final Boolean isIncluded;
+    private final Integer rangeFrom;
+    private final Integer rangeTo;
+    private final Projection projection;
 
-    private String field;
-    private Boolean isIncluded;
-    private Integer rangeFrom;
-    private Integer rangeTo;
-    private Projection projection;
-
-    public RangeProjection( String field, Boolean isIncluded, Integer rangeFrom, Integer rangeTo, Projection projection ) {
+    public RangeProjection(String field, Boolean isIncluded, Integer rangeFrom, Integer rangeTo, Projection projection) {
         this.field = field;
         this.isIncluded = isIncluded;
         this.rangeFrom = rangeFrom;
@@ -16,8 +15,9 @@ public class RangeProjection implements Projection {
         this.projection = projection;
     }
 
+    @Override
     public String toJson() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("{\"field\":\"");
         sb.append(field);
         sb.append("\",");
@@ -35,5 +35,4 @@ public class RangeProjection implements Projection {
         sb.append("}");
         return sb.toString();
     }
-
 }

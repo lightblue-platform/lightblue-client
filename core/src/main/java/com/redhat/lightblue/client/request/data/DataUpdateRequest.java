@@ -13,67 +13,59 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
     private Update[] updates;
     private Query query;
 
-	public DataUpdateRequest() {
+    public DataUpdateRequest() {
 
-	}
-
-	public DataUpdateRequest(String entityName, String entityVersion) {
-		this.setEntityName(entityName);
-		this.setEntityVersion(entityVersion);
-	}
-
-    public void returns(Projection... projections){
-        this.setProjections( projections );
     }
 
-    public void returns( Collection<Projection> projections) {
-        this.setProjections( projections );
+    public DataUpdateRequest(String entityName, String entityVersion) {
+        this.setEntityName(entityName);
+        this.setEntityVersion(entityVersion);
     }
 
-    public void where( Query query ) {
+    public void returns(Projection... projections) {
+        this.setProjections(projections);
+    }
+
+    public void returns(Collection<Projection> projections) {
+        this.setProjections(projections);
+    }
+
+    public void where(Query query) {
         this.setQuery(query);
     }
 
-    public void updates( Update... updates ) {
-        this.setUpdates( updates );
+    public void updates(Update... updates) {
+        this.setUpdates(updates);
     }
 
-    public void updates( Collection<Update> updates ) {
-        this.setUpdates( updates );
+    public void updates(Collection<Update> updates) {
+        this.setUpdates(updates);
     }
 
-    public void setQuery( Query query ) {
+    public void setQuery(Query query) {
         this.query = query;
     }
 
-    public void setUpdates( Update... updates ) {
+    public void setUpdates(Update... updates) {
         this.updates = updates;
     }
 
-    public void setUpdates( Collection<Update> updates ) {
-        this.updates = updates.toArray( new Update[updates.size()] );
+    public void setUpdates(Collection<Update> updates) {
+        this.updates = updates.toArray(new Update[updates.size()]);
     }
 
-    public void setProjections( Projection... projections ) {
+    public void setProjections(Projection... projections) {
         this.projections = projections;
     }
 
-    public void setProjections( Collection<Projection> projections ) {
-        this.projections = projections.toArray( new Projection[projections.size()] );
+    public void setProjections(Collection<Projection> projections) {
+        this.projections = projections.toArray(new Projection[projections.size()]);
     }
 
     @Override
     public String getBody() {
-
-        /*
-         * {
-         *   <common stuff>,
-         *   query: <query_expression,
-         *   update: <update_expression>
-         *   projection : <projection>
-         * }
-         */
-        StringBuffer sb = new StringBuffer();
+        // http://jewzaam.gitbooks.io/lightblue-specifications/content/language_specification/data.html#update
+        StringBuilder sb = new StringBuilder();
         sb.append("{\"query\":");
         sb.append(query.toJson());
 
@@ -103,9 +95,9 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         return sb.toString();
     }
 
-	@Override
-  public String getOperationPathParam() {
-	  return PATH_PARAM_UPDATE;
-  }
+    @Override
+    public String getOperationPathParam() {
+        return PATH_PARAM_UPDATE;
+    }
 
 }

@@ -10,8 +10,8 @@ public class SortCondition {
     public final SortDirection direction;
 
     public SortCondition(String field, SortDirection direction) {
-          this.field = field;
-          this.direction = direction;
+        this.field = field;
+        this.direction = direction;
     }
 
     public String toJson() {

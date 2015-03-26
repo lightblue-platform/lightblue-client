@@ -18,7 +18,6 @@ public class AddUpdate implements Update {
 
     @Override
     public String toJson() {
-        // { "$set" : { path : value } }
         StringBuilder builder = new StringBuilder();
 
         builder.append("{\"$add\":");

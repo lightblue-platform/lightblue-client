@@ -21,11 +21,7 @@ public class AppendUpdate implements Update {
 
     @Override
     public String toJson() {
-        /*
-         * Examples:
-         * { "$append" : { pathToArray : [ values ] } } (values can be empty objects (extend array with a  new element)
-         * { "$append" : { pathToArray : value } }
-         */
+        // http://jewzaam.gitbooks.io/lightblue-specifications/content/language_specification/update.html#array-updates
         StringBuilder json = new StringBuilder("{");
         json.append("\"$append\":{");
         json.append("\"").append(this.path).append("\":");

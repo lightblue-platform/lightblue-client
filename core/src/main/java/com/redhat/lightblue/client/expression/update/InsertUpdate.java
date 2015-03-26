@@ -25,10 +25,7 @@ public class InsertUpdate implements Update {
 
     @Override
     public String toJson() {
-        /* Examples:
-         * { $insert : { path : rvalue_expression } }
-         * { $insert : { path : [ rvalue_expression,...] }}
-         */
+        // http://jewzaam.gitbooks.io/lightblue-specifications/content/language_specification/update.html#array-updates
         StringBuilder json = new StringBuilder("{");
         json.append("$insert:{");
         json.append(this.path).append(".").append(this.index.toString()).append(":");

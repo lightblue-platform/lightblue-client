@@ -16,25 +16,25 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     private Integer begin;
     private Integer end;
 
-	public DataFindRequest() {
+    public DataFindRequest() {
 
-	}
+    }
 
-	public DataFindRequest(String entityName, String entityVersion) {
-		this.setEntityName(entityName);
-		this.setEntityVersion(entityVersion);
-	}
+    public DataFindRequest(String entityName, String entityVersion) {
+        this.setEntityName(entityName);
+        this.setEntityVersion(entityVersion);
+    }
 
-    public void where(Query queryExpression){
+    public void where(Query queryExpression) {
         this.queryExpression = queryExpression;
     }
 
-    public void select(Projection... projection){
+    public void select(Projection... projection) {
         this.projections = projection;
     }
 
     public void select(Collection<Projection> projections) {
-        this.projections = projections.toArray( new Projection[ projections.size() ] );
+        this.projections = projections.toArray(new Projection[projections.size()]);
     }
 
     public void setSortConditions(List<SortCondition> sortConditions) {
@@ -46,8 +46,9 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     }
 
     public void sort(Collection<SortCondition> sortConditions) {
-        this.sortConditions = sortConditions.toArray( new SortCondition[ sortConditions.size() ] );
+        this.sortConditions = sortConditions.toArray(new SortCondition[sortConditions.size()]);
     }
+
     public void range(Integer begin, Integer end) {
         this.begin = begin;
         this.end = end;
@@ -55,7 +56,7 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
 
     @Override
     public String getBody() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("{\"query\":");
         sb.append(queryExpression.toJson());
         sb.append(",\"projection\":[");
@@ -72,13 +73,13 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
             sb.append("[");
             sb.append(sortConditions[0].toJson());
 
-            for(int i = 1; i < sortConditions.length; i++) {
+            for (int i = 1; i < sortConditions.length; i++) {
                 sb.append(",").append(sortConditions[i].toJson());
             }
 
             sb.append("]");
         }
-        if (begin != null && end != null){
+        if (begin != null && end != null) {
             sb.append(", \"range\": [");
             sb.append(begin);
             sb.append(",");
@@ -90,9 +91,8 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         return sb.toString();
     }
 
-	@Override
-  public String getOperationPathParam() {
-	  return PATH_PARAM_FIND;
-  }
-
+    @Override
+    public String getOperationPathParam() {
+        return PATH_PARAM_FIND;
+    }
 }
