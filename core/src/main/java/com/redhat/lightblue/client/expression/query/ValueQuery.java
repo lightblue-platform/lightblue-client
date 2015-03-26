@@ -6,21 +6,22 @@ import com.redhat.lightblue.client.enums.ExpressionOperation;
  * Created by bmiller on 10/10/14.
  */
 public class ValueQuery implements Query {
-    private String field;
-    private String rValue;
-    private String operator;
+    private final String field;
+    private final String rValue;
+    private final String operator;
 
     public ValueQuery(String expression) {
         String[] parts = expression.split("\\s");
-        field = parts[0];
-        operator = parts[1];
-        rValue = parts[2];
+        this.field = parts[0];
+        this.operator = parts[1];
+        this.rValue = parts[2];
     }
 
     public ValueQuery(String field, ExpressionOperation operation, String rValue) {
         this(field + " " + operation.toString() + " " + rValue);
     }
 
+    @Override
     public String toJson() {
         StringBuilder json = new StringBuilder("{\"field\":");
         json.append("\"").append(field).append("\",");
@@ -37,7 +38,7 @@ public class ValueQuery implements Query {
         return toJson();
     }
 
-    public static ValueQuery withValue(String expression){
+    public static ValueQuery withValue(String expression) {
         return new ValueQuery(expression);
     }
 }

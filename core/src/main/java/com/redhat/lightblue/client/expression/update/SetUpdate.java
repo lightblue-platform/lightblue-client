@@ -8,7 +8,7 @@ import com.redhat.lightblue.client.util.JSON;
  * created by Michael White 10/10/2014
  */
 public class SetUpdate implements Update {
-    PathValuePair[] pathValuePairs;
+    private final PathValuePair[] pathValuePairs;
 
     public SetUpdate(PathValuePair... statements) {
         pathValuePairs = statements;
@@ -17,6 +17,8 @@ public class SetUpdate implements Update {
     public SetUpdate(Collection<PathValuePair> statements) {
         if (statements != null) {
             pathValuePairs = statements.toArray(new PathValuePair[statements.size()]);
+        } else {
+            pathValuePairs = null;
         }
     }
 
@@ -33,5 +35,4 @@ public class SetUpdate implements Update {
         json.append("}}");
         return json.toString();
     }
-
 }
