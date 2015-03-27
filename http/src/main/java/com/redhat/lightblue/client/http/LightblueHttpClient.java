@@ -24,6 +24,7 @@ import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponseParseException;
+import com.redhat.lightblue.client.util.JSON;
 
 public class LightblueHttpClient implements LightblueClient {
     private final LightblueClientConfiguration configuration;
@@ -55,7 +56,7 @@ public class LightblueHttpClient implements LightblueClient {
      * This constructor will use a copy of specified configuration object.
      */
     public LightblueHttpClient(LightblueClientConfiguration configuration) {
-        this(configuration, LightblueResponse.DEFAULT_MAPPER);
+        this(configuration, JSON.getDefaultObjectMapper());
     }
 
     /**
@@ -92,7 +93,7 @@ public class LightblueHttpClient implements LightblueClient {
         configuration.setMetadataServiceURI(metadataServiceURI);
         configuration.setUseCertAuth(useCertAuth);
 
-        this.mapper = LightblueResponse.DEFAULT_MAPPER;
+        this.mapper = JSON.getDefaultObjectMapper();
     }
 
     /*
