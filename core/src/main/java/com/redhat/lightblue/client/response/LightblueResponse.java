@@ -26,6 +26,8 @@ public class LightblueResponse {
     private JsonNode json;
     private final ObjectMapper mapper;
 
+    // TODO Maybe add a field for some metadata such as HTTP headers and HTTP status code
+
     public LightblueResponse(ObjectMapper mapper) {
         if (mapper == null) {
             throw new NullPointerException("ObjectMapper instance cannot be null");
@@ -69,12 +71,18 @@ public class LightblueResponse {
 
     public boolean hasError() {
         JsonNode objectTypeNode = json.get("status");
-        if (objectTypeNode == null) {
-            return false;
+
+        JsonNode errorCode = json.path("errorCode");
+        if (errorCode != null && !errorCode.isNull() && !errorCode.isMissingNode()){
+            return true;
         }
 
-        return objectTypeNode.textValue().equalsIgnoreCase("error")
-                || objectTypeNode.textValue().equalsIgnoreCase("partial");
+        // it should be true for data from CRUD interface and false from METADATA. Maybe METADATA could also have an status field for every request
+        if((objectTypeNode != null)&&(objectTypeNode.textValue().equalsIgnoreCase("error") || objectTypeNode.textValue().equalsIgnoreCase("partial"))) {
+            return true;
+        }
+
+        return false;
     }
 
     public int parseModifiedCount() {
@@ -96,15 +104,10 @@ public class LightblueResponse {
     @SuppressWarnings("unchecked")
     public <T> T parseProcessed(final Class<T> type)
             throws LightblueResponseParseException {
-        if (hasError()) {
-            throw new LightblueErrorResponseException("Error returned in response: " + getText());
+        if (hasError()){
+            throw new LightblueErrorResponseException("Error parsing lightblue response: Error returned. JSON returned:" + json.toString() + "\n");
         }
-
         try {
-            JsonNode errorCode = json.path("errorCode");
-            if (errorCode != null && !errorCode.isNull() && !errorCode.isMissingNode()){
-                throw new LightblueResponseParseException("Error parsing lightblue response: Error returned. JSON returned:" + json.toString() + "\n");
-            }
 
             JsonNode processedNode = json.path("processed");
 
@@ -121,7 +124,7 @@ public class LightblueResponse {
 
             return mapper.readValue(processedNode.traverse(), type);
         } catch (RuntimeException | IOException e) {
-            throw new LightblueResponseParseException("Error parsing lightblue response: " + getText() + "\n", e);
+            throw new LightblueResponseParseException("Error parsing lightblue response: " + json.toString() + "\n", e);
         }
     }
 
