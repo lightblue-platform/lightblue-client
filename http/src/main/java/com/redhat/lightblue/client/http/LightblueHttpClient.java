@@ -78,23 +78,6 @@ public class LightblueHttpClient implements LightblueClient {
         this.mapper = mapper;
     }
 
-    /**
-     * @deprecated Use LightblueHttpClient(String configFilePath) if you want to
-     * specify a config file location not on the classpath Use
-     * LightblueHttpClient(LightblueClientConfiguration configuration) if you
-     * don't want to use config files at all
-     */
-    @Deprecated
-    public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
-        this.configuration = new LightblueClientConfiguration();
-
-        configuration.setDataServiceURI(dataServiceURI);
-        configuration.setMetadataServiceURI(metadataServiceURI);
-        configuration.setUseCertAuth(useCertAuth);
-
-        this.mapper = LightblueResponse.DEFAULT_MAPPER;
-    }
-
     /*
      * (non-Javadoc)
      *
