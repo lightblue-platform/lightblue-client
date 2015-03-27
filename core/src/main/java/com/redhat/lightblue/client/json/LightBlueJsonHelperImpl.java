@@ -8,28 +8,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LightBlueJsonHelperImpl implements LightBlueJsonHelper {
-	public Map<String,Object> getJsonMap(String json) {
-		
-		HashMap<String,Object> result = null;
-		JsonFactory factory = new JsonFactory(); 
-	    ObjectMapper mapper = new ObjectMapper(factory); 
-	    TypeReference<HashMap<String,Object>> typeRef 
-	            = new TypeReference<HashMap<String,Object>>() {};
+    public Map<String, Object> getJsonMap(String json) {
 
-	    try {
-			result = mapper.readValue(json, typeRef);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	    
-	    return result;
-	    
-	}
+        HashMap<String, Object> result = null;
+        JsonFactory factory = new JsonFactory();
+        ObjectMapper mapper = new ObjectMapper(factory);
+        TypeReference<HashMap<String, Object>> typeRef
+                = new TypeReference<HashMap<String, Object>>() {
+                };
 
-	@Override
-	public String createEntityPutRequestJson(String entity, String version,
-			Map<String, Object> data) {
-		
-		return null;
-	}
+        try {
+            result = mapper.readValue(json, typeRef);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+
+    }
+
+    @Override
+    public String createEntityPutRequestJson(String entity, String version,
+                                             Map<String, Object> data) {
+
+        return null;
+    }
 }

@@ -4,19 +4,18 @@ import com.redhat.lightblue.client.expression.query.Query;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 
 public class DataDeleteRequest extends AbstractLightblueDataRequest {
-
     private Query queryExpression;
 
-	public DataDeleteRequest() {
+    public DataDeleteRequest() {
 
-	}
+    }
 
-	public DataDeleteRequest(String entityName, String entityVersion) {
-		this.setEntityName(entityName);
-		this.setEntityVersion(entityVersion);
-	}
+    public DataDeleteRequest(String entityName, String entityVersion) {
+        this.setEntityName(entityName);
+        this.setEntityVersion(entityVersion);
+    }
 
-    public void where(Query queryExpression){
+    public void where(Query queryExpression) {
         this.queryExpression = queryExpression;
     }
 
@@ -29,9 +28,8 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
         return sb.toString();
     }
 
-	@Override
-  public String getOperationPathParam() {
-	  return PATH_PARAM_DELETE;
-  }
-
+    @Override
+    public String getOperationPathParam() {
+        return PATH_PARAM_DELETE;
+    }
 }

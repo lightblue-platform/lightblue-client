@@ -10,29 +10,33 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 /**
- * Provides factory methods for {@link com.redhat.lightblue.client.LightblueClientConfiguration}
- * that is derived from {@code .properties} files or {@link java.util.Properties} objects.
+ * Provides factory methods for
+ * {@link com.redhat.lightblue.client.LightblueClientConfiguration} that is
+ * derived from {@code .properties} files or {@link java.util.Properties}
+ * objects.
  *
- * <p>These properties files are read for specific keys for configuration:
+ * <p>
+ * These properties files are read for specific keys for configuration:
  *
  * <dl>
- *     <dt>dataServiceURI</dt>
- *     <dd>The URL for the lightblue data service.</dd>
- *     <dt>metadataServiceURI</dt>
- *     <dd>The URL for the lightblue metadata service.</dd>
- *     <dt>useCertAuth</dt>
- *     <dd>Whether or not to use certificate authentication to talk to the lightblue services.</dd>
- *     <dt>caFilePath</dt>
- *     <dd>SSL certificate for talking with lightblue services.</dd>
- *     <dt>certFilePath</dt>
- *     <dd>The file path to the client certificate. This follows the semantics of
- *     {@link java.lang.ClassLoader#getResource(String)}, which is to say it is a relative, /
- *     separated path from the root of the classpath, and should <em>not</em> start with a forward
- *     slash.</dd>
- *     <dt>certPassword</dt>
- *     <dd>The password for the client certificate.</dd>
- *     <dt>certAlias</dt>
- *     <dd>The alias for the client certificate. ???</dd>
+ * <dt>dataServiceURI</dt>
+ * <dd>The URL for the lightblue data service.</dd>
+ * <dt>metadataServiceURI</dt>
+ * <dd>The URL for the lightblue metadata service.</dd>
+ * <dt>useCertAuth</dt>
+ * <dd>Whether or not to use certificate authentication to talk to the lightblue
+ * services.</dd>
+ * <dt>caFilePath</dt>
+ * <dd>SSL certificate for talking with lightblue services.</dd>
+ * <dt>certFilePath</dt>
+ * <dd>The file path to the client certificate. This follows the semantics of
+ * {@link java.lang.ClassLoader#getResource(String)}, which is to say it is a
+ * relative, / separated path from the root of the classpath, and should
+ * <em>not</em> start with a forward slash.</dd>
+ * <dt>certPassword</dt>
+ * <dd>The password for the client certificate.</dd>
+ * <dt>certAlias</dt>
+ * <dd>The alias for the client certificate. ???</dd>
  * </dl>
  */
 public final class PropertiesLightblueClientConfiguration {
@@ -50,7 +54,8 @@ public final class PropertiesLightblueClientConfiguration {
     /**
      * Assumes a lightblue-client.properties file at the root of the classpath.
      *
-     * <p> For client configuration property keys, see
+     * <p>
+     * For client configuration property keys, see
      * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration}.
      */
     public static LightblueClientConfiguration fromDefault() {
@@ -60,13 +65,14 @@ public final class PropertiesLightblueClientConfiguration {
     /**
      * Returns a resource found using the current thread's context class loader.
      *
-     * <p>For client configuration property keys, see
+     * <p>
+     * For client configuration property keys, see
      * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration}.
      *
      * @param resourcePath Follows the semantics of
-     *         {@link java.lang.ClassLoader#getResourceAsStream(String)},
-     *         which is to say it is a relative / separated path from the root of the class path and
-     *         should <em>not</em> start with a forward slash (/).
+     * {@link java.lang.ClassLoader#getResourceAsStream(String)}, which is to
+     * say it is a relative / separated path from the root of the class path and
+     * should <em>not</em> start with a forward slash (/).
      *
      * @see Thread#currentThread()
      * @see Thread#getContextClassLoader()
@@ -80,19 +86,19 @@ public final class PropertiesLightblueClientConfiguration {
      * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration}.
      *
      * @param resourcePath Follows the semantics of
-     *         {@link java.lang.ClassLoader#getResourceAsStream(String)},
-     *         which is to say it is a relative / separated path from the root of the class path and
-     *         should <em>not</em> start with a forward slash (/).
+     * {@link java.lang.ClassLoader#getResourceAsStream(String)}, which is to
+     * say it is a relative / separated path from the root of the class path and
+     * should <em>not</em> start with a forward slash (/).
      * @param classLoader The class loader to use to find the resource.
      */
     public static LightblueClientConfiguration fromResource(String resourcePath,
-            ClassLoader classLoader) {
+                                                            ClassLoader classLoader) {
         InputStream propertiesStream = classLoader.getResourceAsStream(resourcePath);
 
         if (propertiesStream == null) {
             LOGGER.error("Could not find properties resource at " + resourcePath);
-            throw new LightblueClientConfigurationException("Could not find properties resource " +
-                    "at " + resourcePath);
+            throw new LightblueClientConfigurationException("Could not find properties resource "
+                    + "at " + resourcePath);
         }
 
         return fromInputStream(propertiesStream);
@@ -102,16 +108,16 @@ public final class PropertiesLightblueClientConfiguration {
      * For client configuration property keys, see
      * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration}.
      *
-     * @param pathToProperties A file system path, relative to the working directory of the java
-     *         process.
+     * @param pathToProperties A file system path, relative to the working
+     * directory of the java process.
      */
     public static LightblueClientConfiguration fromPath(Path pathToProperties) {
-        try(InputStream inStream = Files.newInputStream(pathToProperties)) {
+        try (InputStream inStream = Files.newInputStream(pathToProperties)) {
             return fromInputStream(inStream);
         } catch (IOException e) {
             LOGGER.error(pathToProperties + " could not be found/read", e);
-            throw new LightblueClientConfigurationException("Could not read properties file from " +
-                    "path, " + pathToProperties, e);
+            throw new LightblueClientConfigurationException("Could not read properties file from "
+                    + "path, " + pathToProperties, e);
         }
     }
 
@@ -127,8 +133,8 @@ public final class PropertiesLightblueClientConfiguration {
             return fromObject(properties);
         } catch (IOException e) {
             LOGGER.error(propertiesStream + " could not be read", e);
-            throw new LightblueClientConfigurationException("Could not read properties file from " +
-                    "input stream, " + propertiesStream, e);
+            throw new LightblueClientConfigurationException("Could not read properties file from "
+                    + "input stream, " + propertiesStream, e);
         }
     }
 
@@ -149,5 +155,6 @@ public final class PropertiesLightblueClientConfiguration {
         return config;
     }
 
-    private PropertiesLightblueClientConfiguration() {}
+    private PropertiesLightblueClientConfiguration() {
+    }
 }

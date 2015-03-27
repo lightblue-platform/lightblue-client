@@ -12,29 +12,29 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
     private Object[] objects;
     private Boolean upsert;
 
-	public DataSaveRequest() {
+    public DataSaveRequest() {
 
-	}
+    }
 
-	public DataSaveRequest(String entityName, String entityVersion) {
-		this.setEntityName(entityName);
-		this.setEntityVersion(entityVersion);
-	}
+    public DataSaveRequest(String entityName, String entityVersion) {
+        this.setEntityName(entityName);
+        this.setEntityVersion(entityVersion);
+    }
 
-    public void returns(Projection... projection){
+    public void returns(Projection... projection) {
         this.projections = projection;
     }
 
     public void returns(Collection<Projection> projections) {
-        this.projections = projections.toArray( new Projection[ projections.size() ] );
+        this.projections = projections.toArray(new Projection[projections.size()]);
     }
 
-    public void create(Object... objects){
-        this.objects = objects;
-    }
-
-    public void create(Collection<Object> objects){
-        this.objects = objects.toArray(new Object[objects.size()]);
+    public void create(Object... objects) {
+        if (objects[0] instanceof java.util.Collection<?>) {
+            this.objects = ((Collection<?>) objects[0]).toArray();
+        } else {
+            this.objects = objects;
+        }
     }
 
     public Boolean isUpsert() {
@@ -52,7 +52,7 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
 
     @Override
     public String getBody() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("{\"data\":[");
         sb.append(JSON.toJson(objects[0]));
         for (int i = 1; i < objects.length; i++) {
@@ -66,7 +66,7 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
         }
 
         sb.append("]");
-        if (upsert!=null) {
+        if (upsert != null) {
             sb.append(",\"upsert\":");
             sb.append(upsert);
         }
