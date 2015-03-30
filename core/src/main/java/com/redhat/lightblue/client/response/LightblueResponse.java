@@ -3,24 +3,12 @@ package com.redhat.lightblue.client.response;
 import java.io.IOException;
 import java.lang.reflect.Array;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.redhat.lightblue.client.util.ClientConstants;
+import com.redhat.lightblue.client.util.JSON;
 
 public class LightblueResponse {
-
-    /**
-     * It is safe and encouraged to share the same mapper among threads. It is
-     * thread safe. So, this default instance is static.
-     *
-     * @see <a href="http://stackoverflow.com/a/3909846">The developer of the
-     * Jackson library's own quote.</a>
-     */
-    public static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper()
-            .setDateFormat(ClientConstants.getDateFormat())
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private String text;
     private JsonNode json;
@@ -34,11 +22,11 @@ public class LightblueResponse {
     }
 
     public LightblueResponse() {
-        this(DEFAULT_MAPPER);
+        this(JSON.getDefaultObjectMapper());
     }
 
     public LightblueResponse(String responseText) {
-        this(responseText, DEFAULT_MAPPER);
+        this(responseText, JSON.getDefaultObjectMapper());
     }
 
     public LightblueResponse(String responseText, ObjectMapper mapper) {
