@@ -8,7 +8,7 @@ public enum ArrayOperation {
     ALL("$all"),
     ANY("$any");
 
-    private String operator;
+    private final String operator;
 
     public String getOperator() {
         return operator;
@@ -19,7 +19,7 @@ public enum ArrayOperation {
     }
 
     public static Set<String> getOperators() {
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         for (ArrayOperation exp : values()) {
             set.add(exp.getOperator());
         }
@@ -39,5 +39,4 @@ public enum ArrayOperation {
     public String toString() {
         return getOperator();
     }
-
 }
