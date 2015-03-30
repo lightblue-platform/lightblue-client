@@ -17,7 +17,7 @@ public enum ExpressionOperation {
     LESS_THAN_OR_EQUAL("<="),
     GREATER_THAN_OR_EQUAL(">=");
 
-    private String operator;
+    private final String operator;
 
     public String getOperator() {
         return operator;
@@ -28,7 +28,7 @@ public enum ExpressionOperation {
     }
 
     public static Set<String> getOperators() {
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         for (ExpressionOperation exp : values()) {
             set.add(exp.getOperator());
         }
@@ -48,5 +48,4 @@ public enum ExpressionOperation {
     public String toString() {
         return getOperator();
     }
-
 }
