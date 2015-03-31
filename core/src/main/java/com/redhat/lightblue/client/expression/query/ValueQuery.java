@@ -34,13 +34,11 @@ public class ValueQuery implements Query {
             if (ExpressionOperation.contains(operator)) {
                 rValue = value;
                 values = null;
-            }
-            else if (NaryExpressionOperation.contains(operator)) {
+            } else if (NaryExpressionOperation.contains(operator)) {
                 rValue = null;
                 values = value.substring(1, value.length() - 1).split("\\s*,\\s*");
-            }
-            else {
-                Set<String> allowedOperators = new HashSet<String>(ExpressionOperation.getOperators());
+            } else {
+                Set<String> allowedOperators = new HashSet<>(ExpressionOperation.getOperators());
                 allowedOperators.addAll(NaryExpressionOperation.getOperators());
                 throw new IllegalArgumentException(operator + " operator is not allowed. Allowed options are: " + allowedOperators.toString());
             }
@@ -72,8 +70,7 @@ public class ValueQuery implements Query {
         if (rValue == null) {
             json.append("\"values\":");
             json.append("[\"").append(StringUtils.join(values, "\",\"")).append("\"]");
-        }
-        else {
+        } else {
             json.append("\"rvalue\":");
             json.append("\"").append(rValue).append("\"");
         }

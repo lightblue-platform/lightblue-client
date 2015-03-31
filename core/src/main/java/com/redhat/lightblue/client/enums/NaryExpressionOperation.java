@@ -8,7 +8,7 @@ public enum NaryExpressionOperation {
     IN("$in"),
     NIN("$nin");
 
-    private String operator;
+    private final String operator;
 
     public String getOperator() {
         return operator;
@@ -19,7 +19,7 @@ public enum NaryExpressionOperation {
     }
 
     public static Set<String> getOperators() {
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         for (NaryExpressionOperation exp : values()) {
             set.add(exp.getOperator());
         }
@@ -39,5 +39,4 @@ public enum NaryExpressionOperation {
     public String toString() {
         return getOperator();
     }
-
 }
