@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
-public class ClientConstants {
+public final class ClientConstants {
     private static final DateFormat DATE_FORMAT;
     private static final String DATE_FORMAT_STR = "yyyyMMdd'T'HH:mm:ss.SSSZ";
 
@@ -20,5 +20,7 @@ public class ClientConstants {
     public static DateFormat getDateFormat() {
         return (DateFormat) DATE_FORMAT.clone();
     }
+
+    private ClientConstants() {}
 
 }
