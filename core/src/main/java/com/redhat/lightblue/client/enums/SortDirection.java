@@ -9,7 +9,7 @@ public enum SortDirection {
     ASCENDING("$asc"),
     DESCENDING("$desc");
 
-    private String operator;
+    private final String operator;
 
     public String getOperator() {
         return operator;
@@ -20,7 +20,7 @@ public enum SortDirection {
     }
 
     public static Set<String> getOperators() {
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         for (SortDirection exp : values()) {
             set.add(exp.getOperator());
         }
@@ -40,5 +40,4 @@ public enum SortDirection {
     public String toString() {
         return getOperator();
     }
-
 }

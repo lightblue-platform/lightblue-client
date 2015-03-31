@@ -6,7 +6,7 @@ import java.util.Set;
 public enum UnaryOperation {
     NOT("$not");
 
-    private String operator;
+    private final String operator;
 
     public String getOperator() {
         return operator;
@@ -17,7 +17,7 @@ public enum UnaryOperation {
     }
 
     public static Set<String> getOperators() {
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         for (UnaryOperation exp : values()) {
             set.add(exp.getOperator());
         }
@@ -37,5 +37,4 @@ public enum UnaryOperation {
     public String toString() {
         return getOperator();
     }
-
 }

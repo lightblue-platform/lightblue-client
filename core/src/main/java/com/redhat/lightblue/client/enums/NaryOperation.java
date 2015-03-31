@@ -9,7 +9,7 @@ public enum NaryOperation {
     ALL("$all"),
     ANY("$any");
 
-    private String operator;
+    private final String operator;
 
     public String getOperator() {
         return operator;
@@ -20,7 +20,7 @@ public enum NaryOperation {
     }
 
     public static Set<String> getOperators() {
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         for (NaryOperation exp : values()) {
             set.add(exp.getOperator());
         }
@@ -40,5 +40,4 @@ public enum NaryOperation {
     public String toString() {
         return getOperator();
     }
-
 }
