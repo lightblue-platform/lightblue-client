@@ -1,50 +1,54 @@
 package com.redhat.lightblue.client.request.data;
 
-import com.redhat.lightblue.client.projection.Projection;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.redhat.lightblue.client.projection.Projection;
+import com.redhat.lightblue.client.request.AbstractLightblueDataRequest.Operation;
+import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestDataInsertRequest extends AbstractLightblueRequestTest {
 
     private class TestObj {
         public String field1 = "field1Test";
         public String field2 = "field2Test";
+
         public String toJson() {
             return "{\"field1\":\"" + field1 + "\",\"field2\":\"" + field2 + "\"}";
         }
     }
 
-    private Projection testProjection1 = new Projection () {
+    private final Projection testProjection1 = new Projection() {
+        @Override
         public String toJson() {
             return "{\"field1\":\"name\"}";
         }
     };
 
-    private Projection testProjection2 = new Projection() {
+    private final Projection testProjection2 = new Projection() {
+        @Override
         public String toJson() {
             return "{\"field2\":\"address\"}";
         }
     };
 
-	DataInsertRequest request = new DataInsertRequest();
-	
-	@Before
-	public void setUp() throws Exception {
-		request = new DataInsertRequest(entityName, entityVersion);
-	}
+    DataInsertRequest request = new DataInsertRequest();
 
-	@Test
-	public void testGetOperationPathParam() {
-		Assert.assertEquals(DataInsertRequest.PATH_PARAM_INSERT, request.getOperationPathParam());
-	}
+    @Before
+    public void setUp() throws Exception {
+        request = new DataInsertRequest(entityName, entityVersion);
+    }
+
+    @Test
+    public void testGetOperationPathParam() {
+        Assert.assertEquals(Operation.INSERT.getPathParam(), request.getOperationPathParam());
+    }
 
     @Test
     public void testRequestWithExpressionAndSingleProjectionFormsProperBody() throws JSONException {
@@ -92,7 +96,7 @@ public class TestDataInsertRequest extends AbstractLightblueRequestTest {
         request.returns(projections);
         TestObj obj1 = new TestObj();
         TestObj obj2 = new TestObj();
-        request.create(obj1,obj2);
+        request.create(obj1, obj2);
 
         String expected = "{\"data\":[" + obj1.toJson() + "," + obj2.toJson() + "],\"projection\":[" + testProjection1.toJson() + "," + testProjection2.toJson() + "]}";
 

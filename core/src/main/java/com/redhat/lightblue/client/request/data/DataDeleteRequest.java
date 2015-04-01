@@ -30,6 +30,6 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
 
     @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_DELETE;
+        return Operation.DELETE.getPathParam();
     }
 }

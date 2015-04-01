@@ -97,7 +97,7 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
 
     @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_UPDATE;
+        return Operation.UPDATE.getPathParam();
     }
 
 }

@@ -60,6 +60,6 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
 
     @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_INSERT;
+        return Operation.INSERT.getPathParam();
     }
 }

@@ -1,54 +1,58 @@
 package com.redhat.lightblue.client.request.data;
 
-import com.redhat.lightblue.client.enums.SortDirection;
-import com.redhat.lightblue.client.expression.query.Query;
-import com.redhat.lightblue.client.projection.Projection;
-import com.redhat.lightblue.client.request.SortCondition;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.redhat.lightblue.client.enums.SortDirection;
+import com.redhat.lightblue.client.expression.query.Query;
+import com.redhat.lightblue.client.projection.Projection;
+import com.redhat.lightblue.client.request.AbstractLightblueDataRequest.Operation;
+import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
+import com.redhat.lightblue.client.request.SortCondition;
 
-public class TestDataFindRequest extends AbstractLightblueRequestTest  {
+public class TestDataFindRequest extends AbstractLightblueRequestTest {
 
-    private Query testQueryExpression = new Query() {
+    private final Query testQueryExpression = new Query() {
+        @Override
         public String toJson() {
             return "{\"field1\":\"test\",\"op\":\"$ne\",\"rValue\":\"hack\"}";
         }
     };
 
-    private Projection testProjection1 = new Projection () {
+    private final Projection testProjection1 = new Projection() {
+        @Override
         public String toJson() {
             return "{\"field1\":\"name\"}";
         }
     };
 
-    private Projection testProjection2 = new Projection() {
+    private final Projection testProjection2 = new Projection() {
+        @Override
         public String toJson() {
             return "{\"field2\":\"address\"}";
         }
     };
 
-    private SortCondition sortCondition1 = new SortCondition("field1", SortDirection.ASC);
-    private SortCondition sortCondition2 = new SortCondition("field2", SortDirection.DESC);
+    private final SortCondition sortCondition1 = new SortCondition("field1", SortDirection.ASC);
+    private final SortCondition sortCondition2 = new SortCondition("field2", SortDirection.DESC);
 
-	DataFindRequest request = new DataFindRequest();
+    DataFindRequest request = new DataFindRequest();
 
-	@Before
-	public void setUp() throws Exception {
-		request = new DataFindRequest(entityName, entityVersion);
-	}
+    @Before
+    public void setUp() throws Exception {
+        request = new DataFindRequest(entityName, entityVersion);
+    }
 
-	@Test
-	public void testGetOperationPathParam() {
-		Assert.assertEquals(DataFindRequest.PATH_PARAM_FIND, request.getOperationPathParam());
-	}
+    @Test
+    public void testGetOperationPathParam() {
+        Assert.assertEquals(Operation.FIND.getPathParam(), request.getOperationPathParam());
+    }
 
     @Test
     public void testRequestWithExpressionAndSingleProjectionFormsProperBody() throws JSONException {
