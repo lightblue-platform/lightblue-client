@@ -1,12 +1,12 @@
 package com.redhat.lightblue.client.request.data;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.redhat.lightblue.client.expression.query.Query;
 import com.redhat.lightblue.client.projection.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.SortCondition;
-
-import java.util.Collection;
-import java.util.List;
 
 public class DataFindRequest extends AbstractLightblueDataRequest {
 
@@ -17,12 +17,11 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     private Integer end;
 
     public DataFindRequest() {
-
+        super();
     }
 
     public DataFindRequest(String entityName, String entityVersion) {
-        this.setEntityName(entityName);
-        this.setEntityVersion(entityVersion);
+        super(entityName, entityVersion);
     }
 
     public void where(Query queryExpression) {

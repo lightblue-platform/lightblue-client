@@ -10,7 +10,6 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
 
     private String entityName;
     private String entityVersion;
-    private String body;
 
     @Override
     public String getEntityName() {
@@ -22,11 +21,6 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         return entityVersion;
     }
 
-    @Override
-    public String getBody() {
-        return body;
-    }
-
     public void setEntityName(String entityName) {
         this.entityName = entityName;
     }
@@ -35,8 +29,11 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         this.entityVersion = entityVersion;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public AbstractLightblueRequest() {}
+
+    public AbstractLightblueRequest(String entityName, String entityVersion) {
+        this.entityName = entityName;
+        this.entityVersion = entityVersion;
     }
 
     protected void appendToURI(StringBuilder restOfURI, String pathParam) {

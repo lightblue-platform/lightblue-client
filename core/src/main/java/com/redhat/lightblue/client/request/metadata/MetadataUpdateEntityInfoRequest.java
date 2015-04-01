@@ -5,12 +5,11 @@ import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 public class MetadataUpdateEntityInfoRequest extends AbstractLightblueMetadataRequest {
 
     public MetadataUpdateEntityInfoRequest() {
-
+        super();
     }
 
     public MetadataUpdateEntityInfoRequest(String entityName, String entityVersion) {
-        this.setEntityName(entityName);
-        this.setEntityVersion(entityVersion);
+        super(entityName, entityVersion);
     }
 
     @Override
