@@ -21,6 +21,13 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
         }
     }
 
+    public abstract Operation getOperation();
+
+    @Override
+    public String getOperationPathParam() {
+        return getOperation().getPathParam();
+    }
+
     @Override
     public String getRestURI(String baseServiceURI) {
         StringBuilder requestURI = new StringBuilder();

@@ -37,6 +37,11 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
+    public Operation getOperation() {
+        return Operation.INSERT;
+    }
+
+    @Override
     public String getBody() {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"data\":[");
@@ -58,8 +63,4 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
         return sb.toString();
     }
 
-    @Override
-    public String getOperationPathParam() {
-        return Operation.INSERT.getPathParam();
-    }
 }

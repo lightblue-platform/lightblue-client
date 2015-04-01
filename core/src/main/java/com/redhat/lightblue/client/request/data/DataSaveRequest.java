@@ -46,8 +46,8 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
-    public String getOperationPathParam() {
-        return Operation.SAVE.getPathParam();
+    public Operation getOperation() {
+        return Operation.SAVE;
     }
 
     @Override
