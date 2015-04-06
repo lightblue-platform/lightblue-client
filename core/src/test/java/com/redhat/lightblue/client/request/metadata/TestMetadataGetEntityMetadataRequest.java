@@ -4,20 +4,21 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest.MetadataOperation;
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
-public class TestMetadataGetEntityMetadataRequest extends AbstractLightblueRequestTest  {
+public class TestMetadataGetEntityMetadataRequest extends AbstractLightblueRequestTest {
 
-	MetadataGetEntityMetadataRequest request = new MetadataGetEntityMetadataRequest();
-	
-	@Before
-	public void setUp() throws Exception {
-		request = new MetadataGetEntityMetadataRequest(entityName, entityVersion);
-	}
+    MetadataGetEntityMetadataRequest request = new MetadataGetEntityMetadataRequest();
 
-	@Test
-	public void testGetOperationPathParam() {
-		Assert.assertEquals(MetadataGetEntityMetadataRequest.PATH_PARAM_GET_ENTITY_METADATA, request.getOperationPathParam());
-	}
+    @Before
+    public void setUp() throws Exception {
+        request = new MetadataGetEntityMetadataRequest(entityName, entityVersion);
+    }
+
+    @Test
+    public void testGetOperationPathParam() {
+        Assert.assertEquals(MetadataOperation.GET_ENTITY_METADATA.getPathParam(), request.getOperationPathParam());
+    }
 
 }

@@ -4,20 +4,21 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest.MetadataOperation;
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataUpdateEntityInfoRequest extends AbstractLightblueRequestTest {
 
-	MetadataUpdateEntityInfoRequest request = new MetadataUpdateEntityInfoRequest();
+    MetadataUpdateEntityInfoRequest request = new MetadataUpdateEntityInfoRequest();
 
-	@Before
-	public void setUp() throws Exception {
-		request = new MetadataUpdateEntityInfoRequest(entityName, entityVersion);
-	}
+    @Before
+    public void setUp() throws Exception {
+        request = new MetadataUpdateEntityInfoRequest(entityName, entityVersion);
+    }
 
-	@Test
-	public void testGetOperationPathParam() {
-		Assert.assertEquals(MetadataUpdateEntityInfoRequest.PATH_PARAM_UPDATE_ENTITY_INFO, request.getOperationPathParam());
-	}
+    @Test
+    public void testGetOperationPathParam() {
+        Assert.assertEquals(MetadataOperation.UPDATE_ENTITY_INFO.getPathParam(), request.getOperationPathParam());
+    }
 
 }

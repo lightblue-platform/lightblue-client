@@ -6,23 +6,23 @@ import org.junit.Test;
 
 public class TestAbstractLightblueMetadataRequest extends AbstractLightblueRequestTest {
 
-	AbstractLightblueMetadataRequest testRequest = new AbstractLightblueMetadataRequest() {
+    AbstractLightblueMetadataRequest testRequest = new AbstractLightblueMetadataRequest() {
 
-		@Override
-		public String getOperationPathParam() {
-			return metadataOperation;
-		}
-	};
+        @Override
+        public MetadataOperation getOperation() {
+            return metadataOperation;
+        }
+    };
 
-	@Before
-	public void setUp() throws Exception {
-		testRequest.setEntityName(entityName);
-		testRequest.setEntityVersion(entityVersion);
-	}
+    @Before
+    public void setUp() throws Exception {
+        testRequest.setEntityName(entityName);
+        testRequest.setEntityVersion(entityVersion);
+    }
 
-	@Test
-	public void testGetRestURI() {
-		Assert.assertEquals(finalMetadataURI, testRequest.getRestURI(baseURI));
-	}
+    @Test
+    public void testGetRestURI() {
+        Assert.assertEquals(finalMetadataURI, testRequest.getRestURI(baseURI));
+    }
 
 }

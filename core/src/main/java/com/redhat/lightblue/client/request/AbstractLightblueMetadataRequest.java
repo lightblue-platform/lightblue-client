@@ -3,18 +3,37 @@ package com.redhat.lightblue.client.request;
 import org.apache.commons.lang.StringUtils;
 
 public abstract class AbstractLightblueMetadataRequest extends AbstractLightblueRequest implements LightblueRequest {
-    public static final String PATH_PARAM_GET_ENTITY_NAMES = "";
-    public static final String PATH_PARAM_GET_ENTITY_VERSIONS = "";
-    public static final String PATH_PARAM_GET_ENTITY_METADATA = "";
-    public static final String PATH_PARAM_GET_ENTITY_DEPENDENCIES = "dependencies";
-    public static final String PATH_PARAM_GET_ENTITY_ROLES = "roles";
-    public static final String PATH_PARAM_CREATE_METADATA = "";
-    public static final String PATH_PARAM_CREATE_SCHEMA = "";
-    public static final String PATH_PARAM_UPDATE_SCHEMA_STATUS = "";
-    public static final String PATH_PARAM_UPDATE_ENTITY_INFO = "";
-    public static final String PATH_PARAM_SET_DEFAULT_VERSION = "default";
-    public static final String PATH_PARAM_REMOVE_ENTITY = "";
-    public static final String PATH_PARAM_CLEAR_DEFAULT_VERSION = "";
+    public enum MetadataOperation {
+        GET_ENTITY_NAMES(""),
+        GET_ENTITY_VERSIONS(""),
+        GET_ENTITY_METADATA(""),
+        GET_ENTITY_DEPENDENCIES("dependencies"),
+        GET_ENTITY_ROLES("roles"),
+        CREATE_METADATA(""),
+        CREATE_SCHEMA(""),
+        UPDATE_SCHEMA_STATUS(""),
+        UPDATE_ENTITY_INFO(""),
+        SET_DEFAULT_VERSION("default"),
+        REMOVE_ENTITY(""),
+        CLEAR_DEFAULT_VERSION("");
+
+        private final String pathParam;
+
+        public String getPathParam() {
+            return pathParam;
+        }
+
+        private MetadataOperation(String pathParam) {
+            this.pathParam = pathParam;
+        }
+    }
+
+    public abstract MetadataOperation getOperation();
+
+    @Override
+    public String getOperationPathParam() {
+        return getOperation().getPathParam();
+    }
 
     @Override
     public String getRestURI(String baseServiceURI) {
