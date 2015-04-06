@@ -2,58 +2,53 @@ package com.redhat.lightblue.client.http.request;
 
 import org.apache.http.client.methods.HttpRequestBase;
 
+import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataClearDefaultVersionRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataCreateRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataCreateSchemaRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityDependenciesRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityMetadataRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityNamesRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityRolesRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityVersionsRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataRemoveEntityRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataSetDefaultVersionRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataUpdateEntityInfoRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataUpdateSchemaStatusRequest;
 
 public class LightblueHttpMetadataRequest extends AbstractLightblueHttpRequest implements LightblueHttpRequest {
 
-	LightblueRequest request;
+    LightblueRequest request;
 
-	public LightblueHttpMetadataRequest(LightblueRequest request) {
-		this.request = request;
-	}
+    public LightblueHttpMetadataRequest(LightblueRequest request) {
+        this.request = request;
+    }
 
-	@Override
-	public HttpRequestBase getRestRequest(String baseServiceURI) {
-		HttpRequestBase httpRequest = null;
-
-		if (request instanceof MetadataClearDefaultVersionRequest) {
-			return getHttpDelete(request.getRestURI(baseServiceURI));
-		} else if (request instanceof MetadataCreateRequest) {
-			return getHttpPut(request.getRestURI(baseServiceURI), request.getBody());
-		} else if (request instanceof MetadataCreateSchemaRequest) {
-			return getHttpPut(request.getRestURI(baseServiceURI), request.getBody());
-		} else if (request instanceof MetadataGetEntityDependenciesRequest) {
-			return getHttpGet(request.getRestURI(baseServiceURI));
-		} else if (request instanceof MetadataGetEntityMetadataRequest) {
-			return getHttpGet(request.getRestURI(baseServiceURI));
-		} else if (request instanceof MetadataGetEntityNamesRequest) {
-			return getHttpGet(request.getRestURI(baseServiceURI));
-		} else if (request instanceof MetadataGetEntityRolesRequest) {
-			return getHttpGet(request.getRestURI(baseServiceURI));
-		} else if (request instanceof MetadataGetEntityVersionsRequest) {
-			return getHttpGet(request.getRestURI(baseServiceURI));
-		} else if (request instanceof MetadataRemoveEntityRequest) {
-			return getHttpDelete(request.getRestURI(baseServiceURI));
-		} else if (request instanceof MetadataSetDefaultVersionRequest) {
-			return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
-		} else if (request instanceof MetadataUpdateEntityInfoRequest) {
-			return getHttpPut(request.getRestURI(baseServiceURI), request.getBody());
-		} else if (request instanceof MetadataUpdateSchemaStatusRequest) {
-			return getHttpPut(request.getRestURI(baseServiceURI), request.getBody());
-		}
-		return httpRequest;
-	}
+    @Override
+    public HttpRequestBase getRestRequest(String baseServiceURI) {
+        if (request instanceof AbstractLightblueMetadataRequest) {
+            AbstractLightblueMetadataRequest metadataRequest = (AbstractLightblueMetadataRequest) request;
+            switch (metadataRequest.getOperation()) {
+                case CLEAR_DEFAULT_VERSION:
+                    return getHttpDelete(request.getRestURI(baseServiceURI));
+                case CREATE_METADATA:
+                    return getHttpPut(request.getRestURI(baseServiceURI), request.getBody());
+                case CREATE_SCHEMA:
+                    return getHttpPut(request.getRestURI(baseServiceURI), request.getBody());
+                case GET_ENTITY_DEPENDENCIES:
+                    return getHttpGet(request.getRestURI(baseServiceURI));
+                case GET_ENTITY_METADATA:
+                    return getHttpGet(request.getRestURI(baseServiceURI));
+                case GET_ENTITY_NAMES:
+                    return getHttpGet(request.getRestURI(baseServiceURI));
+                case GET_ENTITY_ROLES:
+                    return getHttpGet(request.getRestURI(baseServiceURI));
+                case GET_ENTITY_VERSIONS:
+                    return getHttpGet(request.getRestURI(baseServiceURI));
+                case REMOVE_ENTITY:
+                    return getHttpDelete(request.getRestURI(baseServiceURI));
+                case SET_DEFAULT_VERSION:
+                    return getHttpPost(request.getRestURI(baseServiceURI), request.getBody());
+                case UPDATE_ENTITY_INFO:
+                    return getHttpPut(request.getRestURI(baseServiceURI), request.getBody());
+                case UPDATE_SCHEMA_STATUS:
+                    return getHttpPut(request.getRestURI(baseServiceURI), request.getBody());
+                default:
+                    throw new UnsupportedOperationException("Unknown Operation type: " + request.getOperationPathParam());
+            }
+        }
+        else {
+            throw new UnsupportedOperationException("Request type is not supported: " + request.getClass());
+        }
+    }
 
 }
