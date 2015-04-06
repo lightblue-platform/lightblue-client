@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest.Operation;
+import com.redhat.lightblue.client.request.AbstractLightblueDataRequest.DataOperation;
 
 public class TestDataUpdateRequest extends AbstractLightblueRequestTest {
 
@@ -18,7 +18,7 @@ public class TestDataUpdateRequest extends AbstractLightblueRequestTest {
 
     @Test
     public void testGetOperationPathParam() {
-        Assert.assertEquals(Operation.UPDATE.getPathParam(), request.getOperationPathParam());
+        Assert.assertEquals(DataOperation.UPDATE.getPathParam(), request.getOperationPathParam());
     }
 
 }

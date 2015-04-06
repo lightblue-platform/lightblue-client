@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.redhat.lightblue.client.expression.query.Query;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest.Operation;
+import com.redhat.lightblue.client.request.AbstractLightblueDataRequest.DataOperation;
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestDataDeleteRequest extends AbstractLightblueRequestTest {
@@ -28,7 +28,7 @@ public class TestDataDeleteRequest extends AbstractLightblueRequestTest {
 
     @Test
     public void testGetOperationPathParam() {
-        Assert.assertEquals(Operation.DELETE.getPathParam(), request.getOperationPathParam());
+        Assert.assertEquals(DataOperation.DELETE.getPathParam(), request.getOperationPathParam());
     }
 
     @Test

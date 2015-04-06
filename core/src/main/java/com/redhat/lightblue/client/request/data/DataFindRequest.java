@@ -55,8 +55,8 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
-    public Operation getOperation() {
-        return Operation.FIND;
+    public DataOperation getOperation() {
+        return DataOperation.FIND;
     }
 
     @Override

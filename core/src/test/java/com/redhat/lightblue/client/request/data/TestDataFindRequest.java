@@ -12,7 +12,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import com.redhat.lightblue.client.enums.SortDirection;
 import com.redhat.lightblue.client.expression.query.Query;
 import com.redhat.lightblue.client.projection.Projection;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest.Operation;
+import com.redhat.lightblue.client.request.AbstractLightblueDataRequest.DataOperation;
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 import com.redhat.lightblue.client.request.SortCondition;
 
@@ -51,7 +51,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest {
 
     @Test
     public void testGetOperationPathParam() {
-        Assert.assertEquals(Operation.FIND.getPathParam(), request.getOperationPathParam());
+        Assert.assertEquals(DataOperation.FIND.getPathParam(), request.getOperationPathParam());
     }
 
     @Test

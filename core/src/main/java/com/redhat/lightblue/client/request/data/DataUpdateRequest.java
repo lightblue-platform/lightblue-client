@@ -63,8 +63,8 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
-    public Operation getOperation() {
-        return Operation.UPDATE;
+    public DataOperation getOperation() {
+        return DataOperation.UPDATE;
     }
 
     @Override

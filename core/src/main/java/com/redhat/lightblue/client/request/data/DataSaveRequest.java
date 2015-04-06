@@ -46,8 +46,8 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
-    public Operation getOperation() {
-        return Operation.SAVE;
+    public DataOperation getOperation() {
+        return DataOperation.SAVE;
     }
 
     @Override

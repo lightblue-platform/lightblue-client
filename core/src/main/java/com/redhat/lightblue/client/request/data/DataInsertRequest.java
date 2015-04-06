@@ -37,8 +37,8 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
-    public Operation getOperation() {
-        return Operation.INSERT;
+    public DataOperation getOperation() {
+        return DataOperation.INSERT;
     }
 
     @Override

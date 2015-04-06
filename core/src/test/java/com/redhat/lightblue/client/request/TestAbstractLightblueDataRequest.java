@@ -9,7 +9,7 @@ public class TestAbstractLightblueDataRequest extends AbstractLightblueRequestTe
     AbstractLightblueDataRequest testRequest = new AbstractLightblueDataRequest() {
 
         @Override
-        public Operation getOperation() {
+        public DataOperation getOperation() {
             return dataOperation;
         }
 

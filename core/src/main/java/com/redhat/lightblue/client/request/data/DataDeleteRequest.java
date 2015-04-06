@@ -20,8 +20,8 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
-    public Operation getOperation() {
-        return Operation.DELETE;
+    public DataOperation getOperation() {
+        return DataOperation.DELETE;
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.redhat.lightblue.client.request;
 import org.apache.commons.lang.StringUtils;
 
 public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequest {
-    public enum Operation {
+    public enum DataOperation {
         INSERT(""),
         SAVE("save"),
         UPDATE("update"),
@@ -16,12 +16,12 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
             return pathParam;
         }
 
-        private Operation(String pathParam) {
+        private DataOperation(String pathParam) {
             this.pathParam = pathParam;
         }
     }
 
-    public abstract Operation getOperation();
+    public abstract DataOperation getOperation();
 
     @Override
     public String getOperationPathParam() {

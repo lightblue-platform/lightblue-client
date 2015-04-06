@@ -15,7 +15,7 @@ import com.redhat.lightblue.client.http.request.stub.DataFindRequestStub;
 import com.redhat.lightblue.client.http.request.stub.DataInsertRequestStub;
 import com.redhat.lightblue.client.http.request.stub.DataSaveRequestStub;
 import com.redhat.lightblue.client.http.request.stub.DataUpdateRequestStub;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest.Operation;
+import com.redhat.lightblue.client.request.AbstractLightblueDataRequest.DataOperation;
 import com.redhat.lightblue.client.request.data.DataDeleteRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
@@ -36,7 +36,7 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
         DataDeleteRequest deleteRequest = new DataDeleteRequest();
         deleteRequest.where(withValue("_id = 1234abc"));
         httpRequest = new LightblueHttpDataRequest(deleteRequest);
-        HttpPost expectedRequest = new HttpPost(baseURI + Operation.DELETE.getPathParam());
+        HttpPost expectedRequest = new HttpPost(baseURI + DataOperation.DELETE.getPathParam());
         expectedRequest.setEntity(new StringEntity("{\"query\":{\"field\":\"_id\",\"op\":\"=\",\"rvalue\":\"1234abc\"}}"));
         HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
         compareHttpPost(expectedRequest, actualRequest);
@@ -47,7 +47,7 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
         DataDeleteRequest deleteRequest = new DataDeleteRequest(entityName, null);
         deleteRequest.where(withValue("_id = 1234abc"));
         httpRequest = new LightblueHttpDataRequest(deleteRequest);
-        HttpPost expectedRequest = new HttpPost(baseURI + Operation.DELETE.getPathParam() + "/" + entityName);
+        HttpPost expectedRequest = new HttpPost(baseURI + DataOperation.DELETE.getPathParam() + "/" + entityName);
         expectedRequest.setEntity(new StringEntity("{\"query\":{\"field\":\"_id\",\"op\":\"=\",\"rvalue\":\"1234abc\"}}"));
         HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
         compareHttpPost(expectedRequest, actualRequest);
@@ -58,7 +58,7 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
         DataDeleteRequest deleteRequest = new DataDeleteRequest(entityName, entityVersion);
         deleteRequest.where(withValue("_id = 1234abc"));
         httpRequest = new LightblueHttpDataRequest(deleteRequest);
-        HttpPost expectedRequest = new HttpPost(baseURI + Operation.DELETE.getPathParam() + "/" + entityName + "/" + entityVersion);
+        HttpPost expectedRequest = new HttpPost(baseURI + DataOperation.DELETE.getPathParam() + "/" + entityName + "/" + entityVersion);
         expectedRequest.setEntity(new StringEntity("{\"query\":{\"field\":\"_id\",\"op\":\"=\",\"rvalue\":\"1234abc\"}}"));
         HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
         compareHttpPost(expectedRequest, actualRequest);
@@ -66,7 +66,7 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
 
     @Test
     public void testGetRestRequestWithDataFindRequest() throws UnsupportedEncodingException {
-        HttpPost expectedRequest = new HttpPost(baseURI + Operation.FIND.getPathParam());
+        HttpPost expectedRequest = new HttpPost(baseURI + DataOperation.FIND.getPathParam());
         expectedRequest.setEntity(new StringEntity(body));
         DataFindRequest request = new DataFindRequestStub(null, null, body);
         httpRequest = new LightblueHttpDataRequest(request);
@@ -78,7 +78,7 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
     public void testGetRestRequestWithDataFindRequestWithEntityName() throws UnsupportedEncodingException {
         DataFindRequest request = new DataFindRequestStub(entityName, null, body);
         httpRequest = new LightblueHttpDataRequest(request);
-        HttpPost expectedRequest = new HttpPost(baseURI + Operation.FIND.getPathParam() + "/" + entityName);
+        HttpPost expectedRequest = new HttpPost(baseURI + DataOperation.FIND.getPathParam() + "/" + entityName);
         expectedRequest.setEntity(new StringEntity(body));
         HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
         compareHttpRequestBase(expectedRequest, actualRequest);
@@ -88,7 +88,7 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
     public void testGetRestRequestWithDataFindRequestWithEntityNameAndVersion() throws UnsupportedEncodingException {
         DataFindRequest request = new DataFindRequestStub(entityName, entityVersion, body);
         httpRequest = new LightblueHttpDataRequest(request);
-        HttpPost expectedRequest = new HttpPost(baseURI + Operation.FIND.getPathParam() + "/" + entityName + "/" + entityVersion);
+        HttpPost expectedRequest = new HttpPost(baseURI + DataOperation.FIND.getPathParam() + "/" + entityName + "/" + entityVersion);
         expectedRequest.setEntity(new StringEntity(body));
         HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
         compareHttpRequestBase(expectedRequest, actualRequest);
@@ -128,7 +128,7 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
     public void testGetRestRequestWithDataSaveRequest() throws IOException {
         DataSaveRequest request = new DataSaveRequestStub(null, null, body);
         httpRequest = new LightblueHttpDataRequest(request);
-        HttpPost expectedRequest = new HttpPost(baseURI + Operation.SAVE.getPathParam());
+        HttpPost expectedRequest = new HttpPost(baseURI + DataOperation.SAVE.getPathParam());
         expectedRequest.setEntity(new StringEntity(body));
         HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
         compareHttpPost(expectedRequest, actualRequest);
@@ -138,7 +138,7 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
     public void testGetRestRequestWithDataSaveRequestWithEntityName() throws IOException {
         DataSaveRequest request = new DataSaveRequestStub(entityName, null, body);
         httpRequest = new LightblueHttpDataRequest(request);
-        HttpPost expectedRequest = new HttpPost(baseURI + Operation.SAVE.getPathParam() + "/" + entityName);
+        HttpPost expectedRequest = new HttpPost(baseURI + DataOperation.SAVE.getPathParam() + "/" + entityName);
         expectedRequest.setEntity(new StringEntity(body));
         HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
         compareHttpPost(expectedRequest, actualRequest);
@@ -148,7 +148,7 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
     public void testGetRestRequestWithDataSaveRequestWithEntityNameAndVersion() throws IOException {
         DataSaveRequest request = new DataSaveRequestStub(entityName, entityVersion, body);
         httpRequest = new LightblueHttpDataRequest(request);
-        HttpPost expectedRequest = new HttpPost(baseURI + Operation.SAVE.getPathParam() + "/" + entityName + "/" + entityVersion);
+        HttpPost expectedRequest = new HttpPost(baseURI + DataOperation.SAVE.getPathParam() + "/" + entityName + "/" + entityVersion);
         expectedRequest.setEntity(new StringEntity(body));
         HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
         compareHttpPost(expectedRequest, actualRequest);
@@ -158,7 +158,7 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
     public void testGetRestRequestWithDataUpdateRequest() throws IOException {
         DataUpdateRequest request = new DataUpdateRequestStub(null, null, body);
         httpRequest = new LightblueHttpDataRequest(request);
-        HttpPost expectedRequest = new HttpPost(baseURI + Operation.UPDATE.getPathParam());
+        HttpPost expectedRequest = new HttpPost(baseURI + DataOperation.UPDATE.getPathParam());
         expectedRequest.setEntity(new StringEntity(body));
         HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
         compareHttpPost(expectedRequest, actualRequest);
@@ -168,7 +168,7 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
     public void testGetRestRequestWithDataUpdateRequestWithEntityName() throws IOException {
         DataUpdateRequest request = new DataUpdateRequestStub(entityName, null, body);
         httpRequest = new LightblueHttpDataRequest(request);
-        HttpPost expectedRequest = new HttpPost(baseURI + Operation.UPDATE.getPathParam() + "/" + entityName);
+        HttpPost expectedRequest = new HttpPost(baseURI + DataOperation.UPDATE.getPathParam() + "/" + entityName);
         expectedRequest.setEntity(new StringEntity(body));
         HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
         compareHttpPost(expectedRequest, actualRequest);
@@ -178,7 +178,7 @@ public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTe
     public void testGetRestRequestWithDataUpdateRequestWithEntityNameAndVersion() throws IOException {
         DataUpdateRequest request = new DataUpdateRequestStub(entityName, entityVersion, body);
         httpRequest = new LightblueHttpDataRequest(request);
-        HttpPost expectedRequest = new HttpPost(baseURI + Operation.UPDATE.getPathParam() + "/" + entityName + "/" + entityVersion);
+        HttpPost expectedRequest = new HttpPost(baseURI + DataOperation.UPDATE.getPathParam() + "/" + entityName + "/" + entityVersion);
         expectedRequest.setEntity(new StringEntity(body));
         HttpPost actualRequest = (HttpPost) httpRequest.getRestRequest(baseURI);
         compareHttpPost(expectedRequest, actualRequest);

@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.redhat.lightblue.client.projection.Projection;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest.Operation;
+import com.redhat.lightblue.client.request.AbstractLightblueDataRequest.DataOperation;
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestDataInsertRequest extends AbstractLightblueRequestTest {
@@ -47,7 +47,7 @@ public class TestDataInsertRequest extends AbstractLightblueRequestTest {
 
     @Test
     public void testGetOperationPathParam() {
-        Assert.assertEquals(Operation.INSERT.getPathParam(), request.getOperationPathParam());
+        Assert.assertEquals(DataOperation.INSERT.getPathParam(), request.getOperationPathParam());
     }
 
     @Test
