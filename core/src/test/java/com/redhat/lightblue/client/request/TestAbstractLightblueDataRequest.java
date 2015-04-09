@@ -14,7 +14,6 @@ public class TestAbstractLightblueDataRequest extends AbstractLightblueRequestTe
 
         @Override
         public String getBody() {
-            // TODO Auto-generated method stub
             return null;
         }
     };
