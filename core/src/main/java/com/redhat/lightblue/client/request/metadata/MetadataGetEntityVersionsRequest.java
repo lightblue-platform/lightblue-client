@@ -14,8 +14,8 @@ public class MetadataGetEntityVersionsRequest extends AbstractLightblueMetadataR
     }
 
     @Override
-    public String getOperationPathParam() {
-        return PATH_PARAM_GET_ENTITY_VERSIONS;
+    public MetadataOperation getOperation() {
+        return MetadataOperation.GET_ENTITY_VERSIONS;
     }
 
 }

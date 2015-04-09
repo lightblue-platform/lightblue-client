@@ -20,6 +20,11 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
+    public DataOperation getOperation() {
+        return DataOperation.DELETE;
+    }
+
+    @Override
     public String getBody() {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"query\":");
@@ -28,8 +33,4 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
         return sb.toString();
     }
 
-    @Override
-    public String getOperationPathParam() {
-        return PATH_PARAM_DELETE;
-    }
 }

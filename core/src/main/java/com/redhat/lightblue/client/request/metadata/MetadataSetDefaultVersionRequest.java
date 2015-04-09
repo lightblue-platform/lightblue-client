@@ -14,8 +14,8 @@ public class MetadataSetDefaultVersionRequest extends AbstractLightblueMetadataR
     }
 
     @Override
-    public String getOperationPathParam() {
-        return PATH_PARAM_SET_DEFAULT_VERSION;
+    public MetadataOperation getOperation() {
+        return MetadataOperation.SET_DEFAULT_VERSION;
     }
 
 }

@@ -14,8 +14,8 @@ public class MetadataCreateRequest extends AbstractLightblueMetadataRequest {
     }
 
     @Override
-    public String getOperationPathParam() {
-        return PATH_PARAM_CREATE_METADATA;
+    public MetadataOperation getOperation() {
+        return MetadataOperation.CREATE_METADATA;
     }
 
 }
