@@ -51,4 +51,8 @@ public class ArrayQuery implements Query {
         return new ArrayQuery(fieldName, queryExpression);
     }
 
+    public static ArrayQuery withSubfield(String fieldName, ArrayOperation operation, String... values) {
+        return new ArrayQuery(fieldName, operation, values);
+    }
+
 }

@@ -9,7 +9,6 @@ public class FieldProjection implements Projection {
         this.field = field;
         this.isIncluded = isIncluded;
         this.isRecursive = isRecursive;
-
     }
 
     @Override
