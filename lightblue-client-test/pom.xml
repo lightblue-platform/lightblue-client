@@ -1,26 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  
   <parent>
     <groupId>com.redhat.lightblue.client</groupId>
     <artifactId>lightblue-client-pom</artifactId>
     <version>1.3.0-SNAPSHOT</version>
   </parent>
-  <artifactId>lightblue-client-http</artifactId>
+  
+  <artifactId>lightblue-client-test</artifactId>
   <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
+  
   <dependencies>
     <dependency>
       <groupId>com.redhat.lightblue.client</groupId>
       <artifactId>lightblue-client-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.redhat.lightblue.client</groupId>
-      <artifactId>lightblue-client-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.3.3</version>
-    </dependency>
   </dependencies>
+  
 </project>

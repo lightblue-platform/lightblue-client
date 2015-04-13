@@ -11,8 +11,6 @@
         <dependency>
             <groupId>com.redhat.lightblue.client</groupId>
             <artifactId>lightblue-client-core</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.redhat.lightblue</groupId>
