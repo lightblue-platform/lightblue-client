@@ -2,6 +2,7 @@ package com.redhat.lightblue.client.http;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.Objects;
 
 import org.apache.http.HttpEntity;
@@ -154,10 +155,16 @@ public class LightblueHttpClient implements LightblueClient {
                     }
                 }
 
+                long t1 = new Date().getTime();
                 try (CloseableHttpResponse httpResponse = httpClient.execute(httpOperation)) {
                     HttpEntity entity = httpResponse.getEntity();
                     jsonOut = EntityUtils.toString(entity);
-                    LOGGER.debug("Response received from service" + jsonOut);
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Response received from service: " + jsonOut);
+
+                        long t2 = new Date().getTime();
+                        LOGGER.debug("Call took "+(t2-t1)+"ms");
+                    }
                     return new LightblueResponse(jsonOut, mapper);
                 }
             }
