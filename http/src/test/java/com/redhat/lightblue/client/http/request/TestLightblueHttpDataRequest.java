@@ -12,15 +12,15 @@ import org.apache.http.entity.StringEntity;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.redhat.lightblue.client.http.request.stub.DataFindRequestStub;
-import com.redhat.lightblue.client.http.request.stub.DataInsertRequestStub;
-import com.redhat.lightblue.client.http.request.stub.DataSaveRequestStub;
-import com.redhat.lightblue.client.http.request.stub.DataUpdateRequestStub;
 import com.redhat.lightblue.client.request.data.DataDeleteRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.request.data.DataSaveRequest;
 import com.redhat.lightblue.client.request.data.DataUpdateRequest;
+import com.redhat.lightblue.client.test.request.DataFindRequestStub;
+import com.redhat.lightblue.client.test.request.DataInsertRequestStub;
+import com.redhat.lightblue.client.test.request.DataSaveRequestStub;
+import com.redhat.lightblue.client.test.request.DataUpdateRequestStub;
 
 public class TestLightblueHttpDataRequest extends AbstractLightblueHttpRequestTest {
 

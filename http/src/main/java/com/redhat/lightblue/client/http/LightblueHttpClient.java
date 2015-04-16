@@ -2,6 +2,7 @@ package com.redhat.lightblue.client.http;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.Objects;
 
 import org.apache.http.HttpEntity;
@@ -24,6 +25,7 @@ import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponseParseException;
+import com.redhat.lightblue.client.util.JSON;
 
 public class LightblueHttpClient implements LightblueClient {
     private final LightblueClientConfiguration configuration;
@@ -55,7 +57,7 @@ public class LightblueHttpClient implements LightblueClient {
      * This constructor will use a copy of specified configuration object.
      */
     public LightblueHttpClient(LightblueClientConfiguration configuration) {
-        this(configuration, LightblueResponse.DEFAULT_MAPPER);
+        this(configuration, JSON.getDefaultObjectMapper());
     }
 
     /**
@@ -92,7 +94,7 @@ public class LightblueHttpClient implements LightblueClient {
         configuration.setMetadataServiceURI(metadataServiceURI);
         configuration.setUseCertAuth(useCertAuth);
 
-        this.mapper = LightblueResponse.DEFAULT_MAPPER;
+        this.mapper = JSON.getDefaultObjectMapper();
     }
 
     /*
@@ -153,10 +155,16 @@ public class LightblueHttpClient implements LightblueClient {
                     }
                 }
 
+                long t1 = new Date().getTime();
                 try (CloseableHttpResponse httpResponse = httpClient.execute(httpOperation)) {
                     HttpEntity entity = httpResponse.getEntity();
                     jsonOut = EntityUtils.toString(entity);
-                    LOGGER.debug("Response received from service" + jsonOut);
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Response received from service: " + jsonOut);
+
+                        long t2 = new Date().getTime();
+                        LOGGER.debug("Call took "+(t2-t1)+"ms");
+                    }
                     return new LightblueResponse(jsonOut, mapper);
                 }
             }

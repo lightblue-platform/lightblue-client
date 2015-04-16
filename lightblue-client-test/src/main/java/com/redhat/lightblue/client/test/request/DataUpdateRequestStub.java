@@ -1,4 +1,4 @@
-package com.redhat.lightblue.client.http.request.stub;
+package com.redhat.lightblue.client.test.request;
 
 import com.redhat.lightblue.client.request.data.DataUpdateRequest;
 
