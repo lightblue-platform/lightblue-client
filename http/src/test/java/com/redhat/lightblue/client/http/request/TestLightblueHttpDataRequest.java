@@ -1,17 +1,16 @@
 package com.redhat.lightblue.client.http.request;
 
-import static com.redhat.lightblue.client.expression.query.ValueQuery.withValue;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-
-import org.apache.http.client.methods.HttpDelete;
+import com.redhat.lightblue.client.request.data.*;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+import static com.redhat.lightblue.client.expression.query.ValueQuery.withValue;
 import com.redhat.lightblue.client.request.data.DataDeleteRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;

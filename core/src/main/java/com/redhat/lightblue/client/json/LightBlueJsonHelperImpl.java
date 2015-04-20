@@ -1,8 +1,8 @@
 package com.redhat.lightblue.client.json;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import java.util.HashMap;
 import java.util.Map;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.redhat.lightblue.client.util.JSON;
 

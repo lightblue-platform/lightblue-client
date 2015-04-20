@@ -1,7 +1,6 @@
 package com.redhat.lightblue.client.http.request;
 
-import java.io.UnsupportedEncodingException;
-
+import com.redhat.lightblue.client.request.metadata.*;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -9,18 +8,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.redhat.lightblue.client.request.metadata.MetadataClearDefaultVersionRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataCreateRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataCreateSchemaRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityDependenciesRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityMetadataRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityNamesRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityRolesRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityVersionsRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataRemoveEntityRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataSetDefaultVersionRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataUpdateEntityInfoRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataUpdateSchemaStatusRequest;
+import java.io.UnsupportedEncodingException;
 
 public class TestLightblueHttpMetadataRequest extends AbstractLightblueHttpRequestTest {
 

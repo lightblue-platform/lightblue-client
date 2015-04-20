@@ -1,20 +1,8 @@
 package com.redhat.lightblue.client.http.request;
 
-import org.apache.http.client.methods.HttpRequestBase;
-
 import com.redhat.lightblue.client.request.LightblueRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataClearDefaultVersionRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataCreateRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataCreateSchemaRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityDependenciesRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityMetadataRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityNamesRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityRolesRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityVersionsRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataRemoveEntityRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataSetDefaultVersionRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataUpdateEntityInfoRequest;
-import com.redhat.lightblue.client.request.metadata.MetadataUpdateSchemaStatusRequest;
+import com.redhat.lightblue.client.request.metadata.*;
+import org.apache.http.client.methods.HttpRequestBase;
 
 public class LightblueHttpMetadataRequest extends AbstractLightblueHttpRequest implements LightblueHttpRequest {
 
@@ -26,8 +14,6 @@ public class LightblueHttpMetadataRequest extends AbstractLightblueHttpRequest i
 
 	@Override
 	public HttpRequestBase getRestRequest(String baseServiceURI) {
-		HttpRequestBase httpRequest = null;
-
 		if (request instanceof MetadataClearDefaultVersionRequest) {
 			return getHttpDelete(request.getRestURI(baseServiceURI));
 		} else if (request instanceof MetadataCreateRequest) {
@@ -53,7 +39,7 @@ public class LightblueHttpMetadataRequest extends AbstractLightblueHttpRequest i
 		} else if (request instanceof MetadataUpdateSchemaStatusRequest) {
 			return getHttpPut(request.getRestURI(baseServiceURI), request.getBody());
 		}
-		return httpRequest;
+		return null;
 	}
 
 }

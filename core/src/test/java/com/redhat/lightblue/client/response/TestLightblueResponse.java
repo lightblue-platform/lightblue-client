@@ -1,14 +1,14 @@
 package com.redhat.lightblue.client.response;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
+import java.io.IOException;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -218,12 +218,24 @@ public class TestLightblueResponse {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            SimpleModelObject o = (SimpleModelObject) obj;
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof SimpleModelObject)) return false;
 
-            return _id.equals(o._id) && field.equals(o.field);
+            SimpleModelObject that = (SimpleModelObject) o;
+
+            if (!_id.equals(that._id)) return false;
+            if (!field.equals(that.field)) return false;
+
+            return true;
         }
 
+        @Override
+        public int hashCode() {
+            int result = _id.hashCode();
+            result = 31 * result + field.hashCode();
+            return result;
+        }
     }
 
 }

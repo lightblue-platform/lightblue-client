@@ -1,5 +1,10 @@
 package com.redhat.lightblue.client.http;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -15,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.MissingNode;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
@@ -25,17 +32,39 @@ import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponseParseException;
+import com.redhat.lightblue.client.util.ClientConstants;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Objects;
 import com.redhat.lightblue.client.util.JSON;
 
 public class LightblueHttpClient implements LightblueClient {
+    /**
+     * It is safe and encouraged to share the same mapper among threads. It is thread safe. So,
+     * this default instance is static.
+     *
+     * @see <a href="http://stackoverflow.com/a/3909846">The developer of the Jackson library's own
+     * quote.</a>
+     */
+    private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper()
+            .setDateFormat(ClientConstants.getDateFormat())
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
     private final LightblueClientConfiguration configuration;
     private final ObjectMapper mapper;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
-
     /**
-     * This constructor will attempt to read the configuration from the default
-     * properties file on the classpath.
+     * This constructor will attempt to read the configuration from the default properties file on
+     * the classpath.
      *
      * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
      */
@@ -44,8 +73,8 @@ public class LightblueHttpClient implements LightblueClient {
     }
 
     /**
-     * This constructor will attempt to read the configuration from the
-     * specified properties file on the file system.
+     * This constructor will attempt to read the configuration from the specified properties file on
+     * the file system.
      *
      * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
      */
@@ -61,14 +90,11 @@ public class LightblueHttpClient implements LightblueClient {
     }
 
     /**
-     * This constructor will use a copy of specified configuration object and
-     * object mapper.
-     *
-     * <p>
-     * Without supplying an {@link com.fasterxml.jackson.databind.ObjectMapper}
-     * explicitly, a default is shared among all threads ({@link #mapper}). It
-     * is injectable here because of best practices: for further configuration
-     * support and unit testing.
+     * This constructor will use a copy of specified configuration object and object mapper.
+     * <p/>
+     * <p>Without supplying an {@link com.fasterxml.jackson.databind.ObjectMapper} explicitly, a
+     * default is shared among all threads ({@link #mapper}). It is injectable here because of best
+     * practices: for further configuration support and unit testing.
      */
     public LightblueHttpClient(LightblueClientConfiguration configuration, ObjectMapper mapper) {
         Objects.requireNonNull(configuration, "configuration");
@@ -81,19 +107,16 @@ public class LightblueHttpClient implements LightblueClient {
     }
 
     /**
-     * @deprecated Use LightblueHttpClient(String configFilePath) if you want to
-     * specify a config file location not on the classpath Use
-     * LightblueHttpClient(LightblueClientConfiguration configuration) if you
-     * don't want to use config files at all
+     * @deprecated Use LightblueHttpClient(String configFilePath) if you want to specify a config file location not on the classpath
+     * Use LightblueHttpClient(LightblueClientConfiguration configuration) if you don't want to use config files at all
      */
     @Deprecated
     public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
-        this.configuration = new LightblueClientConfiguration();
-
+        LightblueClientConfiguration configuration = new LightblueClientConfiguration();
         configuration.setDataServiceURI(dataServiceURI);
         configuration.setMetadataServiceURI(metadataServiceURI);
         configuration.setUseCertAuth(useCertAuth);
-
+        this.configuration = configuration;
         this.mapper = JSON.getDefaultObjectMapper();
     }
 
@@ -111,13 +134,6 @@ public class LightblueHttpClient implements LightblueClient {
                 .getRestRequest(configuration.getMetadataServiceURI()));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.redhat.lightblue.client.LightblueClient#data(com.redhat.lightblue.client
-     * .request.LightblueRequest)
-     */
     @Override
     public LightblueResponse data(LightblueRequest lightblueRequest) {
         LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());

@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.util;
 
+
+import com.fasterxml.jackson.core.JsonFactory;
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -8,6 +10,9 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.io.StringWriter;
 
 /**
  *

@@ -1,13 +1,10 @@
 package com.redhat.lightblue.client.json;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.util.Map;
 
-import org.junit.Test;
-
-import com.redhat.lightblue.client.json.LightBlueJsonHelper;
-import com.redhat.lightblue.client.json.LightBlueJsonHelperImpl;
+import static org.junit.Assert.assertNotNull;
 
 public class LightBlueJsonHelperImplTest {
 	
