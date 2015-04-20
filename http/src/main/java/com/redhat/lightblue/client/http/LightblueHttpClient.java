@@ -4,6 +4,21 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Date;
+import java.util.Objects;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
@@ -30,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Objects;
+import com.redhat.lightblue.client.util.JSON;
 
 public class LightblueHttpClient implements LightblueClient {
     /**
@@ -70,7 +86,7 @@ public class LightblueHttpClient implements LightblueClient {
      * This constructor will use a copy of specified configuration object.
      */
     public LightblueHttpClient(LightblueClientConfiguration configuration) {
-        this(configuration, LightblueResponse.DEFAULT_MAPPER);
+        this(configuration, JSON.getDefaultObjectMapper());
     }
 
     /**
@@ -100,9 +116,8 @@ public class LightblueHttpClient implements LightblueClient {
         configuration.setDataServiceURI(dataServiceURI);
         configuration.setMetadataServiceURI(metadataServiceURI);
         configuration.setUseCertAuth(useCertAuth);
-
         this.configuration = configuration;
-        this.mapper = DEFAULT_MAPPER;
+        this.mapper = JSON.getDefaultObjectMapper();
     }
 
     /*
@@ -156,10 +171,16 @@ public class LightblueHttpClient implements LightblueClient {
                     }
                 }
 
+                long t1 = new Date().getTime();
                 try (CloseableHttpResponse httpResponse = httpClient.execute(httpOperation)) {
                     HttpEntity entity = httpResponse.getEntity();
                     jsonOut = EntityUtils.toString(entity);
-                    LOGGER.debug("Response received from service" + jsonOut);
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Response received from service: " + jsonOut);
+
+                        long t2 = new Date().getTime();
+                        LOGGER.debug("Call took "+(t2-t1)+"ms");
+                    }
                     return new LightblueResponse(jsonOut, mapper);
                 }
             }

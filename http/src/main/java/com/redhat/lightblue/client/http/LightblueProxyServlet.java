@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
+import java.util.Date;
 
 @Deprecated
 public class LightblueProxyServlet extends HttpServlet implements Servlet {
@@ -82,10 +83,16 @@ public class LightblueProxyServlet extends HttpServlet implements Servlet {
             try (CloseableHttpClient httpClient = getLightblueHttpClient()) {
                 httpOperation.setHeader("Content-Type", "application/json");
                 
+                long t1 = new Date().getTime();
                 try (CloseableHttpResponse httpResponse = httpClient.execute(httpOperation)) {
                     HttpEntity entity = httpResponse.getEntity();
                     String serviceResponse = EntityUtils.toString(entity);
-                    LOGGER.debug("Response received from service" + serviceResponse);
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Response received from service: " + serviceResponse);
+
+                        long t2 = new Date().getTime();
+                        LOGGER.debug("Call took "+(t2-t1)+"ms");
+                    }
                     out.println(serviceResponse);
                 }
             }
