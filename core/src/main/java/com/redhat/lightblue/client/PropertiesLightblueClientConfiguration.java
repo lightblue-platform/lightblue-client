@@ -1,11 +1,17 @@
 package com.redhat.lightblue.client;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +98,7 @@ public final class PropertiesLightblueClientConfiguration {
      * @param classLoader The class loader to use to find the resource.
      */
     public static LightblueClientConfiguration fromResource(String resourcePath,
-                                                            ClassLoader classLoader) {
+            ClassLoader classLoader) {
         InputStream propertiesStream = classLoader.getResourceAsStream(resourcePath);
 
         if (propertiesStream == null) {
@@ -128,7 +134,7 @@ public final class PropertiesLightblueClientConfiguration {
     public static LightblueClientConfiguration fromInputStream(InputStream propertiesStream) {
         try {
             Properties properties = new Properties();
-            properties.load(propertiesStream);
+            properties.load(loadInputStream(propertiesStream));
 
             return fromObject(properties);
         } catch (IOException e) {
@@ -136,6 +142,24 @@ public final class PropertiesLightblueClientConfiguration {
             throw new LightblueClientConfigurationException("Could not read properties file from "
                     + "input stream, " + propertiesStream, e);
         }
+    }
+
+    /**
+     * Reads the {@link InputStream} and substitutes system properties.
+     * @return {@link Reader}
+     */
+    private static Reader loadInputStream(InputStream propertiesStream) throws IOException {
+        StringBuilder buff = new StringBuilder();
+
+        try (InputStreamReader isr = new InputStreamReader(propertiesStream, Charset.defaultCharset());
+                BufferedReader reader = new BufferedReader(isr)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                buff.append(line).append("\n");
+            }
+        }
+
+        return new StringReader(StrSubstitutor.replaceSystemProperties(buff.toString()));
     }
 
     /**
@@ -155,6 +179,5 @@ public final class PropertiesLightblueClientConfiguration {
         return config;
     }
 
-    private PropertiesLightblueClientConfiguration() {
-    }
+    private PropertiesLightblueClientConfiguration() {}
 }
