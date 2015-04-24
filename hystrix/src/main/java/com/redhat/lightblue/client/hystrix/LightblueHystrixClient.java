@@ -1,13 +1,15 @@
 package com.redhat.lightblue.client.hystrix;
 
+import java.io.IOException;
+
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.redhat.lightblue.client.LightblueClient;
-import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.hystrix.ServoGraphiteSetup;
-import java.io.IOException;
 
 /**
  * An implementation of LightblueClient that uses hystrix commands to execute
@@ -21,9 +23,9 @@ public class LightblueHystrixClient implements LightblueClient {
     }
 
     protected class MetadataHystrixCommand extends HystrixCommand<LightblueResponse> {
-        private final LightblueRequest request;
+        private final AbstractLightblueMetadataRequest request;
 
-        public MetadataHystrixCommand(LightblueRequest request, String groupKey, String commandKey) {
+        public MetadataHystrixCommand(AbstractLightblueMetadataRequest request, String groupKey, String commandKey) {
             super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey)).
                     andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
 
@@ -37,9 +39,9 @@ public class LightblueHystrixClient implements LightblueClient {
     }
 
     protected class DataHystrixCommand extends HystrixCommand<LightblueResponse> {
-        private final LightblueRequest request;
+        private final AbstractLightblueDataRequest request;
 
-        public DataHystrixCommand(LightblueRequest request, String groupKey, String commandKey) {
+        public DataHystrixCommand(AbstractLightblueDataRequest request, String groupKey, String commandKey) {
             super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey)).
                     andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
 
@@ -52,11 +54,11 @@ public class LightblueHystrixClient implements LightblueClient {
         }
     }
 
-    protected class DataTypeHystrixCommand extends HystrixCommand<Object> {
-        private final LightblueRequest request;
-        private final Class type;
+    protected class DataTypeHystrixCommand<T> extends HystrixCommand<T> {
+        private final AbstractLightblueDataRequest request;
+        private final Class<T> type;
 
-        public DataTypeHystrixCommand(LightblueRequest request, Class type, String groupKey, String commandKey) {
+        public DataTypeHystrixCommand(AbstractLightblueDataRequest request, Class<T> type, String groupKey, String commandKey) {
             super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey)).
                     andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
 
@@ -65,7 +67,7 @@ public class LightblueHystrixClient implements LightblueClient {
         }
 
         @Override
-        protected Object run() throws Exception {
+        protected T run() throws Exception {
             return client.data(request, type);
         }
     }
@@ -81,17 +83,17 @@ public class LightblueHystrixClient implements LightblueClient {
     }
 
     @Override
-    public LightblueResponse metadata(LightblueRequest lightblueRequest) {
+    public LightblueResponse metadata(AbstractLightblueMetadataRequest lightblueRequest) {
         return new MetadataHystrixCommand(lightblueRequest, groupKey, commandKey).execute();
     }
 
     @Override
-    public LightblueResponse data(LightblueRequest lightblueRequest) {
+    public LightblueResponse data(AbstractLightblueDataRequest lightblueRequest) {
         return new DataHystrixCommand(lightblueRequest, groupKey, commandKey).execute();
     }
 
     @Override
-    public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
-        return (T) new DataTypeHystrixCommand(lightblueRequest, type, groupKey, commandKey).execute();
+    public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws IOException {
+        return new DataTypeHystrixCommand<T>(lightblueRequest, type, groupKey, commandKey).execute();
     }
 }

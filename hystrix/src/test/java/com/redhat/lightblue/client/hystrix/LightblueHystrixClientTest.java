@@ -5,12 +5,15 @@
  */
 package com.redhat.lightblue.client.hystrix;
 
-import com.redhat.lightblue.client.LightblueClient;
-import com.redhat.lightblue.client.request.LightblueRequest;
-import com.redhat.lightblue.client.response.LightblueResponse;
 import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.redhat.lightblue.client.LightblueClient;
+import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
+import com.redhat.lightblue.client.response.LightblueResponse;
 
 /**
  *
@@ -26,19 +29,19 @@ public class LightblueHystrixClientTest {
         boolean dataType = false;
 
         @Override
-        public LightblueResponse metadata(LightblueRequest lightblueRequest) {
+        public LightblueResponse metadata(AbstractLightblueMetadataRequest lightblueRequest) {
             metadata = true;
             return null;
         }
 
         @Override
-        public LightblueResponse data(LightblueRequest lightblueRequest) {
+        public LightblueResponse data(AbstractLightblueDataRequest lightblueRequest) {
             data = true;
             return null;
         }
 
         @Override
-        public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
+        public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws IOException {
             dataType = true;
             return null;
         }

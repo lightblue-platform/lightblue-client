@@ -22,7 +22,8 @@ import com.redhat.lightblue.client.http.auth.HttpClientCertAuth;
 import com.redhat.lightblue.client.http.auth.HttpClientNoAuth;
 import com.redhat.lightblue.client.http.request.LightblueHttpDataRequest;
 import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
-import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponseParseException;
 import com.redhat.lightblue.client.util.JSON;
@@ -105,7 +106,7 @@ public class LightblueHttpClient implements LightblueClient {
      * .client.request.LightblueRequest)
      */
     @Override
-    public LightblueResponse metadata(LightblueRequest lightblueRequest) {
+    public LightblueResponse metadata(AbstractLightblueMetadataRequest lightblueRequest) {
         LOGGER.debug("Calling metadata service with lightblueRequest: " + lightblueRequest.toString());
         return callService(new LightblueHttpMetadataRequest(lightblueRequest)
                 .getRestRequest(configuration.getMetadataServiceURI()));
@@ -119,7 +120,7 @@ public class LightblueHttpClient implements LightblueClient {
      * .request.LightblueRequest)
      */
     @Override
-    public LightblueResponse data(LightblueRequest lightblueRequest) {
+    public LightblueResponse data(AbstractLightblueDataRequest lightblueRequest) {
         LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
         try {
             return callService(new LightblueHttpDataRequest(lightblueRequest)
@@ -130,7 +131,7 @@ public class LightblueHttpClient implements LightblueClient {
     }
 
     @Override
-    public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws IOException {
+    public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws IOException {
         LightblueResponse response = data(lightblueRequest);
         try {
             return response.parseProcessed(type);
