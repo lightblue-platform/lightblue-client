@@ -4,9 +4,9 @@ import org.apache.commons.lang.StringUtils;
 
 public abstract class AbstractLightblueRequest implements LightblueRequest {
 
-    static String PATH_SEPARATOR = "/";
-    protected static String PATH_PARAM_ENTITY = "entity";
-    protected static String PATH_PARAM_VERSION = "version";
+    protected static final String PATH_SEPARATOR = "/";
+    protected static final String PATH_PARAM_ENTITY = "entity";
+    protected static final String PATH_PARAM_VERSION = "version";
 
     private String entityName;
     private String entityVersion;

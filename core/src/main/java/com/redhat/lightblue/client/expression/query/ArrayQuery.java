@@ -13,7 +13,7 @@ public class ArrayQuery implements Query {
         this.queryExpression = queryExpression;
     }
 
-    ArrayQuery(String fieldName, ArrayOperation operation, String... values) {
+    public ArrayQuery(String fieldName, ArrayOperation operation, String... values) {
         this.fieldName = fieldName;
         this.arrayOperation = operation;
         this.array = values;
@@ -50,4 +50,9 @@ public class ArrayQuery implements Query {
     public static ArrayQuery withSubfield(String fieldName, Query queryExpression) {
         return new ArrayQuery(fieldName, queryExpression);
     }
+
+    public static ArrayQuery withSubfield(String fieldName, ArrayOperation operation, String... values) {
+        return new ArrayQuery(fieldName, operation, values);
+    }
+
 }
