@@ -1,0 +1,77 @@
+{
+    "entityInfo": {
+        "name": "country",
+        "indexes": [
+            {
+                "unique": true,
+                "fields": [
+                    {
+                        "field": "iso2Code",
+                        "dir": "$asc"
+                    }
+                ]
+            },
+            {
+                "unique": true,
+                "fields": [
+                    {
+                        "field": "iso3Code",
+                        "dir": "$asc"
+                    }
+                ]
+            }
+        ],
+        "datastore": {
+            "backend": "mongo",
+            "datasource": "mongo",
+            "collection": "country"
+        }
+    },
+    "schema": {
+        "name": "country",
+        "version": {
+            "value": "0.1.0-SNAPSHOT",
+            "changelog": "Initial version"
+        },
+        "access": {
+            "delete": [
+                "anyone"
+            ],
+            "find": [
+                "anyone"
+            ],
+            "insert": [
+                "anyone"
+            ],
+            "update": [
+                "anyone"
+            ]
+        },
+        "status": {
+            "value": "active"
+        },
+        "fields": {
+            "name": {
+                "type": "string",
+                "constraints": {
+                    "required": true
+                }
+            },
+            "iso2Code": {
+                "type": "string",
+                "constraints": {
+                    "identity": true
+                }
+            },
+            "iso3Code": {
+                "type": "string",
+                "constraints": {
+                    "identity": true
+                }
+            },
+            "optionalField": {
+                "type": "string"
+            }
+        }
+    }
+}
