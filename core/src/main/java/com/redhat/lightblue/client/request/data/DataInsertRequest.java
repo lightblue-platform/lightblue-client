@@ -12,12 +12,11 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     private Object[] objects;
 
     public DataInsertRequest() {
-
+        super();
     }
 
     public DataInsertRequest(String entityName, String entityVersion) {
-        this.setEntityName(entityName);
-        this.setEntityVersion(entityVersion);
+        super(entityName, entityVersion);
     }
 
     public void returns(Projection... projection) {

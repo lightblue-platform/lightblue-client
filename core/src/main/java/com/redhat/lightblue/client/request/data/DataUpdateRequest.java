@@ -1,11 +1,11 @@
 package com.redhat.lightblue.client.request.data;
 
+import java.util.Collection;
+
 import com.redhat.lightblue.client.expression.query.Query;
 import com.redhat.lightblue.client.expression.update.Update;
 import com.redhat.lightblue.client.projection.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-
-import java.util.Collection;
 
 public class DataUpdateRequest extends AbstractLightblueDataRequest {
 
@@ -14,12 +14,11 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
     private Query query;
 
     public DataUpdateRequest() {
-
+        super();
     }
 
     public DataUpdateRequest(String entityName, String entityVersion) {
-        this.setEntityName(entityName);
-        this.setEntityVersion(entityVersion);
+        super(entityName, entityVersion);
     }
 
     public void returns(Projection... projections) {

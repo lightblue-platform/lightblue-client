@@ -9,6 +9,14 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
     public static final String PATH_PARAM_DELETE = "delete";
     public static final String PATH_PARAM_FIND = "find";
 
+    public AbstractLightblueDataRequest() {
+        super();
+    }
+
+    public AbstractLightblueDataRequest(String entityName, String entityVersion) {
+        super(entityName, entityVersion);
+    }
+
     @Override
     public String getRestURI(String baseServiceURI) {
         StringBuilder requestURI = new StringBuilder();
