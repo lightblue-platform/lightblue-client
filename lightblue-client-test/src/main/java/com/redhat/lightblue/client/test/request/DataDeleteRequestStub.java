@@ -6,11 +6,16 @@ import com.redhat.lightblue.client.request.data.DataDeleteRequest;
  * Created by jblashka on 10/20/14.
  */
 public class DataDeleteRequestStub extends DataDeleteRequest {
-    private String body;
-    public DataDeleteRequestStub(String body){
+    private final String body;
+
+    public DataDeleteRequestStub(String entityName, String entityVersion, String body) {
+        super(entityName, entityVersion);
         this.body = body;
     }
-    public String getBody(){
+
+    @Override
+    public String getBody() {
         return body;
     }
+
 }
