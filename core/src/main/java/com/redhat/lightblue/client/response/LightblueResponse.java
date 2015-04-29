@@ -105,20 +105,14 @@ public class LightblueResponse {
                 return null;
             }
             if (!type.isArray()){
-                try {
-                    Class arrayClass = Class.forName("[L" + type.getName() + ";");
-                    T[] result = (T[])mapper.readValue(processedNode.traverse(), arrayClass);
-                    if (result.length > 1){
-                        throw new LightblueResponseParseException("Was expecting single result:" + getText() + "\n");
-                    } else {
-                        return result[0];
-                    }
-                } catch (ClassNotFoundException e) {
-                    LOGGER.error("Error creating array class instance of " + type.getName(), e);
-                    throw new RuntimeException(e);
+                if (processedNode.size() > 1){
+                    throw new LightblueResponseParseException("Was expecting single result:" + getText() + "\n");
+                } else {
+                    return mapper.readValue(processedNode.get(0).traverse(), type);
                 }
+            } else {
+                return mapper.readValue(processedNode.traverse(), type);
             }
-            return mapper.readValue(processedNode.traverse(), type);
         } catch (RuntimeException | IOException e) {
             throw new LightblueResponseParseException("Error parsing lightblue response: " + getText() + "\n", e);
         }
