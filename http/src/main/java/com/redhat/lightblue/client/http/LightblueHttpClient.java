@@ -1,23 +1,11 @@
 package com.redhat.lightblue.client.http;
 
+import java.io.Closeable;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Objects;
 
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
-import com.redhat.lightblue.client.http.auth.HttpClientCertAuth;
-import com.redhat.lightblue.client.http.auth.HttpClientNoAuth;
+import com.redhat.lightblue.client.http.transport.HttpClient;
+import com.redhat.lightblue.client.http.transport.LightblueApacheHttpClient;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueResponse;
@@ -34,7 +22,8 @@ import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponseParseException;
 import com.redhat.lightblue.client.util.JSON;
 
-public class LightblueHttpClient implements LightblueClient {
+public class LightblueHttpClient implements LightblueClient, Closeable {
+    private final HttpClient httpClient;
     private final LightblueClientConfiguration configuration;
     private final ObjectMapper mapper;
 
@@ -78,13 +67,18 @@ public class LightblueHttpClient implements LightblueClient {
      * support and unit testing.
      */
     public LightblueHttpClient(LightblueClientConfiguration configuration, ObjectMapper mapper) {
-        Objects.requireNonNull(configuration, "configuration");
-        Objects.requireNonNull(mapper, "mapper");
+        this(configuration, new LightblueApacheHttpClient(configuration), mapper);
+    }
 
-        // Make a defensive copy because configuration is mutable. This prevents alterations to the
-        // config object from affecting this client after instantiation.
-        this.configuration = new LightblueClientConfiguration(configuration);
-        this.mapper = mapper;
+    public LightblueHttpClient(LightblueClientConfiguration configuration, HttpClient httpClient) {
+        this(configuration, httpClient, JSON.getDefaultObjectMapper());
+    }
+
+    public LightblueHttpClient(LightblueClientConfiguration configuration, HttpClient httpClient,
+            ObjectMapper mapper) {
+        this.configuration = Objects.requireNonNull(configuration, "configuration");
+        this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
+        this.mapper = Objects.requireNonNull(mapper, "mapper");
     }
 
     /**
@@ -95,12 +89,13 @@ public class LightblueHttpClient implements LightblueClient {
      */
     @Deprecated
     public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
-        this.configuration = new LightblueClientConfiguration();
+        configuration = new LightblueClientConfiguration();
 
         configuration.setDataServiceURI(dataServiceURI);
         configuration.setMetadataServiceURI(metadataServiceURI);
         configuration.setUseCertAuth(useCertAuth);
 
+        this.httpClient = new LightblueApacheHttpClient(configuration);
         this.mapper = JSON.getDefaultObjectMapper();
     }
 
@@ -115,7 +110,7 @@ public class LightblueHttpClient implements LightblueClient {
     public LightblueResponse metadata(LightblueRequest lightblueRequest) {
         LOGGER.debug("Calling metadata service with lightblueRequest: " + lightblueRequest.toString());
         try {
-            return callService(makeHttpUriRequest(lightblueRequest, configuration.getMetadataServiceURI()));
+            return callService(lightblueRequest, configuration.getMetadataServiceURI());
         } catch (Exception e) {
             throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest, e);
         }
@@ -132,7 +127,7 @@ public class LightblueHttpClient implements LightblueClient {
     public LightblueResponse data(LightblueRequest lightblueRequest) {
         LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
         try {
-            return callService(makeHttpUriRequest(lightblueRequest, configuration.getDataServiceURI()));
+            return callService(lightblueRequest, configuration.getDataServiceURI());
         } catch (Exception e) {
             throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest, e);
         }
@@ -148,77 +143,27 @@ public class LightblueHttpClient implements LightblueClient {
         }
     }
 
-    protected LightblueResponse callService(HttpUriRequest httpOperation) {
-        String jsonOut;
-
-        LOGGER.debug("Calling " + httpOperation);
+    protected LightblueResponse callService(LightblueRequest request, String baseUri) {
         try {
-            try (CloseableHttpClient httpClient = getLightblueHttpClient()) {
-                httpOperation.setHeader("Content-Type", "application/json");
+            long t1 = new Date().getTime();
 
-                if (LOGGER.isDebugEnabled()) {
-                    try {
-                        LOGGER.debug("Request body: " + (EntityUtils.toString(((HttpEntityEnclosingRequestBase) httpOperation).getEntity())));
-                    } catch (ClassCastException e) {
-                        LOGGER.debug("Request body: None");
-                    }
-                }
+            String responseBody = httpClient.executeRequest(request, baseUri);
 
-                long t1 = new Date().getTime();
-                try (CloseableHttpResponse httpResponse = httpClient.execute(httpOperation)) {
-                    HttpEntity entity = httpResponse.getEntity();
-                    jsonOut = EntityUtils.toString(entity);
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Response received from service: " + jsonOut);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Response received from service: " + responseBody);
 
-                        long t2 = new Date().getTime();
-                        LOGGER.debug("Call took "+(t2-t1)+"ms");
-                    }
-                    return new DefaultLightblueResponse(jsonOut, mapper);
-                }
+                long t2 = new Date().getTime();
+                LOGGER.debug("Call took "+(t2-t1)+"ms");
             }
+            return new DefaultLightblueResponse(responseBody, mapper);
         } catch (IOException e) {
             LOGGER.error("There was a problem calling the lightblue service", e);
             return new DefaultLightblueResponse("{\"error\":\"There was a problem calling the lightblue service\"}", mapper);
         }
     }
 
-    private CloseableHttpClient getLightblueHttpClient() {
-        CloseableHttpClient httpClient;
-        if (configuration.useCertAuth()) {
-            LOGGER.debug("Using certificate authentication");
-            httpClient = new HttpClientCertAuth(configuration).getClient();
-        } else {
-            LOGGER.debug("Using no authentication");
-            httpClient = new HttpClientNoAuth().getClient();
-        }
-        return httpClient;
-    }
-
-    private HttpUriRequest makeHttpUriRequest(LightblueRequest request, String baseUri) throws UnsupportedEncodingException {
-        String uri = request.getRestURI(baseUri);
-        HttpUriRequest httpRequest = null;
-
-        switch (request.getHttpMethod()) {
-            case GET:
-                httpRequest = new HttpGet(uri);
-                break;
-            case POST:
-                httpRequest = new HttpPost(uri);
-                break;
-            case PUT:
-                httpRequest = new HttpPost(uri);
-                break;
-            case DELETE:
-                httpRequest = new HttpDelete(uri);
-                break;
-        }
-
-        if (httpRequest instanceof HttpEntityEnclosingRequest) {
-            HttpEntity entity = new StringEntity(request.getBody(), Consts.UTF_8);
-            ((HttpEntityEnclosingRequest) httpRequest).setEntity(entity);
-        }
-
-        return httpRequest;
+    @Override
+    public void close() throws IOException {
+        httpClient.close();
     }
 }
