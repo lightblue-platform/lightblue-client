@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client.request.metadata;
 
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 
 public class MetadataGetEntityVersionsRequest extends AbstractLightblueMetadataRequest {
@@ -15,6 +16,11 @@ public class MetadataGetEntityVersionsRequest extends AbstractLightblueMetadataR
     @Override
     public String getOperationPathParam() {
         return PATH_PARAM_GET_ENTITY_VERSIONS;
+    }
+
+    @Override
+    public HttpMethod getHttpMethod() {
+        return HttpMethod.GET;
     }
 
 }

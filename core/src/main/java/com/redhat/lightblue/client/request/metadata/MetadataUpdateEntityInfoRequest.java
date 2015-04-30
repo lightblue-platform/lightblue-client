@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client.request.metadata;
 
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 
 public class MetadataUpdateEntityInfoRequest extends AbstractLightblueMetadataRequest {
@@ -15,6 +16,11 @@ public class MetadataUpdateEntityInfoRequest extends AbstractLightblueMetadataRe
     @Override
     public String getOperationPathParam() {
         return PATH_PARAM_UPDATE_ENTITY_INFO;
+    }
+
+    @Override
+    public HttpMethod getHttpMethod() {
+        return HttpMethod.PUT;
     }
 
 }

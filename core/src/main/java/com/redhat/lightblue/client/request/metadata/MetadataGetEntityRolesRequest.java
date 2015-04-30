@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client.request.metadata;
 
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 
 public class MetadataGetEntityRolesRequest extends AbstractLightblueMetadataRequest {
@@ -15,6 +16,11 @@ public class MetadataGetEntityRolesRequest extends AbstractLightblueMetadataRequ
     @Override
     public String getOperationPathParam() {
         return PATH_PARAM_GET_ENTITY_ROLES;
+    }
+
+    @Override
+    public HttpMethod getHttpMethod() {
+        return HttpMethod.GET;
     }
 
 }

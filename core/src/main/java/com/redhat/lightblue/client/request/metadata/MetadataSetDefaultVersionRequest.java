@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client.request.metadata;
 
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 
 public class MetadataSetDefaultVersionRequest extends AbstractLightblueMetadataRequest {
@@ -15,6 +16,11 @@ public class MetadataSetDefaultVersionRequest extends AbstractLightblueMetadataR
     @Override
     public String getOperationPathParam() {
         return PATH_PARAM_SET_DEFAULT_VERSION;
+    }
+
+    @Override
+    public HttpMethod getHttpMethod() {
+        return HttpMethod.POST;
     }
 
 }

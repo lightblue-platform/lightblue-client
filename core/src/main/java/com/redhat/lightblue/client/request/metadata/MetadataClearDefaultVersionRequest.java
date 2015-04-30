@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client.request.metadata;
 
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 
 public class MetadataClearDefaultVersionRequest extends AbstractLightblueMetadataRequest {
@@ -17,4 +18,8 @@ public class MetadataClearDefaultVersionRequest extends AbstractLightblueMetadat
         return PATH_PARAM_CLEAR_DEFAULT_VERSION;
     }
 
+    @Override
+    public HttpMethod getHttpMethod() {
+        return HttpMethod.DELETE;
+    }
 }
