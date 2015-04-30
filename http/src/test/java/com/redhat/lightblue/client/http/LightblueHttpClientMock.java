@@ -3,6 +3,7 @@ package com.redhat.lightblue.client.http;
 import org.apache.http.client.methods.HttpRequestBase;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 
+import com.redhat.lightblue.client.response.DefaultLightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponse;
 
 public class LightblueHttpClientMock extends LightblueHttpClient {
@@ -19,7 +20,7 @@ public class LightblueHttpClientMock extends LightblueHttpClient {
 
 	@Override
 	protected LightblueResponse callService(HttpRequestBase httpOperation) {
-		return new LightblueResponse(lightblueResponse);
+		return new DefaultLightblueResponse(lightblueResponse);
 	}
 
 }

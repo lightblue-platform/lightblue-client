@@ -14,7 +14,6 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -28,11 +27,9 @@ import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import com.redhat.lightblue.client.http.auth.HttpClientCertAuth;
 import com.redhat.lightblue.client.http.auth.HttpClientNoAuth;
-import com.redhat.lightblue.client.http.request.LightblueHttpDataRequest;
-import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.response.DefaultLightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponseParseException;
 import com.redhat.lightblue.client.util.JSON;
@@ -177,12 +174,12 @@ public class LightblueHttpClient implements LightblueClient {
                         long t2 = new Date().getTime();
                         LOGGER.debug("Call took "+(t2-t1)+"ms");
                     }
-                    return new LightblueResponse(jsonOut, mapper);
+                    return new DefaultLightblueResponse(jsonOut, mapper);
                 }
             }
         } catch (IOException e) {
             LOGGER.error("There was a problem calling the lightblue service", e);
-            return new LightblueResponse("{\"error\":\"There was a problem calling the lightblue service\"}", mapper);
+            return new DefaultLightblueResponse("{\"error\":\"There was a problem calling the lightblue service\"}", mapper);
         }
     }
 
