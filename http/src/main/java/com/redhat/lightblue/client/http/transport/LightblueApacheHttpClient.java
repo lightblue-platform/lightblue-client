@@ -42,12 +42,8 @@ public class LightblueApacheHttpClient implements HttpClient {
             httpOperation.setHeader("Content-Type", "application/json");
 
             if (LOGGER.isDebugEnabled()) {
-                try {
-                    if (httpOperation instanceof HttpEntityEnclosingRequest) {
-                        LOGGER.debug("Request body: " + request.getBody());
-                    }
-                } catch (ClassCastException e) {
-                    LOGGER.debug("Request body: None");
+                if (httpOperation instanceof HttpEntityEnclosingRequest) {
+                    LOGGER.debug("Request body: " + request.getBody());
                 }
             }
 
