@@ -36,4 +36,6 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
         }
         return requestURI.toString();
     }
+
+    public abstract String getOperationPathParam();
 }

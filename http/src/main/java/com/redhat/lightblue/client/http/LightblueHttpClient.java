@@ -1,14 +1,22 @@
 package com.redhat.lightblue.client.http;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Objects;
 
+import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -24,6 +32,7 @@ import com.redhat.lightblue.client.http.request.LightblueHttpDataRequest;
 import com.redhat.lightblue.client.http.request.LightblueHttpMetadataRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
+import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponseParseException;
 import com.redhat.lightblue.client.util.JSON;
@@ -106,10 +115,13 @@ public class LightblueHttpClient implements LightblueClient {
      * .client.request.LightblueRequest)
      */
     @Override
-    public LightblueResponse metadata(AbstractLightblueMetadataRequest lightblueRequest) {
+    public LightblueResponse metadata(LightblueRequest lightblueRequest) {
         LOGGER.debug("Calling metadata service with lightblueRequest: " + lightblueRequest.toString());
-        return callService(new LightblueHttpMetadataRequest(lightblueRequest)
-                .getRestRequest(configuration.getMetadataServiceURI()));
+        try {
+            return callService(makeHttpUriRequest(lightblueRequest, configuration.getMetadataServiceURI()));
+        } catch (Exception e) {
+            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest, e);
+        }
     }
 
     /*
@@ -120,13 +132,12 @@ public class LightblueHttpClient implements LightblueClient {
      * .request.LightblueRequest)
      */
     @Override
-    public LightblueResponse data(AbstractLightblueDataRequest lightblueRequest) {
+    public LightblueResponse data(LightblueRequest lightblueRequest) {
         LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
         try {
-            return callService(new LightblueHttpDataRequest(lightblueRequest)
-                    .getRestRequest(configuration.getDataServiceURI()));
-        } catch (RuntimeException e) {
-            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
+            return callService(makeHttpUriRequest(lightblueRequest, configuration.getDataServiceURI()));
+        } catch (Exception e) {
+            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest, e);
         }
     }
 
@@ -136,11 +147,11 @@ public class LightblueHttpClient implements LightblueClient {
         try {
             return response.parseProcessed(type);
         } catch (RuntimeException | LightblueResponseParseException e) {
-            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest.getBody(), e);
+            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest, e);
         }
     }
 
-    protected LightblueResponse callService(HttpRequestBase httpOperation) {
+    protected LightblueResponse callService(HttpUriRequest httpOperation) {
         String jsonOut;
 
         LOGGER.debug("Calling " + httpOperation);
@@ -187,4 +198,30 @@ public class LightblueHttpClient implements LightblueClient {
         return httpClient;
     }
 
+    private HttpUriRequest makeHttpUriRequest(LightblueRequest request, String baseUri) throws UnsupportedEncodingException {
+        String uri = request.getRestURI(baseUri);
+        HttpUriRequest httpRequest = null;
+
+        switch (request.getHttpMethod()) {
+            case GET:
+                httpRequest = new HttpGet(uri);
+                break;
+            case POST:
+                httpRequest = new HttpPost(uri);
+                break;
+            case PUT:
+                httpRequest = new HttpPost(uri);
+                break;
+            case DELETE:
+                httpRequest = new HttpDelete(uri);
+                break;
+        }
+
+        if (httpRequest instanceof HttpEntityEnclosingRequest) {
+            HttpEntity entity = new StringEntity(request.getBody(), Consts.UTF_8);
+            ((HttpEntityEnclosingRequest) httpRequest).setEntity(entity);
+        }
+
+        return httpRequest;
+    }
 }

@@ -55,4 +55,6 @@ public abstract class AbstractLightblueMetadataRequest extends AbstractLightblue
 
         return requestURI.toString();
     }
+
+    public abstract String getOperationPathParam();
 }

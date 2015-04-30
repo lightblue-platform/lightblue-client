@@ -11,12 +11,10 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
     private String entityName;
     private String entityVersion;
 
-    @Override
     public String getEntityName() {
         return entityName;
     }
 
-    @Override
     public String getEntityVersion() {
         return entityVersion;
     }
@@ -42,5 +40,4 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         }
         restOfURI.append(pathParam);
     }
-
 }
