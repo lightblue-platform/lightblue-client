@@ -75,7 +75,7 @@ public class AbstractLightblueProxyServletTest {
     }
 
     @Test
-    public void shouldProxyTheRequestMethodUriAndBody() throws ServletException, IOException, URISyntaxException {
+    public void shouldProxyTheRequestMethodUriBodyAndContentType() throws ServletException, IOException, URISyntaxException {
         CloseableHttpClient mockHttpClient = mock(CloseableHttpClient.class, Mockito.RETURNS_DEEP_STUBS);
 
         AbstractLightblueProxyServlet servlet = getTestServlet(mockHttpClient, null, "http://myservice.com", null);
@@ -98,6 +98,8 @@ public class AbstractLightblueProxyServletTest {
         assertEquals("GET", request.getMethod());
         assertEquals(new URI("http://myservice.com/the/thing?foo=bar"), request.getURI());
         assertThat(request, instanceOf(HttpEntityEnclosingRequest.class));
+        assertEquals(1, request.getHeaders("content-type").length);
+        assertEquals("application/json", request.getHeaders("content-type")[0].getValue());
 
         HttpEntityEnclosingRequest entityEnclosingRequest = (HttpEntityEnclosingRequest) request;
         ByteArrayOutputStream entityOutStream = new ByteArrayOutputStream();
