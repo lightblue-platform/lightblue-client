@@ -188,6 +188,9 @@ public abstract class AbstractLightblueProxyServlet extends HttpServlet {
             HttpRequestWrapper wrappedRequest = HttpRequestWrapper.wrap(httpRequest);
             wrappedRequest.setURI(new URI(newUri));
 
+            // Somehow, content type header does not come in the original request either
+            wrappedRequest.setHeader("Content-Type", "application/json");
+
             return wrappedRequest;
         } catch (URISyntaxException e) {
             LOGGER.error("Syntax exception in service URI, " + newUri, e);
