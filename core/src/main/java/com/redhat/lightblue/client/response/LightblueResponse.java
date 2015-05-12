@@ -7,9 +7,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.util.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LightblueResponse {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LightblueResponse.class);
     private String text;
     private JsonNode json;
     private final ObjectMapper mapper;
@@ -101,8 +104,15 @@ public class LightblueResponse {
                 }
                 return null;
             }
-
-            return mapper.readValue(processedNode.traverse(), type);
+            if (!type.isArray()){
+                if (processedNode.size() > 1){
+                    throw new LightblueResponseParseException("Was expecting single result:" + getText() + "\n");
+                } else {
+                    return mapper.readValue(processedNode.get(0).traverse(), type);
+                }
+            } else {
+                return mapper.readValue(processedNode.traverse(), type);
+            }
         } catch (RuntimeException | IOException e) {
             throw new LightblueResponseParseException("Error parsing lightblue response: " + getText() + "\n", e);
         }

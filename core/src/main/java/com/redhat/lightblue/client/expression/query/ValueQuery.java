@@ -95,4 +95,13 @@ public class ValueQuery implements Query {
     public static ValueQuery withValue(String expression) {
         return new ValueQuery(expression);
     }
+
+    public static ValueQuery withValue(String field, ExpressionOperation operation, String rValue) {
+        return new ValueQuery(field, operation, rValue);
+    }
+
+    public static ValueQuery withValue(String field, NaryExpressionOperation operation, String... values) {
+        return new ValueQuery(field, operation, values);
+    }
+
 }

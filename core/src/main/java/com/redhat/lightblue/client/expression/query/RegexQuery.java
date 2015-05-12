@@ -44,4 +44,20 @@ public class RegexQuery implements Query {
     public String toString() {
         return this.toJson();
     }
+
+    /**
+     * Creates and returns a {@link RegexQuery} for the passed in parameters.<br>
+     * For this implementation, all optional flag fields are defaulted to <code>false</code>, see
+     * {@link #withRegex(String, String, Boolean, Boolean, Boolean, Boolean)} for more granular control.
+     * @param field
+     * @param pattern
+     * @return
+     */
+    public static RegexQuery withRegex(String field, String pattern) {
+        return new RegexQuery(field, pattern, false, false, false, false);
+    }
+
+    public static RegexQuery withRegex(String field, String pattern, Boolean isCaseInsensitive, Boolean isExtended, Boolean isMultiline, Boolean isDotAll) {
+        return new RegexQuery(field, pattern, isCaseInsensitive, isExtended, isMultiline, isDotAll);
+    }
 }

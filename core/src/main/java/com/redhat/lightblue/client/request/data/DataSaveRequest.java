@@ -13,12 +13,11 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
     private Boolean upsert;
 
     public DataSaveRequest() {
-
+        super();
     }
 
     public DataSaveRequest(String entityName, String entityVersion) {
-        this.setEntityName(entityName);
-        this.setEntityVersion(entityVersion);
+        super(entityName, entityVersion);
     }
 
     public void returns(Projection... projection) {

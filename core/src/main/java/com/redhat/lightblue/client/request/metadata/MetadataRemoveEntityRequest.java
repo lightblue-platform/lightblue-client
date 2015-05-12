@@ -5,12 +5,11 @@ import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 public class MetadataRemoveEntityRequest extends AbstractLightblueMetadataRequest {
 
     public MetadataRemoveEntityRequest() {
-
+        super();
     }
 
     public MetadataRemoveEntityRequest(String entityName, String entityVersion) {
-        this.setEntityName(entityName);
-        this.setEntityVersion(entityVersion);
+        super(entityName, entityVersion);
     }
 
     @Override
