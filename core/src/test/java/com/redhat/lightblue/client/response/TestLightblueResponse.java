@@ -117,6 +117,15 @@ public class TestLightblueResponse {
     }
 
     @Test
+    public void testParseProcess_NonArrayResult() throws LightblueResponseParseException {
+        LightblueResponse response = new LightblueResponse("{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}");
+        SimpleModelObject results = response.parseProcessed(SimpleModelObject.class);
+
+        Assert.assertNotNull(results);
+        Assert.assertEquals(new SimpleModelObject("idhash", "value"), results);
+    }
+
+    @Test
     public void testParseProcessed_NullProcessedNode() throws LightblueResponseParseException {
         LightblueResponse response = new LightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"processed\": null, \"status\": \"COMPLETE\"}");
 
@@ -139,6 +148,13 @@ public class TestLightblueResponse {
         LightblueResponse response = new LightblueResponse("{\"processed\":\"<p>This is not json</p>\"}");
 
         response.parseProcessed(Object[].class);
+    }
+
+    @Test(expected = LightblueResponseParseException.class)
+    public void testParseProcessed_MultipleResults_ForNonArrayResponse() throws LightblueResponseParseException {
+        LightblueResponse response = new LightblueResponse("{\"matchCount\": 2, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash1\", \"field\":\"value1\"},{\"_id\": \"idhash2\", \"field\":\"value2\"}], \"status\": \"COMPLETE\"}");
+
+        response.parseProcessed(Object.class);
     }
 
     @Test
