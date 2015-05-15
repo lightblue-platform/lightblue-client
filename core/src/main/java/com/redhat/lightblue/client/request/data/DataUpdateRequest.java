@@ -21,6 +21,10 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         super(entityName, entityVersion);
     }
 
+    public DataUpdateRequest(String entityName) {
+        super(entityName);
+    }
+
     public void returns(Projection... projections) {
         this.setProjections(projections);
     }

@@ -11,6 +11,23 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
     private String entityName;
     private String entityVersion;
 
+    public AbstractLightblueRequest() {}
+
+    /**
+     * Construct request with entity name and default version
+     */
+    public AbstractLightblueRequest(String entityName) {
+        this(entityName,null);
+    }
+
+    /**
+     * Construct request with entity name and given version
+     */
+    public AbstractLightblueRequest(String entityName, String version) {
+        this.entityName=entityName;
+        this.entityVersion=version;
+    }
+
     @Override
     public String getEntityName() {
         return entityName;
@@ -29,12 +46,6 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         this.entityVersion = entityVersion;
     }
 
-    public AbstractLightblueRequest() {}
-
-    public AbstractLightblueRequest(String entityName, String entityVersion) {
-        this.entityName = entityName;
-        this.entityVersion = entityVersion;
-    }
 
     protected void appendToURI(StringBuilder restOfURI, String pathParam) {
         if (!StringUtils.endsWith(restOfURI.toString(), PATH_SEPARATOR)) {

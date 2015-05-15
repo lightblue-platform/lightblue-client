@@ -20,6 +20,10 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
         super(entityName, entityVersion);
     }
 
+    public DataSaveRequest(String entityName) {
+        super(entityName);
+    }
+
     public void returns(Projection... projection) {
         this.projections = projection;
     }
