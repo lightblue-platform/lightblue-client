@@ -15,6 +15,8 @@ import org.apache.commons.lang.text.StrSubstitutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
+
 /**
  * Provides factory methods for
  * {@link com.redhat.lightblue.client.LightblueClientConfiguration} that is
@@ -54,6 +56,7 @@ public final class PropertiesLightblueClientConfiguration {
     private static final String CA_FILE_PATH_KEY = "caFilePath";
     private static final String CERT_FILE_PATH_KEY = "certFilePath";
     private static final String CERT_PASSWORD_KEY = "certPassword";
+    private static final String COMPRESSION = "compression";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesLightblueClientConfiguration.class);
 
@@ -175,6 +178,8 @@ public final class PropertiesLightblueClientConfiguration {
         config.setDataServiceURI(properties.getProperty(DATA_SERVICE_URI_KEY));
         config.setMetadataServiceURI(properties.getProperty(METADATA_SERVICE_URI_KEY));
         config.setUseCertAuth(Boolean.parseBoolean(properties.getProperty(USE_CERT_AUTH_KEY)));
+        if (properties.containsKey(COMPRESSION))
+            config.setCompression(Compression.parseCompression(properties.getProperty(COMPRESSION)));
 
         return config;
     }
