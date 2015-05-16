@@ -23,13 +23,17 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 
 public class LightblueApacheHttpClient implements HttpClient {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LightblueApacheHttpClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SelfClosingApacheHttpClient.class);
 
-    private final LightblueClientConfiguration config;
+    private final CloseableHttpClient httpClient;
 
-    public LightblueApacheHttpClient(LightblueClientConfiguration config) {
-        // Defensive copy because mutability...
-        this.config = new LightblueClientConfiguration(config);
+    public LightblueApacheHttpClient(CloseableHttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    public static LightblueApacheHttpClient fromLightblueClientConfiguration(LightblueClientConfiguration config)
+            throws GeneralSecurityException, IOException {
+        return new LightblueApacheHttpClient(ApacheHttpClients.fromLightblueClientConfiguration(config));
     }
 
     @Override
@@ -38,20 +42,21 @@ public class LightblueApacheHttpClient implements HttpClient {
 
         LOGGER.debug("Calling " + httpOperation);
 
-        try (CloseableHttpClient httpClient = getClient()) {
-            httpOperation.setHeader("Content-Type", "application/json");
-
-            if (LOGGER.isDebugEnabled()) {
-                if (httpOperation instanceof HttpEntityEnclosingRequest) {
-                    LOGGER.debug("Request body: " + request.getBody());
-                }
-            }
-
-            try (CloseableHttpResponse httpResponse = httpClient.execute(httpOperation)) {
-                HttpEntity entity = httpResponse.getEntity();
-                return EntityUtils.toString(entity);
+        if (LOGGER.isDebugEnabled()) {
+            if (httpOperation instanceof HttpEntityEnclosingRequest) {
+                LOGGER.debug("Request body: " + request.getBody());
             }
         }
+
+        try (CloseableHttpResponse httpResponse = httpClient.execute(httpOperation)) {
+            HttpEntity entity = httpResponse.getEntity();
+            return EntityUtils.toString(entity, Consts.UTF_8);
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        httpClient.close();
     }
 
     private HttpUriRequest makeHttpUriRequest(LightblueRequest request, String baseUri) throws UnsupportedEncodingException {
@@ -76,22 +81,10 @@ public class LightblueApacheHttpClient implements HttpClient {
         if (httpRequest instanceof HttpEntityEnclosingRequest) {
             HttpEntity entity = new StringEntity(request.getBody(), Consts.UTF_8);
             ((HttpEntityEnclosingRequest) httpRequest).setEntity(entity);
+
+            httpRequest.setHeader("Content-Type", "application/json; charset=utf-8");
         }
 
         return httpRequest;
-    }
-
-    private CloseableHttpClient getClient() {
-        try {
-            return ApacheHttpClients.fromLightblueClientConfiguration(config);
-        } catch (GeneralSecurityException | IOException e) {
-            LOGGER.error("Error creating HTTP client: ", e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void close() throws IOException {
-        // Doesn't need to be closed to keep compatibility with legacy behavior.
     }
 }

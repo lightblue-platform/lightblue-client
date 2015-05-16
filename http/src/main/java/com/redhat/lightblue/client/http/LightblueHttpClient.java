@@ -14,7 +14,7 @@ import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import com.redhat.lightblue.client.http.transport.HttpClient;
-import com.redhat.lightblue.client.http.transport.LightblueApacheHttpClient;
+import com.redhat.lightblue.client.http.transport.SelfClosingApacheHttpClient;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueResponse;
@@ -67,7 +67,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      * support and unit testing.
      */
     public LightblueHttpClient(LightblueClientConfiguration configuration, ObjectMapper mapper) {
-        this(configuration, new LightblueApacheHttpClient(configuration), mapper);
+        this(configuration, new SelfClosingApacheHttpClient(configuration), mapper);
     }
 
     public LightblueHttpClient(LightblueClientConfiguration configuration, HttpClient httpClient) {
@@ -95,7 +95,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         configuration.setMetadataServiceURI(metadataServiceURI);
         configuration.setUseCertAuth(useCertAuth);
 
-        this.httpClient = new LightblueApacheHttpClient(configuration);
+        this.httpClient = new SelfClosingApacheHttpClient(configuration);
         this.mapper = JSON.getDefaultObjectMapper();
     }
 
