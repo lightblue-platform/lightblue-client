@@ -84,7 +84,7 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
         StringBuilder initialURI = new StringBuilder();
         initialURI.append(baseURI);
         testRequest.appendToURI(initialURI, "rest");
-        Assert.assertEquals(initialURI + "/rest", initialURI.toString());
+        Assert.assertEquals(baseURI + "/rest", initialURI.toString());
     }
 
     @Test
