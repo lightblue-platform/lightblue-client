@@ -3,6 +3,7 @@ package com.redhat.lightblue.client.http;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.util.Date;
 import java.util.Objects;
 
@@ -14,7 +15,7 @@ import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import com.redhat.lightblue.client.http.transport.HttpClient;
-import com.redhat.lightblue.client.http.transport.SelfClosingApacheHttpClient;
+import com.redhat.lightblue.client.http.transport.JavaNetHttpClient;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueResponse;
@@ -67,7 +68,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      * support and unit testing.
      */
     public LightblueHttpClient(LightblueClientConfiguration configuration, ObjectMapper mapper) {
-        this(configuration, new SelfClosingApacheHttpClient(configuration), mapper);
+        this(configuration, defaultHttpClientFromConfig(configuration), mapper);
     }
 
     public LightblueHttpClient(LightblueClientConfiguration configuration, HttpClient httpClient) {
@@ -95,7 +96,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         configuration.setMetadataServiceURI(metadataServiceURI);
         configuration.setUseCertAuth(useCertAuth);
 
-        this.httpClient = new SelfClosingApacheHttpClient(configuration);
+        this.httpClient = defaultHttpClientFromConfig(configuration);
         this.mapper = JSON.getDefaultObjectMapper();
     }
 
@@ -143,6 +144,11 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         }
     }
 
+    @Override
+    public void close() throws IOException {
+        httpClient.close();
+    }
+
     protected LightblueResponse callService(LightblueRequest request, String baseUri) {
         try {
             long t1 = new Date().getTime();
@@ -162,8 +168,12 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         }
     }
 
-    @Override
-    public void close() throws IOException {
-        httpClient.close();
+    private static HttpClient defaultHttpClientFromConfig(LightblueClientConfiguration config) {
+        try {
+            return JavaNetHttpClient.fromLightblueClientConfiguration(config);
+        } catch (GeneralSecurityException | IOException e) {
+            LOGGER.error("Error creating HTTP client: ", e);
+            throw new RuntimeException(e);
+        }
     }
 }
