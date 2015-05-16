@@ -77,9 +77,13 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 
     public LightblueHttpClient(LightblueClientConfiguration configuration, HttpClient httpClient,
             ObjectMapper mapper) {
-        this.configuration = Objects.requireNonNull(configuration, "configuration");
         this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
         this.mapper = Objects.requireNonNull(mapper, "mapper");
+
+        // Make a defensive copy because configuration is mutable. This prevents alterations to the
+        // config object from affecting this client after instantiation.
+        Objects.requireNonNull(configuration, "configuration");
+        this.configuration = new LightblueClientConfiguration(configuration);
     }
 
     /**
