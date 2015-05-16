@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.lightblue.client.util.JSON;
 
-public class TestLightblueResponse {
+public class TestDefaultLightblueResponse {
 
     DefaultLightblueResponse testResponse = new DefaultLightblueResponse();
 
