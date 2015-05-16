@@ -26,7 +26,7 @@ public class TestDataDeleteRequest extends AbstractLightblueRequestTest {
 
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(DataDeleteRequest.PATH_PARAM_DELETE, request.getOperationPathParam());
+		Assert.assertEquals("delete", request.getOperationPathParam());
 	}
 
     @Test

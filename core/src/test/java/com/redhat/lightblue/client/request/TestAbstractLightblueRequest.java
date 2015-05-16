@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.request;
 
+import com.redhat.lightblue.client.http.HttpMethod;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,11 +16,6 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
             return null;
         }
 
-        @Override
-        public String getOperationPathParam() {
-            return null;
-        }
-
         public void setBody(String body) {
             this.body = body;
         }
@@ -26,6 +23,11 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
         @Override
         public String getBody() {
             return body;
+        }
+
+        @Override
+        public HttpMethod getHttpMethod() {
+            return HttpMethod.PUT;
         }
     }
 
@@ -82,7 +84,11 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
         StringBuilder initialURI = new StringBuilder();
         initialURI.append(baseURI);
         testRequest.appendToURI(initialURI, "rest");
-        Assert.assertEquals(restURI, initialURI.toString());
+        Assert.assertEquals(initialURI + "/rest", initialURI.toString());
     }
 
+    @Test
+    public void testGetHttpMethod() {
+        Assert.assertEquals(HttpMethod.PUT, testRequest.getHttpMethod());
+    }
 }

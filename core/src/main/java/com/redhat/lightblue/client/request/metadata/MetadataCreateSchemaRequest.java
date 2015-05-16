@@ -15,7 +15,7 @@ public class MetadataCreateSchemaRequest extends AbstractLightblueMetadataReques
 
     @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_CREATE_SCHEMA;
+        return "";
     }
 
     @Override

@@ -17,7 +17,7 @@ public class TestMetadataSetDefaultVersionRequest extends AbstractLightblueReque
 
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(MetadataSetDefaultVersionRequest.PATH_PARAM_SET_DEFAULT_VERSION, request.getOperationPathParam());
+		Assert.assertEquals("default", request.getOperationPathParam());
 	}
 
 }

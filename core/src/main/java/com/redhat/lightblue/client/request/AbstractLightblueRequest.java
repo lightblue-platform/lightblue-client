@@ -5,8 +5,6 @@ import org.apache.commons.lang.StringUtils;
 public abstract class AbstractLightblueRequest implements LightblueRequest {
 
     protected static final String PATH_SEPARATOR = "/";
-    protected static final String PATH_PARAM_ENTITY = "entity";
-    protected static final String PATH_PARAM_VERSION = "version";
 
     private String entityName;
     private String entityVersion;

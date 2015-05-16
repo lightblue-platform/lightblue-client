@@ -15,7 +15,7 @@ public class MetadataUpdateSchemaStatusRequest extends AbstractLightblueMetadata
 
     @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_UPDATE_SCHEMA_STATUS;
+        return "";
     }
 
     @Override

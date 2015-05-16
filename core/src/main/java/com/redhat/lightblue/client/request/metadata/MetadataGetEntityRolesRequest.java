@@ -15,7 +15,7 @@ public class MetadataGetEntityRolesRequest extends AbstractLightblueMetadataRequ
 
     @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_GET_ENTITY_ROLES;
+        return "roles";
     }
 
     @Override

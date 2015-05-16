@@ -15,7 +15,7 @@ public class MetadataRemoveEntityRequest extends AbstractLightblueMetadataReques
 
     @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_REMOVE_ENTITY;
+        return "";
     }
 
     @Override

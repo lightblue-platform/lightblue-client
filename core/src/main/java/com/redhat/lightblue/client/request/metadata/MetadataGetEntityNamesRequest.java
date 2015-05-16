@@ -15,7 +15,7 @@ public class MetadataGetEntityNamesRequest extends AbstractLightblueMetadataRequ
 
     @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_GET_ENTITY_NAMES;
+        return "";
     }
 
     @Override

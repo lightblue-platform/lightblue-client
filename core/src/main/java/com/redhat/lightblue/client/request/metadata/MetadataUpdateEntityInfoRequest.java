@@ -15,7 +15,7 @@ public class MetadataUpdateEntityInfoRequest extends AbstractLightblueMetadataRe
 
     @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_UPDATE_ENTITY_INFO;
+        return "";
     }
 
     @Override

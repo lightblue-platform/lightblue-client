@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.request;
 
+import com.redhat.lightblue.client.http.HttpMethod;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,6 +16,11 @@ public class TestAbstractLightblueDataRequest extends AbstractLightblueRequestTe
 
         @Override
         public String getBody() {
+            return null;
+        }
+
+        @Override
+        public HttpMethod getHttpMethod() {
             return null;
         }
     };

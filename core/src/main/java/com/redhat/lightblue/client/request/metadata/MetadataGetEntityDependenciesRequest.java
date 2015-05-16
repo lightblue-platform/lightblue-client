@@ -15,7 +15,7 @@ public class MetadataGetEntityDependenciesRequest extends AbstractLightblueMetad
 
     @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_GET_ENTITY_DEPENDENCIES;
+        return "dependencies";
     }
 
     @Override
