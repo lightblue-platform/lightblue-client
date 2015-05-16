@@ -13,6 +13,7 @@ import org.junit.Test;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
+import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 
 /**
@@ -29,13 +30,13 @@ public class LightblueHystrixClientTest {
         boolean dataType = false;
 
         @Override
-        public LightblueResponse metadata(AbstractLightblueMetadataRequest lightblueRequest) {
+        public LightblueResponse metadata(LightblueRequest lightblueRequest) {
             metadata = true;
             return null;
         }
 
         @Override
-        public LightblueResponse data(AbstractLightblueDataRequest lightblueRequest) {
+        public LightblueResponse data(LightblueRequest lightblueRequest) {
             data = true;
             return null;
         }
