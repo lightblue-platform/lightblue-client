@@ -2,18 +2,27 @@ package com.redhat.lightblue.client.http;
 
 import static com.redhat.lightblue.client.expression.query.ValueQuery.withValue;
 import static com.redhat.lightblue.client.projection.FieldProjection.includeField;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.http.model.SimpleModelObject;
+import com.redhat.lightblue.client.http.transport.HttpClient;
+import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 
 public class LightblueHttpClientTest {
 
-    LightblueHttpClientMock client = new LightblueHttpClientMock();
+    LightblueClientConfiguration config = new LightblueClientConfiguration();
+    HttpClient httpClient = mock(HttpClient.class);
+    LightblueHttpClient client = new LightblueHttpClient(config, httpClient);
 
     @Test
     public void testPojoMapping() throws IOException {
@@ -22,7 +31,10 @@ public class LightblueHttpClientTest {
         findRequest.where(withValue("foo = bar"));
         findRequest.select(includeField("_id"));
 
-        client.setLightblueResponse("{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}");
+        String response = "{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}";
+
+        when(httpClient.executeRequest(any(LightblueRequest.class), anyString()))
+                .thenReturn(response);
 
         SimpleModelObject[] results = client.data(findRequest,
                 SimpleModelObject[].class);
@@ -42,7 +54,8 @@ public class LightblueHttpClientTest {
 
         String response = "{\"processed\":\"<p>This is not json</p>\"}";
 
-        client.setLightblueResponse(response);
+        when(httpClient.executeRequest(any(LightblueRequest.class), anyString()))
+                .thenReturn(response);
 
         client.data(findRequest, SimpleModelObject[].class);
     }
