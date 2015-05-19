@@ -81,12 +81,12 @@ public class JavaNetHttpClient implements HttpClient {
             }
         }
 
+        connection.setRequestMethod(request.getHttpMethod().toString());
+
         String body = request.getBody();
         if (StringUtils.isNotBlank(body)) {
-            addRequestBodyToConnection(body, connection);
+            sendRequestBody(body, connection);
         }
-
-        connection.setRequestMethod(request.getHttpMethod().toString());
 
         return response(connection);
     }
@@ -96,7 +96,7 @@ public class JavaNetHttpClient implements HttpClient {
         // Nothing to do
     }
 
-    private void addRequestBodyToConnection(String body, HttpURLConnection connection)
+    private void sendRequestBody(String body, HttpURLConnection connection)
             throws IOException {
         int length = body.length();
 
