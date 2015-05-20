@@ -85,6 +85,9 @@ public class LightblueApacheHttpClient implements HttpClient {
             httpRequest.setHeader("Content-Type", "application/json; charset=utf-8");
         }
 
+        httpRequest.setHeader("Accept", "application/json");
+        httpRequest.setHeader("Accept-Charset", "utf-8");
+
         return httpRequest;
     }
 }

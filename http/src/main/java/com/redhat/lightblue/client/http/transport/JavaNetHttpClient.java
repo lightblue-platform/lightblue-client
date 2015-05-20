@@ -82,6 +82,8 @@ public class JavaNetHttpClient implements HttpClient {
         }
 
         connection.setRequestMethod(request.getHttpMethod().toString());
+        connection.setRequestProperty("Accept", "application/json");
+        connection.setRequestProperty("Accept-Charset", "utf-8");
 
         String body = request.getBody();
         if (StringUtils.isNotBlank(body)) {
@@ -98,7 +100,8 @@ public class JavaNetHttpClient implements HttpClient {
 
     private void sendRequestBody(String body, HttpURLConnection connection)
             throws IOException {
-        int length = body.length();
+        byte[] bodyUtf8Bytes = body.getBytes(UTF_8);
+        int length = bodyUtf8Bytes.length;
 
         connection.setDoOutput(true);
         connection.setFixedLengthStreamingMode(length);
@@ -107,7 +110,7 @@ public class JavaNetHttpClient implements HttpClient {
         connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
 
         try (OutputStream requestStream = connection.getOutputStream()) {
-            requestStream.write(body.getBytes(UTF_8));
+            requestStream.write(bodyUtf8Bytes);
         }
     }
 
