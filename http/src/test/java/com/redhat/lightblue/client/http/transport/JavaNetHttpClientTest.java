@@ -108,7 +108,10 @@ public class JavaNetHttpClientTest {
 
         client.executeRequest(konnichiWa, "");
 
-        verify(mockConnection).setDoOutput(true);
+        InOrder inOrder = inOrder(mockConnection);
+        inOrder.verify(mockConnection).setDoOutput(true);
+        inOrder.verify(mockConnection).connect();
+
         assertThat(requestStream.toString("UTF-8"), is("こんにちは"));
     }
 
@@ -159,7 +162,7 @@ public class JavaNetHttpClientTest {
         assertThat(client.executeRequest(helloInJapanese, ""), is(konnichiWa));
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldReturnSuccessResponseDecodedWithUtf8WhenContentLengthIsNotKnown() throws IOException {
         LightblueRequest helloInJapanese = new FakeLightblueRequest("", HttpMethod.GET, "/hello/japanese");
 
@@ -194,7 +197,7 @@ public class JavaNetHttpClientTest {
         assertThat(client.executeRequest(badHelloRequest, ""), is(error));
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldReturnErrorResponseUsingUtf8WhenContentLengthIsNotKnown() throws IOException {
         LightblueRequest badHelloRequest = new FakeLightblueRequest("", HttpMethod.GET, "/hello/%E0%B2%A0_%E0%B2%A0");
 
@@ -208,7 +211,7 @@ public class JavaNetHttpClientTest {
         assertThat(client.executeRequest(badHelloRequest, ""), is(error));
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldReturnEmptyErrorResponse() throws IOException {
         LightblueRequest badHelloRequest = new FakeLightblueRequest("", HttpMethod.GET, "/hello/%E0%B2%A0_%E0%B2%A0");
 
@@ -218,25 +221,29 @@ public class JavaNetHttpClientTest {
         assertThat(client.executeRequest(badHelloRequest, ""), is(""));
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldSetContentLengthHeaderBasedOnUtf8BytesInRequest() throws IOException {
         LightblueRequest newHello = new FakeLightblueRequest("ಠ_ಠ", HttpMethod.POST, "/hello/facelang");
 
         client.executeRequest(newHello, "");
 
-        verify(mockConnection).setRequestProperty("Content-Length", Integer.toString("ಠ_ಠ".getBytes("UTF-8").length));
+        InOrder inOrder = inOrder(mockConnection);
+        inOrder.verify(mockConnection).setRequestProperty("Content-Length", Integer.toString("ಠ_ಠ".getBytes("UTF-8").length));
+        inOrder.verify(mockConnection).connect();
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldSetContentTypeToApplicationJsonWithUtf8CharsetWhenMakingRequestWithBody() throws IOException {
         LightblueRequest newHello = new FakeLightblueRequest("ಠ_ಠ", HttpMethod.POST, "/hello/facelang");
 
         client.executeRequest(newHello, "");
 
-        verify(mockConnection).setRequestProperty("Content-Type", "application/json; charset=utf-8");
+        InOrder inOrder = inOrder(mockConnection);
+        inOrder.verify(mockConnection).setRequestProperty("Content-Type", "application/json; charset=utf-8");
+        inOrder.verify(mockConnection).connect();
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldSetAcceptHeaderToJsonBeforeMakingRequest() throws IOException {
         LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/foo/bar");
 
@@ -247,7 +254,7 @@ public class JavaNetHttpClientTest {
         inOrder.verify(mockConnection).connect();
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldSetAcceptCharsetHeaderToUtf8BeforeMakingRequest() throws IOException {
         LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/foo/bar");
 
