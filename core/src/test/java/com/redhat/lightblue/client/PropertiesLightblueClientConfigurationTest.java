@@ -149,7 +149,7 @@ public class PropertiesLightblueClientConfigurationTest {
     }
 
     @Test
-    public void compressionPropertyShouldByLzfByDefault() {
+    public void compressionPropertyShouldBeLzfByDefault() {
         Properties properties = new Properties();
 
         LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
