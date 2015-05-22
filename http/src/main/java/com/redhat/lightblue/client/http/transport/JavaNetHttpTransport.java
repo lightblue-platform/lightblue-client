@@ -19,30 +19,31 @@ import java.security.GeneralSecurityException;
 import java.util.Objects;
 
 /**
- * An {@link HttpClient} which uses vanilla java.net classes to make the request. Recommended to use
- * in a servlet environment which is already multi-threaded by virtue of the application server.
- * This class is thread safe, so you should use an application-scoped
- * {@link com.redhat.lightblue.client.http.LightblueHttpClient} backed by an instance of this class,
- * which is the default behavior if you have not passed in a different {@code HttpClient}.
+ * An {@link HttpTransport} which uses vanilla java.net classes to execute a
+ * {@link LightblueRequest}. Recommended to use in a servlet environment which is already
+ * multi-threaded by virtue of the application server. This class is thread safe, so you should use
+ * an application-scoped {@link com.redhat.lightblue.client.http.LightblueHttpClient} backed by an
+ * instance of this class, which is the default behavior if you have not passed in a different
+ * {@code HttpTransport}.
  *
  * <p>This implementation takes advantage of HTTP persistent connections as per:
  * <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/net/http-keepalive.html">http://docs.oracle.com/javase/7/docs/technotes/guides/net/http-keepalive.html</a>.
  * Sockets are left open to be reused after each request per Java SDK semantics.
  */
-public class JavaNetHttpClient implements HttpClient {
+public class JavaNetHttpTransport implements HttpTransport {
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     private final ConnectionFactory connectionFactory;
     private final SSLSocketFactory sslSocketFactory;
 
-    public JavaNetHttpClient() {
+    public JavaNetHttpTransport() {
         this((SSLSocketFactory) null);
     }
 
-    public JavaNetHttpClient(ConnectionFactory connectionFactory) {
+    public JavaNetHttpTransport(ConnectionFactory connectionFactory) {
         this(connectionFactory, null);
     }
-    public JavaNetHttpClient(SSLSocketFactory sslSocketFactory) {
+    public JavaNetHttpTransport(SSLSocketFactory sslSocketFactory) {
         this(new UrlConnectionFactory(), sslSocketFactory);
     }
 
@@ -52,12 +53,12 @@ public class JavaNetHttpClient implements HttpClient {
      * @param sslSocketFactory May be null, indicating {@link SSLSocketFactory#getDefault()}} will
      *                         be used.
      */
-    public JavaNetHttpClient(ConnectionFactory connectionFactory, SSLSocketFactory sslSocketFactory) {
+    public JavaNetHttpTransport(ConnectionFactory connectionFactory, SSLSocketFactory sslSocketFactory) {
         this.connectionFactory = Objects.requireNonNull(connectionFactory, "connectionFactory");
         this.sslSocketFactory = sslSocketFactory;
     }
 
-    public static JavaNetHttpClient fromLightblueClientConfiguration(LightblueClientConfiguration config)
+    public static JavaNetHttpTransport fromLightblueClientConfiguration(LightblueClientConfiguration config)
             throws GeneralSecurityException, IOException {
         Objects.requireNonNull(config, "config");
 
@@ -65,7 +66,7 @@ public class JavaNetHttpClient implements HttpClient {
                 ? SslSocketFactories.javaNetSslSocketFactory(config)
                 : null;
 
-        return new JavaNetHttpClient(sslSocketFactory);
+        return new JavaNetHttpTransport(sslSocketFactory);
     }
 
     @Override
@@ -116,8 +117,8 @@ public class JavaNetHttpClient implements HttpClient {
 
     /**
      * Parses response, whether or not the request was successful, if possible. Reads entire input
-     * stream and closes in order to so the socket knows it is finished and may be put back into a
-     * pool for reuse.
+     * stream and closes it so the socket knows it is finished and may be put back into a pool for
+     * reuse.
      */
     private String response(HttpURLConnection connection) throws IOException {
         try (InputStream responseStream = connection.getInputStream()) {

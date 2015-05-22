@@ -14,8 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
-import com.redhat.lightblue.client.http.transport.HttpClient;
-import com.redhat.lightblue.client.http.transport.JavaNetHttpClient;
+import com.redhat.lightblue.client.http.transport.HttpTransport;
+import com.redhat.lightblue.client.http.transport.JavaNetHttpTransport;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueResponse;
@@ -24,7 +24,7 @@ import com.redhat.lightblue.client.response.LightblueResponseParseException;
 import com.redhat.lightblue.client.util.JSON;
 
 public class LightblueHttpClient implements LightblueClient, Closeable {
-    private final HttpClient httpClient;
+    private final HttpTransport httpTransport;
     private final LightblueClientConfiguration configuration;
     private final ObjectMapper mapper;
 
@@ -71,13 +71,13 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         this(configuration, defaultHttpClientFromConfig(configuration), mapper);
     }
 
-    public LightblueHttpClient(LightblueClientConfiguration configuration, HttpClient httpClient) {
-        this(configuration, httpClient, JSON.getDefaultObjectMapper());
+    public LightblueHttpClient(LightblueClientConfiguration configuration, HttpTransport httpTransport) {
+        this(configuration, httpTransport, JSON.getDefaultObjectMapper());
     }
 
-    public LightblueHttpClient(LightblueClientConfiguration configuration, HttpClient httpClient,
+    public LightblueHttpClient(LightblueClientConfiguration configuration, HttpTransport httpTransport,
             ObjectMapper mapper) {
-        this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
+        this.httpTransport = Objects.requireNonNull(httpTransport, "httpTransport");
         this.mapper = Objects.requireNonNull(mapper, "mapper");
 
         // Make a defensive copy because configuration is mutable. This prevents alterations to the
@@ -100,7 +100,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         configuration.setMetadataServiceURI(metadataServiceURI);
         configuration.setUseCertAuth(useCertAuth);
 
-        this.httpClient = defaultHttpClientFromConfig(configuration);
+        this.httpTransport = defaultHttpClientFromConfig(configuration);
         this.mapper = JSON.getDefaultObjectMapper();
     }
 
@@ -150,14 +150,14 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 
     @Override
     public void close() throws IOException {
-        httpClient.close();
+        httpTransport.close();
     }
 
     protected LightblueResponse callService(LightblueRequest request, String baseUri) {
         try {
             long t1 = new Date().getTime();
 
-            String responseBody = httpClient.executeRequest(request, baseUri);
+            String responseBody = httpTransport.executeRequest(request, baseUri);
 
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Response received from service: " + responseBody);
@@ -172,9 +172,9 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         }
     }
 
-    private static HttpClient defaultHttpClientFromConfig(LightblueClientConfiguration config) {
+    private static HttpTransport defaultHttpClientFromConfig(LightblueClientConfiguration config) {
         try {
-            return JavaNetHttpClient.fromLightblueClientConfiguration(config);
+            return JavaNetHttpTransport.fromLightblueClientConfiguration(config);
         } catch (GeneralSecurityException | IOException e) {
             LOGGER.error("Error creating HTTP client: ", e);
             throw new RuntimeException(e);

@@ -34,13 +34,13 @@ import java.io.PrintStream;
 import java.net.HttpURLConnection;
 
 @RunWith(JUnit4.class)
-public class JavaNetHttpClientTest {
+public class JavaNetHttpTransportTest {
     private HttpURLConnection mockConnection = mock(HttpURLConnection.class);
     private HttpsURLConnection mockSslConnection = mock(HttpsURLConnection.class);
-    private JavaNetHttpClient.ConnectionFactory mockConnectionFactory =
-            mock(JavaNetHttpClient.ConnectionFactory.class);
+    private JavaNetHttpTransport.ConnectionFactory mockConnectionFactory =
+            mock(JavaNetHttpTransport.ConnectionFactory.class);
 
-    private JavaNetHttpClient client = new JavaNetHttpClient(mockConnectionFactory);
+    private JavaNetHttpTransport client = new JavaNetHttpTransport(mockConnectionFactory);
 
     private ByteArrayOutputStream requestStream = new ByteArrayOutputStream();
     private PrintStream responseStream;
@@ -128,7 +128,7 @@ public class JavaNetHttpClientTest {
     @Test(timeout = 500)
     public void shouldUseSslSocketFactoryProvidedIfHttpsConnection() throws IOException {
         SSLSocketFactory mockSslSocketFactory = mock(SSLSocketFactory.class);
-        JavaNetHttpClient client = new JavaNetHttpClient(mockConnectionFactory, mockSslSocketFactory);
+        JavaNetHttpTransport client = new JavaNetHttpTransport(mockConnectionFactory, mockSslSocketFactory);
 
         LightblueRequest getFooBar = new FakeLightblueRequest("", HttpMethod.GET, "/foo/bar");
 
@@ -141,7 +141,7 @@ public class JavaNetHttpClientTest {
 
     @Test(timeout = 500)
     public void shouldNotUseNullSslSocketFactory_shouldFallBackToDefault() throws IOException {
-        JavaNetHttpClient client = new JavaNetHttpClient(mockConnectionFactory, null);
+        JavaNetHttpTransport client = new JavaNetHttpTransport(mockConnectionFactory, null);
 
         LightblueRequest getFooBar = new FakeLightblueRequest("", HttpMethod.GET, "/foo/bar");
 
@@ -280,7 +280,7 @@ public class JavaNetHttpClientTest {
         }
     }
 
-    static class FakeConnectionFactory implements JavaNetHttpClient.ConnectionFactory {
+    static class FakeConnectionFactory implements JavaNetHttpTransport.ConnectionFactory {
         private final HttpURLConnection connection;
 
         FakeConnectionFactory(HttpURLConnection connection) {

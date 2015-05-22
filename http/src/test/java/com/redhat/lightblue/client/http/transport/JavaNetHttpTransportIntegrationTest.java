@@ -23,14 +23,14 @@ import java.io.IOException;
  * {@link java.net.HttpURLConnection} are followed correctly by use of a real HTTP server with real
  * real connections.
  *
- * @see JavaNetHttpClientTest
+ * @see JavaNetHttpTransportTest
  */
 @RunWith(JUnit4.class)
-public class JavaNetHttpClientIntegrationTest {
+public class JavaNetHttpTransportIntegrationTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule();
 
-    private JavaNetHttpClient client = new JavaNetHttpClient();
+    private JavaNetHttpTransport client = new JavaNetHttpTransport();
 
     @Test
     public void shouldReturnResponseBodyOfSuccessfulRequest() throws IOException {

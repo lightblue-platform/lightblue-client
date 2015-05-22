@@ -14,15 +14,15 @@ import org.junit.Test;
 
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.http.model.SimpleModelObject;
-import com.redhat.lightblue.client.http.transport.HttpClient;
+import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 
 public class LightblueHttpClientTest {
 
     LightblueClientConfiguration config = new LightblueClientConfiguration();
-    HttpClient httpClient = mock(HttpClient.class);
-    LightblueHttpClient client = new LightblueHttpClient(config, httpClient);
+    HttpTransport httpTransport = mock(HttpTransport.class);
+    LightblueHttpClient client = new LightblueHttpClient(config, httpTransport);
 
     @Test
     public void testPojoMapping() throws IOException {
@@ -33,7 +33,7 @@ public class LightblueHttpClientTest {
 
         String response = "{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}";
 
-        when(httpClient.executeRequest(any(LightblueRequest.class), anyString()))
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString()))
                 .thenReturn(response);
 
         SimpleModelObject[] results = client.data(findRequest,
@@ -54,7 +54,7 @@ public class LightblueHttpClientTest {
 
         String response = "{\"processed\":\"<p>This is not json</p>\"}";
 
-        when(httpClient.executeRequest(any(LightblueRequest.class), anyString()))
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString()))
                 .thenReturn(response);
 
         client.data(findRequest, SimpleModelObject[].class);
