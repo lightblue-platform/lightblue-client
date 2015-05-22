@@ -17,6 +17,7 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -55,17 +56,6 @@ public class SslSocketFactories {
         return defaultNoAuthSocketFactory();
     }
 
-    private static InputStream loadFile(String filePath) throws FileNotFoundException{
-        return loadFile(Thread.currentThread().getContextClassLoader(), filePath);
-    }
-
-    private static InputStream loadFile(ClassLoader classLoader, String filePath) throws FileNotFoundException{
-        if(filePath.startsWith(FILE_PROTOCOL)){
-            return new FileInputStream(filePath.substring(FILE_PROTOCOL.length()));
-        }
-        return classLoader.getResourceAsStream(filePath);
-    }
-
     /**
      * @return A default SSL socket factory that does not connect using an authenticated Lightblue
      * certificate, but instead trust's self signed SSL certificates.
@@ -99,6 +89,38 @@ public class SslSocketFactories {
 
         return new SSLConnectionSocketFactory(sslContext, SUPPORTED_PROTOCOLS, SUPPORTED_CIPHER_SUITES,
                 SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+    }
+
+    public static SSLSocketFactory javaNetSslSocketFactory(LightblueClientConfiguration config)
+            throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException,
+            UnrecoverableKeyException, KeyManagementException {
+        InputStream caCert = loadFile(config.getCaFilePath());
+        InputStream authCert = loadFile(config.getCertFilePath());
+
+        return javaNetSslSocketFactory(caCert, authCert, config.getCertPassword().toCharArray(),
+                config.getCertAlias());
+    }
+
+    public static SSLSocketFactory javaNetSslSocketFactory(InputStream certAuthorityFile,
+            InputStream authCert, char[] authCertPassword,
+            String authCertAlias) throws CertificateException, NoSuchAlgorithmException,
+            KeyStoreException, IOException, UnrecoverableKeyException, KeyManagementException {
+        X509Certificate cert = getCertificate(certAuthorityFile);
+        KeyStore pkcs12KeyStore = getPkcs12KeyStore(authCert, authCertPassword);
+        KeyStore sunKeyStore = getJksKeyStore(cert, pkcs12KeyStore, authCertAlias, authCertPassword);
+        SSLContext sslContext = getDefaultSSLContext(sunKeyStore, pkcs12KeyStore, authCertPassword);
+        return sslContext.getSocketFactory();
+    }
+
+    private static InputStream loadFile(String filePath) throws FileNotFoundException{
+        return loadFile(Thread.currentThread().getContextClassLoader(), filePath);
+    }
+
+    private static InputStream loadFile(ClassLoader classLoader, String filePath) throws FileNotFoundException{
+        if(filePath.startsWith(FILE_PROTOCOL)){
+            return new FileInputStream(filePath.substring(FILE_PROTOCOL.length()));
+        }
+        return classLoader.getResourceAsStream(filePath);
     }
 
     private static X509Certificate getCertificate(InputStream certificate)
