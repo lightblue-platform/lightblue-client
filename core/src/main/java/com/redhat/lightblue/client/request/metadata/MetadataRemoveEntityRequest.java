@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client.request.metadata;
 
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 
 public class MetadataRemoveEntityRequest extends AbstractLightblueMetadataRequest {
@@ -14,7 +15,12 @@ public class MetadataRemoveEntityRequest extends AbstractLightblueMetadataReques
 
     @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_REMOVE_ENTITY;
+        return "";
+    }
+
+    @Override
+    public HttpMethod getHttpMethod() {
+        return HttpMethod.DELETE;
     }
 
 }

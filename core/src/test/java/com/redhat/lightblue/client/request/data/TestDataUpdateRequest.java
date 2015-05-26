@@ -17,7 +17,7 @@ public class TestDataUpdateRequest extends AbstractLightblueRequestTest {
 	
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(DataUpdateRequest.PATH_PARAM_UPDATE, request.getOperationPathParam());
+		Assert.assertEquals("update", request.getOperationPathParam());
 	}
 
 }

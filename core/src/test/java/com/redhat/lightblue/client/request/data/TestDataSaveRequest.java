@@ -43,7 +43,7 @@ public class TestDataSaveRequest extends AbstractLightblueRequestTest {
 
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(DataSaveRequest.PATH_PARAM_SAVE, request.getOperationPathParam());
+		Assert.assertEquals("save", request.getOperationPathParam());
 	}
 
     @Test

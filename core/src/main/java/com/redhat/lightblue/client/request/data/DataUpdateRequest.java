@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.redhat.lightblue.client.expression.query.Query;
 import com.redhat.lightblue.client.expression.update.Update;
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.projection.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 
@@ -95,8 +96,13 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
+    public HttpMethod getHttpMethod() {
+        return HttpMethod.POST;
+    }
+
+    @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_UPDATE;
+        return "update";
     }
 
 }

@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client.request.metadata;
 
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 
 public class MetadataCreateRequest extends AbstractLightblueMetadataRequest {
@@ -14,7 +15,11 @@ public class MetadataCreateRequest extends AbstractLightblueMetadataRequest {
 
     @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_CREATE_METADATA;
+        return "";
     }
 
+    @Override
+    public HttpMethod getHttpMethod() {
+        return HttpMethod.PUT;
+    }
 }

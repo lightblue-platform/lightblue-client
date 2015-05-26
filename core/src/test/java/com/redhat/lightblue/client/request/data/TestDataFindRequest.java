@@ -47,7 +47,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
 
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(DataFindRequest.PATH_PARAM_FIND, request.getOperationPathParam());
+		Assert.assertEquals("find", request.getOperationPathParam());
 	}
 
     @Test

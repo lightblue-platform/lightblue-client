@@ -17,7 +17,7 @@ public class TestMetadataCreateRequest extends AbstractLightblueRequestTest {
 
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(MetadataCreateRequest.PATH_PARAM_CREATE_METADATA, request.getOperationPathParam());
+		Assert.assertEquals("", request.getOperationPathParam());
 	}
 
 }

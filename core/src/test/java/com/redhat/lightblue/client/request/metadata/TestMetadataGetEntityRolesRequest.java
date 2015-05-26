@@ -8,7 +8,7 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataGetEntityRolesRequest extends AbstractLightblueRequestTest {
 
-	MetadataGetEntityRolesRequest request = new MetadataGetEntityRolesRequest();
+	MetadataGetEntityRolesRequest request;
 
 	@Before
 	public void setUp() throws Exception {
@@ -17,7 +17,7 @@ public class TestMetadataGetEntityRolesRequest extends AbstractLightblueRequestT
 
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(MetadataGetEntityRolesRequest.PATH_PARAM_GET_ENTITY_ROLES, request.getOperationPathParam());
+		Assert.assertEquals("roles", request.getOperationPathParam());
 	}
 
 }

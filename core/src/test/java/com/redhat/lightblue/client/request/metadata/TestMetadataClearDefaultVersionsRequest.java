@@ -17,7 +17,7 @@ public class TestMetadataClearDefaultVersionsRequest extends AbstractLightblueRe
 
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(MetadataGetEntityDependenciesRequest.PATH_PARAM_CLEAR_DEFAULT_VERSION, request.getOperationPathParam());
+		Assert.assertEquals("default", request.getOperationPathParam());
 	}
 
 }
