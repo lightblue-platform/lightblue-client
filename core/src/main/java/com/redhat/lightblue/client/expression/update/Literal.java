@@ -1,5 +1,9 @@
 package com.redhat.lightblue.client.expression.update;
 
+import java.util.Date;
+
+import com.redhat.lightblue.client.util.ClientConstants;
+
 public class Literal implements RValue {
     private final Object value;
 
@@ -33,6 +37,8 @@ public class Literal implements RValue {
             return null;
         else if(value instanceof String)
             return "\""+value+"\"";
+        else if(value instanceof Date)
+            return "\""+ClientConstants.getDateFormat().format((Date)value)+"\"";
         else
             return value.toString();
     }
