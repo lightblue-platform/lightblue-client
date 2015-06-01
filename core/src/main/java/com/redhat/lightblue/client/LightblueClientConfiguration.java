@@ -6,6 +6,21 @@ import org.apache.commons.io.FilenameUtils;
 
 public class LightblueClientConfiguration {
 
+    public enum Compression {
+        NONE, LZF;
+
+        public static Compression parseCompression(String str) {
+            switch (str) {
+            case "NONE":
+                return NONE;
+            case "LZF":
+                return LZF;
+            default:
+                throw new IllegalArgumentException("Invalid compression " + str + ". Supported values are: NONE, LZF");
+            }
+        }
+    }
+
     private String dataServiceURI;
     private String metadataServiceURI;
     private boolean useCertAuth = false;
@@ -13,6 +28,7 @@ public class LightblueClientConfiguration {
     private String certFilePath;
     private String certPassword;
     private String certAlias;
+    private Compression compression = Compression.LZF;
 
     public LightblueClientConfiguration() {
     }
@@ -28,6 +44,7 @@ public class LightblueClientConfiguration {
         this.certFilePath = configuration.certFilePath;
         this.certPassword = configuration.certPassword;
         this.certAlias = FilenameUtils.getBaseName(this.certFilePath);
+        this.compression = configuration.compression;
     }
 
     public String getDataServiceURI() {
@@ -127,13 +144,17 @@ public class LightblueClientConfiguration {
             return false;
         }
 
+        if (!Objects.equals(this.compression, compression)) {
+            return false;
+        }
+
         return true;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(useCertAuth, caFilePath, certAlias, certFilePath, certPassword,
-                dataServiceURI, metadataServiceURI);
+                dataServiceURI, metadataServiceURI, compression);
     }
 
     @Override
@@ -146,6 +167,15 @@ public class LightblueClientConfiguration {
                 + ", certFilePath='" + certFilePath + '\''
                 + ", certPassword='" + certPassword + '\''
                 + ", certAlias='" + certAlias + '\''
+                + ", compression='" + compression + '\''
                 + '}';
+    }
+
+    public Compression getCompression() {
+        return compression;
+    }
+
+    public void setCompression(Compression compression) {
+        this.compression = compression;
     }
 }

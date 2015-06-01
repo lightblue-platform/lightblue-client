@@ -1,14 +1,5 @@
 package com.redhat.lightblue.client.http.transport;
 
-import com.redhat.lightblue.client.LightblueClientConfiguration;
-import com.redhat.lightblue.client.http.auth.SslSocketFactories;
-import com.redhat.lightblue.client.request.LightblueRequest;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,6 +8,20 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.util.Objects;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ning.compress.lzf.LZFInputStream;
+import com.redhat.lightblue.client.LightblueClientConfiguration;
+import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
+import com.redhat.lightblue.client.http.auth.SslSocketFactories;
+import com.redhat.lightblue.client.request.LightblueRequest;
 
 /**
  * An {@link HttpTransport} which uses vanilla java.net classes to execute a
@@ -35,16 +40,32 @@ public class JavaNetHttpTransport implements HttpTransport {
 
     private final ConnectionFactory connectionFactory;
     private final SSLSocketFactory sslSocketFactory;
+    private Compression compression;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JavaNetHttpTransport.class);
 
     public JavaNetHttpTransport() {
         this((SSLSocketFactory) null);
     }
 
     public JavaNetHttpTransport(ConnectionFactory connectionFactory) {
-        this(connectionFactory, null);
+        this(connectionFactory, null, Compression.LZF);
     }
     public JavaNetHttpTransport(SSLSocketFactory sslSocketFactory) {
-        this(new UrlConnectionFactory(), sslSocketFactory);
+        this(new UrlConnectionFactory(), sslSocketFactory,  Compression.LZF);
+    }
+
+    /**
+     * @param connectionFactory Injectable for testing. To actually make HTTP requests, use another
+     *                          constructor or pass {@link UrlConnectionFactory}.
+     * @param sslSocketFactory May be null, indicating {@link SSLSocketFactory#getDefault()}} will
+     *                         be used.
+     * @param compression Compression method to advertise to the endpoint. Does not mean that compression will be actially used.
+     */
+    public JavaNetHttpTransport(ConnectionFactory connectionFactory, SSLSocketFactory sslSocketFactory, Compression compression) {
+        this.connectionFactory = Objects.requireNonNull(connectionFactory, "connectionFactory");
+        this.sslSocketFactory = sslSocketFactory;
+        this.compression = compression;
     }
 
     /**
@@ -54,8 +75,7 @@ public class JavaNetHttpTransport implements HttpTransport {
      *                         be used.
      */
     public JavaNetHttpTransport(ConnectionFactory connectionFactory, SSLSocketFactory sslSocketFactory) {
-        this.connectionFactory = Objects.requireNonNull(connectionFactory, "connectionFactory");
-        this.sslSocketFactory = sslSocketFactory;
+        this(connectionFactory, sslSocketFactory, Compression.LZF);
     }
 
     public static JavaNetHttpTransport fromLightblueClientConfiguration(LightblueClientConfiguration config)
@@ -66,7 +86,7 @@ public class JavaNetHttpTransport implements HttpTransport {
                 ? SslSocketFactories.javaNetSslSocketFactory(config)
                 : null;
 
-        return new JavaNetHttpTransport(sslSocketFactory);
+        return new JavaNetHttpTransport(new UrlConnectionFactory(), sslSocketFactory, config.getCompression());
     }
 
     @Override
@@ -85,6 +105,11 @@ public class JavaNetHttpTransport implements HttpTransport {
         connection.setRequestMethod(request.getHttpMethod().toString());
         connection.setRequestProperty("Accept", "application/json");
         connection.setRequestProperty("Accept-Charset", "utf-8");
+
+        if (this.compression == Compression.LZF) {
+            LOGGER.debug("Advertising lzf decoding capabilities to lightblue");
+            connection.setRequestProperty("Accept-Encoding", "lzf");
+        }
 
         String body = request.getBody();
         if (StringUtils.isNotBlank(body)) {
@@ -141,6 +166,13 @@ public class JavaNetHttpTransport implements HttpTransport {
      */
     private String readResponseStream(InputStream responseStream, HttpURLConnection connection)
             throws IOException {
+
+        InputStream decodedStream = responseStream;
+        if (compression == Compression.LZF && "lzf".equals(connection.getHeaderField("Content-Encoding"))) {
+            LOGGER.debug("Decoding lzf");
+            decodedStream = new LZFInputStream(responseStream);
+        }
+
         int contentLength = connection.getContentLength();
 
         if (contentLength == 0) {
@@ -149,11 +181,11 @@ public class JavaNetHttpTransport implements HttpTransport {
 
         if (contentLength > 0) {
             byte[] responseBytes = new byte[contentLength];
-            IOUtils.readFully(responseStream, responseBytes);
+            IOUtils.readFully(decodedStream, responseBytes);
             return new String(responseBytes, UTF_8);
         }
 
-        return IOUtils.toString(responseStream, UTF_8);
+        return IOUtils.toString(decodedStream, UTF_8);
     }
 
     public interface ConnectionFactory {
@@ -166,5 +198,13 @@ public class JavaNetHttpTransport implements HttpTransport {
             URL url = new URL(uri);
             return (HttpURLConnection) url.openConnection();
         }
+    }
+
+    public Compression getCompression() {
+        return compression;
+    }
+
+    public void setCompression(Compression compression) {
+        this.compression = compression;
     }
 }

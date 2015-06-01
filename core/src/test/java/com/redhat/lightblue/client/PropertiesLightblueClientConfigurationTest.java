@@ -12,6 +12,8 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -134,5 +136,24 @@ public class PropertiesLightblueClientConfigurationTest {
         LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
 
         assertEquals(true, config.useCertAuth());
+    }
+
+    @Test
+    public void shouldLookup_compression_Property() {
+        Properties properties = new Properties();
+        properties.setProperty("compression", "NONE");
+
+        LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
+
+        assertEquals(Compression.NONE, config.getCompression());
+    }
+
+    @Test
+    public void compressionPropertyShouldBeLzfByDefault() {
+        Properties properties = new Properties();
+
+        LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
+
+        assertEquals(Compression.LZF, config.getCompression());
     }
 }
