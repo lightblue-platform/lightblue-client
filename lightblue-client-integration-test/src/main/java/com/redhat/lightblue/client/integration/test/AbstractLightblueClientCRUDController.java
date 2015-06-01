@@ -37,7 +37,6 @@ public abstract class AbstractLightblueClientCRUDController extends AbstractCRUD
      *
      * @return lightblue http client configuration needed to connect
      */
-    @Override
     protected LightblueClientConfiguration getLightblueClientConfiguration() {
         LightblueClientConfiguration lbConf = new LightblueClientConfiguration();
         lbConf.setUseCertAuth(false);
@@ -47,12 +46,10 @@ public abstract class AbstractLightblueClientCRUDController extends AbstractCRUD
         return lbConf;
     }
 
-    @Override
     public LightblueHttpClient getLightblueClient() {
         return new LightblueHttpClient(getLightblueClientConfiguration());
     }
 
-    @Override
     public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws IOException {
         DataInsertRequestStub request = new DataInsertRequestStub(
                 entityName, entityVersion, loadResource(resourcePath, false));
