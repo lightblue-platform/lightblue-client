@@ -5,18 +5,14 @@ import org.apache.commons.lang.StringUtils;
 public abstract class AbstractLightblueRequest implements LightblueRequest {
 
     protected static final String PATH_SEPARATOR = "/";
-    protected static final String PATH_PARAM_ENTITY = "entity";
-    protected static final String PATH_PARAM_VERSION = "version";
 
     private String entityName;
     private String entityVersion;
 
-    @Override
     public String getEntityName() {
         return entityName;
     }
 
-    @Override
     public String getEntityVersion() {
         return entityVersion;
     }
@@ -42,5 +38,4 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         }
         restOfURI.append(pathParam);
     }
-
 }

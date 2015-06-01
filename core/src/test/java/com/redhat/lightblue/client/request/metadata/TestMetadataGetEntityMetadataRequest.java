@@ -17,7 +17,7 @@ public class TestMetadataGetEntityMetadataRequest extends AbstractLightblueReque
 
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(MetadataGetEntityMetadataRequest.PATH_PARAM_GET_ENTITY_METADATA, request.getOperationPathParam());
+		Assert.assertEquals("", request.getOperationPathParam());
 	}
 
 }

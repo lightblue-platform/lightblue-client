@@ -17,7 +17,7 @@ public class TestMetadataUpdateSchemaStatusRequest extends AbstractLightblueRequ
 
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(MetadataUpdateSchemaStatusRequest.PATH_PARAM_UPDATE_SCHEMA_STATUS, request.getOperationPathParam());
+		Assert.assertEquals("", request.getOperationPathParam());
 	}
 
 }

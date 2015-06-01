@@ -61,12 +61,12 @@
             <dependency>
                 <groupId>com.netflix.hystrix</groupId>
                 <artifactId>hystrix-core</artifactId>
-                <version>1.4.0</version>
+                <version>1.4.7</version>
             </dependency>
             <dependency>
                 <groupId>com.netflix.hystrix</groupId>
                 <artifactId>hystrix-servo-metrics-publisher</artifactId>
-                <version>1.4.0</version>
+                <version>1.4.7</version>
             </dependency>
             <!-- The io.reactivex dependency is necessary to be available on the compile time due an issue found (on java/maven) -->
             <dependency>

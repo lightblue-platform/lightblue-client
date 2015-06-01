@@ -43,7 +43,7 @@ public class TestDataInsertRequest extends AbstractLightblueRequestTest {
 
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(DataInsertRequest.PATH_PARAM_INSERT, request.getOperationPathParam());
+		Assert.assertEquals("insert", request.getOperationPathParam());
 	}
 
     @Test
