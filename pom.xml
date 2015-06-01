@@ -39,9 +39,19 @@
             </dependency>
             <dependency>
                 <groupId>com.redhat.lightblue.client</groupId>
+                <artifactId>lightblue-client-http</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.redhat.lightblue.client</groupId>
                 <artifactId>lightblue-client-test</artifactId>
                 <version>${project.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.redhat.lightblue.test</groupId>
+                <artifactId>lightblue-test-utils</artifactId>
+                <version>1.4.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.redhat.lightblue</groupId>
@@ -64,6 +74,12 @@
                 <artifactId>rxjava</artifactId>
                 <version>1.0.7</version>
                 <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -120,7 +136,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -141,6 +156,7 @@
         <module>lightblue-client-test</module>
         <module>http</module>
         <module>hystrix</module>
+        <module>lightblue-client-integration-test</module>
     </modules>
     <properties>
         <sonar.exclusions>**/*Test.java,**/*Exception.java</sonar.exclusions>
