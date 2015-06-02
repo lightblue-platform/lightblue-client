@@ -22,8 +22,8 @@
           <scope>compile</scope>
       </dependency>
       <dependency>
-          <groupId>com.redhat.lightblue.test</groupId>
-          <artifactId>lightblue-test-utils</artifactId>
+          <groupId>com.redhat.lightblue.rest</groupId>
+          <artifactId>lightblue-rest-integration-test</artifactId>
           <scope>compile</scope>
       </dependency>
       <dependency>
