@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.integration.test;
 
+import static org.junit.Assert.assertFalse;
+
 import java.io.IOException;
 
 import com.redhat.lightblue.client.LightblueClientConfiguration;
@@ -50,9 +52,7 @@ public abstract class AbstractLightblueClientCRUDController extends AbstractCRUD
         DataInsertRequestStub request = new DataInsertRequestStub(
                 entityName, entityVersion, loadResource(resourcePath, false));
         LightblueResponse response = getLightblueClient().data(request);
-        if (response.hasError()) {
-            throw new RuntimeException(response.getText());
-        }
+        assertFalse(response.getText(), response.hasError());
 
         return response;
     }
