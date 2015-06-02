@@ -5,11 +5,10 @@ import static org.junit.Assert.assertFalse;
 import java.io.IOException;
 
 import com.redhat.lightblue.client.LightblueClientConfiguration;
-import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.test.request.DataInsertRequestStub;
-import com.redhat.lightblue.test.utils.AbstractCRUDControllerWithRest;
+import com.redhat.lightblue.rest.integration.AbstractCRUDControllerWithRest;
 
 /**
  * Provides a lightblue-client instance to talk to the running in-memory lightblue instance.
@@ -42,7 +41,6 @@ public abstract class AbstractLightblueClientCRUDController extends AbstractCRUD
         lbConf.setUseCertAuth(false);
         lbConf.setDataServiceURI(getDataUrl());
         lbConf.setMetadataServiceURI(getMetadataUrl());
-        lbConf.setCompression(Compression.NONE);
         return lbConf;
     }
 

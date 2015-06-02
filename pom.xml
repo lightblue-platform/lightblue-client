@@ -49,9 +49,10 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>com.redhat.lightblue.test</groupId>
-                <artifactId>lightblue-test-utils</artifactId>
-                <version>1.4.0-SNAPSHOT</version>
+                <groupId>com.redhat.lightblue.rest</groupId>
+                <artifactId>lightblue-rest-integration-test</artifactId>
+                <version>1.5.0-SNAPSHOT</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.redhat.lightblue</groupId>
