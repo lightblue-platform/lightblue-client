@@ -3,6 +3,13 @@ package com.redhat.lightblue.client.request.data;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 
+/**
+ * An operation non-specific {@link AbstractLightblueDataRequest} for when the json for
+ * the body has already been generated through some other means. <br/>
+ * Should not be preferred over the operation specific implementations.
+ *
+ * @author dcrissman
+ */
 public class LiteralDataRequest extends AbstractLightblueDataRequest {
 
     private final String body;
