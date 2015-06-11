@@ -13,7 +13,7 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
 
         @Override
         public String getRestURI(String baseServiceURI) {
-            return null;
+            return "/rest/data/find/"+updatedEntityName+"/"+updatedEntityVersion;
         }
 
         public void setBody(String body) {
@@ -90,5 +90,10 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
     @Test
     public void testGetHttpMethod() {
         Assert.assertEquals(HttpMethod.PUT, testRequest.getHttpMethod());
+    }
+
+    @Test
+    public void testToString() {
+        Assert.assertEquals("PUT /rest/data/find/updatedEntity/3.2.1, body: {\"name\":\"value\"}", testRequest.toString());
     }
 }
