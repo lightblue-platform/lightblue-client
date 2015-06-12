@@ -38,4 +38,9 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         }
         restOfURI.append(pathParam);
     }
+
+    @Override
+    public String toString() {
+        return getHttpMethod().toString()+" "+getRestURI("/")+", body: "+getBody();
+    }
 }
