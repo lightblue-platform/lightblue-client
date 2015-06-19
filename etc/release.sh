@@ -25,13 +25,13 @@ if [ $BRANCH != "master" ]; then
 fi
 
 # check that local branch is equal to upstream master (assumes remote of origin)
-MERGE_BASE=`git merge-base HEAD origin/master`
-HEAD_HASH=`git rev-parse HEAD`
+#MERGE_BASE=`git merge-base HEAD origin/master`
+#HEAD_HASH=`git rev-parse HEAD`
 
-if [ $MERGE_BASE != $HEAD_HASH ]; then
-    echo "Local branch is not in sync with origin/master.  Fix and run this script again."
-    exit 1
-fi
+#if [ $MERGE_BASE != $HEAD_HASH ]; then
+#    echo "Local branch is not in sync with origin/master.  Fix and run this script again."
+#    exit 1
+#fi
 
 # update to non-snapshot versions of lightblue dependencies and commit
 mvn versions:update-properties -DallowSnapshots=false
