@@ -57,7 +57,7 @@
             <dependency>
                 <groupId>com.redhat.lightblue</groupId>
                 <artifactId>lightblue-core-hystrix</artifactId>
-                <version>1.6.0-SNAPSHOT</version>
+                <version>1.7.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.netflix.hystrix</groupId>
