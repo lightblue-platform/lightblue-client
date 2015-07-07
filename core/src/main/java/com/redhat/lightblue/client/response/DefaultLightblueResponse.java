@@ -2,10 +2,15 @@ package com.redhat.lightblue.client.response;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.redhat.lightblue.client.util.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,16 +66,52 @@ public class DefaultLightblueResponse implements LightblueResponse {
     }
 
     @Override
+    public boolean hasDataErrors() {
+        JsonNode err=json.get("dataErrors");
+        return err!=null&&!(err instanceof NullNode)&&err.size()>0;
+    }
+ 
+    @Override
     public boolean hasError() {
         JsonNode objectTypeNode = json.get("status");
         if (objectTypeNode == null) {
             return false;
         }
-
+        JsonNode err=json.get("errors");
+        if(err!=null&&!(err instanceof NullNode))
+            return true;
+        err=json.get("dataErrors");
+        if(err!=null&&(err instanceof ArrayNode))
+            if(err.size()>0)
+                return true;
         return objectTypeNode.textValue().equalsIgnoreCase("error")
                 || objectTypeNode.textValue().equalsIgnoreCase("partial");
     }
 
+    @Override
+    public JsonNode[] getErrors() {
+        return getErrors("errors");
+    }
+
+    @Override
+    public JsonNode[] getDataErrors() {
+        return getErrors("dataErrors");
+    }
+    
+    private  JsonNode[] getErrors(String fld) {
+        List<JsonNode> list=new ArrayList<>();
+        JsonNode err=json.get(fld);
+        if(err instanceof ObjectNode)
+            list.add(err);
+        else if(err instanceof ArrayNode)
+            for(Iterator<JsonNode> itr=((ArrayNode)err).elements();itr.hasNext();)
+                list.add(itr.next());
+        else
+            return null;
+        return list.toArray(new JsonNode[list.size()]);
+    }
+
+    
     @Override
     public int parseModifiedCount() {
         return parseInt("modifiedCount");

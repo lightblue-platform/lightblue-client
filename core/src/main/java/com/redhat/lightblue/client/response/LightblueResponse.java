@@ -9,6 +9,11 @@ public interface LightblueResponse {
 
     boolean hasError();
 
+    boolean hasDataErrors();
+
+    JsonNode[] getErrors();
+    JsonNode[] getDataErrors();
+
     int parseModifiedCount();
 
     int parseMatchCount();
