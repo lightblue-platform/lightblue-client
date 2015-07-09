@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
+import com.redhat.lightblue.client.response.LightblueException;
 
 /**
  * Testing your code against lightblue example.
@@ -41,7 +42,7 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         return new JsonNode[]{loadJsonNode("country.json")};
     }
 
-    private Country insertPL() throws IOException {
+    private Country insertPL() throws LightblueException {
         Country c = new Country();
         c.setName("Poland");
         c.setIso2Code("PL");
@@ -55,12 +56,12 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
     }
 
     @Test
-    public void testInsertCountry() throws IOException {
+    public void testInsertCountry() throws LightblueException {
         Assert.assertEquals("PL", insertPL().getIso2Code());
     }
 
     @Test
-    public void testDirectMongoCleanup() throws IOException {
+    public void testDirectMongoCleanup() throws LightblueException, UnknownHostException {
         insertPL();
 
         cleanupMongoCollections(Country.objectType);

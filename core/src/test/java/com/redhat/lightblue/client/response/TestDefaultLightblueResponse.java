@@ -27,7 +27,7 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test(expected = RuntimeException.class)
-    public void testConstructor_BadJson() {
+    public void testConstructor_BadJson() throws LightblueException {
         new DefaultLightblueResponse("bad json");
     }
 
@@ -63,30 +63,24 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test
-    public void testHasError_False() {
+    public void testHasError_False() throws LightblueException {
         DefaultLightblueResponse response = new DefaultLightblueResponse("{\"status\":\"successful\"}");
         assertFalse(response.hasError());
     }
 
-    @Test
-    public void testHasError_True() {
+    @Test(expected = LightblueException.class)
+    public void testHasError_True() throws LightblueException {
         DefaultLightblueResponse response = new DefaultLightblueResponse("{\"status\":\"error\"}");
-        assertTrue(response.hasError());
     }
 
-    @Test(expected = LightblueErrorResponseException.class)
-    public void testParseProcessed_LightblueReturnsError() throws LightblueResponseParseException {
-        new DefaultLightblueResponse("{\"status\":\"error\", \"errors\":[{\"errorCode\": \"metadata:InvalidFieldReference\"}]}").parseProcessed(Object.class);
-    }
-
-    @Test
-    public void testHasError_Partial_True() {
+    @Test(expected = LightblueException.class)
+    public void testHasError_Partial_True() throws LightblueException {
         DefaultLightblueResponse response = new DefaultLightblueResponse("{\"status\":\"partial\"}");
         assertTrue(response.hasError());
     }
 
     @Test
-    public void testParseProcessed_EmptyProcessed_ForArrayGeneric() throws LightblueResponseParseException {
+    public void testParseProcessed_EmptyProcessed_ForArrayGeneric() throws LightblueException, LightblueResponseParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"processed\": [], \"status\": \"COMPLETE\"}");
 
         Object[] results = response.parseProcessed(Object[].class);
@@ -96,7 +90,7 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test
-    public void testParseProcessed_EmptyProcessed_ForSimpleGeneric() throws LightblueResponseParseException {
+    public void testParseProcessed_EmptyProcessed_ForSimpleGeneric() throws LightblueException, LightblueResponseParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"processed\": [], \"status\": \"COMPLETE\"}");
 
         Object results = response.parseProcessed(Object.class);
@@ -104,8 +98,8 @@ public class TestDefaultLightblueResponse {
         Assert.assertNull(results);
     }
 
-    @Test
-    public void testParseProcessed() throws LightblueResponseParseException {
+   @Test
+    public void testParseProcessed() throws LightblueException, LightblueResponseParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}");
 
         SimpleModelObject[] results = response.parseProcessed(SimpleModelObject[].class);
@@ -117,7 +111,7 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test
-    public void testParseProcess_NonArrayResult() throws LightblueResponseParseException {
+    public void testParseProcess_NonArrayResult() throws LightblueException, LightblueResponseParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}");
         SimpleModelObject results = response.parseProcessed(SimpleModelObject.class);
 
@@ -126,7 +120,7 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test
-    public void testParseProcessed_NullProcessedNode() throws LightblueResponseParseException {
+    public void testParseProcessed_NullProcessedNode() throws LightblueException, LightblueResponseParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"processed\": null, \"status\": \"COMPLETE\"}");
 
         Object results = response.parseProcessed(Object.class);
@@ -135,7 +129,7 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test
-    public void testParseProcessedWithParsingError_DoesNotExist() throws LightblueResponseParseException {
+    public void testParseProcessedWithParsingError_DoesNotExist() throws LightblueException, LightblueResponseParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"status\": \"COMPLETE\"}");
 
         Object[] results = response.parseProcessed(Object[].class);
@@ -144,63 +138,63 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test(expected = LightblueResponseParseException.class)
-    public void testParseProcessedWithParsingError_InvalidJson() throws LightblueResponseParseException {
+    public void testParseProcessedWithParsingError_InvalidJson() throws LightblueException, LightblueResponseParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"processed\":\"<p>This is not json</p>\"}");
 
         response.parseProcessed(Object[].class);
     }
 
     @Test(expected = LightblueResponseParseException.class)
-    public void testParseProcessed_MultipleResults_ForNonArrayResponse() throws LightblueResponseParseException {
+    public void testParseProcessed_MultipleResults_ForNonArrayResponse() throws LightblueException, LightblueResponseParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 2, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash1\", \"field\":\"value1\"},{\"_id\": \"idhash2\", \"field\":\"value2\"}], \"status\": \"COMPLETE\"}");
 
         response.parseProcessed(Object.class);
     }
 
     @Test
-    public void testParseModifiedCount() {
+    public void testParseModifiedCount() throws LightblueException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 5, \"status\": \"COMPLETE\"}");
         Assert.assertEquals(5, response.parseModifiedCount());
     }
 
     @Test
-    public void testParseModifiedCount_zeroValue() {
+    public void testParseModifiedCount_zeroValue() throws LightblueException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"status\": \"COMPLETE\"}");
         Assert.assertEquals(0, response.parseModifiedCount());
     }
 
     @Test
-    public void testParseModifiedCount_notExist() {
+    public void testParseModifiedCount_notExist() throws LightblueException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"status\": \"COMPLETE\"}");
         Assert.assertEquals(0, response.parseModifiedCount());
     }
 
     @Test
-    public void testParseModifiedCount_nullValue() {
+    public void testParseModifiedCount_nullValue() throws LightblueException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": null, \"status\": \"COMPLETE\"}");
         Assert.assertEquals(0, response.parseModifiedCount());
     }
 
     @Test
-    public void testParseMatchCount() {
+    public void testParseMatchCount() throws LightblueException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 5, \"modifiedCount\": 0, \"status\": \"COMPLETE\"}");
         Assert.assertEquals(5, response.parseMatchCount());
     }
 
     @Test
-    public void testParseMatchCount_zeroValue() {
+    public void testParseMatchCount_zeroValue() throws LightblueException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"status\": \"COMPLETE\"}");
         Assert.assertEquals(0, response.parseMatchCount());
     }
 
     @Test
-    public void testParseMatchCount_notExist() {
+    public void testParseMatchCount_notExist() throws LightblueException {
         LightblueResponse response = new DefaultLightblueResponse("{\"modifiedCount\": 0, \"status\": \"COMPLETE\"}");
         Assert.assertEquals(0, response.parseMatchCount());
     }
 
     @Test
-    public void testParseMatchCount_nullValue() {
+    public void testParseMatchCount_nullValue() throws LightblueException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": null, \"modifiedCount\": 0, \"status\": \"COMPLETE\"}");
         Assert.assertEquals(0, response.parseMatchCount());
     }

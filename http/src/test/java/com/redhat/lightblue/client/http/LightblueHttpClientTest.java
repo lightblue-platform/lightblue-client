@@ -17,6 +17,7 @@ import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
+import com.redhat.lightblue.client.response.LightblueException;
 
 public class LightblueHttpClientTest {
 
@@ -25,7 +26,7 @@ public class LightblueHttpClientTest {
     LightblueHttpClient client = new LightblueHttpClient(config, httpTransport);
 
     @Test
-    public void testPojoMapping() throws IOException {
+    public void testPojoMapping() throws Exception {
         DataFindRequest findRequest = new DataFindRequest("foo", "bar");
 
         findRequest.where(withValue("foo = bar"));
@@ -46,7 +47,7 @@ public class LightblueHttpClientTest {
     }
 
     @Test(expected = LightblueHttpClientException.class)
-    public void testPojoMappingWithParsingError() throws IOException {
+    public void testPojoMappingWithParsingError() throws Exception {
         DataFindRequest findRequest = new DataFindRequest("foo", "bar");
 
         findRequest.where(withValue("foo = bar"));

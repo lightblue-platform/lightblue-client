@@ -11,7 +11,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.redhat.lightblue.client.model.DataError;
+import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.util.JSON;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,15 +36,19 @@ public class DefaultLightblueResponse implements LightblueResponse {
         this(JSON.getDefaultObjectMapper());
     }
 
-    public DefaultLightblueResponse(String responseText) {
+    public DefaultLightblueResponse(String responseText) throws LightblueException {
         this(responseText, JSON.getDefaultObjectMapper());
     }
 
-    public DefaultLightblueResponse(String responseText, ObjectMapper mapper) {
+    public DefaultLightblueResponse(String responseText, ObjectMapper mapper) throws LightblueException {
         this(mapper);
         this.text = responseText;
         try {
             json = mapper.readTree(responseText);
+
+            if (hasError() || hasDataErrors()) {
+                throw new LightblueException(json.asText(), getErrors(), getDataErrors());
+            }
         } catch (IOException e) {
             throw new RuntimeException("Unable to parse response: " + responseText, e);
         }
@@ -89,28 +96,32 @@ public class DefaultLightblueResponse implements LightblueResponse {
     }
 
     @Override
-    public JsonNode[] getErrors() {
-        return getErrors("errors");
+    public  DataError[] getDataErrors() {
+        List<DataError> list=new ArrayList<>();
+        JsonNode err=json.get("dataErrors");
+        if(err instanceof ObjectNode)
+            list.add(DataError.fromJson((ObjectNode)err));
+        else if(err instanceof ArrayNode)
+            for(Iterator<JsonNode> itr=((ArrayNode)err).elements();itr.hasNext();)
+                list.add(DataError.fromJson((ObjectNode)itr.next()));
+        else
+            return null;
+        return list.toArray(new DataError[list.size()]);
     }
 
     @Override
-    public JsonNode[] getDataErrors() {
-        return getErrors("dataErrors");
-    }
-    
-    private  JsonNode[] getErrors(String fld) {
-        List<JsonNode> list=new ArrayList<>();
-        JsonNode err=json.get(fld);
+    public  Error[] getErrors() {
+        List<Error> list=new ArrayList<>();
+        JsonNode err=json.get("errors");
         if(err instanceof ObjectNode)
-            list.add(err);
+            list.add(Error.fromJson((ObjectNode)err));
         else if(err instanceof ArrayNode)
             for(Iterator<JsonNode> itr=((ArrayNode)err).elements();itr.hasNext();)
-                list.add(itr.next());
+                list.add(Error.fromJson((ObjectNode)itr.next()));
         else
             return null;
-        return list.toArray(new JsonNode[list.size()]);
+        return list.toArray(new Error[list.size()]);
     }
-
     
     @Override
     public int parseModifiedCount() {

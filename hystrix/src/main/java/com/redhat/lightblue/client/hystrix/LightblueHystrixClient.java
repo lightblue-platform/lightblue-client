@@ -9,6 +9,7 @@ import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.hystrix.ServoGraphiteSetup;
 
@@ -94,7 +95,7 @@ public class LightblueHystrixClient implements LightblueClient {
     }
 
     @Override
-    public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws IOException {
+    public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws LightblueException {
         return new DataTypeHystrixCommand<T>(lightblueRequest, type, groupKey, commandKey).execute();
     }
 }

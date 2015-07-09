@@ -14,6 +14,7 @@ import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
 
 /**
@@ -42,7 +43,7 @@ public class LightblueHystrixClientTest {
         }
 
         @Override
-        public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws IOException {
+        public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws LightblueException {
             dataType = true;
             return null;
         }
@@ -81,7 +82,7 @@ public class LightblueHystrixClientTest {
     }
 
     @Test
-    public void dataType() throws IOException {
+    public void dataType() throws LightblueException {
         TestLightblueClient client = new TestLightblueClient();
         LightblueHystrixClient hystrixClient = new LightblueHystrixClient(client, "group", "command");
 
