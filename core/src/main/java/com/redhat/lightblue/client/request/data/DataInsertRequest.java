@@ -20,6 +20,10 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
         super(entityName, entityVersion);
     }
 
+    public DataInsertRequest(String entityName) {
+        super(entityName);
+    }
+
     public void returns(Projection... projection) {
         this.projections = projection;
     }

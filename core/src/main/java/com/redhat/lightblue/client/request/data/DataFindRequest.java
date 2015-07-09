@@ -25,6 +25,10 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         super(entityName, entityVersion);
     }
 
+    public DataFindRequest(String entityName) {
+        super(entityName);
+    }
+
     public void where(Query queryExpression) {
         this.queryExpression = queryExpression;
     }

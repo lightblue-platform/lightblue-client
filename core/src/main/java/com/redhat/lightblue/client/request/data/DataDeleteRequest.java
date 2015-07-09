@@ -15,6 +15,10 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
         super(entityName, entityVersion);
     }
 
+    public DataDeleteRequest(String entityName) {
+        super(entityName);
+    }
+
     public void where(Query queryExpression) {
         this.queryExpression = queryExpression;
     }
