@@ -8,6 +8,7 @@ import com.netflix.hystrix.HystrixCommandKey;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
+import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.hystrix.ServoGraphiteSetup;
 
@@ -23,9 +24,9 @@ public class LightblueHystrixClient implements LightblueClient {
     }
 
     protected class MetadataHystrixCommand extends HystrixCommand<LightblueResponse> {
-        private final AbstractLightblueMetadataRequest request;
+        private final LightblueRequest request;
 
-        public MetadataHystrixCommand(AbstractLightblueMetadataRequest request, String groupKey, String commandKey) {
+        public MetadataHystrixCommand(LightblueRequest request, String groupKey, String commandKey) {
             super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey)).
                     andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
 
@@ -39,9 +40,9 @@ public class LightblueHystrixClient implements LightblueClient {
     }
 
     protected class DataHystrixCommand extends HystrixCommand<LightblueResponse> {
-        private final AbstractLightblueDataRequest request;
+        private final LightblueRequest request;
 
-        public DataHystrixCommand(AbstractLightblueDataRequest request, String groupKey, String commandKey) {
+        public DataHystrixCommand(LightblueRequest request, String groupKey, String commandKey) {
             super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey)).
                     andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
 
@@ -83,12 +84,12 @@ public class LightblueHystrixClient implements LightblueClient {
     }
 
     @Override
-    public LightblueResponse metadata(AbstractLightblueMetadataRequest lightblueRequest) {
+    public LightblueResponse metadata(LightblueRequest lightblueRequest) {
         return new MetadataHystrixCommand(lightblueRequest, groupKey, commandKey).execute();
     }
 
     @Override
-    public LightblueResponse data(AbstractLightblueDataRequest lightblueRequest) {
+    public LightblueResponse data(LightblueRequest lightblueRequest) {
         return new DataHystrixCommand(lightblueRequest, groupKey, commandKey).execute();
     }
 

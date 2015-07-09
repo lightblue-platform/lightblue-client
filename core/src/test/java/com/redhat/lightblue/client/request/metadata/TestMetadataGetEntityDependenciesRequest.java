@@ -17,7 +17,7 @@ public class TestMetadataGetEntityDependenciesRequest extends AbstractLightblueR
 
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(MetadataGetEntityDependenciesRequest.PATH_PARAM_GET_ENTITY_DEPENDENCIES, request.getOperationPathParam());
+		Assert.assertEquals("dependencies", request.getOperationPathParam());
 	}
 
 }

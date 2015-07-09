@@ -80,4 +80,20 @@ public class ValueQueryTest {
     public void testInvalidExpressionUnrecognizedOperator() {
         new ValueQuery("field1 ~= Red Hat Enterprise Linux");
     }
+
+    @Test
+    public void testNullValue() throws JSONException {
+        ValueQuery expression = new ValueQuery("field1", ExpressionOperation.EQUALS, null);
+        String expectedJson = "{\"field\":\"field1\",\"op\":\"=\",\"rvalue\":null}";
+
+        JSONAssert.assertEquals(expectedJson, expression.toJson(), false);
+    }
+
+    @Test
+    public void testNullValueAmongInValues() throws JSONException {
+        ValueQuery expression = new ValueQuery("field1", NaryExpressionOperation.IN, "blah", null);
+        String expectedJson = "{\"field\":\"field1\",\"op\":\"$in\",\"values\":[\"blah\",null]}";
+        System.out.println(expression.toJson());
+        JSONAssert.assertEquals(expectedJson, expression.toJson(), false);
+    }
 }

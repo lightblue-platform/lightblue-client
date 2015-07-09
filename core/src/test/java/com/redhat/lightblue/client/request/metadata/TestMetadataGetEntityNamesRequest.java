@@ -8,7 +8,7 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataGetEntityNamesRequest extends AbstractLightblueRequestTest {
 
-	MetadataGetEntityNamesRequest request = new MetadataGetEntityNamesRequest();
+	MetadataGetEntityNamesRequest request;
 
 	@Before
 	public void setUp() throws Exception {
@@ -17,7 +17,7 @@ public class TestMetadataGetEntityNamesRequest extends AbstractLightblueRequestT
 
 	@Test
 	public void testGetOperationPathParam() {
-		Assert.assertEquals(MetadataGetEntityNamesRequest.PATH_PARAM_GET_ENTITY_NAMES, request.getOperationPathParam());
+		Assert.assertEquals("", request.getOperationPathParam());
 	}
 
 }

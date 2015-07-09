@@ -1,11 +1,11 @@
 package com.redhat.lightblue.client.expression.query;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.redhat.lightblue.client.enums.ExpressionOperation;
 import com.redhat.lightblue.client.enums.NaryExpressionOperation;
@@ -21,6 +21,7 @@ public class ValueQuery implements Query {
     private final String rValue;
     private final String[] values;
     private final String operator;
+    private final boolean useRValue; // true if rValue is provided, false if values
 
     public static final Pattern expressionPattern = Pattern.compile("([\\w|\\*|\\.]+)\\s*(\\S+)\\s*(.+)$");
 
@@ -34,9 +35,11 @@ public class ValueQuery implements Query {
             if (ExpressionOperation.contains(operator)) {
                 rValue = value;
                 values = null;
+                useRValue = true;
             } else if (NaryExpressionOperation.contains(operator)) {
                 rValue = null;
                 values = value.substring(1, value.length() - 1).split("\\s*,\\s*");
+                useRValue = false;
             } else {
                 Set<String> allowedOperators = new HashSet<>(ExpressionOperation.getOperators());
                 allowedOperators.addAll(NaryExpressionOperation.getOperators());
@@ -52,6 +55,7 @@ public class ValueQuery implements Query {
         this.operator = operation.toString();
         this.rValue = rValue;
         this.values = null;
+        useRValue = true;
     }
 
     public ValueQuery(String field, NaryExpressionOperation operation, String... values) {
@@ -59,6 +63,7 @@ public class ValueQuery implements Query {
         this.operator = operation.toString();
         this.rValue = null;
         this.values = values;
+        useRValue = false;
     }
 
     @Override
@@ -67,12 +72,28 @@ public class ValueQuery implements Query {
         json.append("\"").append(field).append("\",");
         json.append("\"op\":");
         json.append("\"").append(operator).append("\",");
-        if (rValue == null) {
+        if (!useRValue) {
             json.append("\"values\":");
-            json.append("[\"").append(StringUtils.join(values, "\",\"")).append("\"]");
+            json.append("[");
+            Iterator<String> it = Arrays.asList(values).iterator();
+            while (it.hasNext()) {
+                String value = it.next();
+                if (value == null) {
+                    json.append("null");
+                } else {
+                    json.append("\""+value+"\"");
+                }
+                if (it.hasNext()) {
+                    json.append(",");
+                }
+            }
+            json.append("]");
         } else {
             json.append("\"rvalue\":");
-            json.append("\"").append(rValue).append("\"");
+            if (rValue != null)
+                json.append("\"").append(rValue).append("\"");
+            else
+                json.append("null");
         }
         json.append("}");
         return json.toString();

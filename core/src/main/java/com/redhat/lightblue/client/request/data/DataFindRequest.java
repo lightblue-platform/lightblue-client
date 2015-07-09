@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.redhat.lightblue.client.expression.query.Query;
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.projection.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.SortCondition;
@@ -95,7 +96,12 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
+    public HttpMethod getHttpMethod() {
+        return HttpMethod.POST;
+    }
+
+    @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_FIND;
+        return "find";
     }
 }

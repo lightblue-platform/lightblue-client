@@ -3,12 +3,6 @@ package com.redhat.lightblue.client.request;
 import org.apache.commons.lang.StringUtils;
 
 public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequest implements LightblueRequest {
-    public static final String PATH_PARAM_INSERT = "";
-    public static final String PATH_PARAM_SAVE = "save";
-    public static final String PATH_PARAM_UPDATE = "update";
-    public static final String PATH_PARAM_DELETE = "delete";
-    public static final String PATH_PARAM_FIND = "find";
-
     public AbstractLightblueDataRequest() {
         super();
     }
@@ -40,4 +34,6 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
         }
         return requestURI.toString();
     }
+
+    public abstract String getOperationPathParam();
 }

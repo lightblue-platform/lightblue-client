@@ -2,6 +2,7 @@ package com.redhat.lightblue.client.request.data;
 
 import java.util.Collection;
 
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.projection.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.util.JSON;
@@ -62,7 +63,12 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
+    public HttpMethod getHttpMethod() {
+        return HttpMethod.PUT;
+    }
+
+    @Override
     public String getOperationPathParam() {
-        return PATH_PARAM_INSERT;
+        return "insert";
     }
 }
