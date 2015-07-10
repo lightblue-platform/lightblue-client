@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
+import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.test.request.DataInsertRequestStub;
 import com.redhat.lightblue.rest.integration.AbstractCRUDControllerWithRest;
@@ -48,7 +49,7 @@ public abstract class AbstractLightblueClientCRUDController extends AbstractCRUD
         return new LightblueHttpClient(getLightblueClientConfiguration());
     }
 
-    public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws IOException {
+    public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws LightblueException, IOException {
         DataInsertRequestStub request = new DataInsertRequestStub(
                 entityName, entityVersion, loadResource(resourcePath, false));
         LightblueResponse response = getLightblueClient().data(request);

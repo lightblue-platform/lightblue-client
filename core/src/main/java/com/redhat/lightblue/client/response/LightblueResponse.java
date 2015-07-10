@@ -1,6 +1,8 @@
 package com.redhat.lightblue.client.response;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.redhat.lightblue.client.model.DataError;
+import com.redhat.lightblue.client.model.Error;
 
 public interface LightblueResponse {
     String getText();
@@ -11,8 +13,8 @@ public interface LightblueResponse {
 
     boolean hasDataErrors();
 
-    JsonNode[] getErrors();
-    JsonNode[] getDataErrors();
+    Error[] getErrors();
+    DataError[] getDataErrors();
 
     int parseModifiedCount();
 

@@ -19,6 +19,7 @@ import com.redhat.lightblue.client.http.transport.JavaNetHttpTransport;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueResponse;
+import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponseParseException;
 import com.redhat.lightblue.client.util.JSON;
@@ -129,17 +130,13 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      * .request.LightblueRequest)
      */
     @Override
-    public LightblueResponse data(LightblueRequest lightblueRequest) {
+    public LightblueResponse data(LightblueRequest lightblueRequest) throws LightblueException {
         LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
-        try {
-            return callService(lightblueRequest, configuration.getDataServiceURI());
-        } catch (Exception e) {
-            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest, e);
-        }
+        return callService(lightblueRequest, configuration.getDataServiceURI());
     }
 
     @Override
-    public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws IOException {
+    public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws LightblueException {
         LightblueResponse response = data(lightblueRequest);
         try {
             return response.parseProcessed(type);
@@ -153,7 +150,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         httpTransport.close();
     }
 
-    protected LightblueResponse callService(LightblueRequest request, String baseUri) {
+    protected LightblueResponse callService(LightblueRequest request, String baseUri) throws LightblueException {
         try {
             long t1 = new Date().getTime();
 

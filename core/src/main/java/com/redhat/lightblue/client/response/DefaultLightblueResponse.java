@@ -2,22 +2,21 @@ package com.redhat.lightblue.client.response;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.redhat.lightblue.client.model.DataError;
+import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.util.JSON;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DefaultLightblueResponse implements LightblueResponse {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultLightblueResponse.class);
     private String text;
     private JsonNode json;
     private final ObjectMapper mapper;
@@ -33,17 +32,21 @@ public class DefaultLightblueResponse implements LightblueResponse {
         this(JSON.getDefaultObjectMapper());
     }
 
-    public DefaultLightblueResponse(String responseText) {
+    public DefaultLightblueResponse(String responseText) throws LightblueException {
         this(responseText, JSON.getDefaultObjectMapper());
     }
 
-    public DefaultLightblueResponse(String responseText, ObjectMapper mapper) {
+    public DefaultLightblueResponse(String responseText, ObjectMapper mapper) throws LightblueException {
         this(mapper);
         this.text = responseText;
         try {
             json = mapper.readTree(responseText);
+
+            if (hasError() || hasDataErrors()) {
+                throw new LightblueException("Lightblue exception occurred: ", this);
+            }
         } catch (IOException e) {
-            throw new RuntimeException("Unable to parse response: " + responseText, e);
+            throw new LightblueException("Unable to parse response: ", this, e);
         }
     }
 
@@ -89,28 +92,36 @@ public class DefaultLightblueResponse implements LightblueResponse {
     }
 
     @Override
-    public JsonNode[] getErrors() {
-        return getErrors("errors");
+    public  DataError[] getDataErrors() {
+        List<DataError> list=new ArrayList<>();
+        if (json==null)
+            return null;
+        JsonNode err=json.get("dataErrors");
+        if(err instanceof ObjectNode)
+            list.add(DataError.fromJson((ObjectNode)err));
+        else if(err instanceof ArrayNode)
+            for(Iterator<JsonNode> itr=((ArrayNode)err).elements();itr.hasNext();)
+                list.add(DataError.fromJson((ObjectNode)itr.next()));
+        else
+            return null;
+        return list.toArray(new DataError[list.size()]);
     }
 
     @Override
-    public JsonNode[] getDataErrors() {
-        return getErrors("dataErrors");
-    }
-    
-    private  JsonNode[] getErrors(String fld) {
-        List<JsonNode> list=new ArrayList<>();
-        JsonNode err=json.get(fld);
+    public  Error[] getErrors() {
+        List<Error> list=new ArrayList<>();
+        if (json==null)
+            return null;
+        JsonNode err=json.get("errors");
         if(err instanceof ObjectNode)
-            list.add(err);
+            list.add(Error.fromJson((ObjectNode)err));
         else if(err instanceof ArrayNode)
             for(Iterator<JsonNode> itr=((ArrayNode)err).elements();itr.hasNext();)
-                list.add(itr.next());
+                list.add(Error.fromJson((ObjectNode)itr.next()));
         else
             return null;
-        return list.toArray(new JsonNode[list.size()]);
+        return list.toArray(new Error[list.size()]);
     }
-
     
     @Override
     public int parseModifiedCount() {
@@ -164,5 +175,4 @@ public class DefaultLightblueResponse implements LightblueResponse {
             throw new LightblueResponseParseException("Error parsing lightblue response: " + getText() + "\n", e);
         }
     }
-
 }
