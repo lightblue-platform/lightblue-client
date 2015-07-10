@@ -3,7 +3,6 @@ package com.redhat.lightblue.client.model;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.redhat.lightblue.client.util.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,7 +11,7 @@ import java.util.List;
 /**
  * Represents errors related to data in a document
  */
-public class DataError extends JsonObject {
+public class DataError {
 
     private JsonNode entityData;
     private List<Error> errors;
@@ -59,25 +58,6 @@ public class DataError extends JsonObject {
      */
     public void setErrors(List<Error> e) {
         errors = e;
-    }
-
-    /**
-     * converts this object to json representation
-     */
-    @Override
-    public JsonNode toJson() {
-        ObjectNode node = getFactory().objectNode();
-        if (entityData != null) {
-            node.set("data", entityData);
-        }
-        if (errors != null && !errors.isEmpty()) {
-            ArrayNode arr = getFactory().arrayNode();
-            node.set("errors", arr);
-            for (Error x : errors) {
-                arr.add(x.toJson());
-            }
-        }
-        return node;
     }
 
     /**

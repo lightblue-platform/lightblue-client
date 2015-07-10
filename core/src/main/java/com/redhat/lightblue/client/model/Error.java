@@ -3,145 +3,33 @@ package com.redhat.lightblue.client.model;
 import java.util.ArrayDeque;
 import java.util.StringTokenizer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Error object. Maintains an error code, message, and context of the error. The
  * context works as a stack of context information that can be passed to the
  * client as an indicator of where the error happened.
- *
- * The error object also provides static APIs that keep the execution context
- * for the current thread.
+ * 
  */
 public final class Error extends RuntimeException {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Error.class);
 
     private static final long serialVersionUID = 1L;
-
-    private static final JsonNodeFactory FACTORY = JsonNodeFactory.withExactBigDecimals(true);
-
-    private static final ThreadLocal<ArrayDeque<String>> THREAD_CONTEXT = new ThreadLocal< ArrayDeque<String>>() {
-        @Override
-        protected ArrayDeque<String> initialValue() {
-            return new ArrayDeque<>();
-        }
-    };
 
     public static final char DELIMITER = '/';
 
     private final ArrayDeque<String> context;
     private final String errorCode;
     private final String msg;
-
-    /**
-     * Pushes the given context information to the current thread stack
-     */
-    public static void push(String context) {
-        if (null == context) {
-            context = "null";
-        }
-        LOGGER.debug("push: {}", context);
-        THREAD_CONTEXT.get().addLast(context);
-    }
-
-    /**
-     * Pops the context information from current thread stack
-     */
-    public static void pop() {
-        ArrayDeque<String> c = THREAD_CONTEXT.get();
-        if (!c.isEmpty()) {
-            String context = c.removeLast();
-            LOGGER.debug("pop: {}", context);
-        }
-        if (c.isEmpty()) {
-            reset();
-        }
-    }
-
-    /**
-     * Constructs a new error object by pushing the given context on top of the
-     * current context
-     */
-    public static Error get(String ctx, String errorCode, String msg) {
-        push(ctx);
-        try {
-            return new Error(THREAD_CONTEXT.get(), errorCode, msg);
-        } finally {
-            pop();
-        }
-    }
-
-    /**
-     * Helper that gets a new Error with msg set to the message of the given
-     * Throwable.
-     */
-    public static Error get(String ctx, String errorCode, Throwable e) {
-        LOGGER.error(e.getMessage(), e);
-        return get(ctx, errorCode, e.getMessage());
-    }
-
-    /**
-     * Constructs a new error object using the current context
-     */
-    public static Error get(String errorCode, String msg) {
-        return new Error(THREAD_CONTEXT.get(), errorCode, msg);
-    }
-
-    /**
-     * Helper that gets a new Error with msg set to the message of the given
-     * Throwable.
-     */
-    public static Error get(String errorCode, Throwable e) {
-        LOGGER.error(e.getMessage(), e);
-        return get(errorCode, e.getMessage());
-    }
-
-    /**
-     * Helper that gets a new Error with msg set to the message of the given
-     * Throwable and the errorCode set to the class name of the Throwable.
-     */
-    public static Error get(Throwable e) {
-        return get(e.getClass().getSimpleName(), e);
-    }
-
-    /**
-     * Constructs a new error object using the current context
-     */
-    public static Error get(String errorCode) {
-        return new Error(THREAD_CONTEXT.get(), errorCode, null);
-    }
-
-    /**
-     * Resets the stack thread context
-     */
-    public static void reset() {
-        LOGGER.debug("reset");
-        THREAD_CONTEXT.remove();
-    }
-
-    private Error(String errorCode, String msg) {
+    
+    public Error(String errorCode, String msg) {
         this.context = new ArrayDeque<>();
         this.errorCode = errorCode;
         this.msg = msg;
     }
 
-    private Error(ArrayDeque<String> context, String errorCode, String msg) {
-        this.context = context.clone();
-        this.errorCode = errorCode;
-        this.msg = msg;
-    }
-
-    public void pushContext(String context) {
-        this.context.addLast(context);
-    }
-
-    public void popContext() {
-        this.context.removeLast();
+    public ArrayDeque<String> getContext() {
+        return context;
     }
 
     public String getErrorCode() {
@@ -152,45 +40,8 @@ public final class Error extends RuntimeException {
         return msg;
     }
 
-    public String getContext() {
-        StringBuilder s = new StringBuilder();
-        if (!context.isEmpty()) {
-            boolean first = true;
-            for (String x : context) {
-                if (first) {
-                    first = false;
-                } else {
-                    s.append(DELIMITER);
-                }
-                s.append(x);
-            }
-        }
-        return s.toString();
-    }
-
-    public JsonNode toJson() {
-        ObjectNode node = FACTORY.objectNode();
-        node.set("objectType", FACTORY.textNode("error"));
-        if (!context.isEmpty()) {
-            node.set("context", FACTORY.textNode(getContext()));
-        }
-        if (errorCode != null) {
-            node.set("errorCode", FACTORY.textNode(errorCode));
-        }
-        if (msg != null) {
-            node.set("msg", FACTORY.textNode(msg));
-        }
-        return node;
-    }
-
-    @Override
-    public String toString() {
-        return toJson().toString();
-    }
-
-    @Override
-    public String getMessage() {
-        return this.toString();
+    public void pushContext(String context) {
+        this.context.addLast(context);
     }
 
     public static Error fromJson(JsonNode node) {
@@ -218,7 +69,6 @@ public final class Error extends RuntimeException {
                     ret.pushContext(tok.nextToken());
                 }
             }
-
             return ret;
         }
         return null;

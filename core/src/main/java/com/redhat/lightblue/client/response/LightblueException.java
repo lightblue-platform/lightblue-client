@@ -14,8 +14,7 @@ import com.redhat.lightblue.client.model.Error;
  */
 public class LightblueException extends Exception {
 
-    private DataError[] dataErrors;
-    private Error[] errors;
+    private static final long serialVersionUID = 1L;
 
     public static final String ERR_NO_OBJECT_TYPE = "NO_OBJECT_TYPE";
     public static final String ERR_INVALID_OBJECTTYPE = "INVALID_OBJECTTYPE";
@@ -203,6 +202,7 @@ public class LightblueException extends Exception {
     public static final String ERR_REST_METADATA_CANT_GET_PARSER = "rest-metadata:CantGetParser";
     public static final String ERR_REST_METADATA_CANT_GET_TRANSLATOR = "rest-metadata:CantGetJsonTranslator";
 
+    private DefaultLightblueResponse lightblueResponse;
     private Set<String> errorCodes = new HashSet<>();
 
 
@@ -210,19 +210,18 @@ public class LightblueException extends Exception {
         super();
     }
 
-    public LightblueException(String response, Error[] errors, DataError[] dataErrors) {
-        super(response);
-        this.errors = errors;
-        this.dataErrors = dataErrors;
+    public LightblueException(String message, DefaultLightblueResponse lightblueResponse) {
+        super(message);
+        this.lightblueResponse = lightblueResponse;
         extractErrorCodes();
     }
 
-    public DataError[] getDataErrors() {
-        return dataErrors;
+    public DefaultLightblueResponse getLightblueResponse() {
+        return lightblueResponse;
     }
 
-    public Error[] getErrors() {
-        return errors;
+    public void setLightblueResponse(DefaultLightblueResponse lightblueResponse) {
+        this.lightblueResponse = lightblueResponse;
     }
 
     public boolean exists(String errorCode) {
@@ -234,13 +233,13 @@ public class LightblueException extends Exception {
     }
 
     private void extractErrorCodes() {
-        if (errors!=null) {
-            for(Error e:errors) {
+        if (lightblueResponse.getErrors()!=null) {
+            for(Error e:lightblueResponse.getErrors()) {
                errorCodes.add(e.getErrorCode());
             }
         }
-        if (dataErrors!=null) {
-            for(DataError de:dataErrors) {
+        if (lightblueResponse.getDataErrors()!=null) {
+            for(DataError de:lightblueResponse.getDataErrors()) {
                if (de.getErrors()!=null) {
                    for(Error e:de.getErrors()) {
                        errorCodes.add(e.getErrorCode());

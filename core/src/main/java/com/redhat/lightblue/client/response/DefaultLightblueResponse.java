@@ -2,25 +2,21 @@ package com.redhat.lightblue.client.response;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.model.DataError;
 import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.util.JSON;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class DefaultLightblueResponse implements LightblueResponse {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultLightblueResponse.class);
     private String text;
     private JsonNode json;
     private final ObjectMapper mapper;
@@ -47,7 +43,7 @@ public class DefaultLightblueResponse implements LightblueResponse {
             json = mapper.readTree(responseText);
 
             if (hasError() || hasDataErrors()) {
-                throw new LightblueException(json.asText(), getErrors(), getDataErrors());
+                throw new LightblueException("Lightblue exception occurred!", this);
             }
         } catch (IOException e) {
             throw new RuntimeException("Unable to parse response: " + responseText, e);
@@ -175,5 +171,4 @@ public class DefaultLightblueResponse implements LightblueResponse {
             throw new LightblueResponseParseException("Error parsing lightblue response: " + getText() + "\n", e);
         }
     }
-
 }

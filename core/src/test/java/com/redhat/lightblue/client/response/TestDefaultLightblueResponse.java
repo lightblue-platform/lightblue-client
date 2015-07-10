@@ -2,6 +2,9 @@ package com.redhat.lightblue.client.response;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -68,15 +71,45 @@ public class TestDefaultLightblueResponse {
         assertFalse(response.hasError());
     }
 
-    @Test(expected = LightblueException.class)
-    public void testHasError_True() throws LightblueException {
-        DefaultLightblueResponse response = new DefaultLightblueResponse("{\"status\":\"error\"}");
+    @Test
+    public void testLightblueException_DataError() throws LightblueException {
+        DefaultLightblueResponse response;
+        try {
+            response = new DefaultLightblueResponse(
+                    "{ " +
+                    "    \"dataErrors\": [ " +
+                    "        { " +
+                    "            \"data\": { " +
+                    "                \"_id\": \"12345678\" " +
+                    "            }, " +
+                    "            \"errors\": [ " +
+                    "                { " +
+                    "                    \"context\": \"rest/InsertCommand/entity1/insert(entity1:1.0.0)/insert/insert\", " +
+                    "                    \"errorCode\": \"mongo-crud:SaveError\", " +
+                    "                    \"msg\": \"in com.redhat.lightblue.mongo.hystrix.InsertCommand\", " +
+                    "                    \"objectType\": \"error\" " +
+                    "                } " +
+                    "            ] " +
+                    "        } " +
+                    "    ], " +
+                    "    \"matchCount\": 0, " +
+                    "    \"modifiedCount\": 0, " +
+                    "    \"status\": \"ERROR\" " +
+                    "}"
+            );
+            fail();
+        } catch (LightblueException e) {
+            assertNotNull(e.getLightblueResponse());
+            assertNotNull(e.getLightblueResponse().getDataErrors());
+            assertNull(e.getLightblueResponse().getErrors());
+            assertFalse(e.exists(LightblueException.ERR_MONGO_CRUD_NO_ACCESS));
+            assertTrue(e.exists(LightblueException.ERR_MONGO_CRUD_SAVE_ERROR));
+        }
     }
 
     @Test(expected = LightblueException.class)
     public void testHasError_Partial_True() throws LightblueException {
         DefaultLightblueResponse response = new DefaultLightblueResponse("{\"status\":\"partial\"}");
-        assertTrue(response.hasError());
     }
 
     @Test
