@@ -43,10 +43,10 @@ public class DefaultLightblueResponse implements LightblueResponse {
             json = mapper.readTree(responseText);
 
             if (hasError() || hasDataErrors()) {
-                throw new LightblueException("Lightblue exception occurred!", this);
+                throw new LightblueException("Lightblue exception occurred: ", this);
             }
         } catch (IOException e) {
-            throw new RuntimeException("Unable to parse response: " + responseText, e);
+            throw new LightblueException("Unable to parse response: ", this, e);
         }
     }
 
@@ -94,6 +94,8 @@ public class DefaultLightblueResponse implements LightblueResponse {
     @Override
     public  DataError[] getDataErrors() {
         List<DataError> list=new ArrayList<>();
+        if (json==null)
+            return null;
         JsonNode err=json.get("dataErrors");
         if(err instanceof ObjectNode)
             list.add(DataError.fromJson((ObjectNode)err));
@@ -108,6 +110,8 @@ public class DefaultLightblueResponse implements LightblueResponse {
     @Override
     public  Error[] getErrors() {
         List<Error> list=new ArrayList<>();
+        if (json==null)
+            return null;
         JsonNode err=json.get("errors");
         if(err instanceof ObjectNode)
             list.add(Error.fromJson((ObjectNode)err));

@@ -216,6 +216,12 @@ public class LightblueException extends Exception {
         extractErrorCodes();
     }
 
+    public LightblueException (String message, DefaultLightblueResponse lightblueResponse, Throwable cause) {
+        super (message,cause);
+        this.lightblueResponse = lightblueResponse;
+        extractErrorCodes();
+    }
+
     public DefaultLightblueResponse getLightblueResponse() {
         return lightblueResponse;
     }
