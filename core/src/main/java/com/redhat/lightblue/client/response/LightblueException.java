@@ -203,8 +203,7 @@ public class LightblueException extends Exception {
     public static final String ERR_REST_METADATA_CANT_GET_TRANSLATOR = "rest-metadata:CantGetJsonTranslator";
 
     private DefaultLightblueResponse lightblueResponse;
-    private Set<String> errorCodes = new HashSet<>();
-
+    private Set<String> errorCodes;
 
     public LightblueException() {
         super();
@@ -213,13 +212,11 @@ public class LightblueException extends Exception {
     public LightblueException(String message, DefaultLightblueResponse lightblueResponse) {
         super(message);
         this.lightblueResponse = lightblueResponse;
-        extractErrorCodes();
     }
 
     public LightblueException (String message, DefaultLightblueResponse lightblueResponse, Throwable cause) {
         super (message,cause);
         this.lightblueResponse = lightblueResponse;
-        extractErrorCodes();
     }
 
     public DefaultLightblueResponse getLightblueResponse() {
@@ -231,14 +228,16 @@ public class LightblueException extends Exception {
     }
 
     public boolean exists(String errorCode) {
-        return errorCodes.contains(errorCode);
+        return getErrorCodes().contains(errorCode);
     }
 
     public Set<String> getErrorCodes() {
-        return errorCodes;
-    }
+        if (errorCodes == null) {
+            errorCodes = new HashSet<>();
+        } else {
+            return errorCodes;
+        }
 
-    private void extractErrorCodes() {
         if (lightblueResponse.getErrors()!=null) {
             for(Error e:lightblueResponse.getErrors()) {
                errorCodes.add(e.getErrorCode());
@@ -253,5 +252,6 @@ public class LightblueException extends Exception {
                }
             }
         }
+        return errorCodes;
     }
 }

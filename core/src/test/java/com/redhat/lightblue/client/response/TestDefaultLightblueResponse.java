@@ -29,7 +29,7 @@ public class TestDefaultLightblueResponse {
         testResponse = new DefaultLightblueResponse(initialResponseText);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = LightblueException.class)
     public void testConstructor_BadJson() throws LightblueException {
         new DefaultLightblueResponse("bad json");
     }
@@ -72,10 +72,37 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test
-    public void testLightblueException_DataError() throws LightblueException {
-        DefaultLightblueResponse response;
+    public void testLightblueException_Error() throws LightblueException {
         try {
-            response = new DefaultLightblueResponse(
+            DefaultLightblueResponse response = new DefaultLightblueResponse(
+                    "{ " +
+                    "    \"errors\": [ " +
+                    "        { " +
+                    "            \"context\": \"rest/SaveCommand/attributeCodeSet/save(attributeCodeSet:1.0.0-SNAPSHOT)/validateDocs/validateDoc/ownerCode/required\", " +
+                    "            \"errorCode\": \"crud:Required\", " +
+                    "            \"msg\": \"ownerCode\", " +
+                    "            \"objectType\": \"error\" " +
+                    "        } " +
+                    "    ], " +
+                    "    \"matchCount\": 0, " +
+                    "    \"modifiedCount\": 0, " +
+                    "    \"status\": \"ERROR\" " +
+                    "}"
+            );
+            fail();
+        } catch (LightblueException e) {
+            assertNotNull(e.getLightblueResponse());
+            assertNull(e.getLightblueResponse().getDataErrors());
+            assertNotNull(e.getLightblueResponse().getErrors());
+            assertFalse(e.exists(LightblueException.ERR_MONGO_CRUD_NO_ACCESS));
+            assertTrue(e.exists(LightblueException.ERR_CRUD_REQUIRED));
+        }
+    }
+
+    @Test
+    public void testLightblueException_DataError() throws LightblueException {
+        try {
+            DefaultLightblueResponse response = new DefaultLightblueResponse(
                     "{ " +
                     "    \"dataErrors\": [ " +
                     "        { " +
