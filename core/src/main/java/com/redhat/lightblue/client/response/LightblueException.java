@@ -43,7 +43,7 @@ public class LightblueException extends Exception {
     public static final String ERR_MONGO_METADATA_INVALID_DATASTORE = "mongo-metadata:InvalidDatastore";
     public static final String ERR_MONGO_METADATA_NEW_STATUS_IS_NULL = "mongo-metadata:NewStatusIsNull";
     public static final String ERR_MONGO_METADATA_CANNOT_DELETE = "mongo-metadata:CannotDeleteEntity";
-    public static final String ERR_MONGO_METADATA_INVALID_ID= "mongo-metadata:Invalid_id_defn";
+    public static final String ERR_MONGO_METADATA_INVALID_ID = "mongo-metadata:Invalid_id_defn";
     public static final String ERR_MONGO_METADATA_UPDATE_INVALIDATES_METADATA = "mongo-metadata:UpdateInvalidatesMetadata";
     public static final String ERR_CRUD_ARRAY_TOO_SMALL = "crud:ArrayTooSmall";
     public static final String ERR_CRUD_ARRAY_TOO_LARGE = "crud:ArrayTooLarge";
@@ -87,12 +87,12 @@ public class LightblueException extends Exception {
     public static final String ERR_CRUD_AUTH_FAILED = "crud:AuthFailed";
     public static final String ERR_CRUD_DATASOURCE_TIMEOUT = "crud:DataSourceTimeout";
     public static final String ERR_CRUD_DATASOURCE_UNKNOWN = "crud:DataSourceUnknown";
-    public static final String ERR_ASSOC_CANNOT_CREATE_CHOOSER="assoc:CannotCreateQueryPlanChooser";
-    public static final String ERR_ASSOC_UNRELATED_ENTITY_Q="assoc:unsupported:QueryForUnrelatedEntities";
-    public static final String ERR_ASSOC_MORE_THAN_TWO_Q="assoc:unsupported:QueryForMoreThanTwoEntities";
-    public static final String ERR_ASSOC_REWRITE="assoc:QueryRewriteError";
-    public static final String ERRASSOC__ARRAY_EXPECTED="assoc:ArrayFieldExpected";
-    public static final String ERR_ASSOC_CANNOT_FIND_FIELD="assoc:NoField";
+    public static final String ERR_ASSOC_CANNOT_CREATE_CHOOSER = "assoc:CannotCreateQueryPlanChooser";
+    public static final String ERR_ASSOC_UNRELATED_ENTITY_Q = "assoc:unsupported:QueryForUnrelatedEntities";
+    public static final String ERR_ASSOC_MORE_THAN_TWO_Q = "assoc:unsupported:QueryForMoreThanTwoEntities";
+    public static final String ERR_ASSOC_REWRITE = "assoc:QueryRewriteError";
+    public static final String ERRASSOC__ARRAY_EXPECTED = "assoc:ArrayFieldExpected";
+    public static final String ERR_ASSOC_CANNOT_FIND_FIELD = "assoc:NoField";
     public static final String ERR_METADATA_DUPLICATE_FIELD = "metadata:DuplicateField";
     public static final String ERR_METADATA_DUPLICATE_ENUM = "metadata:DuplicateEnum";
     public static final String ERR_METADATA_INVALID_ARRAY_REFERENCE = "metadata:InvalidArrayReference";
@@ -214,8 +214,8 @@ public class LightblueException extends Exception {
         this.lightblueResponse = lightblueResponse;
     }
 
-    public LightblueException (String message, DefaultLightblueResponse lightblueResponse, Throwable cause) {
-        super (message,cause);
+    public LightblueException(String message, DefaultLightblueResponse lightblueResponse, Throwable cause) {
+        super(message, cause);
         this.lightblueResponse = lightblueResponse;
     }
 
@@ -238,20 +238,25 @@ public class LightblueException extends Exception {
             return errorCodes;
         }
 
-        if (lightblueResponse.getErrors()!=null) {
-            for(Error e:lightblueResponse.getErrors()) {
-               errorCodes.add(e.getErrorCode());
+        if (lightblueResponse.getErrors() != null) {
+            for (Error e : lightblueResponse.getErrors()) {
+                errorCodes.add(e.getErrorCode());
             }
         }
-        if (lightblueResponse.getDataErrors()!=null) {
-            for(DataError de:lightblueResponse.getDataErrors()) {
-               if (de.getErrors()!=null) {
-                   for(Error e:de.getErrors()) {
-                       errorCodes.add(e.getErrorCode());
-                   }
-               }
+        if (lightblueResponse.getDataErrors() != null) {
+            for (DataError de : lightblueResponse.getDataErrors()) {
+                if (de.getErrors() != null) {
+                    for (Error e : de.getErrors()) {
+                        errorCodes.add(e.getErrorCode());
+                    }
+                }
             }
         }
         return errorCodes;
+    }
+
+    @Override
+    public String getMessage() {
+        return super.getMessage() + lightblueResponse.getText();
     }
 }
