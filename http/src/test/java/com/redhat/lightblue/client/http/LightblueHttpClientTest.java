@@ -12,9 +12,12 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
+import com.redhat.lightblue.client.expression.query.ValueQuery;
 import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
+import com.redhat.lightblue.client.projection.FieldProjection;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.LightblueException;
@@ -59,6 +62,24 @@ public class LightblueHttpClientTest {
                 .thenReturn(response);
 
         client.data(findRequest, SimpleModelObject[].class);
+    }
+
+    @Test(expected=LightblueException.class)
+    public void testExceptionWhenLightblueIsDown() throws LightblueException {
+        LightblueClientConfiguration c = new LightblueClientConfiguration();
+        c.setUseCertAuth(false);
+        c.setDataServiceURI("http://foo/bar");
+
+        LightblueClient httpClient = new LightblueHttpClient(c);
+        DataFindRequest r = new DataFindRequest();
+        r.setEntityName("e");
+        r.setEntityVersion("v");
+        r.where(new ValueQuery("a = b"));
+        r.select(new FieldProjection("foo", true, false));
+
+        httpClient.data(r);
+        Assert.fail();
+
     }
 
 }

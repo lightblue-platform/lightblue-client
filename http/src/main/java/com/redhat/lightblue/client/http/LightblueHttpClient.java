@@ -2,6 +2,7 @@ package com.redhat.lightblue.client.http;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.Date;
@@ -241,7 +242,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
             return new DefaultLightblueResponse(responseBody, mapper);
         } catch (IOException e) {
             LOGGER.error("There was a problem calling the lightblue service", e);
-            return new DefaultLightblueResponse("{\"error\":\"There was a problem calling the lightblue service\"}", mapper);
+            throw new LightblueException("There was a problem calling the lightblue service", null, e);
         }
     }
 
