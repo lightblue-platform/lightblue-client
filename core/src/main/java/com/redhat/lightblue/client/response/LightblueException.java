@@ -232,7 +232,7 @@ public class LightblueException extends Exception {
     }
 
     public Set<String> getErrorCodes() {
-        if (errorCodes == null) {
+        if (errorCodes == null || lightblueResponse == null) {
             errorCodes = new HashSet<>();
         } else {
             return errorCodes;
@@ -257,6 +257,9 @@ public class LightblueException extends Exception {
 
     @Override
     public String getMessage() {
-        return super.getMessage() + lightblueResponse.getText();
+        if (lightblueResponse != null)
+            return super.getMessage() + lightblueResponse.getText();
+        else
+            return super.getMessage();
     }
 }
