@@ -14,7 +14,7 @@ import com.redhat.lightblue.client.model.Error;
  */
 public class LightblueException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -5883690817679713469L;
 
     public static final String ERR_NO_OBJECT_TYPE = "NO_OBJECT_TYPE";
     public static final String ERR_INVALID_OBJECTTYPE = "INVALID_OBJECTTYPE";
@@ -202,28 +202,28 @@ public class LightblueException extends Exception {
     public static final String ERR_REST_METADATA_CANT_GET_PARSER = "rest-metadata:CantGetParser";
     public static final String ERR_REST_METADATA_CANT_GET_TRANSLATOR = "rest-metadata:CantGetJsonTranslator";
 
-    private DefaultLightblueResponse lightblueResponse;
+    private LightblueResponse lightblueResponse;
     private Set<String> errorCodes;
 
     public LightblueException() {
         super();
     }
 
-    public LightblueException(String message, DefaultLightblueResponse lightblueResponse) {
+    public LightblueException(String message, LightblueResponse lightblueResponse) {
         super(message);
         this.lightblueResponse = lightblueResponse;
     }
 
-    public LightblueException(String message, DefaultLightblueResponse lightblueResponse, Throwable cause) {
+    public LightblueException(String message, LightblueResponse lightblueResponse, Throwable cause) {
         super(message, cause);
         this.lightblueResponse = lightblueResponse;
     }
 
-    public DefaultLightblueResponse getLightblueResponse() {
+    public LightblueResponse getLightblueResponse() {
         return lightblueResponse;
     }
 
-    public void setLightblueResponse(DefaultLightblueResponse lightblueResponse) {
+    public void setLightblueResponse(LightblueResponse lightblueResponse) {
         this.lightblueResponse = lightblueResponse;
     }
 
