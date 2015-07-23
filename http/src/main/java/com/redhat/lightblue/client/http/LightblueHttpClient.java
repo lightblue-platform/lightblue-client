@@ -88,24 +88,6 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         this.configuration = new LightblueClientConfiguration(configuration);
     }
 
-    /**
-     * @deprecated Use LightblueHttpClient(String configFilePath) if you want to
-     * specify a config file location not on the classpath Use
-     * LightblueHttpClient(LightblueClientConfiguration configuration) if you
-     * don't want to use config files at all
-     */
-    @Deprecated
-    public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
-        configuration = new LightblueClientConfiguration();
-
-        configuration.setDataServiceURI(dataServiceURI);
-        configuration.setMetadataServiceURI(metadataServiceURI);
-        configuration.setUseCertAuth(useCertAuth);
-
-        this.httpTransport = defaultHttpClientFromConfig(configuration);
-        this.mapper = JSON.getDefaultObjectMapper();
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -161,7 +143,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
                 LOGGER.debug("Response received from service: " + responseBody);
 
                 long t2 = new Date().getTime();
-                LOGGER.debug("Call took "+(t2-t1)+"ms");
+                LOGGER.debug("Call took " + (t2 - t1) + "ms");
             }
             return new DefaultLightblueResponse(responseBody, mapper);
         } catch (IOException e) {
