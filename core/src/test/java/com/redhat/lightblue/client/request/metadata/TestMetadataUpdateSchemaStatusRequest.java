@@ -9,7 +9,7 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataUpdateSchemaStatusRequest extends AbstractLightblueRequestTest {
 
-    MetadataUpdateSchemaStatusRequest request = new MetadataUpdateSchemaStatusRequest();
+    MetadataUpdateSchemaStatusRequest request;
 
     @Before
     public void setUp() throws Exception {

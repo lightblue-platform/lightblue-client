@@ -8,10 +8,6 @@ public class MetadataUpdateSchemaStatusRequest extends AbstractLightblueMetadata
 
     private MetadataStatus status;
 
-    public MetadataUpdateSchemaStatusRequest() {
-        super();
-    }
-
     public MetadataUpdateSchemaStatusRequest(String entityName, String entityVersion, MetadataStatus status) {
         super(entityName, entityVersion);
         this.status = status;
