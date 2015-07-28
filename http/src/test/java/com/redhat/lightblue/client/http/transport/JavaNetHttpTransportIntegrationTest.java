@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,7 @@ public class JavaNetHttpTransportIntegrationTest {
     private final JavaNetHttpTransport client = new JavaNetHttpTransport();
 
     @Test
+    @Ignore
     public void shouldReturnResponseBodyOfSuccessfulRequest() throws IOException {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withBody("The body").withStatus(200)));
@@ -45,6 +47,7 @@ public class JavaNetHttpTransportIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void shouldReturnResponseBodyOfUnsuccessfulRequest() throws IOException {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withBody("The body").withStatus(500)));
