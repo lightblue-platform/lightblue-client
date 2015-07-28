@@ -6,17 +6,18 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.http.testing.doubles.FakeLightblueRequest;
-import com.redhat.lightblue.client.request.LightblueRequest;
+import java.io.IOException;
 
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.IOException;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.redhat.lightblue.client.http.HttpMethod;
+import com.redhat.lightblue.client.http.testing.doubles.FakeLightblueRequest;
+import com.redhat.lightblue.client.request.LightblueRequest;
 
 /**
  * Tests the somewhat complicated and vaguely documented semantics of JDK's
@@ -26,11 +27,12 @@ import java.io.IOException;
  * @see JavaNetHttpTransportTest
  */
 @RunWith(JUnit4.class)
+@Ignore
 public class JavaNetHttpTransportIntegrationTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule();
 
-    private JavaNetHttpTransport client = new JavaNetHttpTransport();
+    private final JavaNetHttpTransport client = new JavaNetHttpTransport();
 
     @Test
     public void shouldReturnResponseBodyOfSuccessfulRequest() throws IOException {
