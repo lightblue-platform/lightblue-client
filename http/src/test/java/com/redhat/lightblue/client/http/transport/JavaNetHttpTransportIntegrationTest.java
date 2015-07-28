@@ -6,18 +6,17 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.io.IOException;
+import com.redhat.lightblue.client.http.HttpMethod;
+import com.redhat.lightblue.client.http.testing.doubles.FakeLightblueRequest;
+import com.redhat.lightblue.client.request.LightblueRequest;
 
-import org.junit.Ignore;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.http.testing.doubles.FakeLightblueRequest;
-import com.redhat.lightblue.client.request.LightblueRequest;
+import java.io.IOException;
 
 /**
  * Tests the somewhat complicated and vaguely documented semantics of JDK's
@@ -31,10 +30,9 @@ public class JavaNetHttpTransportIntegrationTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule();
 
-    private final JavaNetHttpTransport client = new JavaNetHttpTransport();
+    private JavaNetHttpTransport client = new JavaNetHttpTransport();
 
     @Test
-    @Ignore
     public void shouldReturnResponseBodyOfSuccessfulRequest() throws IOException {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withBody("The body").withStatus(200)));
@@ -47,7 +45,6 @@ public class JavaNetHttpTransportIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void shouldReturnResponseBodyOfUnsuccessfulRequest() throws IOException {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withBody("The body").withStatus(500)));
