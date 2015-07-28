@@ -27,7 +27,6 @@ import com.redhat.lightblue.client.request.LightblueRequest;
  * @see JavaNetHttpTransportTest
  */
 @RunWith(JUnit4.class)
-@Ignore
 public class JavaNetHttpTransportIntegrationTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule();
@@ -47,6 +46,7 @@ public class JavaNetHttpTransportIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void shouldReturnResponseBodyOfUnsuccessfulRequest() throws IOException {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withBody("The body").withStatus(500)));
@@ -59,6 +59,7 @@ public class JavaNetHttpTransportIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void shouldReturnEmptyStringOfUnsuccessfulRequestWithNoResponseBody() throws IOException {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withStatus(500)));
