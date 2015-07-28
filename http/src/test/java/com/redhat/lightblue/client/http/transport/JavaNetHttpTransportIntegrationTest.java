@@ -8,7 +8,6 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,7 +57,6 @@ public class JavaNetHttpTransportIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void shouldReturnEmptyStringOfUnsuccessfulRequestWithNoResponseBody() throws IOException {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withStatus(500)));
