@@ -46,7 +46,6 @@ public class JavaNetHttpTransportIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void shouldReturnResponseBodyOfUnsuccessfulRequest() throws IOException {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withBody("The body").withStatus(500)));
