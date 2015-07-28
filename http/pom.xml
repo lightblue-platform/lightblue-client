@@ -21,7 +21,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.3.3</version>
+      <version>4.5</version>
     </dependency>
     <dependency>
       <groupId>com.ning</groupId>
@@ -31,7 +31,7 @@
     <dependency>
       <groupId>com.github.tomakehurst</groupId>
       <artifactId>wiremock</artifactId>
-      <version>1.52</version>
+      <version>1.57</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
