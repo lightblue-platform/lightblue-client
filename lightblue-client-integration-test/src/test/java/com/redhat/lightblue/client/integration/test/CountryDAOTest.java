@@ -30,7 +30,7 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
     @Before
     public void before() throws UnknownHostException {
         client = getLightblueClient();
-        cleanupMongoCollections("mongo",new String[]{Country.objectType});
+        cleanupMongoCollections(Country.objectType);
     }
 
     public CountryDAOTest() throws Exception {
@@ -62,10 +62,10 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
 
     @Test
     public void testDirectMongoCleanup() throws LightblueException, UnknownHostException {
-        cleanupMongoCollections("mongo",new String[]{Country.objectType});
+        cleanupMongoCollections(Country.objectType);
         insertPL();
 
-        cleanupMongoCollections("mongo",new String[]{Country.objectType});
+        cleanupMongoCollections(Country.objectType);
 
         DataFindRequest request = new DataFindRequest(Country.objectType, Country.objectVersion);
         request.where(withValue("objectType = country"));
