@@ -1,0 +1,17 @@
+{
+   "controllers" : [
+      {
+        "backend" : "mongo",
+          "controllerFactory" : "com.redhat.lightblue.mongo.config.MongoCRUDFactory",
+          "extensions" : {
+              "locking" : [
+                  {
+                      "domain":"test",
+                      "datasource":"mongo",
+                      "collection":"locktest"
+                  }
+              ]
+          }
+      }
+   ]
+}

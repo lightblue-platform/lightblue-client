@@ -1,6 +1,7 @@
 package com.redhat.lightblue.client;
 
 import java.util.UUID;
+import com.redhat.lightblue.client.response.LightblueException;
 
 public abstract class Locking {
 
@@ -12,10 +13,10 @@ public abstract class Locking {
         this.domain=domain;
     }
     
-    public abstract boolean acquire(String callerId,String resourceId,Long ttl);
-    public abstract boolean release(String callerId,String resourceId);
-    public abstract int getLockCount(String callerId,String resourceId);
-    public abstract boolean ping(String callerId,String resourceId);
+    public abstract boolean acquire(String callerId,String resourceId,Long ttl) throws LightblueException;
+    public abstract boolean release(String callerId,String resourceId) throws LightblueException;
+    public abstract int getLockCount(String callerId,String resourceId) throws LightblueException;
+    public abstract boolean ping(String callerId,String resourceId) throws LightblueException;
 
     public String getCallerId() {
         return callerId;
@@ -29,23 +30,23 @@ public abstract class Locking {
         return domain;
     }
     
-    public boolean acquire(String resourceId,Long ttl) {
+    public boolean acquire(String resourceId,Long ttl) throws LightblueException {
         return acquire(callerId,resourceId,ttl);
     }
 
-    public boolean acquire(String resourceId) {
+    public boolean acquire(String resourceId) throws LightblueException {
         return acquire(callerId,resourceId,null);
     }
 
-    public boolean release(String resourceId) {
+    public boolean release(String resourceId) throws LightblueException {
         return release(callerId,resourceId);
     }
 
-    public int getLockCount(String resourceId) {
+    public int getLockCount(String resourceId) throws LightblueException {
         return getLockCount(callerId,resourceId);
     }
 
-    public boolean ping(String resourceId) {
+    public boolean ping(String resourceId) throws LightblueException {
         return ping(callerId,resourceId);
     }
 }
