@@ -62,6 +62,7 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
 
     @Test
     public void testDirectMongoCleanup() throws LightblueException, UnknownHostException {
+        cleanupMongoCollections(Country.objectType);
         insertPL();
 
         cleanupMongoCollections(Country.objectType);

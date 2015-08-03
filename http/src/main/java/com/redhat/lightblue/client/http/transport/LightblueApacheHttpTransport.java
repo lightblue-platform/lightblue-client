@@ -78,7 +78,8 @@ public class LightblueApacheHttpTransport implements HttpTransport {
                 break;
         }
 
-        if (httpRequest instanceof HttpEntityEnclosingRequest) {
+        String body=request.getBody();
+        if (httpRequest instanceof HttpEntityEnclosingRequest&&body!=null) {
             HttpEntity entity = new StringEntity(request.getBody(), Consts.UTF_8);
             ((HttpEntityEnclosingRequest) httpRequest).setEntity(entity);
 

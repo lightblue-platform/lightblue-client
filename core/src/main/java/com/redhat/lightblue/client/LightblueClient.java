@@ -7,6 +7,8 @@ import com.redhat.lightblue.client.response.LightblueResponse;
 
 public interface LightblueClient {
 
+    Locking getLocking(String domain);
+    
     LightblueResponse metadata(LightblueRequest lightblueRequest);
 
     LightblueResponse data(LightblueRequest lightblueRequest) throws LightblueException;
