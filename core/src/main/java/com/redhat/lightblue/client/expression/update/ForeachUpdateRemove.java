@@ -5,6 +5,7 @@ import com.redhat.lightblue.client.expression.query.Query;
 /**
  * created by Michael White 10/10/2014
  */
+@Deprecated
 public class ForeachUpdateRemove implements Update {
     private final String path;
     private final Query queryExpression;

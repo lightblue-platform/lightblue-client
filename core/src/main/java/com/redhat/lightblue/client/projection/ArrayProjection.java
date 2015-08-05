@@ -2,6 +2,7 @@ package com.redhat.lightblue.client.projection;
 
 import com.redhat.lightblue.client.expression.query.Query;
 
+@Deprecated
 public class ArrayProjection implements Projection {
     private final String field;
     private final Boolean isIncluded;

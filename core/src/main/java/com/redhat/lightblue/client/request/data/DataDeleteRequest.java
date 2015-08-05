@@ -1,6 +1,10 @@
 package com.redhat.lightblue.client.request.data;
 
-import com.redhat.lightblue.client.expression.query.Query;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+
+import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 
@@ -19,19 +23,22 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-    public void where(Query queryExpression) {
+    @Deprecated
+    public void where(com.redhat.lightblue.client.expression.query.Query queryExpression) {
+        this.queryExpression = toq(queryExpression);
+    }
+
+    public void where(com.redhat.lightblue.client.Query queryExpression) {
         this.queryExpression = queryExpression;
     }
 
     @Override
-    public String getBody() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"query\":");
-        sb.append(queryExpression.toJson());
-        sb.append("}");
-        return sb.toString();
+    public JsonNode getBodyJson() {
+        ObjectNode node=JsonNodeFactory.instance.objectNode();
+        node.set("query",queryExpression.toJson());
+        return node;
     }
-
+    
     @Override
     public HttpMethod getHttpMethod() {
         return HttpMethod.POST;

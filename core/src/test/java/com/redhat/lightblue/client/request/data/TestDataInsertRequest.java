@@ -52,7 +52,7 @@ public class TestDataInsertRequest extends AbstractLightblueRequestTest {
         TestObj obj = new TestObj();
         request.create(obj);
 
-        String expected = "{\"data\":[" + obj.toJson() + "],\"projection\":[" + testProjection1.toJson() + "]}";
+        String expected = "{\"data\":" + obj.toJson() + ",\"projection\":" + testProjection1.toJson() + "}";
 
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
@@ -63,7 +63,7 @@ public class TestDataInsertRequest extends AbstractLightblueRequestTest {
         TestObj obj = new TestObj();
         request.create(obj);
 
-        String expected = "{\"data\":[" + obj.toJson() + "],\"projection\":[" + testProjection1.toJson() + "," + testProjection2.toJson() + "]}";
+        String expected = "{\"data\":" + obj.toJson() + ",\"projection\":[" + testProjection1.toJson() + "," + testProjection2.toJson() + "]}";
 
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
@@ -78,7 +78,7 @@ public class TestDataInsertRequest extends AbstractLightblueRequestTest {
         TestObj obj = new TestObj();
         request.create(obj);
 
-        String expected = "{\"data\":[" + obj.toJson() + "],\"projection\":[" + testProjection1.toJson() + "," + testProjection2.toJson() + "]}";
+        String expected = "{\"data\":" + obj.toJson() + ",\"projection\":[" + testProjection1.toJson() + "," + testProjection2.toJson() + "]}";
 
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }

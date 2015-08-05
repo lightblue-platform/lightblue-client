@@ -3,6 +3,7 @@ package com.redhat.lightblue.client.enums;
 import java.util.HashSet;
 import java.util.Set;
 
+@Deprecated
 public enum ArrayOperation {
     NONE("$none"),
     ALL("$all"),

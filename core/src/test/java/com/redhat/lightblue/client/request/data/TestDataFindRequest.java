@@ -55,7 +55,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
         request.select(testProjection1);
         request.where(testQueryExpression);
 
-        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + "}";
 
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
@@ -92,7 +92,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
         sortConditions.add(sortCondition1);
         request.sort(sortConditions);
 
-        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + "}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
 
@@ -102,7 +102,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
         request.where(testQueryExpression);
         request.sort(sortCondition1);
 
-        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + "}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
 
@@ -114,7 +114,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
         sortConditions.add(sortCondition1);
         request.setSortConditions(sortConditions);
 
-        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + "}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
 
@@ -127,7 +127,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
         sortConditions.add(sortCondition2);
         request.sort(sortConditions);
 
-        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "," + sortCondition2.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":[" + sortCondition1.toJson() + "," + sortCondition2.toJson() + "]}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
 
@@ -137,7 +137,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
         request.where(testQueryExpression);
         request.sort(sortCondition1, sortCondition2);
 
-        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "],\"sort\":[" + sortCondition1.toJson() + "," + sortCondition2.toJson() + "]}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":[" + sortCondition1.toJson() + "," + sortCondition2.toJson() + "]}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
 

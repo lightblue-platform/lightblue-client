@@ -1,7 +1,10 @@
 package com.redhat.lightblue.client.request.data;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.util.JSON;
 
 /**
  * An operation non-specific {@link AbstractLightblueDataRequest} for when the json for
@@ -12,18 +15,35 @@ import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
  */
 public class LiteralDataRequest extends AbstractLightblueDataRequest {
 
-    private final String body;
+    private final JsonNode body;
     private final HttpMethod httpMethod;
     private final String operationPathParam;
 
+    @Deprecated
     public LiteralDataRequest(String body, HttpMethod httpMethod, String operationalPathParam) {
+        super();
+        this.body = JSON.toJsonNode(body);
+        this.httpMethod = httpMethod;
+        this.operationPathParam = operationalPathParam;
+    }
+
+    @Deprecated
+    public LiteralDataRequest(String entityName, String entityVersion, String body, HttpMethod httpMethod, String operationalPathParam) {
+        super(entityName, entityVersion);
+        this.body = JSON.toJsonNode(body);
+        this.httpMethod = httpMethod;
+        this.operationPathParam = operationalPathParam;
+    }
+
+    
+    public LiteralDataRequest(JsonNode body, HttpMethod httpMethod, String operationalPathParam) {
         super();
         this.body = body;
         this.httpMethod = httpMethod;
         this.operationPathParam = operationalPathParam;
     }
 
-    public LiteralDataRequest(String entityName, String entityVersion, String body, HttpMethod httpMethod, String operationalPathParam) {
+    public LiteralDataRequest(String entityName, String entityVersion, JsonNode body, HttpMethod httpMethod, String operationalPathParam) {
         super(entityName, entityVersion);
         this.body = body;
         this.httpMethod = httpMethod;
@@ -31,10 +51,10 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
-    public String getBody() {
+    public JsonNode getBodyJson() {
         return body;
     }
-
+    
     @Override
     public HttpMethod getHttpMethod() {
         return httpMethod;

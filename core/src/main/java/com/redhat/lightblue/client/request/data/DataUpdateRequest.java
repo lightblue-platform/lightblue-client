@@ -2,16 +2,21 @@ package com.redhat.lightblue.client.request.data;
 
 import java.util.Collection;
 
-import com.redhat.lightblue.client.expression.query.Query;
-import com.redhat.lightblue.client.expression.update.Update;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+
+import com.redhat.lightblue.client.Query;
+import com.redhat.lightblue.client.Update;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.projection.Projection;
+import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 
 public class DataUpdateRequest extends AbstractLightblueDataRequest {
 
-    private Projection[] projections;
-    private Update[] updates;
+    private Projection projection;
+    private Update update;
     private Query query;
 
     public DataUpdateRequest() {
@@ -26,77 +31,93 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-    public void returns(Projection... projections) {
-        this.setProjections(projections);
+    public void returns(Projection... projection) {
+        this.projection = Projection.project(projection);
     }
 
-    public void returns(Collection<Projection> projections) {
-        this.setProjections(projections);
+    @Deprecated
+    public void returns(com.redhat.lightblue.client.projection.Projection... projection) {
+        Projection[] p=new Projection[projection.length];
+        for(int i=0;i<p.length;i++)
+            p[i]=top(projection[i]);
+        returns(p);
     }
 
-    public void where(Query query) {
-        this.setQuery(query);
+    @Deprecated
+    public void returns(Collection<com.redhat.lightblue.client.projection.Projection> projections) {
+        returns(projections.toArray(new com.redhat.lightblue.client.projection.Projection[projections.size()]));
+    }
+
+    public void where(Query queryExpression) {
+        this.query = queryExpression;
+    }
+
+    @Deprecated
+    public void where(com.redhat.lightblue.client.expression.query.Query queryExpression) {
+        this.query = toq(queryExpression);
     }
 
     public void updates(Update... updates) {
-        this.setUpdates(updates);
+        update=Update.update(updates);
     }
 
-    public void updates(Collection<Update> updates) {
-        this.setUpdates(updates);
+    @Deprecated
+    public void updates(com.redhat.lightblue.client.expression.update.Update... updates) {
+        Update[] u=new Update[updates.length];
+        for(int i=0;i<u.length;i++)
+            u[i]=tou(updates[i]);
+        updates(u);
+    }
+
+    @Deprecated
+    public void updates(Collection<com.redhat.lightblue.client.expression.update.Update> updates) {
+        updates(updates.toArray(new com.redhat.lightblue.client.expression.update.Update[updates.size()]));
     }
 
     public void setQuery(Query query) {
-        this.query = query;
+        where(query);
+    }
+
+    @Deprecated
+    public void setQuery(com.redhat.lightblue.client.expression.query.Query query) {
+        where(query);
     }
 
     public void setUpdates(Update... updates) {
-        this.updates = updates;
+        updates(updates);
     }
 
-    public void setUpdates(Collection<Update> updates) {
-        this.updates = updates.toArray(new Update[updates.size()]);
+    @Deprecated
+    public void setUpdates(com.redhat.lightblue.client.expression.update.Update... updates) {
+        updates(updates);
+    }
+
+    @Deprecated
+    public void setUpdates(Collection<com.redhat.lightblue.client.expression.update.Update> updates) {
+        updates(updates.toArray(new com.redhat.lightblue.client.expression.update.Update[updates.size()]));
     }
 
     public void setProjections(Projection... projections) {
-        this.projections = projections;
+        returns(projections);
     }
 
-    public void setProjections(Collection<Projection> projections) {
-        this.projections = projections.toArray(new Projection[projections.size()]);
+    @Deprecated
+    public void setProjections(com.redhat.lightblue.client.projection.Projection... projections) {
+        returns(projections);
+    }
+
+    public void setProjections(Collection<com.redhat.lightblue.client.projection.Projection> projections) {
+        returns(projections.toArray(new com.redhat.lightblue.client.projection.Projection[projections.size()]));
     }
 
     @Override
-    public String getBody() {
-        // http://jewzaam.gitbooks.io/lightblue-specifications/content/language_specification/data.html#update
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"query\":");
-        sb.append(query.toJson());
-
-        // one or more update expressions
-        sb.append(",\"update\":[");
-        sb.append(updates[0].toJson());
-
-        for (int i = 1; i < updates.length; i++) {
-            sb.append(",").append(updates[i].toJson());
-        }
-
-        sb.append("]");
-
-        // one or more projection expressions
-        sb.append(",\"projection\":[");
-        sb.append(projections[0].toJson());
-
-        for (int i = 1; i < projections.length; i++) {
-            sb.append(",").append(projections[i].toJson());
-        }
-
-        sb.append("]");
-
-        // end top level
-        sb.append("}");
-
-        return sb.toString();
+    public JsonNode getBodyJson() {
+        ObjectNode node=JsonNodeFactory.instance.objectNode();
+        if(projection!=null)
+            node.set("projection",projection.toJson());
+        node.set("query",query.toJson());
+        node.set("update",update.toJson());
+        return node;
     }
 
     @Override

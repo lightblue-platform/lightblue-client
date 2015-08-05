@@ -7,6 +7,7 @@ import java.util.Collection;
 /**
  * created by Michael White 10/10/2014
  */
+@Deprecated
 public class NaryLogicalQuery implements Query {
     private final NaryOperation operation;
     private final Query[] queryExpressions;

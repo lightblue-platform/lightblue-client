@@ -35,5 +35,10 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
         return requestURI.toString();
     }
 
+    @Override
+    public String getBody() {
+        return getBodyJson().toString();
+    }
+
     public abstract String getOperationPathParam();
 }

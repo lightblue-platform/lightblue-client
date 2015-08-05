@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.request;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import com.redhat.lightblue.client.http.HttpMethod;
 
 /**
@@ -7,6 +9,8 @@ import com.redhat.lightblue.client.http.HttpMethod;
  * if present, will be UTF-8 JSON.
  */
 public interface LightblueRequest {
+    JsonNode getBodyJson();
+    
     String getBody();
 
     HttpMethod getHttpMethod();

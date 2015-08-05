@@ -3,6 +3,7 @@ package com.redhat.lightblue.client.expression.query;
 import com.redhat.lightblue.client.enums.ExpressionOperation;
 import com.redhat.lightblue.client.enums.NaryExpressionOperation;
 
+@Deprecated
 public class FieldQuery implements Query {
     protected String lefthandField;
     protected String righthandField;

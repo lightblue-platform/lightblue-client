@@ -2,16 +2,30 @@ package com.redhat.lightblue.client.request;
 
 import org.apache.commons.lang.StringUtils;
 
-public abstract class AbstractLightblueMetadataRequest extends AbstractLightblueRequest {
-    private String body;
+import com.fasterxml.jackson.databind.JsonNode;
 
-    @Override
-    public String getBody() {
-        return body;
+import com.redhat.lightblue.client.util.JSON;
+
+public abstract class AbstractLightblueMetadataRequest extends AbstractLightblueRequest {
+    private JsonNode body;
+
+    public void setBody(JsonNode body) {
+        this.body=body;
     }
 
+    @Override
+    public JsonNode getBodyJson() {
+        return body;
+    }
+    
+    @Override
+    public String getBody() {
+        return getBodyJson().toString();
+    }
+
+    @Deprecated
     public void setBody(String body) {
-        this.body = body;
+        this.body = body==null?null:JSON.toJsonNode(body);
     }
 
     public AbstractLightblueMetadataRequest() {

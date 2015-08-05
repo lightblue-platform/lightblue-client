@@ -5,11 +5,14 @@ import com.redhat.lightblue.client.http.HttpMethod;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import com.redhat.lightblue.client.util.JSON;
 
 public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
 
     private static class MockAbstractLightblueRequest extends AbstractLightblueRequest {
-        private String body;
+        private JsonNode body;
 
         @Override
         public String getRestURI(String baseServiceURI) {
@@ -17,11 +20,15 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
         }
 
         public void setBody(String body) {
-            this.body = body;
+            this.body = JSON.toJsonNode(body);
         }
 
         @Override
         public String getBody() {
+            return getBodyJson().toString();
+        }
+
+        public JsonNode getBodyJson() {
             return body;
         }
 
