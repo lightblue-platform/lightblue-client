@@ -27,6 +27,72 @@ public class Query extends Expression
 
     public static final LogOp and=LogOp.and;
     public static final LogOp or=LogOp.or;
+
+    public enum BinOp {
+        eq("="),
+        neq("!="),
+        lt("<"),
+        gt(">"),
+        lte("<="),
+        gte(">=");
+        
+        private String s;
+        
+        private BinOp(String s) {
+            this.s=s;
+        }
+        
+        public String toString() {
+            return s;
+        }
+    }
+
+    public enum NaryOp {
+        in("$in"),
+        nin("$nin");
+        
+        private String s;
+        
+        private NaryOp(String s) {
+            this.s=s;
+        }
+        
+        public String toString() {
+            return s;
+        }
+    }
+
+    public enum ArrOp {
+        any("$any"),
+        all("$all"),
+        none("$none");
+        
+        private String s;
+        
+        private ArrOp(String s) {
+            this.s=s;
+        }
+        
+        public String toString() {
+            return s;
+        }
+    }
+
+    public enum LogOp {
+        and("$and"),
+        or("$or");
+        
+        private String s;
+        
+        private LogOp(String s) {
+            this.s=s;
+        }
+        
+        public String toString() {
+            return s;
+        }
+    }
+
     
     /**
      * Constructs a query object from a json array or object
