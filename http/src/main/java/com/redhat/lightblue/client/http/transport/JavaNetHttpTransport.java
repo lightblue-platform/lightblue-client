@@ -92,6 +92,7 @@ public class JavaNetHttpTransport implements HttpTransport {
     @Override
     public String executeRequest(LightblueRequest request, String baseUri) throws IOException {
         String url = request.getRestURI(baseUri);
+        LOGGER.debug("Executing request, url={}",url);
         HttpURLConnection connection = connectionFactory.openConnection(url);
 
         if (connection instanceof HttpsURLConnection) {
@@ -166,7 +167,7 @@ public class JavaNetHttpTransport implements HttpTransport {
      */
     private String readResponseStream(InputStream responseStream, HttpURLConnection connection)
             throws IOException {
-
+        LOGGER.debug("Reading response stream");
         InputStream decodedStream = responseStream;
         if (compression == Compression.LZF && "lzf".equals(connection.getHeaderField("Content-Encoding"))) {
             LOGGER.debug("Decoding lzf");

@@ -41,7 +41,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         
         public LockingRequest(String domain,String callerId,String resourceId,Long ttl,boolean ping,HttpMethod method) {
             StringBuilder b=new StringBuilder(128);
-            b.append(domain).append('/').append(callerId).append('/').append(resourceId);
+            b.append("lock/").append(domain).append('/').append(callerId).append('/').append(resourceId);
             if(ttl!=null)
                 b.append("?ttl=").append(ttl.toString());
             else if(ping)
