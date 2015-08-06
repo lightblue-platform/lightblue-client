@@ -1,6 +1,5 @@
 package com.redhat.lightblue.client.integration.test;
 
-import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadResource;
 import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
@@ -52,7 +51,7 @@ public abstract class AbstractLightblueClientCRUDController extends AbstractCRUD
 
     public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws LightblueException, IOException {
         DataInsertRequestStub request = new DataInsertRequestStub(
-                entityName, entityVersion, loadResource(resourcePath));
+                entityName, entityVersion, loadResource(resourcePath, false));
         LightblueResponse response = getLightblueClient().data(request);
         assertFalse(response.getText(), response.hasError());
 
