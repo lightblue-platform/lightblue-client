@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
  * Base class for any expression part that is backed by a Json node
  */
 public abstract class ExpressionPart implements JsonObj {
-    protected JsonNode node;
+    protected final JsonNode node;
 
     protected ExpressionPart(JsonNode node) {
         this.node=node;

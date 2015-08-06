@@ -40,7 +40,11 @@ public class Literal extends ExpressionPart implements
     }
 
     public Literal(Object x) {
-        super(null);
+        super(valueToJson(x));
+    }
+
+    public static JsonNode valueToJson(Object x) {
+        JsonNode node;
         if(x==null) {
             node=JsonNodeFactory.instance.nullNode();
         } else if(x instanceof Date) {
@@ -68,6 +72,7 @@ public class Literal extends ExpressionPart implements
         } else {
             node=JsonNodeFactory.instance.textNode(x.toString());
         }
+        return node;
     }
 
     public static Literal value(Object x) {
