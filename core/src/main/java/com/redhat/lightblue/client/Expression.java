@@ -31,8 +31,12 @@ public abstract class Expression extends ExpressionPart {
      * Add field:value
      */
     public Expression add(String field,JsonNode value) {
-        ((ObjectNode)node).set(field,value);
-        return this;
+        try {
+            ((ObjectNode)node).set(field,value);
+            return this;
+        } catch (ClassCastException e) {
+            throw new RuntimeException("Object node expected while adding "+field);
+        }
     }
 
     /**
