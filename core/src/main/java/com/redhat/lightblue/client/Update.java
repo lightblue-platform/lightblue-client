@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -195,6 +197,17 @@ public class Update extends Expression implements ForEachUpdate {
     public static Update update(Update...update) {
         if(update.length==1) {
             return update[0];
+        } else {
+            Update x=new Update(true);
+            for(Update u:update)
+                ((ArrayNode)x.node).add(u.toJson());
+            return x;
+        }
+    }
+
+    public static Update update(List<Update> update) {
+        if(update.size()==1) {
+            return update.get(0);
         } else {
             Update x=new Update(true);
             for(Update u:update)
