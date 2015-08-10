@@ -3,6 +3,7 @@ package com.redhat.lightblue.client.expression.query;
 /**
  * Created by bmiller on 10/10/14.
  */
+@Deprecated
 public class RegexQuery implements Query {
     private final String fieldName;
     private final String pattern;

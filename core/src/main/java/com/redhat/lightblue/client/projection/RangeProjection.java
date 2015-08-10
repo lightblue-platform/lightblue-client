@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client.projection;
 
+@Deprecated
 public class RangeProjection implements Projection {
     private final String field;
     private final Boolean isIncluded;

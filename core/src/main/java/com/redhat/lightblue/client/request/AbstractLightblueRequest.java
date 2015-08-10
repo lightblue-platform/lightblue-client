@@ -2,6 +2,10 @@ package com.redhat.lightblue.client.request;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.fasterxml.jackson.databind.node.ContainerNode;
+
+import com.redhat.lightblue.client.util.JSON;
+
 public abstract class AbstractLightblueRequest implements LightblueRequest {
 
     protected static final String PATH_SEPARATOR = "/";
@@ -42,7 +46,6 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         this.entityVersion = entityVersion;
     }
 
-
     protected void appendToURI(StringBuilder restOfURI, String pathParam) {
         if (!StringUtils.endsWith(restOfURI.toString(), PATH_SEPARATOR)) {
             restOfURI.append(PATH_SEPARATOR);
@@ -53,5 +56,33 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
     @Override
     public String toString() {
         return getHttpMethod().toString()+" "+getRestURI("/")+", body: "+getBody();
+    }
+
+    /**
+     * Deprecated expression model support
+     */
+    protected com.redhat.lightblue.client.Query toq(com.redhat.lightblue.client.expression.query.Query q) {
+        return com.redhat.lightblue.client.Query.query((ContainerNode)JSON.toJsonNode(q.toJson()));
+    }
+
+    /**
+     * Deprecated expression model support
+     */
+    protected com.redhat.lightblue.client.Projection top(com.redhat.lightblue.client.projection.Projection p) {
+        return com.redhat.lightblue.client.Projection.project((ContainerNode)JSON.toJsonNode(p.toJson()));
+    }
+    
+    /**
+     * Deprecated expression model support
+     */
+    protected com.redhat.lightblue.client.Sort tos(com.redhat.lightblue.client.request.SortCondition s) {
+        return com.redhat.lightblue.client.Sort.sort((ContainerNode)JSON.toJsonNode(s.toJson()));
+    }
+
+    /**
+     * Deprecated expression model support
+     */
+    protected com.redhat.lightblue.client.Update tou(com.redhat.lightblue.client.expression.update.Update u) {
+        return com.redhat.lightblue.client.Update.update((ContainerNode)JSON.toJsonNode(u.toJson()));
     }
 }

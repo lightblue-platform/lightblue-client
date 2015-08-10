@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  *
@@ -50,6 +51,14 @@ public final class JSON {
         return objectMapper;
     }
 
+    public static JsonNode toJsonNode(String s) {
+        try {
+            return getDefaultObjectMapper().readTree(s);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     /**
      * Convert object to json. If object contains fields of type date, they will
      * be converted to strings using lightblue date format.
@@ -73,6 +82,10 @@ public final class JSON {
         return sw.toString();
     }
 
+    public static JsonNode toJsonNode(Object obj) {
+        ObjectMapper mapper = getDefaultObjectMapper();
+        return mapper.valueToTree(obj);
+    }
     private JSON() {}
 
 }

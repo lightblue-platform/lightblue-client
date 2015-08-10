@@ -16,6 +16,7 @@ import com.redhat.lightblue.client.enums.NaryExpressionOperation;
  * @author bmiller
  * @author mpatercz
  */
+@Deprecated
 public class ValueQuery implements Query {
     private final String field;
     private final String rValue;

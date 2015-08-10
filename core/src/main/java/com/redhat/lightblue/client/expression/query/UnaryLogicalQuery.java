@@ -5,6 +5,7 @@ import com.redhat.lightblue.client.enums.UnaryOperation;
 /**
  * created by Michael White 10/10/2014
  */
+@Deprecated
 public class UnaryLogicalQuery implements Query {
     private final UnaryOperation operation;
     private final Query queryExpression;

@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.redhat.lightblue.client.expression.query.Query;
 
+@Deprecated
 public class UpdateExpressionList implements Update {
 
     private final Update[] update;

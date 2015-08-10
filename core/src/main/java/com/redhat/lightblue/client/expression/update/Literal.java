@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.redhat.lightblue.client.util.ClientConstants;
 
+@Deprecated
 public class Literal implements RValue {
     private final Object value;
 

@@ -56,6 +56,10 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         }
 
         @Override
+        public JsonNode getBodyJson() {
+            return null;
+        }
+        @Override
         public HttpMethod getHttpMethod() {
             return mth;
         }

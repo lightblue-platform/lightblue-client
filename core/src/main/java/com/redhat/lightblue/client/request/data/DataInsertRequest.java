@@ -2,14 +2,19 @@ package com.redhat.lightblue.client.request.data;
 
 import java.util.Collection;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.projection.Projection;
+import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.util.JSON;
 
 public class DataInsertRequest extends AbstractLightblueDataRequest {
 
-    private Projection[] projections;
+    private Projection projection;
     private Object[] objects;
 
     public DataInsertRequest() {
@@ -25,11 +30,20 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     }
 
     public void returns(Projection... projection) {
-        this.projections = projection;
+        this.projection = Projection.project(projection);
     }
 
-    public void returns(Collection<Projection> projections) {
-        this.projections = projections.toArray(new Projection[projections.size()]);
+    @Deprecated
+    public void returns(com.redhat.lightblue.client.projection.Projection... projection) {
+        Projection[] p=new Projection[projection.length];
+        for(int i=0;i<p.length;i++)
+            p[i]=top(projection[i]);
+        returns(p);
+    }
+
+    @Deprecated
+    public void returns(Collection<com.redhat.lightblue.client.projection.Projection> projections) {
+        returns(projections.toArray(new com.redhat.lightblue.client.projection.Projection[projections.size()]));
     }
 
     public void create(Object... objects) {
@@ -41,25 +55,19 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
-    public String getBody() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"data\":[");
-        sb.append(JSON.toJson(objects[0]));
-        for (int i = 1; i < objects.length; i++) {
-            sb.append(",").append(JSON.toJson(objects[i]));
+    public JsonNode getBodyJson() {
+        ObjectNode node=JsonNodeFactory.instance.objectNode();
+        if(projection!=null)
+            node.set("projection",projection.toJson());
+        if(objects.length==1) {
+            node.set("data",JSON.toJsonNode(objects[0]));
+        } else {
+            ArrayNode arr=JsonNodeFactory.instance.arrayNode();
+            for(int i=0;i<objects.length;i++)
+                arr.add(JSON.toJsonNode(objects[i]));
+            node.set("data",arr);
         }
-        sb.append("],\"projection\":[");
-        sb.append(projections[0].toJson());
-
-        for (int i = 1; i < projections.length; i++) {
-            sb.append(",").append(projections[i].toJson());
-        }
-
-        sb.append("]");
-
-        sb.append("}");
-
-        return sb.toString();
+        return node;
     }
 
     @Override

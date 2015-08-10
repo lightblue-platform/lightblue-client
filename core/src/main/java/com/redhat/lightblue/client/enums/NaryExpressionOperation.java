@@ -3,6 +3,7 @@ package com.redhat.lightblue.client.enums;
 import java.util.HashSet;
 import java.util.Set;
 
+@Deprecated
 public enum NaryExpressionOperation {
     NOT_IN("$not_in"),
     IN("$in"),

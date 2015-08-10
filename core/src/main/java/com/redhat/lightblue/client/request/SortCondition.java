@@ -5,6 +5,7 @@ import com.redhat.lightblue.client.enums.SortDirection;
 /**
  * Created by bmiller and vkumar on 10/10/14.
  */
+@Deprecated
 public class SortCondition {
     public final String field;
     public final SortDirection direction;

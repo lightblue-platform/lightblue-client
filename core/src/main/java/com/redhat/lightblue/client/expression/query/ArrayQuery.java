@@ -2,6 +2,7 @@ package com.redhat.lightblue.client.expression.query;
 
 import com.redhat.lightblue.client.enums.ArrayOperation;
 
+@Deprecated
 public class ArrayQuery implements Query {
     private final String fieldName;
     private ArrayOperation arrayOperation;
