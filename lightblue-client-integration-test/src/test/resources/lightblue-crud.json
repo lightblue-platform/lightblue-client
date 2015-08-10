@@ -7,7 +7,7 @@
               "locking" : [
                   {
                       "domain":"test",
-                      "datasource":"mongo",
+                      "datasource":"${mongo.datasource}",
                       "collection":"locktest"
                   }
               ]
