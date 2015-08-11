@@ -9,6 +9,42 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
  * A Projection expression
+ *
+ * Usage:
+ * <pre>
+ * // { field: <pattern>, include: <include>, recursive: <recursive> }
+ * Projection.field("*",true.true)
+ * // include field, non-recursive
+ * Projection.includeField("*")
+ * // include field, recursive
+ * Projection.includeFieldRecursively("*")
+ * // exclude field, non-recursive
+ * Projection.excludeField("*")
+ * // exclude field, recursive
+ * Projection.excludeFieldRecursively("*")
+ *
+ * // Array match projection
+ * Projection.array("field",Query.withValue("x=1"),true,Projection.includeFieldRecursively("*"),Sort.asc("x"))
+ * Projection.array("field",Query.withValue("x=1"),Projection.includeFieldRecursively("*"))
+ * Projection.array("field",Query.withValue("x=1"),Sort.asc("x"))
+ * Projection.array("field",Query.withValue("x=1"))
+ *
+ * // Array range
+ * Projection.array("field",0,10,true,Projection.includeFieldRecursively("*"),Sort.asc("x"))
+ * Projection.array("field",0,10,Projection.includeFieldRecursively("*"))
+ * Projection.array("field",0,10,Sort.asc("x"))
+ * Projection.array("field",0,10);
+ *
+ * // Projection lists
+ * Projection.project(p1,p2,...)
+ *
+ * List<Projection> l=new List<>();
+ * .../
+ * Projection.project(l)
+ *
+ * // Literal projection
+ * Projection.project("{\"field\":\"*\"}");
+ * </pre>
  */
 public class Projection extends Expression {
 

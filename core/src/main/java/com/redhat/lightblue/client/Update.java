@@ -10,6 +10,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Update expression
+ *
+ * Usage:
+ * <pre>
+ * Update.set("x",1).more("y","value").more("x",Literal.value(new Date())).more(Literal.emptyObject());
+ * Update.unset("x").more("y").more("z");
+ * Update.addValue("x",Literal.value(1)).more("y",Literal.value(-1)).more("z",new ValueOf("w"));
+ * Update.append("array",Literal.emptyObject());
+ * Update.insert("array",Literal.emptyArray());
+ * Update.forEach("array",Query..., Update.set(...) )
+ * Update.forEach("array",Update.ALL, Update.set(...) )
+ * Update.forEach("array",Query..., Update.REMOVE)
+ * Update.update(Update.set("x",1),Update.unset("y"), Update.addValue("z",Literal.value(1)));
+ * </pre>
  */
 public class Update extends Expression implements ForEachUpdate {
 

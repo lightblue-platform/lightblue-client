@@ -7,6 +7,30 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
  * A sort expression
+ *
+ * Usage:
+ * <pre>
+ *   // { "field":"$asc" }
+ *   Sort.sort("field",true); 
+ * 
+ *   // { "field":"$desc" }
+ *   Sort.sort("field",false);
+ *
+ *   // {"field":"$asc"}
+ *   Sort.asc("field); 
+ *
+ *   // {"field":"$desc"}
+ *   Sort.desc("field");
+ *
+ *   // [ { "x":"$asc"}, {"y":"$desc"} ]
+ *   Sort.sort(Sort.asc("x"),Sort.desc("y"}); 
+ *
+ *   // [ { "x":"$asc"}, {"y":"$desc"} 
+ *   List<Sort> l=new ArrayList<>();
+ *   l.add(Sort.asc("x"));
+ *   l.add(Sort.desc("y"));
+ *   Sort.sort(l);
+ * </pre>
  */
 public class Sort extends Expression {
 
