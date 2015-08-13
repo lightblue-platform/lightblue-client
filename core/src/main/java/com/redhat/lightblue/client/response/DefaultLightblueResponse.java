@@ -141,6 +141,10 @@ public class DefaultLightblueResponse implements LightblueResponse {
         return field.asInt();
     }
 
+    public JsonNode parseProcessed() {
+        return json.path("processed");
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <T> T parseProcessed(final Class<T> type)
@@ -150,7 +154,7 @@ public class DefaultLightblueResponse implements LightblueResponse {
         }
 
         try {
-            JsonNode processedNode = json.path("processed");
+            JsonNode processedNode = parseProcessed();
 
             //if null or an empty array
             if (processedNode == null

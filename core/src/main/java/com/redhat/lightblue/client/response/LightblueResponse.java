@@ -20,5 +20,7 @@ public interface LightblueResponse {
 
     int parseMatchCount();
 
+    JsonNode parseProcessed();
+
     <T> T parseProcessed(Class<T> type) throws LightblueResponseParseException;
 }
