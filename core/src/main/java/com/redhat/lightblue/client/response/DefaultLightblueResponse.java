@@ -141,8 +141,8 @@ public class DefaultLightblueResponse implements LightblueResponse {
         return field.asInt();
     }
 
-    public JsonNode parseProcessed() {
-        return json.path("processed");
+    public JsonNode getProcessed() {
+        return json.get("processed");
     }
 
     @Override
@@ -154,7 +154,7 @@ public class DefaultLightblueResponse implements LightblueResponse {
         }
 
         try {
-            JsonNode processedNode = parseProcessed();
+            JsonNode processedNode = getProcessed();
 
             //if null or an empty array
             if (processedNode == null
