@@ -1,9 +1,10 @@
 package com.redhat.lightblue.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ContainerNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import java.util.Arrays;
+import java.util.Collection;
+
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ContainerNode;
 
 /**
  * A query expression
@@ -439,6 +440,15 @@ public class Query extends Expression
 
     /**
      * <pre>
+     *    { $and : [ expressions ] }
+     *</pre>
+     */
+    public static Query and(Collection<Query> expressions) {
+        return logical(LogOp.and, expressions);
+    }
+
+    /**
+     * <pre>
      *    { $or : [ expressions ] }
      *</pre>
      */
@@ -448,16 +458,35 @@ public class Query extends Expression
 
     /**
      * <pre>
+     *    { $or : [ expressions ] }
+     *</pre>
+     */
+    public static Query or(Collection<Query> expressions) {
+        return logical(LogOp.or, expressions);
+    }
+
+    /**
+     * <pre>
      *    { $and : [ expressions ] }
      *    { $or : [ expressions ] }
      *</pre>
      */
     public static Query logical(LogOp op,Query...expressions) {
-        Query q=new Query(true);
-        for(Query x:expressions)
-            ((ArrayNode)q.node).add(x.toJson());
-        Query a=new Query(false);
-        a.add(op.toString(),q.toJson());
+        return logical(op, Arrays.asList(expressions));
+    }
+
+    /**
+     * <pre>
+     *    { $and : [ expressions ] }
+     *    { $or : [ expressions ] }
+     *</pre>
+     */
+    public static Query logical(LogOp op, Collection<Query> expressions) {
+        Query q = new Query(true);
+        for (Query x : expressions)
+            ((ArrayNode) q.node).add(x.toJson());
+        Query a = new Query(false);
+        a.add(op.toString(), q.toJson());
         return a;
     }
 }
