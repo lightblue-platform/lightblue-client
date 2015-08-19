@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.redhat.lightblue.client.util.ClientConstants;
 
 /**
  * Update expression
@@ -253,7 +252,7 @@ public class Update extends Expression implements ForEachUpdate {
     }
     
     public static Set set(String field, Date date){
-        return set(field, ClientConstants.getDateFormat().format(date));
+        return new Set().more(field, Literal.value(date));
     }
 
     /**
