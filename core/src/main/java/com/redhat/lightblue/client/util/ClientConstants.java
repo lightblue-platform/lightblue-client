@@ -2,7 +2,6 @@ package com.redhat.lightblue.client.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 
 public final class ClientConstants {
     private static final DateFormat DATE_FORMAT;
@@ -10,7 +9,6 @@ public final class ClientConstants {
 
     static {
         DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT_STR);
-        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
     /**
