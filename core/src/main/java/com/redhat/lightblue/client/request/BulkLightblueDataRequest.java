@@ -36,8 +36,9 @@ public class BulkLightblueDataRequest implements LightblueRequest {
 			seqNode.set("seq", JSON.toJsonNode(seq.seq));
 			seqNode.set("op", JSON.toJsonNode(seq.request.getOperationPathParam()));
 			seqNode.set("request", seq.request.getBodyJson());
+			node.add(seqNode);
 		}
-		return null;
+		return node;
 	}
 
 	@Override
