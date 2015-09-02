@@ -34,26 +34,55 @@ public class BulkLightblueDataRequest implements LightblueRequest {
 		this.reqs.addAll(aldrs);
 	}
 
+	/**
+	 * Adds a request to the end of the current request chain.
+	 * 
+	 * @param aldr
+	 */
 	public void add(AbstractLightblueDataRequest aldr) {
-
+		reqs.add(aldr);
 	}
 
-	public void addAll(AbstractLightblueDataRequest aldrs) {
-		
+	/**
+	 * Adds a collection of requests to the end of the current request chain.
+	 * 
+	 * @param aldrs
+	 */
+	public void addAll(List<AbstractLightblueDataRequest> aldrs) {
+		reqs.addAll(aldrs);
 	}
 
-	public void insert(AbstractLightblueDataRequest aldr, int index){
-		
+	/**
+	 * Inserts a request at the given index. This method should not be preferred over the before / after methods.
+	 * 
+	 * @param aldr
+	 * @param index
+	 */
+	public void insert(AbstractLightblueDataRequest aldr, int index) {
+		reqs.add(index, aldr);
 	}
-	
-	public void insertBefore(AbstractLightblueDataRequest aldr, AbstractLightblueDataRequest before){
-		
+
+	/**
+	 * Inserts a request before another specified request. This guarantees that the first request parameter will be executed, sequentially, before the second request parameter. It
+	 * does not guarantee consecutive execution.
+	 * 
+	 * @param aldr
+	 * @param before
+	 */
+	public void insertBefore(AbstractLightblueDataRequest aldr, AbstractLightblueDataRequest before) {
+		reqs.add(reqs.indexOf(before), aldr);
 	}
-	
-	public void insertAfter(AbstractLightblueDataRequest aldr, AbstractLightblueDataRequest after){
-		
+
+	/**
+	 * Inserts a request after another specified request. This guarantees that the first request parameter will be executed, sequentially, after the second request parameter. It
+	 * does not guarantee consecutive execution.
+	 * 
+	 * @param aldr
+	 * @param after
+	 */
+	public void insertAfter(AbstractLightblueDataRequest aldr, AbstractLightblueDataRequest after) {
+		reqs.add(reqs.indexOf(after) + 1, aldr);
 	}
-	
 
 	@Override
 	public JsonNode getBodyJson() {
@@ -93,7 +122,6 @@ public class BulkLightblueDataRequest implements LightblueRequest {
 	@Override
 	public String getRestURI(String baseServiceURI) {
 		StringBuilder requestURI = new StringBuilder();
-
 		requestURI.append(baseServiceURI);
 		requestURI.append("/bulk");
 		return requestURI.toString();
