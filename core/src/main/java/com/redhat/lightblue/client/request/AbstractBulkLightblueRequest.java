@@ -104,4 +104,9 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
 		this.requests = requests;
 	}
 
+	@Override
+	public String toString() {
+		return getHttpMethod().toString() + " " + getRestURI("/") + ", body: " + getBody();
+	}
+
 }
