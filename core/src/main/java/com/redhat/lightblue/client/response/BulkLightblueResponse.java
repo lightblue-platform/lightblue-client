@@ -3,8 +3,10 @@
  */
 package com.redhat.lightblue.client.response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,37 +26,68 @@ import com.redhat.lightblue.client.util.JSON;
  */
 public class BulkLightblueResponse implements LightblueResponse {
 
-	private List<LightblueResponse> resps = new ArrayList<LightblueResponse>();
-	protected List<AbstractBulkLightblueRequest> reqs = new ArrayList<AbstractBulkLightblueRequest>();
+	private List<LightblueResponse> responses = new ArrayList<LightblueResponse>();
+	private List<AbstractBulkLightblueRequest> requests = new ArrayList<AbstractBulkLightblueRequest>();
+
+	private JsonNode json;
+	private String text;
 
 	public BulkLightblueResponse() {
 	}
 
 	public BulkLightblueResponse(List<LightblueResponse> resps, List<AbstractBulkLightblueRequest> reqs) {
-		this.resps = resps;
-		this.reqs = reqs;
+		this.responses = resps;
+		this.requests = reqs;
+	}
+
+	public BulkLightblueResponse(String responseText, List<AbstractBulkLightblueRequest> reqs) throws LightblueResponseParseException, LightblueException {
+		text = responseText;
+		try {
+			json = JSON.getDefaultObjectMapper().readTree(responseText);
+			ArrayNode resps = (ArrayNode) json.get("responses");
+			for (Iterator<JsonNode> it = resps.iterator(); it.hasNext();) {
+				JsonNode resp = it.next();
+				LightblueResponse response = new DefaultLightblueResponse(resp.get("response").toString());
+				JsonNode seq = resp.get("seq");
+				if (!seq.isNumber()) {
+					throw new LightblueException("Invalid sequence.", response);
+				}
+				responses.add(resp.get("seq").intValue(), response);
+			}
+		} catch (IOException e) {
+			throw new LightblueResponseParseException("Error parsing lightblue response: " + responseText + "\n", e);
+		}
+
 	}
 
 	@Override
 	public String getText() {
-		return getJson().toString();
+		if (text == null || text.isEmpty()) {
+			text = getJson().toString();
+		}
+		return text;
 	}
 
 	@Override
 	public JsonNode getJson() {
-		ArrayNode node = JsonNodeFactory.instance.arrayNode();
-		for (LightblueResponse resp : resps) {
-			ObjectNode seqNode = JsonNodeFactory.instance.objectNode();
-			seqNode.set("seq", JSON.toJsonNode(resps.indexOf(resp)));
-			seqNode.set("response", resp.getJson());
-			node.add(seqNode);
+		if (json == null || json.toString().isEmpty()) {
+			ObjectNode root = JsonNodeFactory.instance.objectNode();
+			ArrayNode resps = JsonNodeFactory.instance.arrayNode();
+			for (LightblueResponse resp : responses) {
+				ObjectNode seqNode = JsonNodeFactory.instance.objectNode();
+				seqNode.set("seq", JSON.toJsonNode(responses.indexOf(resp)));
+				seqNode.set("response", resp.getJson());
+				resps.add(seqNode);
+			}
+			root.set("responsess", resps);
+			json = root;
 		}
-		return node;
+		return json;
 	}
 
 	@Override
 	public boolean hasError() {
-		for (LightblueResponse resp : resps) {
+		for (LightblueResponse resp : responses) {
 			if (resp.hasError()) {
 				return true;
 			}
@@ -64,7 +97,7 @@ public class BulkLightblueResponse implements LightblueResponse {
 
 	@Override
 	public boolean hasDataErrors() {
-		for (LightblueResponse resp : resps) {
+		for (LightblueResponse resp : responses) {
 			if (resp.hasDataErrors()) {
 				return true;
 			}
@@ -75,7 +108,7 @@ public class BulkLightblueResponse implements LightblueResponse {
 	@Override
 	public Error[] getErrors() {
 		List<Error> errors = new ArrayList<Error>();
-		for (LightblueResponse resp : resps) {
+		for (LightblueResponse resp : responses) {
 			errors.addAll(Arrays.asList(resp.getErrors()));
 		}
 		return (Error[]) errors.toArray();
@@ -84,7 +117,7 @@ public class BulkLightblueResponse implements LightblueResponse {
 	@Override
 	public DataError[] getDataErrors() {
 		List<DataError> errors = new ArrayList<DataError>();
-		for (LightblueResponse resp : resps) {
+		for (LightblueResponse resp : responses) {
 			errors.addAll(Arrays.asList(resp.getDataErrors()));
 		}
 		return (DataError[]) errors.toArray();
@@ -93,7 +126,7 @@ public class BulkLightblueResponse implements LightblueResponse {
 	@Override
 	public int parseModifiedCount() {
 		int mod = 0;
-		for (LightblueResponse resp : resps) {
+		for (LightblueResponse resp : responses) {
 			mod += resp.parseModifiedCount();
 		}
 		return mod;
@@ -102,7 +135,7 @@ public class BulkLightblueResponse implements LightblueResponse {
 	@Override
 	public int parseMatchCount() {
 		int match = 0;
-		for (LightblueResponse resp : resps) {
+		for (LightblueResponse resp : responses) {
 			match += resp.parseMatchCount();
 		}
 		return match;
@@ -111,7 +144,7 @@ public class BulkLightblueResponse implements LightblueResponse {
 	@Override
 	public JsonNode getProcessed() {
 		ArrayNode node = JsonNodeFactory.instance.arrayNode();
-		for (LightblueResponse resp : resps) {
+		for (LightblueResponse resp : responses) {
 			node.add(resp.getProcessed());
 		}
 		return node;
@@ -123,7 +156,23 @@ public class BulkLightblueResponse implements LightblueResponse {
 	}
 
 	public <T extends AbstractLightblueRequest> LightblueResponse getResponse(LightblueRequest lbr) {
-		return resps.get(reqs.indexOf(lbr));
+		return responses.get(requests.indexOf(lbr));
+	}
+
+	public List<LightblueResponse> getResponses() {
+		return responses;
+	}
+
+	public void setResponses(List<LightblueResponse> responses) {
+		this.responses = responses;
+	}
+
+	public List<AbstractBulkLightblueRequest> getRequests() {
+		return requests;
+	}
+
+	public void setRequests(List<AbstractBulkLightblueRequest> requests) {
+		this.requests = requests;
 	}
 
 }

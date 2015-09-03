@@ -15,14 +15,14 @@ import com.redhat.lightblue.client.http.HttpMethod;
  */
 public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRequest> implements LightblueRequest {
 
-	protected List<E> reqs = new ArrayList<E>();
+	protected List<E> requests = new ArrayList<E>();
 
 	public AbstractBulkLightblueRequest() {
 
 	}
 
 	public AbstractBulkLightblueRequest(List<E> alrs) {
-		this.reqs.addAll(alrs);
+		this.requests.addAll(alrs);
 	}
 
 	/**
@@ -31,7 +31,7 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
 	 * @param alr
 	 */
 	public void add(E alr) {
-		reqs.add(alr);
+		requests.add(alr);
 	}
 
 	/**
@@ -40,7 +40,7 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
 	 * @param alrs
 	 */
 	public void addAll(List<E> alrs) {
-		reqs.addAll(alrs);
+		requests.addAll(alrs);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
 	 * @param index
 	 */
 	public void insert(E alr, int index) {
-		reqs.add(index, alr);
+		requests.add(index, alr);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
 	 * @param before
 	 */
 	public void insertBefore(E alr, E before) {
-		reqs.add(reqs.indexOf(before), alr);
+		requests.add(requests.indexOf(before), alr);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
 	 * @param after
 	 */
 	public void insertAfter(E alr, E after) {
-		reqs.add(reqs.indexOf(after) + 1, alr);
+		requests.add(requests.indexOf(after) + 1, alr);
 	}
 
 	@Override
@@ -94,6 +94,14 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
 		requestURI.append(baseServiceURI);
 		requestURI.append("/bulk");
 		return requestURI.toString();
+	}
+
+	public List<E> getRequests() {
+		return requests;
+	}
+
+	public void setRequests(List<E> requests) {
+		this.requests = requests;
 	}
 
 }
