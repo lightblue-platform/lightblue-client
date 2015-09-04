@@ -263,6 +263,27 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 	}
 
 	@Override
+	public BulkLightblueResponse data(AbstractBulkLightblueRequest<AbstractLightblueDataRequest> request) throws LightblueException {
+		long t1 = new Date().getTime();
+		try {
+			String responseBody = httpTransport.executeRequest(request, configuration.getDataServiceURI());
+
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Response received from service: " + responseBody);
+
+				long t2 = new Date().getTime();
+				LOGGER.debug("Call took " + (t2 - t1) + "ms");
+			}
+			return new BulkLightblueResponse(responseBody, request);
+		} catch (IOException e) {
+			LOGGER.error("There was a problem calling the lightblue service", e);
+			throw new LightblueException("There was a problem calling the lightblue service", null, e);
+		} catch (LightblueResponseParseException e) {
+			throw new LightblueException("There was a problem parsing the response", null, e);
+		}
+	}
+
+	@Override
 	public void close() throws IOException {
 		httpTransport.close();
 	}
@@ -279,16 +300,10 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 				long t2 = new Date().getTime();
 				LOGGER.debug("Call took " + (t2 - t1) + "ms");
 			}
-			if (request instanceof AbstractBulkLightblueRequest) {
-				return new BulkLightblueResponse(responseBody, ((AbstractBulkLightblueRequest) request).getRequests());
-			}
 			return new DefaultLightblueResponse(responseBody, mapper);
 		} catch (IOException e) {
 			LOGGER.error("There was a problem calling the lightblue service", e);
 			throw new LightblueException("There was a problem calling the lightblue service", null, e);
-		} catch (LightblueResponseParseException e) {
-			LOGGER.error("There was a problem parsing the response", e);
-			throw new LightblueException("There was a problem parsing the response", null, e);
 		}
 	}
 
@@ -300,4 +315,5 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 			throw new RuntimeException(e);
 		}
 	}
+
 }

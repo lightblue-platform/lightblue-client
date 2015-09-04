@@ -28,17 +28,17 @@ import com.redhat.lightblue.client.util.JSON;
 public class BulkLightblueResponse {
 
 	private final List<LightblueResponse> responses = new ArrayList<LightblueResponse>();
-	private final List<AbstractLightblueRequest> requests = new ArrayList<AbstractLightblueRequest>();;
+	private final List<? super AbstractLightblueRequest> requests = new ArrayList<AbstractLightblueRequest>();;
 
 	private JsonNode json;
 	private String text;
 
-	public BulkLightblueResponse(List<LightblueResponse> resps, AbstractBulkLightblueRequest<AbstractLightblueRequest> reqs) {
+	public BulkLightblueResponse(List<LightblueResponse> resps, AbstractBulkLightblueRequest<? extends AbstractLightblueRequest> reqs) {
 		Collections.copy(responses, resps);
 		Collections.copy(requests, reqs.getRequests());
 	}
 
-	public BulkLightblueResponse(String responseText, AbstractBulkLightblueRequest<AbstractLightblueRequest> reqs) throws LightblueResponseParseException, LightblueException {
+	public BulkLightblueResponse(String responseText, AbstractBulkLightblueRequest<? extends AbstractLightblueRequest> reqs) throws LightblueResponseParseException, LightblueException {
 		text = responseText;
 		try {
 			json = JSON.getDefaultObjectMapper().readTree(responseText);
@@ -88,7 +88,7 @@ public class BulkLightblueResponse {
 		return responses;
 	}
 
-	public List<AbstractLightblueRequest> getRequests() {
+	public List<? super AbstractLightblueRequest> getRequests() {
 		return requests;
 	}
 }
