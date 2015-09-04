@@ -3,7 +3,7 @@
  */
 package com.redhat.lightblue.client.request.data;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
@@ -64,17 +64,69 @@ public class TestBulkDataRequest {
 
 	@Test
 	public void testInsertBeforeRequest() {
+		DataFindRequest dfr = new DataFindRequest("foo", "bar");
+		dfr.select(Projection.includeField("*"));
+		dfr.where(Query.regex("foo", "*", 0));
 
+		DataFindRequest dfr2 = new DataFindRequest("fooy", "bar");
+		dfr2.select(Projection.includeField("*"));
+		dfr2.where(Query.regex("fooy", "*", 0));
+
+		DataFindRequest dfr3 = new DataFindRequest("fooz", "bar");
+		dfr3.select(Projection.includeField("*"));
+		dfr3.where(Query.regex("fooz", "*", 0));
+
+		request.addAll(Arrays.<AbstractLightblueDataRequest> asList(dfr, dfr2));
+		// [dfr, dfr2]
+		request.insertAfter(dfr3, dfr);
+		// [dfr, dfr3, dfr2]
+		ArrayNode requests = (ArrayNode) request.getBodyJson().get("requests");
+		assertTrue(requests.size() == 3);
+		assertTrue(requests.get(0).get("request").get("entity").asText().equals("foo"));
+		assertTrue(requests.get(1).get("request").get("entity").asText().equals("fooz"));
+		assertTrue(requests.get(2).get("request").get("entity").asText().equals("fooy"));
 	}
 
 	@Test
 	public void testInsertAfterRequest() {
+		DataFindRequest dfr = new DataFindRequest("foo", "bar");
+		dfr.select(Projection.includeField("*"));
+		dfr.where(Query.regex("foo", "*", 0));
 
+		DataFindRequest dfr2 = new DataFindRequest("fooy", "bar");
+		dfr2.select(Projection.includeField("*"));
+		dfr2.where(Query.regex("fooy", "*", 0));
+
+		DataFindRequest dfr3 = new DataFindRequest("fooz", "bar");
+		dfr3.select(Projection.includeField("*"));
+		dfr3.where(Query.regex("fooz", "*", 0));
+
+		request.addAll(Arrays.<AbstractLightblueDataRequest> asList(dfr, dfr2));
+		// [dfr, dfr2]
+		request.insertBefore(dfr3, dfr);
+		// [dfr3, dfr, dfr2]
+		ArrayNode requests = (ArrayNode) request.getBodyJson().get("requests");
+		assertTrue(requests.size() == 3);
+		assertTrue(requests.get(0).get("request").get("entity").asText().equals("fooz"));
+		assertTrue(requests.get(1).get("request").get("entity").asText().equals("foo"));
+		assertTrue(requests.get(2).get("request").get("entity").asText().equals("fooy"));
 	}
 
 	@Test
 	public void testGetJson() {
+		String expected = "{\"requests\":[{\"seq\":0,\"op\":\"find\",\"request\":{\"query\":{\"field\":\"foo\",\"regex\":\"*\",\"caseInsensitive\":false,\"extended\":false,\"multiline\":false,\"dotall\":false},\"projection\":{\"field\":\"*\",\"include\":true,\"recursive\":false},\"entity\":\"foo\",\"entityVersion\":\"bar\"}},{\"seq\":1,\"op\":\"find\",\"request\":{\"query\":{\"field\":\"fooz\",\"regex\":\"*\",\"caseInsensitive\":false,\"extended\":false,\"multiline\":false,\"dotall\":false},\"projection\":{\"field\":\"*\",\"include\":true,\"recursive\":false},\"entity\":\"fooz\",\"entityVersion\":\"bar\"}}]}";
 
+		DataFindRequest dfr = new DataFindRequest("foo", "bar");
+		dfr.select(Projection.includeField("*"));
+		dfr.where(Query.regex("foo", "*", 0));
+
+		DataFindRequest dfr2 = new DataFindRequest("fooz", "bar");
+		dfr2.select(Projection.includeField("*"));
+		dfr2.where(Query.regex("fooz", "*", 0));
+
+		request.addAll(Arrays.<AbstractLightblueDataRequest> asList(dfr, dfr2));
+
+		assertEquals(expected, request.getBody());
 	}
 
 	@Test
