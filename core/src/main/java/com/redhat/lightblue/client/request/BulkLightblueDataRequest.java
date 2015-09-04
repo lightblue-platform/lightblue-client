@@ -26,7 +26,7 @@ public class BulkLightblueDataRequest extends AbstractBulkLightblueRequest<Abstr
 		ArrayNode reqs = JsonNodeFactory.instance.arrayNode();
 		for (AbstractLightblueDataRequest req : requests) {
 			ObjectNode seqNode = JsonNodeFactory.instance.objectNode();
-			seqNode.set("seq", JSON.toJsonNode(reqs.size()));
+			seqNode.set("seq", JsonNodeFactory.instance.numberNode(reqs.size()));
 			String op = "";
 			if (req instanceof DataDeleteRequest) {
 				op = "delete";
@@ -39,7 +39,7 @@ public class BulkLightblueDataRequest extends AbstractBulkLightblueRequest<Abstr
 			} else if (req instanceof DataUpdateRequest) {
 				op = "update";
 			}
-			seqNode.set("op", JSON.toJsonNode(op));
+			seqNode.set("op", JsonNodeFactory.instance.textNode(op));
 			seqNode.set("request", req.getBodyJson());
 			reqs.add(seqNode);
 		}
