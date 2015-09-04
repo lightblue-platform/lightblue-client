@@ -1,7 +1,5 @@
 package com.redhat.lightblue.client.hystrix;
 
-import java.io.IOException;
-
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -9,8 +7,6 @@ import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.request.AbstractBulkLightblueRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
-import com.redhat.lightblue.client.request.AbstractLightblueRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.BulkLightblueResponse;
 import com.redhat.lightblue.client.response.LightblueException;

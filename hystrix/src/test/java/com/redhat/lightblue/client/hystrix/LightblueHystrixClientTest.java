@@ -71,12 +71,14 @@ public class LightblueHystrixClientTest {
 
 		Assert.assertFalse(client.metadata);
 		Assert.assertFalse(client.data);
+		Assert.assertFalse(client.dataBulk);
 		Assert.assertFalse(client.dataType);
 
 		hystrixClient.metadata(null);
 
 		Assert.assertTrue(client.metadata);
 		Assert.assertFalse(client.data);
+		Assert.assertFalse(client.dataBulk);
 		Assert.assertFalse(client.dataType);
 	}
 
@@ -87,15 +89,17 @@ public class LightblueHystrixClientTest {
 
 		Assert.assertFalse(client.metadata);
 		Assert.assertFalse(client.data);
+		Assert.assertFalse(client.dataBulk);
 		Assert.assertFalse(client.dataType);
 
 		hystrixClient.data(null);
 
 		Assert.assertFalse(client.metadata);
 		Assert.assertTrue(client.data);
+		Assert.assertFalse(client.dataBulk);
 		Assert.assertFalse(client.dataType);
 	}
-	
+
 	@Test
 	public void dataBulk() throws LightblueException {
 		TestLightblueClient client = new TestLightblueClient();
@@ -103,12 +107,14 @@ public class LightblueHystrixClientTest {
 
 		Assert.assertFalse(client.metadata);
 		Assert.assertFalse(client.data);
+		Assert.assertFalse(client.dataBulk);
 		Assert.assertFalse(client.dataType);
 
 		hystrixClient.dataBulk(null);
 
 		Assert.assertFalse(client.metadata);
-		Assert.assertTrue(client.data);
+		Assert.assertFalse(client.data);
+		Assert.assertTrue(client.dataBulk);
 		Assert.assertFalse(client.dataType);
 	}
 
@@ -119,12 +125,14 @@ public class LightblueHystrixClientTest {
 
 		Assert.assertFalse(client.metadata);
 		Assert.assertFalse(client.data);
+		Assert.assertFalse(client.dataBulk);
 		Assert.assertFalse(client.dataType);
 
 		hystrixClient.data(null, Object.class);
 
 		Assert.assertFalse(client.metadata);
 		Assert.assertFalse(client.data);
+		Assert.assertFalse(client.dataBulk);
 		Assert.assertTrue(client.dataType);
 	}
 }

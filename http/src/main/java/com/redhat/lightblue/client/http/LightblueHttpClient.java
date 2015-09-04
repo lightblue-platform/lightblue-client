@@ -2,7 +2,6 @@ package com.redhat.lightblue.client.http;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.Date;
@@ -11,12 +10,12 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.LightblueClient;
-import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
+import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.http.transport.JavaNetHttpTransport;

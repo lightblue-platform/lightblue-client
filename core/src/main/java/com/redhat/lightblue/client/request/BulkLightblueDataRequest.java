@@ -3,6 +3,8 @@
  */
 package com.redhat.lightblue.client.request;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -12,13 +14,20 @@ import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.request.data.DataSaveRequest;
 import com.redhat.lightblue.client.request.data.DataUpdateRequest;
-import com.redhat.lightblue.client.util.JSON;
 
 /**
  * @author bvulaj
  *
  */
 public class BulkLightblueDataRequest extends AbstractBulkLightblueRequest<AbstractLightblueDataRequest> {
+
+	public BulkLightblueDataRequest() {
+		super();
+	}
+
+	public BulkLightblueDataRequest(List<AbstractLightblueDataRequest> alrs) {
+		super(alrs);
+	}
 
 	@Override
 	public JsonNode getBodyJson() {
@@ -40,7 +49,10 @@ public class BulkLightblueDataRequest extends AbstractBulkLightblueRequest<Abstr
 				op = "update";
 			}
 			seqNode.set("op", JsonNodeFactory.instance.textNode(op));
-			seqNode.set("request", req.getBodyJson());
+			ObjectNode request = (ObjectNode) req.getBodyJson();
+			request.set("entity", JsonNodeFactory.instance.textNode(req.getEntityName()));
+			request.set("entityVersion", JsonNodeFactory.instance.textNode(req.getEntityVersion()));
+			seqNode.set("request", request);
 			reqs.add(seqNode);
 		}
 		root.set("requests", reqs);
