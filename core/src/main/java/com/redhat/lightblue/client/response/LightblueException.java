@@ -12,10 +12,11 @@ import com.redhat.lightblue.client.model.Error;
  *
  * @author ykoer
  */
-public class LightblueException extends Exception {
+public class LightblueException extends Exception implements LightBlueResponseErrorCodes {
 
     private static final long serialVersionUID = -5883690817679713469L;
 
+    
     private LightblueResponse lightblueResponse;
     private Set<String> errorCodes;
 

@@ -1,6 +1,6 @@
 package com.redhat.lightblue.client.response;
 
-public class LightBlueResponseErrorCodes {
+public interface LightBlueResponseErrorCodes {
 	
 	public static final String ERR_NO_OBJECT_TYPE = "NO_OBJECT_TYPE";
     public static final String ERR_INVALID_OBJECTTYPE = "INVALID_OBJECTTYPE";
