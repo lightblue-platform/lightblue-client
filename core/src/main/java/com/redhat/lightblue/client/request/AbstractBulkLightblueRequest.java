@@ -21,58 +21,58 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
 
 	}
 
-	public AbstractBulkLightblueRequest(List<E> alrs) {
-		this.requests.addAll(alrs);
+	public AbstractBulkLightblueRequest(List<E> requests) {
+		this.requests.addAll(requests);
 	}
 
 	/**
 	 * Adds a request to the end of the current request chain.
 	 * 
-	 * @param alr
+	 * @param request
 	 */
-	public void add(E alr) {
-		requests.add(alr);
+	public void add(E request) {
+		requests.add(request);
 	}
 
 	/**
 	 * Adds a collection of requests to the end of the current request chain.
 	 * 
-	 * @param alrs
+	 * @param requests
 	 */
-	public void addAll(List<E> alrs) {
-		requests.addAll(alrs);
+	public void addAll(List<E> requests) {
+		requests.addAll(requests);
 	}
 
 	/**
 	 * Inserts a request at the given index. This method should not be preferred over the before / after methods.
 	 * 
-	 * @param alr
+	 * @param request
 	 * @param index
 	 */
-	public void insert(E alr, int index) {
-		requests.add(index, alr);
+	public void insert(E request, int index) {
+		requests.add(index, request);
 	}
 
 	/**
 	 * Inserts a request before another specified request. This guarantees that the first request parameter will be executed, sequentially, before the second request parameter. It
 	 * does not guarantee consecutive execution.
 	 * 
-	 * @param alr
+	 * @param request
 	 * @param before
 	 */
-	public void insertBefore(E alr, E before) {
-		requests.add(requests.indexOf(before), alr);
+	public void insertBefore(E request, E before) {
+		requests.add(requests.indexOf(before), request);
 	}
 
 	/**
 	 * Inserts a request after another specified request. This guarantees that the first request parameter will be executed, sequentially, after the second request parameter. It
 	 * does not guarantee consecutive execution.
 	 * 
-	 * @param alr
+	 * @param request
 	 * @param after
 	 */
-	public void insertAfter(E alr, E after) {
-		requests.add(requests.indexOf(after) + 1, alr);
+	public void insertAfter(E request, E after) {
+		requests.add(requests.indexOf(after) + 1, request);
 	}
 
 	@Override

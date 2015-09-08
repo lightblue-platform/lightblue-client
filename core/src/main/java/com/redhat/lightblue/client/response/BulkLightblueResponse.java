@@ -27,19 +27,20 @@ import com.redhat.lightblue.client.util.JSON;
  */
 public class BulkLightblueResponse {
 
-	private final List<LightblueResponse> responses = new ArrayList<LightblueResponse>();
-	private final List<? super AbstractLightblueRequest> requests = new ArrayList<AbstractLightblueRequest>();;
+	private final List<LightblueResponse> responses;
+	private final List<? super AbstractLightblueRequest> requests;
 
 	private JsonNode json;
 	private String text;
 
 	public BulkLightblueResponse(List<LightblueResponse> resps, AbstractBulkLightblueRequest<? extends AbstractLightblueRequest> reqs) {
-		Collections.copy(responses, resps);
-		Collections.copy(requests, reqs.getRequests());
+		responses = new ArrayList<LightblueResponse>(resps);
+		requests = new ArrayList<AbstractLightblueRequest>(reqs.getRequests());
 	}
 
-	public BulkLightblueResponse(String responseText, AbstractBulkLightblueRequest<? extends AbstractLightblueRequest> reqs) throws LightblueResponseParseException, LightblueException {
-		text = responseText;
+	public BulkLightblueResponse(String responseText, AbstractBulkLightblueRequest<? extends AbstractLightblueRequest> reqs) throws LightblueResponseParseException,
+			LightblueException {
+		this(Collections.<LightblueResponse> emptyList(), reqs);
 		try {
 			json = JSON.getDefaultObjectMapper().readTree(responseText);
 			ArrayNode resps = (ArrayNode) json.get("responses");

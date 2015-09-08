@@ -25,8 +25,8 @@ public class BulkLightblueDataRequest extends AbstractBulkLightblueRequest<Abstr
 		super();
 	}
 
-	public BulkLightblueDataRequest(List<AbstractLightblueDataRequest> alrs) {
-		super(alrs);
+	public BulkLightblueDataRequest(List<AbstractLightblueDataRequest> requests) {
+		super(requests);
 	}
 
 	@Override
