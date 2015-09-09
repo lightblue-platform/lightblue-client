@@ -262,7 +262,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     @Override
-    public BulkLightblueResponse dataBulk(AbstractBulkLightblueRequest<AbstractLightblueDataRequest> request) throws LightblueException {
+    public BulkLightblueResponse bulkData(AbstractBulkLightblueRequest<AbstractLightblueDataRequest> request) throws LightblueException {
         long t1 = new Date().getTime();
         try {
             String responseBody = httpTransport.executeRequest(request, configuration.getDataServiceURI());

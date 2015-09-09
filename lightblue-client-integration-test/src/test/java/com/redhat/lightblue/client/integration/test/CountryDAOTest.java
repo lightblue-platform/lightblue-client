@@ -90,7 +90,7 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         bulkRequest.add(request2);
         bulkRequest.add(request3);
 
-        BulkLightblueResponse bulkResponse = client.dataBulk(bulkRequest);
+        BulkLightblueResponse bulkResponse = client.bulkData(bulkRequest);
         List<LightblueResponse> responses = bulkResponse.getResponses();
 
         assertEquals(3, responses.size());

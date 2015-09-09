@@ -53,7 +53,7 @@ public class LightblueHystrixClientTest {
 		}
 
 		@Override
-		public BulkLightblueResponse dataBulk(AbstractBulkLightblueRequest<AbstractLightblueDataRequest> bulkLightblueRequest) throws LightblueException {
+		public BulkLightblueResponse bulkData(AbstractBulkLightblueRequest<AbstractLightblueDataRequest> bulkLightblueRequest) throws LightblueException {
 			dataBulk = true;
 			return null;
 		}
@@ -110,7 +110,7 @@ public class LightblueHystrixClientTest {
 		Assert.assertFalse(client.dataBulk);
 		Assert.assertFalse(client.dataType);
 
-		hystrixClient.dataBulk(null);
+		hystrixClient.bulkData(null);
 
 		Assert.assertFalse(client.metadata);
 		Assert.assertFalse(client.data);

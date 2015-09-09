@@ -65,7 +65,7 @@ public class LightblueHystrixClient implements LightblueClient {
 
 		@Override
 		protected BulkLightblueResponse run() throws Exception {
-			return client.dataBulk(request);
+			return client.bulkData(request);
 		}
 	}
 
@@ -202,7 +202,7 @@ public class LightblueHystrixClient implements LightblueClient {
 	}
 
 	@Override
-	public BulkLightblueResponse dataBulk(AbstractBulkLightblueRequest<AbstractLightblueDataRequest> request) throws LightblueException {
+	public BulkLightblueResponse bulkData(AbstractBulkLightblueRequest<AbstractLightblueDataRequest> request) throws LightblueException {
 		return new BulkDataHystrixCommand(request, groupKey, commandKey).execute();
 	}
 
