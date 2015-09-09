@@ -34,92 +34,92 @@ import com.sun.jna.platform.win32.WinNT.LOGICAL_PROCESSOR_RELATIONSHIP;
  */
 public class CountryDAOTest extends AbstractLightblueClientCRUDController {
 
-	private LightblueHttpClient client;
+    private LightblueHttpClient client;
 
-	@Before
-	public void before() throws UnknownHostException {
-		client = getLightblueClient();
-		cleanupMongoCollections(Country.objectType);
-	}
+    @Before
+    public void before() throws UnknownHostException {
+        client = getLightblueClient();
+        cleanupMongoCollections(Country.objectType);
+    }
 
-	public CountryDAOTest() throws Exception {
-		super();
-	}
+    public CountryDAOTest() throws Exception {
+        super();
+    }
 
-	@Override
-	protected JsonNode[] getMetadataJsonNodes() throws Exception {
-		return new JsonNode[] { loadJsonNode("country.json") };
-	}
+    @Override
+    protected JsonNode[] getMetadataJsonNodes() throws Exception {
+        return new JsonNode[] { loadJsonNode("country.json") };
+    }
 
-	private Country insertPL() throws LightblueException {
-		Country c = new Country();
-		c.setName("Poland");
-		c.setIso2Code("PL");
-		c.setIso3Code("POL");
+    private Country insertPL() throws LightblueException {
+        Country c = new Country();
+        c.setName("Poland");
+        c.setIso2Code("PL");
+        c.setIso3Code("POL");
 
-		DataInsertRequest request = new DataInsertRequest(Country.objectType, Country.objectVersion);
+        DataInsertRequest request = new DataInsertRequest(Country.objectType, Country.objectVersion);
 
-		request.create(c);
-		request.returns(includeField("*"));
-		return client.data(request, Country[].class)[0];
-	}
+        request.create(c);
+        request.returns(includeField("*"));
+        return client.data(request, Country[].class)[0];
+    }
 
-	@Test
-	public void testInsertCountry() throws LightblueException {
-		Assert.assertEquals("PL", insertPL().getIso2Code());
-	}
+    @Test
+    public void testInsertCountry() throws LightblueException {
+        Assert.assertEquals("PL", insertPL().getIso2Code());
+    }
 
-	@Test
-	public void testBulkFind() throws LightblueException, LightblueResponseParseException {
-		Country country = insertPL();
+    @Test
+    public void testBulkFind() throws LightblueException, LightblueResponseParseException {
+        Country country = insertPL();
 
-		DataFindRequest request = new DataFindRequest(Country.objectType, Country.objectVersion);
-		request.select(Projection.includeField("*"));
-		request.where(Query.withValue("iso2Code", Query.eq, "PL"));
+        DataFindRequest request = new DataFindRequest(Country.objectType, Country.objectVersion);
+        request.select(Projection.includeField("*"));
+        request.where(Query.withValue("iso2Code", Query.eq, "PL"));
 
-		DataFindRequest request2 = new DataFindRequest(Country.objectType, Country.objectVersion);
-		request2.select(Projection.includeField("*"));
-		request2.where(Query.withValue("name", Query.eq, "Poland"));
+        DataFindRequest request2 = new DataFindRequest(Country.objectType, Country.objectVersion);
+        request2.select(Projection.includeField("*"));
+        request2.where(Query.withValue("name", Query.eq, "Poland"));
 
-		DataFindRequest request3 = new DataFindRequest(Country.objectType, Country.objectVersion);
-		request3.select(Projection.includeField("*"));
-		request3.where(Query.withValue("name", Query.eq, "Russia"));
+        DataFindRequest request3 = new DataFindRequest(Country.objectType, Country.objectVersion);
+        request3.select(Projection.includeField("*"));
+        request3.where(Query.withValue("name", Query.eq, "Russia"));
 
-		BulkLightblueDataRequest bulkRequest = new BulkLightblueDataRequest();
-		bulkRequest.add(request);
-		bulkRequest.add(request2);
-		bulkRequest.add(request3);
+        BulkLightblueDataRequest bulkRequest = new BulkLightblueDataRequest();
+        bulkRequest.add(request);
+        bulkRequest.add(request2);
+        bulkRequest.add(request3);
 
-		BulkLightblueResponse bulkResponse = client.dataBulk(bulkRequest);
-		List<LightblueResponse> responses = bulkResponse.getResponses();
+        BulkLightblueResponse bulkResponse = client.dataBulk(bulkRequest);
+        List<LightblueResponse> responses = bulkResponse.getResponses();
 
-		assertEquals(3, responses.size());
-		assertEquals(1, responses.get(0).parseMatchCount());
-		assertEquals(1, responses.get(1).parseMatchCount());
-		assertEquals(0, responses.get(2).parseMatchCount());
+        assertEquals(3, responses.size());
+        assertEquals(1, responses.get(0).parseMatchCount());
+        assertEquals(1, responses.get(1).parseMatchCount());
+        assertEquals(0, responses.get(2).parseMatchCount());
 
-		Country c1 = responses.get(0).parseProcessed(Country.class);
-		Country c2 = responses.get(1).parseProcessed(Country.class);
+        Country c1 = responses.get(0).parseProcessed(Country.class);
+        Country c2 = responses.get(1).parseProcessed(Country.class);
 
-		assertEquals("PL", c1.getIso2Code());
-		assertEquals("PL", c2.getIso2Code());
+        assertEquals("PL", c1.getIso2Code());
+        assertEquals("PL", c2.getIso2Code());
 
-		assertEquals(responses.get(0), bulkResponse.getResponse(request));
-	}
+        assertEquals(responses.get(0), bulkResponse.getResponse(request));
+    }
 
-	@Test
-	public void testDirectMongoCleanup() throws LightblueException, UnknownHostException {
-		cleanupMongoCollections(Country.objectType);
-		insertPL();
+    @Test
+    public void testDirectMongoCleanup() throws LightblueException, UnknownHostException {
+        cleanupMongoCollections(Country.objectType);
+        insertPL();
 
-		cleanupMongoCollections(Country.objectType);
+        cleanupMongoCollections(Country.objectType);
 
-		DataFindRequest request = new DataFindRequest(Country.objectType, Country.objectVersion);
-		request.where(withValue("objectType = country"));
-		request.select(includeField("*"));
-		Country[] countries = client.data(request, Country[].class);
+        DataFindRequest request = new DataFindRequest(Country.objectType, Country.objectVersion);
+        request.where(withValue("objectType = country"));
+        request.select(includeField("*"));
+        Country[] countries = client.data(request, Country[].class);
 
-		Assert.assertTrue(countries.length == 0);
-	}
+        Assert.assertTrue(countries.length == 0);
+    }
 
 }

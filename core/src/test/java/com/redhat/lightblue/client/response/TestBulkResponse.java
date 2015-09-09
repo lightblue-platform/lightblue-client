@@ -26,42 +26,42 @@ import com.redhat.lightblue.client.util.JSON;
  */
 public class TestBulkResponse {
 
-	private BulkLightblueResponse bulkResponse;
-	private BulkLightblueDataRequest bulkRequest;
-	private static final String jsonResponse =
-			"{\"responses\":[{\"seq\":0,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}},{\"seq\":1,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}}]}";
+    private BulkLightblueResponse bulkResponse;
+    private BulkLightblueDataRequest bulkRequest;
+    private static final String jsonResponse =
+            "{\"responses\":[{\"seq\":0,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}},{\"seq\":1,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}}]}";
 
-	@Before
-	public void setUp() throws Exception {
-		bulkRequest = new BulkLightblueDataRequest();
+    @Before
+    public void setUp() throws Exception {
+        bulkRequest = new BulkLightblueDataRequest();
 
-		DataFindRequest dfr = new DataFindRequest("foo", "bar");
-		dfr.select(Projection.includeField("*"));
-		dfr.where(Query.regex("foo", "*", 0));
+        DataFindRequest dfr = new DataFindRequest("foo", "bar");
+        dfr.select(Projection.includeField("*"));
+        dfr.where(Query.regex("foo", "*", 0));
 
-		DataFindRequest dfr2 = new DataFindRequest("fooz", "bar");
-		dfr2.select(Projection.includeField("*"));
-		dfr2.where(Query.regex("fooz", "*", 0));
+        DataFindRequest dfr2 = new DataFindRequest("fooz", "bar");
+        dfr2.select(Projection.includeField("*"));
+        dfr2.where(Query.regex("fooz", "*", 0));
 
-		bulkRequest.add(dfr);
-		bulkRequest.add(dfr2);
+        bulkRequest.add(dfr);
+        bulkRequest.add(dfr2);
 
-		bulkResponse = new BulkLightblueResponse(jsonResponse, bulkRequest);
-	}
+        bulkResponse = new BulkLightblueResponse(jsonResponse, bulkRequest);
+    }
 
-	@Test
-	public void testGetText() {
-		assertEquals(jsonResponse, bulkResponse.getText());
-	}
+    @Test
+    public void testGetText() {
+        assertEquals(jsonResponse, bulkResponse.getText());
+    }
 
-	@Test
-	public void testGetJson() {
-		assertEquals(JSON.toJsonNode(jsonResponse), bulkResponse.getJson());
-	}
+    @Test
+    public void testGetJson() {
+        assertEquals(JSON.toJsonNode(jsonResponse), bulkResponse.getJson());
+    }
 
-	@Test
-	public void testGetResponse() {
-		assertEquals(bulkResponse.getResponses().get(0), bulkResponse.getResponse(bulkRequest.getRequests().get(0)));
-	}
+    @Test
+    public void testGetResponse() {
+        assertEquals(bulkResponse.getResponses().get(0), bulkResponse.getResponse(bulkRequest.getRequests().get(0)));
+    }
 
 }
