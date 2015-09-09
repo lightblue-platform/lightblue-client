@@ -19,29 +19,29 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
     protected List<E> requests;
 
     public AbstractBulkLightblueRequest() {
-        this(Collections.<E> emptyList());
-    }
-
-    public AbstractBulkLightblueRequest(List<E> requests) {
-        this.requests = new ArrayList<E>(requests);
+        this.requests = new ArrayList<E>();
     }
 
     /**
      * Adds a request to the end of the current request chain.
      * 
      * @param request
+     * @return
      */
-    public void add(E request) {
+    public AbstractBulkLightblueRequest<E> add(E request) {
         this.requests.add(request);
+        return this;
     }
 
     /**
      * Adds a collection of requests to the end of the current request chain.
      * 
      * @param requests
+     * @return 
      */
-    public void addAll(List<E> requests) {
+    public AbstractBulkLightblueRequest<E> addAll(List<E> requests) {
         this.requests.addAll(requests);
+        return this;
     }
 
     /**
@@ -49,9 +49,11 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
      * 
      * @param request
      * @param index
+     * @return 
      */
-    public void insert(E request, int index) {
+    public AbstractBulkLightblueRequest<E> insert(E request, int index) {
         this.requests.add(index, request);
+        return this;
     }
 
     /**
@@ -60,9 +62,11 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
      * 
      * @param request
      * @param before
+     * @return 
      */
-    public void insertBefore(E request, E before) {
+    public AbstractBulkLightblueRequest<E> insertBefore(E request, E before) {
         this.requests.add(requests.indexOf(before), request);
+        return this;
     }
 
     /**
@@ -71,9 +75,11 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
      * 
      * @param request
      * @param after
+     * @return 
      */
-    public void insertAfter(E request, E after) {
-        this.requests.add(this.requests.indexOf(after) + 1, request);
+    public AbstractBulkLightblueRequest<E> insertAfter(E request, E after) {
+        this.requests.add(requests.indexOf(after) + 1, request);
+        return this;
     }
 
     @Override

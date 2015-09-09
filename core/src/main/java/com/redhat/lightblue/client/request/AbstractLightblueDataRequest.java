@@ -2,6 +2,8 @@ package com.redhat.lightblue.client.request;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.redhat.lightblue.client.Operation;
+
 public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequest implements LightblueRequest {
     public AbstractLightblueDataRequest() {
         super();
@@ -42,5 +44,5 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
 
     public abstract String getOperationPathParam();
     
-    public abstract String getOperation();
+    public abstract Operation getOperation();
 }

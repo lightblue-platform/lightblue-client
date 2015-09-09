@@ -82,7 +82,7 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
-    public String getOperation() {
-        return Operation.INSERT.toString();
+    public Operation getOperation() {
+        return Operation.INSERT;
     }
 }

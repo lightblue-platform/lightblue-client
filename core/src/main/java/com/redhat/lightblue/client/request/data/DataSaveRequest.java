@@ -93,8 +93,8 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
-    public String getOperation() {
-        return Operation.SAVE.toString();
+    public Operation getOperation() {
+        return Operation.SAVE;
     }
 
 }

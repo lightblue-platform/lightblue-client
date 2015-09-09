@@ -3,8 +3,6 @@
  */
 package com.redhat.lightblue.client.request;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -20,10 +18,6 @@ public class BulkLightblueDataRequest extends AbstractBulkLightblueRequest<Abstr
         super();
     }
 
-    public BulkLightblueDataRequest(List<AbstractLightblueDataRequest> requests) {
-        super(requests);
-    }
-
     @Override
     public JsonNode getBodyJson() {
         ObjectNode root = JsonNodeFactory.instance.objectNode();
@@ -31,7 +25,7 @@ public class BulkLightblueDataRequest extends AbstractBulkLightblueRequest<Abstr
         for (AbstractLightblueDataRequest req : requests) {
             ObjectNode seqNode = JsonNodeFactory.instance.objectNode();
             seqNode.set("seq", JsonNodeFactory.instance.numberNode(reqs.size()));
-            seqNode.set("op", JsonNodeFactory.instance.textNode(req.getOperation()));
+            seqNode.set("op", JsonNodeFactory.instance.textNode(req.getOperation().name().toLowerCase()));
             ObjectNode request = (ObjectNode) req.getBodyJson();
             request.set("entity", JsonNodeFactory.instance.textNode(req.getEntityName()));
             request.set("entityVersion", JsonNodeFactory.instance.textNode(req.getEntityVersion()));

@@ -34,13 +34,13 @@ public class BulkLightblueResponse {
     private String text;
 
     public BulkLightblueResponse(List<LightblueResponse> resps, AbstractBulkLightblueRequest<? extends AbstractLightblueRequest> reqs) {
-        responses = new ArrayList<LightblueResponse>(resps);
+        responses = resps;
         requests = new ArrayList<AbstractLightblueRequest>(reqs.getRequests());
     }
 
     public BulkLightblueResponse(String responseText, AbstractBulkLightblueRequest<? extends AbstractLightblueRequest> reqs) throws LightblueResponseParseException,
             LightblueException {
-        this(Collections.<LightblueResponse> emptyList(), reqs);
+        this(new ArrayList<LightblueResponse>(), reqs);
         try {
             json = JSON.getDefaultObjectMapper().readTree(responseText);
             ArrayNode resps = (ArrayNode) json.get("responses");
@@ -66,7 +66,7 @@ public class BulkLightblueResponse {
     }
 
     public JsonNode getJson() {
-        if (json == null || json.toString().isEmpty()) {
+        if (json == null) {
             ObjectNode root = JsonNodeFactory.instance.objectNode();
             ArrayNode resps = JsonNodeFactory.instance.arrayNode();
             for (LightblueResponse resp : responses) {

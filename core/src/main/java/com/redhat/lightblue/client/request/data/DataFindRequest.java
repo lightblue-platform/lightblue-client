@@ -116,7 +116,7 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
-    public String getOperation() {
-        return Operation.FIND.toString();
+    public Operation getOperation() {
+        return Operation.FIND;
     }
 }

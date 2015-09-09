@@ -1,7 +1,7 @@
 package com.redhat.lightblue.client.request.data;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
+import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.util.JSON;
@@ -17,11 +17,7 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
     private final JsonNode body;
     private final HttpMethod httpMethod;
     private final String operationPathParam;
-    private final String operation;
-
-    public String getOperation() {
-        return operation;
-    }
+    private final Operation operation;
 
     @Deprecated
     public LiteralDataRequest(String body, HttpMethod httpMethod, String operationalPathParam) {
@@ -29,7 +25,7 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
         this.body = JSON.toJsonNode(body);
         this.httpMethod = httpMethod;
         this.operationPathParam = operationalPathParam;
-        this.operation = this.operationPathParam;
+        this.operation = Operation.valueOf(operationalPathParam);
     }
 
     @Deprecated
@@ -38,7 +34,7 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
         this.body = JSON.toJsonNode(body);
         this.httpMethod = httpMethod;
         this.operationPathParam = operationalPathParam;
-        this.operation = this.operationPathParam;
+        this.operation = Operation.valueOf(operationalPathParam);
     }
 
     @Deprecated
@@ -47,7 +43,7 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
         this.body = body;
         this.httpMethod = httpMethod;
         this.operationPathParam = operationalPathParam;
-        this.operation = this.operationPathParam;
+        this.operation = Operation.valueOf(operationalPathParam);
     }
 
     @Deprecated
@@ -56,10 +52,10 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
         this.body = body;
         this.httpMethod = httpMethod;
         this.operationPathParam = operationalPathParam;
-        this.operation = this.operationPathParam;
+        this.operation = Operation.valueOf(operationalPathParam);
     }
 
-    public LiteralDataRequest(JsonNode body, HttpMethod httpMethod, String operationPathParam, String operation) {
+    public LiteralDataRequest(JsonNode body, HttpMethod httpMethod, String operationPathParam, Operation operation) {
         super();
         this.body = body;
         this.httpMethod = httpMethod;
@@ -67,12 +63,12 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
         this.operation = operation;
     }
 
-    public LiteralDataRequest(String entityName, String entityVersion, JsonNode body, HttpMethod httpMethod, String operationalPathParam, String operation) {
+    public LiteralDataRequest(String entityName, String entityVersion, JsonNode body, HttpMethod httpMethod, String operationalPathParam, Operation operation) {
         super(entityName, entityVersion);
         this.body = body;
         this.httpMethod = httpMethod;
         this.operationPathParam = operationalPathParam;
-        this.operation = this.operationPathParam;
+        this.operation = Operation.valueOf(operationalPathParam);
     }
 
     @Override
@@ -88,6 +84,10 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
     @Override
     public String getOperationPathParam() {
         return operationPathParam;
+    }
+
+    public Operation getOperation() {
+        return operation;
     }
 
 }

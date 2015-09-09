@@ -232,7 +232,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      */
     @Override
     public LightblueResponse metadata(LightblueRequest lightblueRequest) {
-        LOGGER.debug("Calling metadata service with lightblueRequest: " + lightblueRequest.toString());
+        LOGGER.debug("Calling metadata service with lightblueRequest: {}", lightblueRequest.toString());
         try {
             return callService(lightblueRequest, configuration.getMetadataServiceURI());
         } catch (Exception e) {
@@ -247,7 +247,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      */
     @Override
     public LightblueResponse data(LightblueRequest lightblueRequest) throws LightblueException {
-        LOGGER.debug("Calling data service with lightblueRequest: " + lightblueRequest.toString());
+        LOGGER.debug("Calling data service with lightblueRequest: {}", lightblueRequest.toString());
         return callService(lightblueRequest, configuration.getDataServiceURI());
     }
 
@@ -263,16 +263,15 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 
     @Override
     public BulkLightblueResponse bulkData(AbstractBulkLightblueRequest<AbstractLightblueDataRequest> request) throws LightblueException {
-        long t1 = new Date().getTime();
+        long t1 = System.currentTimeMillis();
         try {
             String responseBody = httpTransport.executeRequest(request, configuration.getDataServiceURI());
 
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Response received from service: " + responseBody);
+            LOGGER.debug("Response received from service: {}", responseBody);
 
-                long t2 = new Date().getTime();
-                LOGGER.debug("Call took " + (t2 - t1) + "ms");
-            }
+            long t2 = new Date().getTime();
+            LOGGER.debug("Call took {}ms", t2 - t1);
+
             return new BulkLightblueResponse(responseBody, request);
         } catch (IOException e) {
             LOGGER.error("There was a problem calling the lightblue service", e);
@@ -289,16 +288,15 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 
     protected LightblueResponse callService(LightblueRequest request, String baseUri) throws LightblueException {
         try {
-            long t1 = new Date().getTime();
+            long t1 = System.currentTimeMillis();
 
             String responseBody = httpTransport.executeRequest(request, baseUri);
 
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Response received from service: " + responseBody);
+            LOGGER.debug("Response received from service: {}", responseBody);
 
-                long t2 = new Date().getTime();
-                LOGGER.debug("Call took " + (t2 - t1) + "ms");
-            }
+            long t2 = new Date().getTime();
+            LOGGER.debug("Call took {}ms", t2 - t1);
+
             return new DefaultLightblueResponse(responseBody, mapper);
         } catch (IOException e) {
             LOGGER.error("There was a problem calling the lightblue service", e);
