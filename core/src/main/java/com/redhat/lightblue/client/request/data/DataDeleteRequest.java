@@ -48,4 +48,9 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
     public String getOperationPathParam() {
         return "delete";
     }
+
+    @Override
+    public String getOperation() {
+        return "delete";
+    }
 }

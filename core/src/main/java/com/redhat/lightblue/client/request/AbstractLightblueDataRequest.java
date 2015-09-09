@@ -41,4 +41,6 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
     }
 
     public abstract String getOperationPathParam();
+    
+    public abstract String getOperation();
 }

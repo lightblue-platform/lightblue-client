@@ -29,6 +29,11 @@ public class TestAbstractLightblueDataRequest extends AbstractLightblueRequestTe
         public HttpMethod getHttpMethod() {
             return null;
         }
+
+        @Override
+        public String getOperation() {
+            return dataOperation;
+        }
     };
 
     @Test

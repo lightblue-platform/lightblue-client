@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 import com.redhat.lightblue.client.http.HttpMethod;
+import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.util.JSON;
@@ -35,9 +36,9 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
 
     @Deprecated
     public void returns(com.redhat.lightblue.client.projection.Projection... projection) {
-        Projection[] p=new Projection[projection.length];
-        for(int i=0;i<p.length;i++)
-            p[i]=top(projection[i]);
+        Projection[] p = new Projection[projection.length];
+        for (int i = 0; i < p.length; i++)
+            p[i] = top(projection[i]);
         returns(p);
     }
 
@@ -56,16 +57,16 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
 
     @Override
     public JsonNode getBodyJson() {
-        ObjectNode node=JsonNodeFactory.instance.objectNode();
-        if(projection!=null)
-            node.set("projection",projection.toJson());
-        if(objects.length==1) {
-            node.set("data",JSON.toJsonNode(objects[0]));
+        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        if (projection != null)
+            node.set("projection", projection.toJson());
+        if (objects.length == 1) {
+            node.set("data", JSON.toJsonNode(objects[0]));
         } else {
-            ArrayNode arr=JsonNodeFactory.instance.arrayNode();
-            for(int i=0;i<objects.length;i++)
+            ArrayNode arr = JsonNodeFactory.instance.arrayNode();
+            for (int i = 0; i < objects.length; i++)
                 arr.add(JSON.toJsonNode(objects[i]));
-            node.set("data",arr);
+            node.set("data", arr);
         }
         return node;
     }
@@ -78,5 +79,10 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     @Override
     public String getOperationPathParam() {
         return "insert";
+    }
+
+    @Override
+    public String getOperation() {
+        return Operation.INSERT.toString();
     }
 }
