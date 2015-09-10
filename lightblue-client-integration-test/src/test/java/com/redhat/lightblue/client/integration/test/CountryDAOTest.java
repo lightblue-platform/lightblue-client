@@ -3,9 +3,8 @@ package com.redhat.lightblue.client.integration.test;
 import static com.redhat.lightblue.client.expression.query.ValueQuery.withValue;
 import static com.redhat.lightblue.client.projection.FieldProjection.includeField;
 import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadJsonNode;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.List;
 
@@ -17,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
+import com.redhat.lightblue.client.integration.test.pojo.Country;
 import com.redhat.lightblue.client.request.BulkLightblueDataRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
@@ -24,7 +24,6 @@ import com.redhat.lightblue.client.response.BulkLightblueResponse;
 import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponseParseException;
-import com.sun.jna.platform.win32.WinNT.LOGICAL_PROCESSOR_RELATIONSHIP;
 
 /**
  * Testing your code against lightblue example.
@@ -48,7 +47,7 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
 
     @Override
     protected JsonNode[] getMetadataJsonNodes() throws Exception {
-        return new JsonNode[] { loadJsonNode("country.json") };
+        return new JsonNode[] { loadJsonNode("metadata/country.json") };
     }
 
     private Country insertPL() throws LightblueException {

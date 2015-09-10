@@ -1,4 +1,4 @@
-package com.redhat.lightblue.client.integration.test;
+package com.redhat.lightblue.client.integration.test.pojo;
 
 public class Country {
 

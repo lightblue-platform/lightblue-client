@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client;
 
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -248,6 +249,10 @@ public class Update extends Expression implements ForEachUpdate {
 
     public static Set set(String field,boolean i) {
         return new Set().more(field,Literal.value(i));
+    }
+    
+    public static Set set(String field, Date date){
+        return new Set().more(field, Literal.value(date));
     }
 
     /**
