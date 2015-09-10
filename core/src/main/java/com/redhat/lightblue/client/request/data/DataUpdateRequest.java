@@ -3,14 +3,13 @@ package com.redhat.lightblue.client.request.data;
 import java.util.Collection;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.redhat.lightblue.client.Operation;
+import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.Update;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 
 public class DataUpdateRequest extends AbstractLightblueDataRequest {
@@ -37,9 +36,9 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
 
     @Deprecated
     public void returns(com.redhat.lightblue.client.projection.Projection... projection) {
-        Projection[] p=new Projection[projection.length];
-        for(int i=0;i<p.length;i++)
-            p[i]=top(projection[i]);
+        Projection[] p = new Projection[projection.length];
+        for (int i = 0; i < p.length; i++)
+            p[i] = top(projection[i]);
         returns(p);
     }
 
@@ -58,14 +57,14 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
     }
 
     public void updates(Update... updates) {
-        update=Update.update(updates);
+        update = Update.update(updates);
     }
 
     @Deprecated
     public void updates(com.redhat.lightblue.client.expression.update.Update... updates) {
-        Update[] u=new Update[updates.length];
-        for(int i=0;i<u.length;i++)
-            u[i]=tou(updates[i]);
+        Update[] u = new Update[updates.length];
+        for (int i = 0; i < u.length; i++)
+            u[i] = tou(updates[i]);
         updates(u);
     }
 
@@ -112,11 +111,11 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
 
     @Override
     public JsonNode getBodyJson() {
-        ObjectNode node=JsonNodeFactory.instance.objectNode();
-        if(projection!=null)
-            node.set("projection",projection.toJson());
-        node.set("query",query.toJson());
-        node.set("update",update.toJson());
+        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        if (projection != null)
+            node.set("projection", projection.toJson());
+        node.set("query", query.toJson());
+        node.set("update", update.toJson());
         return node;
     }
 
@@ -128,6 +127,11 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
     @Override
     public String getOperationPathParam() {
         return "update";
+    }
+
+    @Override
+    public Operation getOperation() {
+        return Operation.UPDATE;
     }
 
 }

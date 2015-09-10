@@ -1,5 +1,6 @@
 package com.redhat.lightblue.client.request;
 
+import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.http.HttpMethod;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,6 +29,11 @@ public class TestAbstractLightblueDataRequest extends AbstractLightblueRequestTe
         @Override
         public HttpMethod getHttpMethod() {
             return null;
+        }
+
+        @Override
+        public Operation getOperation() {
+            return Operation.FIND;
         }
     };
 

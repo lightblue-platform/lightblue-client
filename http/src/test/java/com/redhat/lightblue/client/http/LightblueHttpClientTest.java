@@ -18,68 +18,65 @@ import com.redhat.lightblue.client.expression.query.ValueQuery;
 import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.projection.FieldProjection;
+import com.redhat.lightblue.client.request.BulkLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.LightblueException;
 
 public class LightblueHttpClientTest {
 
-    LightblueClientConfiguration config = new LightblueClientConfiguration();
-    HttpTransport httpTransport = mock(HttpTransport.class);
-    LightblueHttpClient client = new LightblueHttpClient(config, httpTransport);
+	LightblueClientConfiguration config = new LightblueClientConfiguration();
+	HttpTransport httpTransport = mock(HttpTransport.class);
+	LightblueHttpClient client = new LightblueHttpClient(config, httpTransport);
 
-    @Test
-    public void testPojoMapping() throws Exception {
-        DataFindRequest findRequest = new DataFindRequest("foo", "bar");
+	@Test
+	public void testPojoMapping() throws Exception {
+		DataFindRequest findRequest = new DataFindRequest("foo", "bar");
 
-        findRequest.where(withValue("foo = bar"));
-        findRequest.select(includeField("_id"));
+		findRequest.where(withValue("foo = bar"));
+		findRequest.select(includeField("_id"));
 
-        String response = "{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}";
+		String response = "{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}";
 
-        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString()))
-                .thenReturn(response);
+		when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(response);
 
-        SimpleModelObject[] results = client.data(findRequest,
-                SimpleModelObject[].class);
+		SimpleModelObject[] results = client.data(findRequest, SimpleModelObject[].class);
 
-        Assert.assertEquals(1, results.length);
+		Assert.assertEquals(1, results.length);
 
-        Assert.assertTrue(new SimpleModelObject("idhash", "value")
-                .equals(results[0]));
-    }
+		Assert.assertTrue(new SimpleModelObject("idhash", "value").equals(results[0]));
+	}
 
-    @Test(expected = LightblueHttpClientException.class)
-    public void testPojoMappingWithParsingError() throws Exception {
-        DataFindRequest findRequest = new DataFindRequest("foo", "bar");
+	@Test(expected = LightblueHttpClientException.class)
+	public void testPojoMappingWithParsingError() throws Exception {
+		DataFindRequest findRequest = new DataFindRequest("foo", "bar");
 
-        findRequest.where(withValue("foo = bar"));
-        findRequest.select(includeField("_id"));
+		findRequest.where(withValue("foo = bar"));
+		findRequest.select(includeField("_id"));
 
-        String response = "{\"processed\":\"<p>This is not json</p>\"}";
+		String response = "{\"processed\":\"<p>This is not json</p>\"}";
 
-        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString()))
-                .thenReturn(response);
+		when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(response);
 
-        client.data(findRequest, SimpleModelObject[].class);
-    }
+		client.data(findRequest, SimpleModelObject[].class);
+	}
 
-    @Test(expected=LightblueException.class)
-    public void testExceptionWhenLightblueIsDown() throws LightblueException {
-        LightblueClientConfiguration c = new LightblueClientConfiguration();
-        c.setUseCertAuth(false);
-        c.setDataServiceURI("http://foo/bar");
+	@Test(expected = LightblueException.class)
+	public void testExceptionWhenLightblueIsDown() throws LightblueException {
+		LightblueClientConfiguration c = new LightblueClientConfiguration();
+		c.setUseCertAuth(false);
+		c.setDataServiceURI("http://foo/bar");
 
-        LightblueClient httpClient = new LightblueHttpClient(c);
-        DataFindRequest r = new DataFindRequest();
-        r.setEntityName("e");
-        r.setEntityVersion("v");
-        r.where(new ValueQuery("a = b"));
-        r.select(new FieldProjection("foo", true, false));
+		LightblueClient httpClient = new LightblueHttpClient(c);
+		DataFindRequest r = new DataFindRequest();
+		r.setEntityName("e");
+		r.setEntityVersion("v");
+		r.where(new ValueQuery("a = b"));
+		r.select(new FieldProjection("foo", true, false));
 
-        httpClient.data(r);
-        Assert.fail();
+		httpClient.data(r);
+		Assert.fail();
 
-    }
+	}
 
 }

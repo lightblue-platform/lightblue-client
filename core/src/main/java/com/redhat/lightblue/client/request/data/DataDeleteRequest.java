@@ -3,7 +3,7 @@ package com.redhat.lightblue.client.request.data;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-
+import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
@@ -47,5 +47,10 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
     @Override
     public String getOperationPathParam() {
         return "delete";
+    }
+
+    @Override
+    public Operation getOperation() {
+        return Operation.DELETE;
     }
 }
