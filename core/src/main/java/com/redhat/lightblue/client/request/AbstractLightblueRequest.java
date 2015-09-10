@@ -56,19 +56,18 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         restOfURI.append(pathParam);
     }
     
-    protected void appendToURI(StringBuilder restOfURI, String queryParamName, String queryParamvalue) {
+	protected void appendToURI(StringBuilder restOfURI, String queryParamName, String queryParamvalue) {
 		if (!StringUtils.endsWith(restOfURI.toString(), PATH_SEPARATOR)) {
 			if (!StringUtils.contains(restOfURI.toString(), QUERY_PARAM_NAME_VALUE_SEPERATOR)) {
 				restOfURI.append(QUERY_BEGINNER);
 				restOfURI.append(queryParamName);
-				restOfURI.append(QUERY_PARAM_NAME_VALUE_SEPERATOR);
-				restOfURI.append(queryParamvalue);
+
 			} else {
 				restOfURI.append(QUERY_SEPARATOR);
 				restOfURI.append(queryParamName);
-				restOfURI.append(QUERY_PARAM_NAME_VALUE_SEPERATOR);
-				restOfURI.append(queryParamvalue);
 			}
+			restOfURI.append(QUERY_PARAM_NAME_VALUE_SEPERATOR);
+			restOfURI.append(queryParamvalue);
 		}
 
 	}
