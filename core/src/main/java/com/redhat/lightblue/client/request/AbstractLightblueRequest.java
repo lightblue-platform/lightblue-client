@@ -60,12 +60,10 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
 		if (!StringUtils.endsWith(restOfURI.toString(), PATH_SEPARATOR)) {
 			if (!StringUtils.contains(restOfURI.toString(), QUERY_PARAM_NAME_VALUE_SEPERATOR)) {
 				restOfURI.append(QUERY_BEGINNER);
-				restOfURI.append(queryParamName);
-
 			} else {
 				restOfURI.append(QUERY_SEPARATOR);
-				restOfURI.append(queryParamName);
 			}
+			restOfURI.append(queryParamName);
 			restOfURI.append(QUERY_PARAM_NAME_VALUE_SEPERATOR);
 			restOfURI.append(queryParamvalue);
 		}
