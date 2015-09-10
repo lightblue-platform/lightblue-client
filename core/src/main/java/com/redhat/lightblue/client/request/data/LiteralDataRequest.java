@@ -24,8 +24,8 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
         super();
         this.body = JSON.toJsonNode(body);
         this.httpMethod = httpMethod;
-        this.operationPathParam = operationalPathParam;
-        this.operation = Operation.valueOf(operationalPathParam);
+        operationPathParam = operationalPathParam;
+        operation = Operation.valueOf(operationalPathParam);
     }
 
     @Deprecated
@@ -33,8 +33,8 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
         super(entityName, entityVersion);
         this.body = JSON.toJsonNode(body);
         this.httpMethod = httpMethod;
-        this.operationPathParam = operationalPathParam;
-        this.operation = Operation.valueOf(operationalPathParam);
+        operationPathParam = operationalPathParam;
+        operation = Operation.valueOf(operationalPathParam.toUpperCase());
     }
 
     @Deprecated
@@ -42,8 +42,8 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
         super();
         this.body = body;
         this.httpMethod = httpMethod;
-        this.operationPathParam = operationalPathParam;
-        this.operation = Operation.valueOf(operationalPathParam);
+        operationPathParam = operationalPathParam;
+        operation = Operation.valueOf(operationalPathParam.toUpperCase());
     }
 
     @Deprecated
@@ -51,8 +51,8 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
         super(entityName, entityVersion);
         this.body = body;
         this.httpMethod = httpMethod;
-        this.operationPathParam = operationalPathParam;
-        this.operation = Operation.valueOf(operationalPathParam);
+        operationPathParam = operationalPathParam;
+        operation = Operation.valueOf(operationalPathParam.toUpperCase());
     }
 
     public LiteralDataRequest(JsonNode body, HttpMethod httpMethod, String operationPathParam, Operation operation) {
@@ -67,8 +67,8 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
         super(entityName, entityVersion);
         this.body = body;
         this.httpMethod = httpMethod;
-        this.operationPathParam = operationalPathParam;
-        this.operation = Operation.valueOf(operationalPathParam);
+        operationPathParam = operationalPathParam;
+        this.operation = Operation.valueOf(operationalPathParam.toUpperCase());
     }
 
     @Override
@@ -86,6 +86,7 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
         return operationPathParam;
     }
 
+    @Override
     public Operation getOperation() {
         return operation;
     }
