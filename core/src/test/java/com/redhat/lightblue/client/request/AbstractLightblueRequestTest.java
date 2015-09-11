@@ -10,6 +10,7 @@ public class AbstractLightblueRequestTest {
 	protected static final String baseURI = "http://lightblue.io/rest/";
 	protected static final String dataOperation = "dosomethingwithdata";
 	protected static final String metadataOperation = "dosomethingwithmetadata";
+	protected static final String metadataSchema = "schemaForMetadata";
 	protected static final String metadataComment = "use some change comment";
 	protected static final String finalDataURI = baseURI + dataOperation + "/" + entityName + "/" + entityVersion;
 	protected static final String finalMetadataURI = baseURI + entityName + "/" + entityVersion + "/" + metadataOperation;

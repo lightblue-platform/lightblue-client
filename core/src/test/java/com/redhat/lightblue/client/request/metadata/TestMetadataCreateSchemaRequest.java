@@ -12,7 +12,7 @@ public class TestMetadataCreateSchemaRequest extends AbstractLightblueRequestTes
 
 	@Before
 	public void setUp() throws Exception {
-		request = new MetadataCreateSchemaRequest(entityName, entityVersion);
+		request = new MetadataCreateSchemaRequest(entityName, entityVersion, metadataSchema);
 	}
 	
 	@Test
