@@ -2,9 +2,12 @@ package com.redhat.lightblue.client.integration.test;
 
 import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadJsonNode;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,8 +23,8 @@ import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.response.BulkLightblueResponse;
 import com.redhat.lightblue.client.response.LightblueException;
-import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
+import com.redhat.lightblue.client.response.LightblueResponse;
 
 /**
  * Testing your code against lightblue example.
@@ -103,29 +106,29 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
 
         assertEquals(responses.get(0), bulkResponse.getResponse(request));
     }
-    
+
     @Test
     public void testCIFind() throws LightblueException, LightblueParseException {
         Country country = insertPL();
-        
+
         DataFindRequest request = new DataFindRequest(Country.objectType, Country.objectVersion);
         request.select(Projection.includeField("*"));
         request.where(Query.withMatchingString("iso2Code", "pl", true));
-        
+
         LightblueResponse data = client.data(request);
         Country[] countries = data.parseProcessed(Country[].class);
-        
+
         assertEquals(1, countries.length);
-        
-        // ---        
-        
+
+        // ---
+
         request = new DataFindRequest(Country.objectType, Country.objectVersion);
         request.select(Projection.includeField("*"));
         request.where(Query.withMatchingString("iso2Code", "pl", false));
-        
+
         data = client.data(request);
         countries = data.parseProcessed(Country[].class);
-        
+
         assertEquals(0, countries.length);
     }
 
@@ -142,6 +145,23 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         Country[] countries = client.data(request, Country[].class);
 
         Assert.assertTrue(countries.length == 0);
+    }
+
+    @Test
+    public void testGetEntityVersions() throws Exception {
+        Set<String> versions = getEntityVersions(Country.objectType);
+
+        assertNotNull(versions);
+        assertEquals(1, versions.size());
+        assertEquals(Country.objectVersion, versions.iterator().next());
+    }
+
+    @Test
+    public void testGetEntityVersions_NonExistentEntity() throws Exception {
+        Set<String> versions = getEntityVersions("fakeEntity");
+
+        assertNotNull(versions);
+        assertTrue(versions.isEmpty());
     }
 
 }
