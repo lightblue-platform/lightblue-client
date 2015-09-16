@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-import com.redhat.lightblue.client.request.BulkLightblueDataRequest;
+import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.util.JSON;
 
@@ -27,13 +27,13 @@ import com.redhat.lightblue.client.util.JSON;
 public class TestBulkResponse {
 
     private BulkLightblueResponse bulkResponse;
-    private BulkLightblueDataRequest bulkRequest;
+    private DataBulkRequest bulkRequest;
     private static final String jsonResponse =
             "{\"responses\":[{\"seq\":0,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}},{\"seq\":1,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}}]}";
 
     @Before
     public void setUp() throws Exception {
-        bulkRequest = new BulkLightblueDataRequest();
+        bulkRequest = new DataBulkRequest();
 
         DataFindRequest dfr = new DataFindRequest("foo", "bar");
         dfr.select(Projection.includeField("*"));

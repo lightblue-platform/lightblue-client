@@ -12,9 +12,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author bvulaj
  *
  */
-public class BulkLightblueDataRequest extends AbstractBulkLightblueRequest<AbstractLightblueDataRequest> {
+public class DataBulkRequest extends AbstractDataBulkRequest<AbstractLightblueDataRequest> {
 
-    public BulkLightblueDataRequest() {
+    public DataBulkRequest() {
         super();
     }
 
