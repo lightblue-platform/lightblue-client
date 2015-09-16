@@ -5,7 +5,7 @@ import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.Locking;
-import com.redhat.lightblue.client.request.AbstractBulkLightblueRequest;
+import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.BulkLightblueResponse;
@@ -55,9 +55,9 @@ public class LightblueHystrixClient implements LightblueClient {
 
 	protected class BulkDataHystrixCommand extends HystrixCommand<BulkLightblueResponse> {
 
-		private final AbstractBulkLightblueRequest<AbstractLightblueDataRequest> request;
+        private final AbstractDataBulkRequest<AbstractLightblueDataRequest> request;
 
-		protected BulkDataHystrixCommand(AbstractBulkLightblueRequest<AbstractLightblueDataRequest> request, String groupKey, String commandKey) {
+        protected BulkDataHystrixCommand(AbstractDataBulkRequest<AbstractLightblueDataRequest> request, String groupKey, String commandKey) {
 			super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey)).andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
 			this.request = request;
 
@@ -101,7 +101,7 @@ public class LightblueHystrixClient implements LightblueClient {
 	}
 
 	private class AcquireCommand extends LockingHystrixCommand<Boolean> {
-		private Long ttl;
+		private final Long ttl;
 
 		public AcquireCommand(String groupKey, String commandKey, Locking delegate, String callerId, String resourceId, Long ttl) {
 			super(Boolean.class, groupKey, commandKey, delegate, callerId, resourceId);
@@ -202,7 +202,7 @@ public class LightblueHystrixClient implements LightblueClient {
 	}
 
 	@Override
-	public BulkLightblueResponse bulkData(AbstractBulkLightblueRequest<AbstractLightblueDataRequest> request) throws LightblueException {
+    public BulkLightblueResponse bulkData(AbstractDataBulkRequest<AbstractLightblueDataRequest> request) throws LightblueException {
 		return new BulkDataHystrixCommand(request, groupKey, commandKey).execute();
 	}
 

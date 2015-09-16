@@ -7,8 +7,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,7 +16,6 @@ import com.redhat.lightblue.client.expression.query.ValueQuery;
 import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.projection.FieldProjection;
-import com.redhat.lightblue.client.request.BulkLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.LightblueException;

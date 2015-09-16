@@ -17,7 +17,7 @@ import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
 import com.redhat.lightblue.client.integration.test.pojo.Country;
-import com.redhat.lightblue.client.request.BulkLightblueDataRequest;
+import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.response.BulkLightblueResponse;
@@ -84,7 +84,7 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         request3.select(Projection.includeField("*"));
         request3.where(Query.withValue("name", Query.eq, "Russia"));
 
-        BulkLightblueDataRequest bulkRequest = new BulkLightblueDataRequest();
+        DataBulkRequest bulkRequest = new DataBulkRequest();
         bulkRequest.add(request);
         bulkRequest.add(request2);
         bulkRequest.add(request3);
