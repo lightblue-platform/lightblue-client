@@ -1,6 +1,6 @@
 package com.redhat.lightblue.client;
 
-import com.redhat.lightblue.client.request.AbstractBulkLightblueRequest;
+import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.BulkLightblueResponse;
@@ -15,7 +15,7 @@ public interface LightblueClient {
 
 	LightblueResponse data(LightblueRequest lightblueRequest) throws LightblueException;
 
-	BulkLightblueResponse bulkData(AbstractBulkLightblueRequest<AbstractLightblueDataRequest> request) throws LightblueException;
+	BulkLightblueResponse bulkData(AbstractDataBulkRequest<AbstractLightblueDataRequest> request) throws LightblueException;
 
 	<T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws LightblueException;
 

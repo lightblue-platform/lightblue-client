@@ -14,11 +14,11 @@ import com.redhat.lightblue.client.http.HttpMethod;
  * @author bvulaj
  *
  */
-public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRequest> implements LightblueRequest {
+public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest> implements LightblueRequest {
 
     protected List<E> requests;
 
-    public AbstractBulkLightblueRequest() {
+    public AbstractDataBulkRequest() {
         this.requests = new ArrayList<E>();
     }
 
@@ -28,7 +28,7 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
      * @param request
      * @return
      */
-    public AbstractBulkLightblueRequest<E> add(E request) {
+    public AbstractDataBulkRequest<E> add(E request) {
         this.requests.add(request);
         return this;
     }
@@ -39,7 +39,7 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
      * @param requests
      * @return 
      */
-    public AbstractBulkLightblueRequest<E> addAll(List<E> requests) {
+    public AbstractDataBulkRequest<E> addAll(List<E> requests) {
         this.requests.addAll(requests);
         return this;
     }
@@ -51,7 +51,7 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
      * @param index
      * @return 
      */
-    public AbstractBulkLightblueRequest<E> insert(E request, int index) {
+    public AbstractDataBulkRequest<E> insert(E request, int index) {
         this.requests.add(index, request);
         return this;
     }
@@ -64,7 +64,7 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
      * @param before
      * @return 
      */
-    public AbstractBulkLightblueRequest<E> insertBefore(E request, E before) {
+    public AbstractDataBulkRequest<E> insertBefore(E request, E before) {
         this.requests.add(requests.indexOf(before), request);
         return this;
     }
@@ -77,7 +77,7 @@ public abstract class AbstractBulkLightblueRequest<E extends AbstractLightblueRe
      * @param after
      * @return 
      */
-    public AbstractBulkLightblueRequest<E> insertAfter(E request, E after) {
+    public AbstractDataBulkRequest<E> insertAfter(E request, E after) {
         this.requests.add(requests.indexOf(after) + 1, request);
         return this;
     }

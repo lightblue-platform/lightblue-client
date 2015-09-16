@@ -5,16 +5,13 @@
  */
 package com.redhat.lightblue.client.hystrix;
 
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.Locking;
-import com.redhat.lightblue.client.request.AbstractBulkLightblueRequest;
+import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.BulkLightblueResponse;
 import com.redhat.lightblue.client.response.LightblueException;
@@ -53,7 +50,7 @@ public class LightblueHystrixClientTest {
 		}
 
 		@Override
-		public BulkLightblueResponse bulkData(AbstractBulkLightblueRequest<AbstractLightblueDataRequest> bulkLightblueRequest) throws LightblueException {
+        public BulkLightblueResponse bulkData(AbstractDataBulkRequest<AbstractLightblueDataRequest> bulkLightblueRequest) throws LightblueException {
 			dataBulk = true;
 			return null;
 		}

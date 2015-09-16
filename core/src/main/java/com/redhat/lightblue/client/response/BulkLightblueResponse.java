@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.model.DataError;
 import com.redhat.lightblue.client.model.Error;
-import com.redhat.lightblue.client.request.AbstractBulkLightblueRequest;
+import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.util.JSON;
@@ -36,7 +36,7 @@ public class BulkLightblueResponse {
     private JsonNode json;
     private String text;
 
-    public BulkLightblueResponse(String responseText, AbstractBulkLightblueRequest<? extends AbstractLightblueRequest> reqs) throws LightblueResponseParseException,
+    public BulkLightblueResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueResponseParseException,
             LightblueException {
         requests = reqs.getRequests();
         this.text = responseText;

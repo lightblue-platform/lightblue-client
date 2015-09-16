@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-import com.redhat.lightblue.client.request.BulkLightblueDataRequest;
+import com.redhat.lightblue.client.request.DataBulkRequest;
 
 /**
  * @author bvulaj
@@ -23,11 +23,11 @@ import com.redhat.lightblue.client.request.BulkLightblueDataRequest;
  */
 public class TestBulkDataRequest {
 
-	private BulkLightblueDataRequest request;
+	private DataBulkRequest request;
 
 	@Before
 	public void setUp() throws Exception {
-		request = new BulkLightblueDataRequest();
+		request = new DataBulkRequest();
 	}
 
 	@Test
