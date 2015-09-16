@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import com.redhat.lightblue.client.util.ClientConstants;
+import com.redhat.lightblue.client.util.JSON;
 
 /**
  * A Literal value, backed by a JsonNode
@@ -73,6 +74,13 @@ public class Literal extends ExpressionPart implements
             node=JsonNodeFactory.instance.textNode(x.toString());
         }
         return node;
+    }
+
+    /**
+     * Create a JSON literal from a pojo
+     */
+    public static Literal pojo(Object x) {
+        return new Literal(JSON.toJsonNode(x));
     }
 
     public static Literal value(Object x) {
