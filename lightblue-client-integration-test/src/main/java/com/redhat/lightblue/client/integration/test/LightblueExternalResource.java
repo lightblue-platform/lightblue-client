@@ -1,6 +1,7 @@
 package com.redhat.lightblue.client.integration.test;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 import org.junit.runners.model.TestClass;
 
@@ -52,6 +53,14 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
     public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws IOException, LightblueException {
         return getControllerInstance().loadData(entityName, entityVersion,
                 resourcePath);
+    }
+    
+    public void cleanupMongoCollections(String... collectionNames) throws UnknownHostException {
+        getControllerInstance().cleanupMongoCollections(collectionNames);
+    }
+    
+    public void cleanupMongoCollections(String dbName, String[] collectionNames) throws UnknownHostException {
+        getControllerInstance().cleanupMongoCollections(dbName, collectionNames);
     }
 
     public int getHttpPort() {
