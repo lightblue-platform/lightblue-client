@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.request;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.redhat.lightblue.client.enums.MetadataStatus;
 
 public class AbstractLightblueRequestTest {
@@ -10,14 +12,15 @@ public class AbstractLightblueRequestTest {
 	protected static final String baseURI = "http://lightblue.io/rest/";
 	protected static final String dataOperation = "dosomethingwithdata";
 	protected static final String metadataOperation = "dosomethingwithmetadata";
-	protected static final String metadataSchema = "schemaForMetadata";
+	protected static final String metadataSchema = "{\"name\":\"value\"}";
 	protected static final String metadataComment = "use some change comment";
 	protected static final String finalDataURI = baseURI + dataOperation + "/" + entityName + "/" + entityVersion;
 	protected static final String finalMetadataURI = baseURI + entityName + "/" + entityVersion + "/" + metadataOperation;
 	protected static final String finalMetadataURIWithComment = baseURI + entityName + "/" + entityVersion + "/" + MetadataStatus.ACTIVE.toString() + "?comment=" + metadataComment;
-	protected static final String metadataCreateSchemaRequestUri = baseURI+entityName+"/"+metadataSchema+"="+entityVersion;
+	protected static final String metadataCreateSchemaRequestUri = baseURI+entityName+"/schema="+entityVersion;
 	protected static final String metadataEntityNamesRequestUri = baseURI+"s="+MetadataStatus.ACTIVE.toString();
 	protected static final String metadataEntityNamesRequestUriWithStatusNotSet = baseURI;
+	protected static final JsonNode metadataSchemaJson = JsonNodeFactory.instance.textNode("{\"name\":\"value\"}");
 	
 	
 	

@@ -2,21 +2,27 @@ package com.redhat.lightblue.client.request.metadata;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
+import com.redhat.lightblue.client.util.JSON;
 
 public class MetadataCreateSchemaRequest extends AbstractLightblueMetadataRequest {
 
-	private String schema;
     public MetadataCreateSchemaRequest() {
         super();
     }
 
     public MetadataCreateSchemaRequest(String entityName, String entityVersion, String schema) {
         super(entityName, entityVersion);
-        this.schema = schema;
+        super.setBody(JSON.toJsonNode(schema));
     }
-
+    
+    public MetadataCreateSchemaRequest(String entityName, String entityVersion, JsonNode schema) {
+        super(entityName, entityVersion);
+        super.setBody(schema);
+    }
+    
     @Override
     public String getOperationPathParam() {
         return "";
@@ -39,10 +45,11 @@ public class MetadataCreateSchemaRequest extends AbstractLightblueMetadataReques
         }
 
     	if (StringUtils.isNotBlank(this.getEntityVersion())) {
-            appendToURI(requestURI, this.schema +"="+ this.getEntityVersion());
+            appendToURI(requestURI, "schema="+ this.getEntityVersion());
         }
     	return requestURI.toString();
     	
     }
+    
 
 }
