@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.redhat.lightblue.client.enums.MetadataStatus;
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataGetEntityNamesRequest extends AbstractLightblueRequestTest {
@@ -19,5 +20,22 @@ public class TestMetadataGetEntityNamesRequest extends AbstractLightblueRequestT
 	public void testGetOperationPathParam() {
 		Assert.assertEquals("", request.getOperationPathParam());
 	}
+	
+	@Test
+	public void testDefineStatusOptionalParam() {
+		request.setStatus(MetadataStatus.DISABLED);
+		Assert.assertEquals("disabled", request.getStatus().toString());
+	}
+	
+	@Test
+    public void testGetRestURI() {
+		request.setStatus(MetadataStatus.ACTIVE);
+    	Assert.assertEquals(metadataEntityNamesRequestUri, request.getRestURI(baseURI));
+    }
+	
+	@Test
+    public void testGetRestURIWithStatusNotSet() {
+    	Assert.assertEquals(metadataEntityNamesRequestUriWithStatusNotSet, request.getRestURI(baseURI));
+    }
 
 }

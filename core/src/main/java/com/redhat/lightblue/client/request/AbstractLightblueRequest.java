@@ -9,6 +9,9 @@ import com.redhat.lightblue.client.util.JSON;
 public abstract class AbstractLightblueRequest implements LightblueRequest {
 
     protected static final String PATH_SEPARATOR = "/";
+    protected static final String QUERY_SEPARATOR = "&";
+	protected static final String QUERY_BEGINNER = "?";
+	protected static final String QUERY_PARAM_NAME_VALUE_SEPERATOR = "=";
 
     private String entityName;
     private String entityVersion;
@@ -52,6 +55,21 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         }
         restOfURI.append(pathParam);
     }
+    
+	protected void appendToURI(StringBuilder restOfURI, String queryParamName, String queryParamvalue) {
+		if (!StringUtils.endsWith(restOfURI.toString(), PATH_SEPARATOR)) {
+			if (!StringUtils.contains(restOfURI.toString(), QUERY_PARAM_NAME_VALUE_SEPERATOR)) {
+				restOfURI.append(QUERY_BEGINNER);
+			} else {
+				restOfURI.append(QUERY_SEPARATOR);
+			}
+			restOfURI.append(queryParamName);
+			restOfURI.append(QUERY_PARAM_NAME_VALUE_SEPERATOR);
+			restOfURI.append(queryParamvalue);
+		}
+
+	}
+
 
     @Override
     public String toString() {
