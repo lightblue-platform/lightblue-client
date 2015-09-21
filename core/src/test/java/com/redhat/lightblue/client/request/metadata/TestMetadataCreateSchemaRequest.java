@@ -19,5 +19,10 @@ public class TestMetadataCreateSchemaRequest extends AbstractLightblueRequestTes
 	public void testGetOperationPathParam() {
 		Assert.assertEquals("", request.getOperationPathParam());
 	}
+	
+	@Test
+    public void testGetRestURI() {
+    	Assert.assertEquals(metadataCreateSchemaRequestUri, request.getRestURI(baseURI));
+    }
 
 }

@@ -26,5 +26,16 @@ public class TestMetadataGetEntityNamesRequest extends AbstractLightblueRequestT
 		request.setStatus(MetadataStatus.DISABLED);
 		Assert.assertEquals("disabled", request.getStatus().toString());
 	}
+	
+	@Test
+    public void testGetRestURI() {
+		request.setStatus(MetadataStatus.ACTIVE);
+    	Assert.assertEquals(metadataEntityNamesRequestUri, request.getRestURI(baseURI));
+    }
+	
+	@Test
+    public void testGetRestURIWithStatusNotSet() {
+    	Assert.assertEquals(metadataEntityNamesRequestUriWithStatusNotSet, request.getRestURI(baseURI));
+    }
 
 }

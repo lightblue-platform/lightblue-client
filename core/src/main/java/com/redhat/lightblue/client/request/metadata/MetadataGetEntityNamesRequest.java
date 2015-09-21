@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.request.metadata;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.redhat.lightblue.client.enums.MetadataStatus;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
@@ -23,6 +25,17 @@ public class MetadataGetEntityNamesRequest extends AbstractLightblueMetadataRequ
     @Override
     public HttpMethod getHttpMethod() {
         return HttpMethod.GET;
+    }
+    
+    @Override
+    public String getRestURI(String baseServiceURI) {
+    	StringBuilder requestURI = new StringBuilder(baseServiceURI);
+    	MetadataStatus requestStatus = this.getStatus();
+    	if (requestStatus!=null&&StringUtils.isNotBlank(requestStatus.getStatus())) {
+            appendToURI(requestURI,"s="+this.getStatus().getStatus());
+        }
+    	return requestURI.toString();
+    	
     }
 
 	public MetadataStatus getStatus() {
