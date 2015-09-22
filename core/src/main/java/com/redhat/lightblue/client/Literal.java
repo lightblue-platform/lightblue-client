@@ -99,14 +99,14 @@ public class Literal extends ExpressionPart implements
         return new Literal(b);
     }
 
-    public static Literal[] values(int...v) {
+    public static Literal[] values(Integer...v) {
         Literal[] ret=new Literal[v.length];
         for(int i=0;i<ret.length;i++)
             ret[i]=Literal.value(v[i]);
         return ret;
     }
 
-    public static Literal[] values(long...v) {
+    public static Literal[] values(Long...v) {
         Literal[] ret=new Literal[v.length];
         for(int i=0;i<ret.length;i++)
             ret[i]=Literal.value(v[i]);
