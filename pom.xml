@@ -51,13 +51,13 @@
             <dependency>
                 <groupId>com.redhat.lightblue.rest</groupId>
                 <artifactId>lightblue-rest-integration-test</artifactId>
-                <version>1.8.0-SNAPSHOT</version>
+                <version>${lightblue.rest.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.redhat.lightblue</groupId>
                 <artifactId>lightblue-core-hystrix</artifactId>
-                <version>1.8.0-SNAPSHOT</version>
+                <version>${lightblue.rest.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.netflix.hystrix</groupId>
@@ -167,7 +167,11 @@
         <sonar.host.url>http://127.0.0.1:8080</sonar.host.url>
         <sonar.projectName>lightblue-client</sonar.projectName>
         <rpm.install.basedir>/usr/share/jbossas/standalone/deployments</rpm.install.basedir>
+
+        <lightblue.core.version>1.9.0-SNAPSHOT</lightblue.core.version>
+        <lightblue.rest.version>1.9.0-SNAPSHOT</lightblue.rest.version>
     </properties>
+
     <build>
         <plugins>
             <plugin>
