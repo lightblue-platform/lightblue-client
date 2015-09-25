@@ -91,11 +91,15 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     @Override
     public JsonNode getBodyJson() {
         ObjectNode node = JsonNodeFactory.instance.objectNode();
-        node.set("query", queryExpression.toJson());
-        if (projection != null)
+        if (queryExpression != null) {
+            node.set("query", queryExpression.toJson());
+        }
+        if (projection != null) {
             node.set("projection", projection.toJson());
-        if (sort != null)
+        }
+        if (sort != null) {
             node.set("sort", sort.toJson());
+        }
         if (begin != null && end != null) {
             ArrayNode arr = JsonNodeFactory.instance.arrayNode();
             arr.add(JsonNodeFactory.instance.numberNode(begin));

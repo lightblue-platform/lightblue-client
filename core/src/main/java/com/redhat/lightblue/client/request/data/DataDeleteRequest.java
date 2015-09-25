@@ -34,8 +34,9 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
 
     @Override
     public JsonNode getBodyJson() {
-        ObjectNode node=JsonNodeFactory.instance.objectNode();
-        node.set("query",queryExpression.toJson());
+        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        if (queryExpression != null)
+            node.set("query", queryExpression.toJson());
         return node;
     }
     
