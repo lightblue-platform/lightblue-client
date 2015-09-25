@@ -114,8 +114,10 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         ObjectNode node = JsonNodeFactory.instance.objectNode();
         if (projection != null)
             node.set("projection", projection.toJson());
-        node.set("query", query.toJson());
-        node.set("update", update.toJson());
+        if (query != null)
+            node.set("query", query.toJson());
+        if (update != null)
+            node.set("update", update.toJson());
         return node;
     }
 
