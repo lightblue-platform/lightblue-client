@@ -101,7 +101,7 @@ public class Projection extends Expression {
         Projection p=new Projection(false);
         p.add("field",pattern).add("include",include).add("match",match.toJson());
         if(projection!=null)
-            p.add("projection",projection.toJson());
+            p.add("project",projection.toJson());
         if(sort!=null)
             p.add("sort",sort.toJson());
         return p;
@@ -141,7 +141,7 @@ public class Projection extends Expression {
         a.add(JsonNodeFactory.instance.numberNode(to));
         p.add("field",pattern).add("include",include).add("range",a);
         if(projection!=null)
-            p.add("projection",projection.toJson());
+            p.add("project",projection.toJson());
         if(sort!=null)
             p.add("sort",sort.toJson());
         return p;
