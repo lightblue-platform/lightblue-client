@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import com.redhat.lightblue.client.Operation;
 
 public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequest implements LightblueRequest {
+
     public AbstractLightblueDataRequest() {
         super();
     }
@@ -23,16 +24,16 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
 
         requestURI.append(baseServiceURI);
 
-        if (StringUtils.isNotBlank(this.getOperationPathParam())) {
+        if (StringUtils.isNotBlank(getOperationPathParam())) {
             appendToURI(requestURI, getOperationPathParam());
         }
 
-        if (StringUtils.isNotBlank(this.getEntityName())) {
-            appendToURI(requestURI, this.getEntityName());
+        if (StringUtils.isNotBlank(getEntityName())) {
+            appendToURI(requestURI, getEntityName());
         }
 
-        if (StringUtils.isNotBlank(this.getEntityVersion())) {
-            appendToURI(requestURI, this.getEntityVersion());
+        if (StringUtils.isNotBlank(getEntityVersion())) {
+            appendToURI(requestURI, getEntityVersion());
         }
         return requestURI.toString();
     }
@@ -43,6 +44,7 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
     }
 
     public abstract String getOperationPathParam();
-    
+
     public abstract Operation getOperation();
+
 }

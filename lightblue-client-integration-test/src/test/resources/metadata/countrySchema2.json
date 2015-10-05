@@ -1,0 +1,50 @@
+{
+    "name": "country",
+    "version": {
+        "value": "0.2.0-SNAPSHOT",
+        "changelog": "Initial version"
+    },
+    "access": {
+        "delete": [
+            "anyone"
+        ],
+        "find": [
+            "anyone"
+        ],
+        "insert": [
+            "anyone"
+        ],
+        "update": [
+            "anyone"
+        ]
+    },
+    "status": {
+        "value": "active"
+    },
+    "fields": {
+        "name": {
+            "type": "string",
+            "constraints": {
+                "required": true
+            }
+        },
+        "iso2Code": {
+            "type": "string",
+            "constraints": {
+                "identity": true
+            }
+        },
+        "iso3Code": {
+            "type": "string",
+            "constraints": {
+                "identity": true
+            }
+        },
+        "optionalField": {
+            "type": "string"
+        },
+        "brandNewField":{
+            "type": "string"
+        }
+    }
+}

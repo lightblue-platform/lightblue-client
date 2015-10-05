@@ -6,10 +6,14 @@ import java.nio.charset.Charset;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.enums.MetadataStatus;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 
+/**
+ * PUT /metadata/{entityName}/{version}/{status}?comment={Change comment}
+ */
 public class MetadataUpdateSchemaStatusRequest extends AbstractLightblueMetadataRequest {
 
 
@@ -24,7 +28,7 @@ public class MetadataUpdateSchemaStatusRequest extends AbstractLightblueMetadata
         this.status = status;
     }
 
-    public MetadataUpdateSchemaStatusRequest(String entityName, String entityVersion, MetadataStatus status,String comment) {
+    public MetadataUpdateSchemaStatusRequest(String entityName, String entityVersion, MetadataStatus status, String comment) {
         super(entityName, entityVersion);
         this.status = status;
         this.comment = comment;
@@ -67,5 +71,10 @@ public class MetadataUpdateSchemaStatusRequest extends AbstractLightblueMetadata
     public String getComment() {
 		return comment;
 	}
+
+    @Override
+    public JsonNode getBodyJson() {
+        return null;
+    }
 
 }

@@ -7,8 +7,8 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
@@ -58,7 +58,7 @@ public final class JSON {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * Convert object to json. If object contains fields of type date, they will
      * be converted to strings using lightblue date format.
@@ -86,6 +86,7 @@ public final class JSON {
         ObjectMapper mapper = getDefaultObjectMapper();
         return mapper.valueToTree(obj);
     }
+
     private JSON() {}
 
 }

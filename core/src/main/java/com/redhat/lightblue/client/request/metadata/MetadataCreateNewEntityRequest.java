@@ -11,14 +11,14 @@ import com.redhat.lightblue.client.util.JSON;
 import com.redhat.lightblue.client.util.Utils;
 
 /**
- * PUT /metadata/{entityName}
+ * PUT /metadata/{entityName}/{version}
  */
-public class MetadataUpdateEntityInfoRequest extends AbstractLightblueMetadataRequest {
+public class MetadataCreateNewEntityRequest extends AbstractLightblueMetadataRequest {
 
     private JsonNode body;
 
-    public MetadataUpdateEntityInfoRequest(String entityName) {
-        super(entityName);
+    public MetadataCreateNewEntityRequest(String entityName, String entityVersion) {
+        super(entityName, entityVersion);
     }
 
     @Override

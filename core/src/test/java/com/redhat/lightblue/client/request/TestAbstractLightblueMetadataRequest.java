@@ -1,14 +1,24 @@
 package com.redhat.lightblue.client.request;
 
-import com.redhat.lightblue.client.http.HttpMethod;
-
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.redhat.lightblue.client.http.HttpMethod;
 
 public class TestAbstractLightblueMetadataRequest extends AbstractLightblueRequestTest {
 
 	AbstractLightblueMetadataRequest testRequest = new AbstractLightblueMetadataRequest() {
+
+        @Override
+        public String getEntityName() {
+            return entityName;
+        }
+
+        @Override
+        public String getEntityVersion() {
+            return entityVersion;
+        }
 
 		@Override
 		public HttpMethod getHttpMethod() {
@@ -19,13 +29,12 @@ public class TestAbstractLightblueMetadataRequest extends AbstractLightblueReque
 		public String getOperationPathParam() {
 			return metadataOperation;
 		}
-	};
 
-	@Before
-	public void setUp() throws Exception {
-		testRequest.setEntityName(entityName);
-		testRequest.setEntityVersion(entityVersion);
-	}
+        @Override
+        public JsonNode getBodyJson() {
+            return null;
+        }
+	};
 
 	@Test
 	public void testGetRestURI() {
