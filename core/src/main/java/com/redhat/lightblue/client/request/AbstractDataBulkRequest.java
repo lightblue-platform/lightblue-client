@@ -1,10 +1,9 @@
 /**
- * 
+ *
  */
 package com.redhat.lightblue.client.request;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,7 +23,7 @@ public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest
 
     /**
      * Adds a request to the end of the current request chain.
-     * 
+     *
      * @param request
      * @return
      */
@@ -35,9 +34,9 @@ public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest
 
     /**
      * Adds a collection of requests to the end of the current request chain.
-     * 
+     *
      * @param requests
-     * @return 
+     * @return
      */
     public AbstractDataBulkRequest<E> addAll(List<E> requests) {
         this.requests.addAll(requests);
@@ -46,10 +45,10 @@ public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest
 
     /**
      * Inserts a request at the given index. This method should not be preferred over the before / after methods.
-     * 
+     *
      * @param request
      * @param index
-     * @return 
+     * @return
      */
     public AbstractDataBulkRequest<E> insert(E request, int index) {
         this.requests.add(index, request);
@@ -59,10 +58,10 @@ public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest
     /**
      * Inserts a request before another specified request. This guarantees that the first request parameter will be executed, sequentially, before the second request parameter. It
      * does not guarantee consecutive execution.
-     * 
+     *
      * @param request
      * @param before
-     * @return 
+     * @return
      */
     public AbstractDataBulkRequest<E> insertBefore(E request, E before) {
         this.requests.add(requests.indexOf(before), request);
@@ -72,10 +71,10 @@ public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest
     /**
      * Inserts a request after another specified request. This guarantees that the first request parameter will be executed, sequentially, after the second request parameter. It
      * does not guarantee consecutive execution.
-     * 
+     *
      * @param request
      * @param after
-     * @return 
+     * @return
      */
     public AbstractDataBulkRequest<E> insertAfter(E request, E after) {
         this.requests.add(requests.indexOf(after) + 1, request);
@@ -99,7 +98,7 @@ public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest
     public String getRestURI(String baseServiceURI) {
         StringBuilder requestURI = new StringBuilder();
         requestURI.append(baseServiceURI);
-        requestURI.append("/bulk");
+        AbstractLightblueRequest.appendToURI(requestURI, "bulk");
         return requestURI.toString();
     }
 
