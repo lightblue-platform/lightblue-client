@@ -1,5 +1,8 @@
 package com.redhat.lightblue.client.request.metadata;
 
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,11 +25,13 @@ public class TestMetadataUpdateSchemaStatusRequest extends AbstractLightblueRequ
     public void testGetOperationPathParam() {
         Assert.assertEquals("active", request.getOperationPathParam());
     }
-    
+
 
     @Test
-    public void testGetRestURI() {
-    	Assert.assertEquals(finalMetadataURIWithComment, requestWithComment.getRestURI(baseURI));
+    public void testGetRestURI() throws Exception {
+        Assert.assertEquals(finalMetadataURIWithComment,
+                URLDecoder.decode(requestWithComment.getRestURI(baseURI),
+                        Charset.defaultCharset().toString()));
     }
 
 }
