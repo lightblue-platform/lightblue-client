@@ -1,9 +1,10 @@
 /**
- * 
+ *
  */
 package com.redhat.lightblue.client.request.data;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -133,4 +134,10 @@ public class TestBulkDataRequest {
 	public void testGetOperationPathParam() {
 		Assert.assertEquals("localhost/bulk", request.getRestURI("localhost"));
 	}
+
+    @Test
+    public void testGetOperationPathParam_WithTail() {
+        Assert.assertEquals("localhost/bulk", request.getRestURI("localhost/"));
+    }
+
 }
