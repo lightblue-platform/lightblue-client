@@ -113,13 +113,20 @@ public class Literal extends ExpressionPart implements
         return ret;
     }
 
+    public static Literal[] numbers(Number...v) {
+        Literal[] ret=new Literal[v.length];
+        for(int i=0;i<ret.length;i++)
+            ret[i]=Literal.value(v[i]);
+        return ret;
+    }
+
     public static Literal[] values(String...v) {
         Literal[] ret=new Literal[v.length];
         for(int i=0;i<ret.length;i++)
             ret[i]=Literal.value(v[i]);
         return ret;
     }
-    
+
     public static EmptyArray emptyArray() {
         return new EmptyArray();
     }
@@ -127,7 +134,7 @@ public class Literal extends ExpressionPart implements
     public static EmptyObject  emptyObject() {
         return new EmptyObject();
     }
-    
+
     public static JsonNode toJson(Literal[] arr) {
         ArrayNode node=JsonNodeFactory.instance.arrayNode();
         for(Literal x:arr)
