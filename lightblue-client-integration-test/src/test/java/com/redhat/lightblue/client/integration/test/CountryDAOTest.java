@@ -131,65 +131,6 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         countries = data.parseProcessed(Country[].class);
         
         assertEquals(0, countries.length);
-        
-        // ---
-        
-        request = new DataFindRequest(Country.objectType, Country.objectVersion);
-        request.select(Projection.includeField("*"));
-        request.where(Query.withValues("iso2Code", true, Literal.values("pl", "PL")));
-        
-        data = client.data(request);
-        countries = data.parseProcessed(Country[].class);
-        
-        assertEquals(1, countries.length);
-        
-        // ---
-        
-        request = new DataFindRequest(Country.objectType, Country.objectVersion);
-        request.select(Projection.includeField("*"));
-        request.where(Query.withValues("iso2Code", false, Literal.values("pl", "PL")));
-        
-        data = client.data(request);
-        countries = data.parseProcessed(Country[].class);
-
-        assertEquals(1, countries.length);
-
-        // ---
-        
-        Country c = new Country();
-        c.setName("Russia");
-        c.setIso2Code("RS");
-        c.setIso3Code("RUS");
-
-        DataInsertRequest insertRequest = new DataInsertRequest(Country.objectType, Country.objectVersion);
-
-        insertRequest.create(c);
-        
-        client.data(insertRequest);
-
-        request = new DataFindRequest(Country.objectType, Country.objectVersion);
-        request.select(Projection.includeField("*"));
-        request.where(Query.withValues("iso2Code", false, Literal.values("rs", "PL")));
-
-        data = client.data(request);
-        countries = data.parseProcessed(Country[].class);
-
-        assertEquals(1, countries.length);
-        assertEquals("PL", countries[0].getIso2Code());
-        
-        // ---
-        
-        request = new DataFindRequest(Country.objectType, Country.objectVersion);
-        request.select(Projection.includeField("*"));
-        request.where(Query.withValues("iso2Code", true, Literal.values("rs", "PL")));
-
-        data = client.data(request);
-        countries = data.parseProcessed(Country[].class);
-        
-        assertEquals(2, countries.length);
-        assertEquals("PL", countries[0].getIso2Code());
-        assertEquals("RS", countries[1].getIso2Code());
-        
     }
 
     @Test
