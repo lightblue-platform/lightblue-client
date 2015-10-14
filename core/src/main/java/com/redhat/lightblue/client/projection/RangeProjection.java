@@ -31,7 +31,7 @@ public class RangeProjection implements Projection {
         sb.append(rangeFrom);
         sb.append(",");
         sb.append(rangeTo);
-        sb.append("],\"project\":");
+        sb.append("],\"projection\":");
         sb.append(projection.toJson());
         sb.append("}");
         return sb.toString();
