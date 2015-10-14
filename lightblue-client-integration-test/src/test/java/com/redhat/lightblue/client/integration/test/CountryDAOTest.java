@@ -114,7 +114,7 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         
         DataFindRequest request = new DataFindRequest(Country.objectType, Country.objectVersion);
         request.select(Projection.includeField("*"));
-        request.where(Query.withValue("iso2Code", "pl", true));
+        request.where(Query.withMatchingString("iso2Code", "pl", true));
         
         LightblueResponse data = client.data(request);
         Country[] countries = data.parseProcessed(Country[].class);
@@ -125,7 +125,7 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         
         request = new DataFindRequest(Country.objectType, Country.objectVersion);
         request.select(Projection.includeField("*"));
-        request.where(Query.withValue("iso2Code", "pl", false));
+        request.where(Query.withMatchingString("iso2Code", "pl", false));
         
         data = client.data(request);
         countries = data.parseProcessed(Country[].class);

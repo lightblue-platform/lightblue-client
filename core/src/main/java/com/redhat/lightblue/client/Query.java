@@ -186,8 +186,8 @@ public class Query extends Expression
      *   { field: <field>, regex: <pattern>, caseInsensitive: <caseInsensitive>, ... }
      * </pre>
      */
-    public static Query withValue(String field, String value, boolean caseInsensitive) {
-        return regex(field, escapeRegExPattern(value), caseInsensitive, false, false, false);
+    public static Query withMatchingString(String field, String value, boolean caseInsensitive) {
+        return caseInsensitive ? regex(field, escapeRegExPattern(value), caseInsensitive, false, false, false) : withValue(field, eq, value);
     }
     
     /**
