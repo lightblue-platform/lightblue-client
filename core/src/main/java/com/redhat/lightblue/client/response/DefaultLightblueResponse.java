@@ -70,59 +70,58 @@ public class DefaultLightblueResponse implements LightblueResponse {
 
     @Override
     public boolean hasDataErrors() {
-        JsonNode err=json.get("dataErrors");
-        return err!=null&&!(err instanceof NullNode)&&err.size()>0;
+        JsonNode err = json.get("dataErrors");
+        return err != null && !(err instanceof NullNode) && err.size() > 0;
     }
- 
+
     @Override
     public boolean hasError() {
         JsonNode objectTypeNode = json.get("status");
         if (objectTypeNode == null) {
             return false;
         }
-        JsonNode err=json.get("errors");
-        if(err!=null&&!(err instanceof NullNode))
+        JsonNode err = json.get("errors");
+        if (err != null && !(err instanceof NullNode))
             return true;
-        err=json.get("dataErrors");
-        if(err!=null&&(err instanceof ArrayNode))
-            if(err.size()>0)
+        err = json.get("dataErrors");
+        if (err != null && (err instanceof ArrayNode))
+            if (err.size() > 0)
                 return true;
-        return objectTypeNode.textValue().equalsIgnoreCase("error")
-                || objectTypeNode.textValue().equalsIgnoreCase("partial");
+        return objectTypeNode.textValue().equalsIgnoreCase("error") || objectTypeNode.textValue().equalsIgnoreCase("partial");
     }
 
     @Override
-    public  DataError[] getDataErrors() {
-        List<DataError> list=new ArrayList<>();
-        if (json==null)
+    public DataError[] getDataErrors() {
+        List<DataError> list = new ArrayList<>();
+        if (json == null)
             return null;
-        JsonNode err=json.get("dataErrors");
-        if(err instanceof ObjectNode)
-            list.add(DataError.fromJson((ObjectNode)err));
-        else if(err instanceof ArrayNode)
-            for(Iterator<JsonNode> itr=((ArrayNode)err).elements();itr.hasNext();)
-                list.add(DataError.fromJson((ObjectNode)itr.next()));
+        JsonNode err = json.get("dataErrors");
+        if (err instanceof ObjectNode)
+            list.add(DataError.fromJson((ObjectNode) err));
+        else if (err instanceof ArrayNode)
+            for (Iterator<JsonNode> itr = ((ArrayNode) err).elements(); itr.hasNext();)
+                list.add(DataError.fromJson((ObjectNode) itr.next()));
         else
             return null;
         return list.toArray(new DataError[list.size()]);
     }
 
     @Override
-    public  Error[] getErrors() {
-        List<Error> list=new ArrayList<>();
-        if (json==null)
+    public Error[] getErrors() {
+        List<Error> list = new ArrayList<>();
+        if (json == null)
             return null;
-        JsonNode err=json.get("errors");
-        if(err instanceof ObjectNode)
-            list.add(Error.fromJson((ObjectNode)err));
-        else if(err instanceof ArrayNode)
-            for(Iterator<JsonNode> itr=((ArrayNode)err).elements();itr.hasNext();)
-                list.add(Error.fromJson((ObjectNode)itr.next()));
+        JsonNode err = json.get("errors");
+        if (err instanceof ObjectNode)
+            list.add(Error.fromJson((ObjectNode) err));
+        else if (err instanceof ArrayNode)
+            for (Iterator<JsonNode> itr = ((ArrayNode) err).elements(); itr.hasNext();)
+                list.add(Error.fromJson((ObjectNode) itr.next()));
         else
             return null;
         return list.toArray(new Error[list.size()]);
     }
-    
+
     @Override
     public int parseModifiedCount() {
         return parseInt("modifiedCount");
@@ -147,8 +146,7 @@ public class DefaultLightblueResponse implements LightblueResponse {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T parseProcessed(final Class<T> type)
-            throws LightblueResponseParseException {
+    public <T> T parseProcessed(final Class<T> type) throws LightblueResponseParseException {
         if (hasError()) {
             throw new LightblueErrorResponseException("Error returned in response: " + getText());
         }
@@ -156,18 +154,16 @@ public class DefaultLightblueResponse implements LightblueResponse {
         try {
             JsonNode processedNode = getProcessed();
 
-            //if null or an empty array
-            if (processedNode == null
-                    || processedNode.isNull()
-                    || processedNode.isMissingNode()
-                    || (processedNode.isArray() && !((ArrayNode) processedNode).iterator().hasNext())) {
+            // if null or an empty array
+            if (processedNode == null || processedNode.isNull() || processedNode.isMissingNode() || (processedNode.isArray() && !((ArrayNode) processedNode).iterator()
+                    .hasNext())) {
                 if (type.isArray()) {
                     return (T) Array.newInstance(type.getComponentType(), 0);
                 }
                 return null;
             }
-            if (!type.isArray()){
-                if (processedNode.size() > 1){
+            if (!type.isArray()) {
+                if (processedNode.size() > 1) {
                     throw new LightblueResponseParseException("Was expecting single result:" + getText() + "\n");
                 } else {
                     return mapper.readValue(processedNode.get(0).traverse(), type);

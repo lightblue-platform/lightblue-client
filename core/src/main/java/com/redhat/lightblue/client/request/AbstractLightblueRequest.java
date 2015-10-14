@@ -3,12 +3,14 @@ package com.redhat.lightblue.client.request;
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.databind.node.ContainerNode;
-
 import com.redhat.lightblue.client.util.JSON;
 
 public abstract class AbstractLightblueRequest implements LightblueRequest {
 
     protected static final String PATH_SEPARATOR = "/";
+    protected static final String QUERY_SEPARATOR = "&";
+	protected static final String QUERY_BEGINNER = "?";
+	protected static final String QUERY_PARAM_NAME_VALUE_SEPERATOR = "=";
 
     private String entityName;
     private String entityVersion;
@@ -27,7 +29,7 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
      */
     public AbstractLightblueRequest(String entityName, String version) {
         this.entityName=entityName;
-        this.entityVersion=version;
+        entityVersion=version;
     }
 
     public String getEntityName() {
@@ -46,12 +48,27 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         this.entityVersion = entityVersion;
     }
 
-    protected void appendToURI(StringBuilder restOfURI, String pathParam) {
+    public static void appendToURI(StringBuilder restOfURI, String pathParam) {
         if (!StringUtils.endsWith(restOfURI.toString(), PATH_SEPARATOR)) {
             restOfURI.append(PATH_SEPARATOR);
         }
         restOfURI.append(pathParam);
     }
+
+	protected void appendToURI(StringBuilder restOfURI, String queryParamName, String queryParamvalue) {
+		if (!StringUtils.endsWith(restOfURI.toString(), PATH_SEPARATOR)) {
+			if (!StringUtils.contains(restOfURI.toString(), QUERY_PARAM_NAME_VALUE_SEPERATOR)) {
+				restOfURI.append(QUERY_BEGINNER);
+			} else {
+				restOfURI.append(QUERY_SEPARATOR);
+			}
+			restOfURI.append(queryParamName);
+			restOfURI.append(QUERY_PARAM_NAME_VALUE_SEPERATOR);
+			restOfURI.append(queryParamvalue);
+		}
+
+	}
+
 
     @Override
     public String toString() {
@@ -71,7 +88,7 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
     protected com.redhat.lightblue.client.Projection top(com.redhat.lightblue.client.projection.Projection p) {
         return com.redhat.lightblue.client.Projection.project((ContainerNode)JSON.toJsonNode(p.toJson()));
     }
-    
+
     /**
      * Deprecated expression model support
      */

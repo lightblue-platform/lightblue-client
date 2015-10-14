@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.HttpMethod;
+import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.Sort;
@@ -49,9 +50,9 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
 
     @Deprecated
     public void select(com.redhat.lightblue.client.projection.Projection... projection) {
-        Projection[] p=new Projection[projection.length];
-        for(int i=0;i<p.length;i++)
-            p[i]=top(projection[i]);
+        Projection[] p = new Projection[projection.length];
+        for (int i = 0; i < p.length; i++)
+            p[i] = top(projection[i]);
         select(p);
     }
 
@@ -60,7 +61,6 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         select(projections.toArray(new com.redhat.lightblue.client.projection.Projection[projections.size()]));
     }
 
-    
     @Deprecated
     public void setSortConditions(List<com.redhat.lightblue.client.request.SortCondition> sortConditions) {
         sort(sortConditions);
@@ -72,9 +72,9 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
 
     @Deprecated
     public void sort(com.redhat.lightblue.client.request.SortCondition... sort) {
-        Sort[] s=new Sort[sort.length];
-        for(int i=0;i<s.length;i++)
-            s[i]=tos(sort[i]);
+        Sort[] s = new Sort[sort.length];
+        for (int i = 0; i < s.length; i++)
+            s[i] = tos(sort[i]);
         sort(s);
     }
 
@@ -90,17 +90,21 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
 
     @Override
     public JsonNode getBodyJson() {
-        ObjectNode node=JsonNodeFactory.instance.objectNode();
-        node.set("query",queryExpression.toJson());
-        if(projection!=null)
-            node.set("projection",projection.toJson());
-        if(sort!=null)
-            node.set("sort",sort.toJson());
-        if(begin!=null&&end!=null) {
-            ArrayNode arr=JsonNodeFactory.instance.arrayNode();
+        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        if (queryExpression != null) {
+            node.set("query", queryExpression.toJson());
+        }
+        if (projection != null) {
+            node.set("projection", projection.toJson());
+        }
+        if (sort != null) {
+            node.set("sort", sort.toJson());
+        }
+        if (begin != null && end != null) {
+            ArrayNode arr = JsonNodeFactory.instance.arrayNode();
             arr.add(JsonNodeFactory.instance.numberNode(begin));
             arr.add(JsonNodeFactory.instance.numberNode(end));
-            node.set("range",arr);
+            node.set("range", arr);
         }
         return node;
     }
@@ -113,5 +117,10 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     @Override
     public String getOperationPathParam() {
         return "find";
+    }
+
+    @Override
+    public Operation getOperation() {
+        return Operation.FIND;
     }
 }
