@@ -4,6 +4,7 @@ import static com.redhat.lightblue.client.expression.query.ValueQuery.withValue;
 import static com.redhat.lightblue.client.projection.FieldProjection.includeField;
 import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadJsonNode;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.net.UnknownHostException;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.redhat.lightblue.client.Literal;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
@@ -104,6 +106,90 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         assertEquals("PL", c2.getIso2Code());
 
         assertEquals(responses.get(0), bulkResponse.getResponse(request));
+    }
+    
+    @Test
+    public void testCIFind() throws LightblueException, LightblueResponseParseException {
+        Country country = insertPL();
+        
+        DataFindRequest request = new DataFindRequest(Country.objectType, Country.objectVersion);
+        request.select(Projection.includeField("*"));
+        request.where(Query.withValue("iso2Code", "pl", true));
+        
+        LightblueResponse data = client.data(request);
+        Country[] countries = data.parseProcessed(Country[].class);
+        
+        assertEquals(1, countries.length);
+        
+        // ---        
+        
+        request = new DataFindRequest(Country.objectType, Country.objectVersion);
+        request.select(Projection.includeField("*"));
+        request.where(Query.withValue("iso2Code", "pl", false));
+        
+        data = client.data(request);
+        countries = data.parseProcessed(Country[].class);
+        
+        assertEquals(0, countries.length);
+        
+        // ---
+        
+        request = new DataFindRequest(Country.objectType, Country.objectVersion);
+        request.select(Projection.includeField("*"));
+        request.where(Query.withValues("iso2Code", true, Literal.values("pl", "PL")));
+        
+        data = client.data(request);
+        countries = data.parseProcessed(Country[].class);
+        
+        assertEquals(1, countries.length);
+        
+        // ---
+        
+        request = new DataFindRequest(Country.objectType, Country.objectVersion);
+        request.select(Projection.includeField("*"));
+        request.where(Query.withValues("iso2Code", false, Literal.values("pl", "PL")));
+        
+        data = client.data(request);
+        countries = data.parseProcessed(Country[].class);
+
+        assertEquals(1, countries.length);
+
+        // ---
+        
+        Country c = new Country();
+        c.setName("Russia");
+        c.setIso2Code("RS");
+        c.setIso3Code("RUS");
+
+        DataInsertRequest insertRequest = new DataInsertRequest(Country.objectType, Country.objectVersion);
+
+        insertRequest.create(c);
+        
+        client.data(insertRequest);
+
+        request = new DataFindRequest(Country.objectType, Country.objectVersion);
+        request.select(Projection.includeField("*"));
+        request.where(Query.withValues("iso2Code", false, Literal.values("rs", "PL")));
+
+        data = client.data(request);
+        countries = data.parseProcessed(Country[].class);
+
+        assertEquals(1, countries.length);
+        assertEquals("PL", countries[0].getIso2Code());
+        
+        // ---
+        
+        request = new DataFindRequest(Country.objectType, Country.objectVersion);
+        request.select(Projection.includeField("*"));
+        request.where(Query.withValues("iso2Code", true, Literal.values("rs", "PL")));
+
+        data = client.data(request);
+        countries = data.parseProcessed(Country[].class);
+        
+        assertEquals(2, countries.length);
+        assertEquals("PL", countries[0].getIso2Code());
+        assertEquals("RS", countries[1].getIso2Code());
+        
     }
 
     @Test

@@ -1,7 +1,11 @@
 package com.redhat.lightblue.client;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ContainerNode;
@@ -179,6 +183,15 @@ public class Query extends Expression
     
     /**
      * <pre>
+     *   { field: <field>, regex: <pattern>, caseInsensitive: <caseInsensitive>, ... }
+     * </pre>
+     */
+    public static Query withValue(String field, Literal value, boolean caseInsensitive) {
+        return regex(field, escape(value.node.asText()), caseInsensitive, false, false, false);
+    }
+    
+    /**
+     * <pre>
      *   { field: <field>, op: <op>, rvalue: <value> }
      * </pre>
      */
@@ -186,6 +199,15 @@ public class Query extends Expression
                                   BinOp op,
                                   Object value) {
         return withValue(field,op,Literal.value(value));
+    }
+    
+    /**
+     * <pre>
+     *   { field: <field>, regex: <pattern>, caseInsensitive: <caseInsensitive>, ... }
+     * </pre>
+     */
+    public static Query withValue(String field, Object value, boolean caseInsensitive) {
+        return withValue(field,Literal.value(value), caseInsensitive);
     }
 
     /**
@@ -375,6 +397,19 @@ public class Query extends Expression
     
     /**
      * <pre>
+     *   { field: <field>, op: <in/nin>, values: [ values ] }
+     * </pre>
+     */
+    public static Query withValues(String field, boolean caseInsensitive, Literal...values) {
+        List<String> sValues = new ArrayList<String>();
+        for (Literal value : values){
+            sValues.add(escape(value.node.asText()));
+        }
+        return regex(field, StringUtils.join(sValues, "|"), caseInsensitive, false, false, false);
+    }
+    
+    /**
+     * <pre>
      *   { field: <field>, op: <in/nin>, rfield: <rfield> }
      * </pre>
      */
@@ -488,6 +523,20 @@ public class Query extends Expression
         Query a = new Query(false);
         a.add(op.toString(), q.toJson());
         return a;
+    }
+    
+    private static final String ESCAPECHARS=".^$*+?()[{\\|";
+
+    public static String escape(String s) {
+        StringBuilder bld = new StringBuilder();
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (ESCAPECHARS.indexOf(c) != -1)
+                bld.append("\\\\");
+            bld.append(c);
+        }
+        return bld.toString();
     }
 }
 
