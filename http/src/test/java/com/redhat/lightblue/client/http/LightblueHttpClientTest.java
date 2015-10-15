@@ -16,7 +16,11 @@ import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
+import com.redhat.lightblue.client.response.DefaultLightblueResponse;
+import com.redhat.lightblue.client.response.LightblueErrorResponseException;
 import com.redhat.lightblue.client.response.LightblueException;
+import com.redhat.lightblue.client.response.LightblueResponseParseException;
+import com.redhat.lightblue.client.util.JSON;
 
 public class LightblueHttpClientTest {
 
@@ -72,6 +76,13 @@ public class LightblueHttpClientTest {
 		httpClient.data(r);
 		Assert.fail();
 
+	}
+
+	@Test(expected = LightblueErrorResponseException.class)
+	public void testParseInvalidJson() throws LightblueResponseParseException {
+	    DefaultLightblueResponse r = new DefaultLightblueResponse(JSON.getDefaultObjectMapper());
+
+	    r.parseProcessed(SimpleModelObject.class);
 	}
 
 }
