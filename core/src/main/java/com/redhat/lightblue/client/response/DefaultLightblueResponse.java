@@ -76,6 +76,9 @@ public class DefaultLightblueResponse implements LightblueResponse {
 
     @Override
     public boolean hasError() {
+        if (json == null)
+            return true;
+
         JsonNode objectTypeNode = json.get("status");
         if (objectTypeNode == null) {
             return false;
