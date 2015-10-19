@@ -39,8 +39,6 @@ public class ExpressionTest {
            Projection.array("a",Query.withValue("x",Query.eq,1),true,Projection.field("*",true,true),null));
         eq("{'field':'a','range':[1,10],'include':true,'projection':{'field':'*','include':true,'recursive':true},'sort':{'x':'$asc'}}",
            Projection.array("a",1,10,true,Projection.field("*",true,true),Sort.sort("x",true)));
-        eq("{'field':'a','range':[1,null],'include':true,'projection':{'field':'*','include':true,'recursive':true},'sort':{'x':'$asc'}}",
-                Projection.array("a",1,null,true,Projection.field("*",true,true),Sort.sort("x",true)));
         eq("[{'field':'a','include':true,'recursive':true},{'field':'b','include':true,'recursive':false}]",
            Projection.project(Projection.field("a",true,true),Projection.field("b",true,false)));
     }
