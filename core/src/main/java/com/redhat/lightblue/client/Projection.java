@@ -130,8 +130,8 @@ public class Projection extends Expression {
      * </pre>
      */        
     public static Projection array(String pattern,
-                                   int from,
-                                   int to,
+                                   Integer from,
+                                   Integer to,
                                    boolean include,
                                    Projection projection,
                                    Sort sort) {
