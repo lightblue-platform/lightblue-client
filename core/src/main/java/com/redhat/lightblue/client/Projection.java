@@ -138,7 +138,10 @@ public class Projection extends Expression {
         Projection p=new Projection(false);
         ArrayNode a=JsonNodeFactory.instance.arrayNode();
         a.add(JsonNodeFactory.instance.numberNode(from));
+        if(to!=null)
         a.add(JsonNodeFactory.instance.numberNode(to));
+        else
+        	a.add(JsonNodeFactory.instance.nullNode());	
         p.add("field",pattern).add("include",include).add("range",a);
         if(projection!=null)
             p.add("projection",projection.toJson());
