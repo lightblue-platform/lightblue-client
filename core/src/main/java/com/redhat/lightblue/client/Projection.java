@@ -151,22 +151,22 @@ public class Projection extends Expression {
     }
 
     public static Projection array(String pattern,
-                                   int from,
-                                   int to,
+                                   Integer from,
+                                   Integer to,
                                    Projection projection) {
         return array(pattern,from,to,true,projection,null);
     }
 
     public static Projection array(String pattern,
-                                   int from,
-                                   int to,
+                                   Integer from,
+                                   Integer to,
                                    Sort sort) {
         return array(pattern,from,to,true,null,sort);
     }
 
     public static Projection array(String pattern,
-                                   int from,
-                                   int to) {
+                                   Integer from,
+                                   Integer to) {
         return array(pattern,from,to,true,null,null);
     }
 

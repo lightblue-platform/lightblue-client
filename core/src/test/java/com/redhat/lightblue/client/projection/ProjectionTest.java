@@ -48,5 +48,19 @@ public class ProjectionTest {
         RangeProjection rp = new RangeProjection("termsVerbiageTranslation", true, 0, 1, myProj);
         JSONAssert.assertEquals(rp.toJson(), expectedJson, false);
     }
+    
+    @Test
+    public void testRangeProjectionToJsonNullTo() throws JSONException {
+
+        Projection myProj = new Projection (){
+            public String toJson() {
+                return "{\"field\":\"*\"}";
+            }
+        };
+        String expectedJson = "{\"field\":\"termsVerbiageTranslation\",\"include\":true,\"range\":[0,null],\"projection\":" + myProj.toJson() + "}";
+        RangeProjection rp = new RangeProjection("termsVerbiageTranslation", true, 0, null, myProj);
+        JSONAssert.assertEquals(rp.toJson(), expectedJson, false);
+    }
+
 
 }
