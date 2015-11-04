@@ -17,12 +17,8 @@ public class LightblueResponseException extends LightblueException implements Li
 
     private static final long serialVersionUID = 1L;
 
-    private LightblueResponse lightblueResponse;
+    private final LightblueResponse lightblueResponse;
     private Set<String> errorCodes;
-
-    public LightblueResponseException(String message, Throwable cause) {
-        super(message, cause);
-    }
 
     public LightblueResponseException(String message, LightblueResponse lightblueResponse) {
         super(message);
@@ -36,10 +32,6 @@ public class LightblueResponseException extends LightblueException implements Li
 
     public LightblueResponse getLightblueResponse() {
         return lightblueResponse;
-    }
-
-    public void setLightblueResponse(LightblueResponse lightblueResponse) {
-        this.lightblueResponse = lightblueResponse;
     }
 
     public boolean exists(String errorCode) {
