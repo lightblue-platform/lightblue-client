@@ -46,7 +46,7 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
                 throw new LightblueResponseException("Lightblue exception occurred: ", this);
             }
         } catch (IOException e) {
-            throw new LightblueResponseParseException("Unable to parse response: ", e);
+            throw new LightblueParseException("Unable to parse response: ", e);
         }
     }
 
@@ -149,9 +149,9 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T parseProcessed(final Class<T> type) throws LightblueResponseParseException {
+    public <T> T parseProcessed(final Class<T> type) throws LightblueParseException {
         if (hasError()) {
-            throw new LightblueResponseParseException("Error returned in response: " + getText());
+            throw new LightblueParseException("Error returned in response: " + getText());
         }
 
         try {
@@ -167,7 +167,7 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
             }
             if (!type.isArray()) {
                 if (processedNode.size() > 1) {
-                    throw new LightblueResponseParseException("Was expecting single result:" + getText() + "\n");
+                    throw new LightblueParseException("Was expecting single result:" + getText() + "\n");
                 } else {
                     return mapper.readValue(processedNode.get(0).traverse(), type);
                 }
@@ -175,7 +175,7 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
                 return mapper.readValue(processedNode.traverse(), type);
             }
         } catch (RuntimeException | IOException e) {
-            throw new LightblueResponseParseException("Error parsing lightblue response: " + getText() + "\n", e);
+            throw new LightblueParseException("Error parsing lightblue response: " + getText() + "\n", e);
         }
     }
 }

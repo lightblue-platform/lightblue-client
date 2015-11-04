@@ -36,7 +36,7 @@ public class BulkLightblueResponse {
     private JsonNode json;
     private String text;
 
-    public BulkLightblueResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueResponseParseException,
+    public BulkLightblueResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueParseException,
             LightblueException {
         requests = reqs.getRequests();
         this.text = responseText;
@@ -53,7 +53,7 @@ public class BulkLightblueResponse {
                 responses.put(resp.get("seq").intValue(), response);
             }
         } catch (IOException e) {
-            throw new LightblueResponseParseException("Error parsing lightblue response: " + responseText + "\n", e);
+            throw new LightblueParseException("Error parsing lightblue response: " + responseText + "\n", e);
         }
     }
 

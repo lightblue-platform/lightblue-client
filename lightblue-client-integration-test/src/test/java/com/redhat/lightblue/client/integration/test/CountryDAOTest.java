@@ -25,7 +25,7 @@ import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.response.BulkLightblueResponse;
 import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
-import com.redhat.lightblue.client.response.LightblueResponseParseException;
+import com.redhat.lightblue.client.response.LightblueParseException;
 
 /**
  * Testing your code against lightblue example.
@@ -71,7 +71,7 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
     }
 
     @Test
-    public void testBulkFind() throws LightblueException, LightblueResponseParseException {
+    public void testBulkFind() throws LightblueException, LightblueParseException {
         Country country = insertPL();
 
         DataFindRequest request = new DataFindRequest(Country.objectType, Country.objectVersion);
@@ -109,7 +109,7 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
     }
     
     @Test
-    public void testCIFind() throws LightblueException, LightblueResponseParseException {
+    public void testCIFind() throws LightblueException, LightblueParseException {
         Country country = insertPL();
         
         DataFindRequest request = new DataFindRequest(Country.objectType, Country.objectVersion);

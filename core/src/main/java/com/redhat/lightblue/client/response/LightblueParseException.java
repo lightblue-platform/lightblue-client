@@ -5,19 +5,19 @@ package com.redhat.lightblue.client.response;
  *
  * @author dcrissman
  */
-public class LightblueResponseParseException extends LightblueException {
+public class LightblueParseException extends LightblueException {
 
     private static final long serialVersionUID = -1221306072042538444L;
 
-    public LightblueResponseParseException(String message) {
+    public LightblueParseException(String message) {
         super(message);
     }
 
-    public LightblueResponseParseException(Throwable cause) {
+    public LightblueParseException(Throwable cause) {
         super(cause);
     }
 
-    public LightblueResponseParseException(String message, Throwable cause) {
+    public LightblueParseException(String message, Throwable cause) {
         super(message, cause);
     }
 

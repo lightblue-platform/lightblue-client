@@ -18,7 +18,7 @@ import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueResponse;
 import com.redhat.lightblue.client.response.LightblueException;
-import com.redhat.lightblue.client.response.LightblueResponseParseException;
+import com.redhat.lightblue.client.response.LightblueParseException;
 import com.redhat.lightblue.client.util.JSON;
 
 public class LightblueHttpClientTest {
@@ -45,7 +45,7 @@ public class LightblueHttpClientTest {
 		Assert.assertTrue(new SimpleModelObject("idhash", "value").equals(results[0]));
 	}
 
-	@Test(expected = LightblueResponseParseException.class)
+	@Test(expected = LightblueParseException.class)
 	public void testPojoMappingWithParsingError() throws Exception {
 		DataFindRequest findRequest = new DataFindRequest("foo", "bar");
 
@@ -77,8 +77,8 @@ public class LightblueHttpClientTest {
 
 	}
 
-	@Test(expected = LightblueResponseParseException.class)
-	public void testParseInvalidJson() throws LightblueResponseParseException {
+	@Test(expected = LightblueParseException.class)
+	public void testParseInvalidJson() throws LightblueParseException {
 	    DefaultLightblueResponse r = new DefaultLightblueResponse(JSON.getDefaultObjectMapper());
 
 	    r.parseProcessed(SimpleModelObject.class);

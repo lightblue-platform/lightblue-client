@@ -18,5 +18,5 @@ public interface LightblueResponse {
 
     JsonNode getProcessed();
 
-    <T> T parseProcessed(Class<T> type) throws LightblueResponseParseException;
+    <T> T parseProcessed(Class<T> type) throws LightblueParseException;
 }

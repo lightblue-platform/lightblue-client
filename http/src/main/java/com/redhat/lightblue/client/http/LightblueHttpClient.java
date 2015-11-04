@@ -26,7 +26,7 @@ import com.redhat.lightblue.client.response.BulkLightblueResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueResponse;
 import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
-import com.redhat.lightblue.client.response.LightblueResponseParseException;
+import com.redhat.lightblue.client.response.LightblueParseException;
 import com.redhat.lightblue.client.util.JSON;
 
 public class LightblueHttpClient implements LightblueClient, Closeable {
@@ -132,7 +132,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
             }
         }
 
-        private JsonNode getResult(String response) throws LightblueResponseParseException {
+        private JsonNode getResult(String response) throws LightblueParseException {
             try {
                 JsonNode node = JSON.getDefaultObjectMapper().readTree(response);
                 if (node instanceof ObjectNode) {
@@ -140,7 +140,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
                 }
                 return null;
             } catch (IOException e) {
-                throw new LightblueResponseParseException(e);
+                throw new LightblueParseException(e);
             }
         }
     }
