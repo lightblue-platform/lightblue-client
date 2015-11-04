@@ -15,7 +15,7 @@ import com.redhat.lightblue.client.model.DataError;
 import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.util.JSON;
 
-public class DefaultLightblueResponse implements LightblueResponse {
+public class DefaultLightblueResponse implements LightblueResponse, LightblueErrorResponse {
 
     private String text;
     private JsonNode json;

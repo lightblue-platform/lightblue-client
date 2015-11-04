@@ -17,20 +17,20 @@ public class LightblueResponseException extends LightblueException implements Li
 
     private static final long serialVersionUID = 1L;
 
-    private final LightblueResponse lightblueResponse;
+    private final LightblueErrorResponse lightblueResponse;
     private Set<String> errorCodes;
 
-    public LightblueResponseException(String message, LightblueResponse lightblueResponse) {
+    public LightblueResponseException(String message, LightblueErrorResponse lightblueResponse) {
         super(message);
         this.lightblueResponse = lightblueResponse;
     }
 
-    public LightblueResponseException(String message, LightblueResponse lightblueResponse, Throwable cause) {
+    public LightblueResponseException(String message, LightblueErrorResponse lightblueResponse, Throwable cause) {
         super(message, cause);
         this.lightblueResponse = lightblueResponse;
     }
 
-    public LightblueResponse getLightblueResponse() {
+    public LightblueErrorResponse getLightblueResponse() {
         return lightblueResponse;
     }
 
