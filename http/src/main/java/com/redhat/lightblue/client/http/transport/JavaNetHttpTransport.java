@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.ning.compress.lzf.LZFInputStream;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
+import com.redhat.lightblue.client.http.LightblueHttpClientException;
 import com.redhat.lightblue.client.http.auth.SslSocketFactories;
 import com.redhat.lightblue.client.request.LightblueRequest;
 
@@ -79,45 +81,55 @@ public class JavaNetHttpTransport implements HttpTransport {
     }
 
     public static JavaNetHttpTransport fromLightblueClientConfiguration(LightblueClientConfiguration config)
-            throws GeneralSecurityException, IOException {
-        Objects.requireNonNull(config, "config");
+            throws GeneralSecurityException, LightblueHttpClientException {
+        try {
+            Objects.requireNonNull(config, "config");
 
-        SSLSocketFactory sslSocketFactory = config.useCertAuth()
-                ? SslSocketFactories.javaNetSslSocketFactory(config)
-                : null;
+            SSLSocketFactory sslSocketFactory = config.useCertAuth()
+                    ? SslSocketFactories.javaNetSslSocketFactory(config)
+                    : null;
 
-        return new JavaNetHttpTransport(new UrlConnectionFactory(), sslSocketFactory, config.getCompression());
+            return new JavaNetHttpTransport(new UrlConnectionFactory(), sslSocketFactory, config.getCompression());
+        } catch (IOException e) {
+            throw new LightblueHttpClientException(e);
+        }
     }
 
     @Override
-    public String executeRequest(LightblueRequest request, String baseUri) throws IOException {
-        String url = request.getRestURI(baseUri);
-        LOGGER.debug("Executing request, url={}",url);
-        HttpURLConnection connection = connectionFactory.openConnection(url);
+    public String executeRequest(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
+        try {
+            String url = request.getRestURI(baseUri);
+            LOGGER.debug("Executing request, url={}",url);
+            HttpURLConnection connection = connectionFactory.openConnection(url);
 
-        if (connection instanceof HttpsURLConnection) {
-            HttpsURLConnection httpsUrlConnection = (HttpsURLConnection) connection;
+            if (connection instanceof HttpsURLConnection) {
+                HttpsURLConnection httpsUrlConnection = (HttpsURLConnection) connection;
 
-            if (sslSocketFactory != null) {
-                httpsUrlConnection.setSSLSocketFactory(sslSocketFactory);
+                if (sslSocketFactory != null) {
+                    httpsUrlConnection.setSSLSocketFactory(sslSocketFactory);
+                }
             }
+
+            connection.setRequestMethod(request.getHttpMethod().toString());
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Accept-Charset", "utf-8");
+
+            if (this.compression == Compression.LZF) {
+                LOGGER.debug("Advertising lzf decoding capabilities to lightblue");
+                connection.setRequestProperty("Accept-Encoding", "lzf");
+            }
+
+            String body = request.getBody();
+            if (StringUtils.isNotBlank(body)) {
+                sendRequestBody(body, connection);
+            }
+
+            return response(connection);
+        } catch (ProtocolException e) {
+            throw new LightblueHttpClientException(e);
+        } catch (IOException e) {
+            throw new LightblueHttpClientException(e);
         }
-
-        connection.setRequestMethod(request.getHttpMethod().toString());
-        connection.setRequestProperty("Accept", "application/json");
-        connection.setRequestProperty("Accept-Charset", "utf-8");
-
-        if (this.compression == Compression.LZF) {
-            LOGGER.debug("Advertising lzf decoding capabilities to lightblue");
-            connection.setRequestProperty("Accept-Encoding", "lzf");
-        }
-
-        String body = request.getBody();
-        if (StringUtils.isNotBlank(body)) {
-            sendRequestBody(body, connection);
-        }
-
-        return response(connection);
     }
 
     @Override
@@ -146,18 +158,21 @@ public class JavaNetHttpTransport implements HttpTransport {
      * stream and closes it so the socket knows it is finished and may be put back into a pool for
      * reuse.
      */
-    private String response(HttpURLConnection connection) throws IOException {
+    private String response(HttpURLConnection connection) throws LightblueHttpClientException {
         try (InputStream responseStream = connection.getInputStream()) {
             return readResponseStream(responseStream, connection);
         } catch (IOException e) {
-            try (InputStream errorResponseStream = connection.getErrorStream()) {
-                if (errorResponseStream == null) {
-                    // TODO: May want to start returning status code / error line.
-                    // In the meantime I don't think lightblue should ever error without a response.
-                    return "";
-                }
+            try {
+                try (InputStream errorResponseStream = connection.getErrorStream()) {
+                    String errorBody = null;
+                    if (errorResponseStream != null) {
+                        errorBody = readResponseStream(errorResponseStream, connection);
+                    }
 
-                return readResponseStream(errorResponseStream, connection);
+                    throw new LightblueHttpClientException(e, connection.getResponseCode(), errorBody);
+                }
+            } catch (IOException e1) {
+                throw new LightblueHttpClientException(e);
             }
         }
     }

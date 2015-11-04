@@ -1,11 +1,11 @@
 package com.redhat.lightblue.client.response;
 
 /**
- * Exception thrown when a response from lightblue is not able to be parsed.
+ * Exception thrown when json2pojo conversion fails.
  *
  * @author dcrissman
  */
-public class LightblueResponseParseException extends Exception {
+public class LightblueResponseParseException extends LightblueException {
 
     private static final long serialVersionUID = -1221306072042538444L;
 

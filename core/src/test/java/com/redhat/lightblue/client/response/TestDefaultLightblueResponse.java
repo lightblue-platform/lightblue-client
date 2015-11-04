@@ -90,12 +90,12 @@ public class TestDefaultLightblueResponse {
                     "}"
             );
             fail();
-        } catch (LightblueException e) {
+        } catch (LightblueResponseException e) {
             assertNotNull(e.getLightblueResponse());
             assertNull(e.getLightblueResponse().getDataErrors());
             assertNotNull(e.getLightblueResponse().getErrors());
-            assertFalse(e.exists(LightblueException.ERR_MONGO_CRUD_NO_ACCESS));
-            assertTrue(e.exists(LightblueException.ERR_CRUD_REQUIRED));
+            assertFalse(e.exists(LightblueResponseException.ERR_MONGO_CRUD_NO_ACCESS));
+            assertTrue(e.exists(LightblueResponseException.ERR_CRUD_REQUIRED));
         }
     }
 
@@ -125,12 +125,12 @@ public class TestDefaultLightblueResponse {
                     "}"
             );
             fail();
-        } catch (LightblueException e) {
+        } catch (LightblueResponseException e) {
             assertNotNull(e.getLightblueResponse());
             assertNotNull(e.getLightblueResponse().getDataErrors());
             assertNull(e.getLightblueResponse().getErrors());
-            assertFalse(e.exists(LightblueException.ERR_MONGO_CRUD_NO_ACCESS));
-            assertTrue(e.exists(LightblueException.ERR_MONGO_CRUD_SAVE_ERROR));
+            assertFalse(e.exists(LightblueResponseException.ERR_MONGO_CRUD_NO_ACCESS));
+            assertTrue(e.exists(LightblueResponseException.ERR_MONGO_CRUD_SAVE_ERROR));
         }
     }
 

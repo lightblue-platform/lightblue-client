@@ -48,7 +48,7 @@ public class BulkLightblueResponse {
                 LightblueResponse response = new DefaultLightblueResponse(resp.get("response").toString());
                 JsonNode seq = resp.get("seq");
                 if (!seq.isNumber()) {
-                    throw new LightblueException("Invalid sequence.", response);
+                    throw new LightblueResponseException("Invalid sequence.", response);
                 }
                 responses.put(resp.get("seq").intValue(), response);
             }

@@ -43,10 +43,10 @@ public class DefaultLightblueResponse implements LightblueResponse {
             json = mapper.readTree(responseText);
 
             if (hasError() || hasDataErrors()) {
-                throw new LightblueException("Lightblue exception occurred: ", this);
+                throw new LightblueResponseException("Lightblue exception occurred: ", this);
             }
         } catch (IOException e) {
-            throw new LightblueException("Unable to parse response: ", this, e);
+            throw new LightblueResponseParseException("Unable to parse response: ", e);
         }
     }
 
@@ -151,7 +151,7 @@ public class DefaultLightblueResponse implements LightblueResponse {
     @SuppressWarnings("unchecked")
     public <T> T parseProcessed(final Class<T> type) throws LightblueResponseParseException {
         if (hasError()) {
-            throw new LightblueErrorResponseException("Error returned in response: " + getText());
+            throw new LightblueResponseParseException("Error returned in response: " + getText());
         }
 
         try {

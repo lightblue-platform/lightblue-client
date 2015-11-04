@@ -11,7 +11,7 @@ public interface LightblueClient {
 
 	Locking getLocking(String domain);
 
-	LightblueResponse metadata(LightblueRequest lightblueRequest);
+	LightblueResponse metadata(LightblueRequest lightblueRequest) throws LightblueException;
 
 	LightblueResponse data(LightblueRequest lightblueRequest) throws LightblueException;
 

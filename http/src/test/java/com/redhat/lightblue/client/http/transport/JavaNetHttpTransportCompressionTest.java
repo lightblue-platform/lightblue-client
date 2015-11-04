@@ -22,6 +22,7 @@ import org.mockito.Mockito;
 import com.ning.compress.lzf.LZFOutputStream;
 import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
 import com.redhat.lightblue.client.http.HttpMethod;
+import com.redhat.lightblue.client.http.LightblueHttpClientException;
 import com.redhat.lightblue.client.http.testing.doubles.FakeLightblueRequest;
 import com.redhat.lightblue.client.http.transport.JavaNetHttpTransportTest.CallConnectAndReturn;
 import com.redhat.lightblue.client.request.LightblueRequest;
@@ -47,7 +48,7 @@ public class JavaNetHttpTransportCompressionTest {
     }
 
     @Test
-    public void shouldSetAcceptEncodingHeaderToLzfByDefault() throws IOException {
+    public void shouldSetAcceptEncodingHeaderToLzfByDefault() throws LightblueHttpClientException {
         LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/foo/bar");
 
         client.executeRequest(request, "");
@@ -56,7 +57,7 @@ public class JavaNetHttpTransportCompressionTest {
     }
 
     @Test
-    public void shouldNotSetAcceptEncodingHeaderWhenCompressionIsDisabled() throws IOException {
+    public void shouldNotSetAcceptEncodingHeaderWhenCompressionIsDisabled() throws LightblueHttpClientException {
         LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/foo/bar");
 
         client.setCompression(Compression.NONE);
@@ -68,7 +69,7 @@ public class JavaNetHttpTransportCompressionTest {
     final String TEST_RESPONSE = "Body compressed with lzf. Body compressed with lzf.";
 
     @Test
-    public void shouldDecodeResponseWhenCompressionEnabledAndContentEncodingIsDefinedInResponse() throws IOException {
+    public void shouldDecodeResponseWhenCompressionEnabledAndContentEncodingIsDefinedInResponse() throws LightblueHttpClientException, IOException {
         LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/foo/bar");
 
         when(mockConnection.getHeaderField("Content-Encoding")).thenReturn("lzf");

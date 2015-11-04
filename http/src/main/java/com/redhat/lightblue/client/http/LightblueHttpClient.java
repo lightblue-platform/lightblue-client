@@ -3,13 +3,13 @@ package com.redhat.lightblue.client.http;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
 import java.util.Date;
 import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -86,78 +86,62 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 
         @Override
         public boolean acquire(String callerId, String resourceId, Long ttl) throws LightblueException {
-            try {
-                LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, ttl, false, HttpMethod.PUT);
-                String response = httpTransport.executeRequest(req, configuration.getDataServiceURI());
-                JsonNode node = getResult(response);
-                if (node != null) {
-                    return node.asBoolean();
-                } else {
-                    return false;
-                }
-            } catch (IOException e) {
-                LOGGER.error("There was a problem calling the lightblue service", e);
-                throw new LightblueException("There was a problem calling the lightblue service", null, e);
+            LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, ttl, false, HttpMethod.PUT);
+            String response = httpTransport.executeRequest(req, configuration.getDataServiceURI());
+            JsonNode node = getResult(response);
+            if (node != null) {
+                return node.asBoolean();
+            } else {
+                return false;
             }
         }
 
         @Override
         public boolean release(String callerId, String resourceId) throws LightblueException {
-            try {
-                LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, false, HttpMethod.DELETE);
-                String response = httpTransport.executeRequest(req, configuration.getDataServiceURI());
-                JsonNode node = getResult(response);
-                if (node != null) {
-                    return node.asBoolean();
-                } else {
-                    return false;
-                }
-            } catch (IOException e) {
-                LOGGER.error("There was a problem calling the lightblue service", e);
-                throw new LightblueException("There was a problem calling the lightblue service", null, e);
+            LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, false, HttpMethod.DELETE);
+            String response = httpTransport.executeRequest(req, configuration.getDataServiceURI());
+            JsonNode node = getResult(response);
+            if (node != null) {
+                return node.asBoolean();
+            } else {
+                return false;
             }
         }
 
         @Override
         public int getLockCount(String callerId, String resourceId) throws LightblueException {
-            try {
-                LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, false, HttpMethod.GET);
-                String response = httpTransport.executeRequest(req, configuration.getDataServiceURI());
-                JsonNode node = getResult(response);
-                if (node != null) {
-                    return node.asInt();
-                } else {
-                    return 0;
-                }
-            } catch (IOException e) {
-                LOGGER.error("There was a problem calling the lightblue service", e);
-                throw new LightblueException("There was a problem calling the lightblue service", null, e);
+            LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, false, HttpMethod.GET);
+            String response = httpTransport.executeRequest(req, configuration.getDataServiceURI());
+            JsonNode node = getResult(response);
+            if (node != null) {
+                return node.asInt();
+            } else {
+                return 0;
             }
         }
 
         @Override
         public boolean ping(String callerId, String resourceId) throws LightblueException {
-            try {
-                LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, true, HttpMethod.PUT);
-                String response = httpTransport.executeRequest(req, configuration.getDataServiceURI());
-                JsonNode node = getResult(response);
-                if (node != null) {
-                    return node.asBoolean();
-                } else {
-                    return false;
-                }
-            } catch (IOException e) {
-                LOGGER.error("There was a problem calling the lightblue service", e);
-                throw new LightblueException("There was a problem calling the lightblue service", null, e);
+            LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, true, HttpMethod.PUT);
+            String response = httpTransport.executeRequest(req, configuration.getDataServiceURI());
+            JsonNode node = getResult(response);
+            if (node != null) {
+                return node.asBoolean();
+            } else {
+                return false;
             }
         }
 
-        private JsonNode getResult(String response) throws IOException {
-            JsonNode node = JSON.getDefaultObjectMapper().readTree(response);
-            if (node instanceof ObjectNode) {
-                return ((ObjectNode) node).get("result");
+        private JsonNode getResult(String response) throws LightblueResponseParseException {
+            try {
+                JsonNode node = JSON.getDefaultObjectMapper().readTree(response);
+                if (node instanceof ObjectNode) {
+                    return ((ObjectNode) node).get("result");
+                }
+                return null;
+            } catch (IOException e) {
+                throw new LightblueResponseParseException(e);
             }
-            return null;
         }
     }
 
@@ -238,13 +222,10 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      * @see com.redhat.lightblue.client.LightblueClient#metadata(com.redhat.lightblue .client.request.LightblueRequest)
      */
     @Override
-    public LightblueResponse metadata(LightblueRequest lightblueRequest) {
+    public LightblueResponse metadata(LightblueRequest lightblueRequest) throws LightblueException {
         LOGGER.debug("Calling metadata service with lightblueRequest: {}", lightblueRequest.toString());
-        try {
-            return callService(lightblueRequest, configuration.getMetadataServiceURI());
-        } catch (Exception e) {
-            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest, e);
-        }
+
+        return callService(lightblueRequest, configuration.getMetadataServiceURI());
     }
 
     /*
@@ -261,31 +242,22 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     @Override
     public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws LightblueException {
         LightblueResponse response = data(lightblueRequest);
-        try {
-            return response.parseProcessed(type);
-        } catch (RuntimeException | LightblueResponseParseException e) {
-            throw new LightblueHttpClientException("Error sending lightblue request: " + lightblueRequest, e);
-        }
+
+        return response.parseProcessed(type);
     }
 
     @Override
     public BulkLightblueResponse bulkData(AbstractDataBulkRequest<AbstractLightblueDataRequest> request) throws LightblueException {
         long t1 = System.currentTimeMillis();
-        try {
-            String responseBody = httpTransport.executeRequest(request, configuration.getDataServiceURI());
 
-            LOGGER.debug("Response received from service: {}", responseBody);
+        String responseBody = httpTransport.executeRequest(request, configuration.getDataServiceURI());
 
-            long t2 = new Date().getTime();
-            LOGGER.debug("Call took {}ms", t2 - t1);
+        LOGGER.debug("Response received from service: {}", responseBody);
 
-            return new BulkLightblueResponse(responseBody, request);
-        } catch (IOException e) {
-            LOGGER.error("There was a problem calling the lightblue service", e);
-            throw new LightblueException("There was a problem calling the lightblue service", null, e);
-        } catch (LightblueResponseParseException e) {
-            throw new LightblueException("There was a problem parsing the response", null, e);
-        }
+        long t2 = new Date().getTime();
+        LOGGER.debug("Call took {}ms", t2 - t1);
+
+        return new BulkLightblueResponse(responseBody, request);
     }
 
     @Override
@@ -294,27 +266,22 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     protected LightblueResponse callService(LightblueRequest request, String baseUri) throws LightblueException {
-        try {
-            long t1 = System.currentTimeMillis();
+        long t1 = System.currentTimeMillis();
 
-            String responseBody = httpTransport.executeRequest(request, baseUri);
+        String responseBody = httpTransport.executeRequest(request, baseUri);
 
-            LOGGER.debug("Response received from service: {}", responseBody);
+        LOGGER.debug("Response received from service: {}", responseBody);
 
-            long t2 = new Date().getTime();
-            LOGGER.debug("Call took {}ms", t2 - t1);
+        long t2 = new Date().getTime();
+        LOGGER.debug("Call took {}ms", t2 - t1);
 
-            return new DefaultLightblueResponse(responseBody, mapper);
-        } catch (IOException e) {
-            LOGGER.error("There was a problem calling the lightblue service", e);
-            throw new LightblueException("There was a problem calling the lightblue service", null, e);
-        }
+        return new DefaultLightblueResponse(responseBody, mapper);
     }
 
     private static HttpTransport defaultHttpClientFromConfig(LightblueClientConfiguration config) {
         try {
             return JavaNetHttpTransport.fromLightblueClientConfiguration(config);
-        } catch (GeneralSecurityException | IOException e) {
+        } catch (Exception e) {
             LOGGER.error("Error creating HTTP client: ", e);
             throw new RuntimeException(e);
         }
