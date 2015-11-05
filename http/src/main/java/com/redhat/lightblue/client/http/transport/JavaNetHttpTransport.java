@@ -169,6 +169,13 @@ public class JavaNetHttpTransport implements HttpTransport {
                         errorBody = readResponseStream(errorResponseStream, connection);
                     }
 
+                    if (errorBody != null && !errorBody.equals("")) {
+                        // this may be a valid lightblue response containing errors
+                        // but it can also be a standard html 500 or 404 from server
+                        // we will know that when we start parsing
+                        return errorBody;
+                    }
+
                     throw new LightblueHttpClientException(e, connection.getResponseCode(), errorBody);
                 }
             } catch (IOException e1) {

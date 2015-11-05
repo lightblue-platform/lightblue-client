@@ -45,23 +45,18 @@ public class JavaNetHttpTransportIntegrationTest {
     }
 
     @Test
-    public void shouldReturnResponseBodyOfUnsuccessfulRequest() {
+    public void shouldReturnResponseBodyOfUnsuccessfulRequest() throws LightblueHttpClientException {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withBody("The body").withStatus(500)));
 
         LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/");
 
-        try {
-            client.executeRequest(request, wireMockUrl());
-            Assert.fail();
-        } catch (LightblueHttpClientException e) {
-            Assert.assertEquals(500, e.getHttpStatus());
-            assertThat(e.getHttpResponseBody(), is("The body"));
-        }
+
+        Assert.assertEquals("The body", client.executeRequest(request, wireMockUrl()));
     }
 
     @Test
-    public void shouldReturnEmptyStringOfUnsuccessfulRequestWithNoResponseBody() {
+    public void shouldThrowExceptionOnUnsuccessfulRequestWithNoResponseBody() {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withStatus(500)));
 

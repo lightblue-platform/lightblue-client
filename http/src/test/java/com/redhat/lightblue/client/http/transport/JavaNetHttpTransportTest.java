@@ -197,12 +197,7 @@ public class JavaNetHttpTransportTest {
         errorResponseStream.print(error);
         when(mockConnection.getContentLength()).thenReturn(error.getBytes("UTF-8").length);
 
-        try {
-            client.executeRequest(badHelloRequest, "");
-            Assert.fail();
-        } catch (LightblueHttpClientException e) {
-            Assert.assertEquals(error, e.getHttpResponseBody());
-        }
+        Assert.assertEquals(error, client.executeRequest(badHelloRequest, ""));
     }
 
     @Test(timeout = 500)
@@ -216,16 +211,11 @@ public class JavaNetHttpTransportTest {
         errorResponseStream.close();
         when(mockConnection.getContentLength()).thenReturn(-1);
 
-        try {
-            client.executeRequest(badHelloRequest, "");
-            Assert.fail();
-        } catch (LightblueHttpClientException e) {
-            Assert.assertEquals(error, e.getHttpResponseBody());
-        }
+        Assert.assertEquals(error, client.executeRequest(badHelloRequest, ""));
     }
 
     @Test(timeout = 500)
-    public void shouldReturnEmptyErrorResponse() throws Exception {
+    public void shouldThrowExceptionOnEmptyErrorResponse() throws Exception {
         LightblueRequest badHelloRequest = new FakeLightblueRequest("", HttpMethod.GET, "/hello/%E0%B2%A0_%E0%B2%A0");
 
         doThrow(new IOException()).when(mockConnection).getInputStream();

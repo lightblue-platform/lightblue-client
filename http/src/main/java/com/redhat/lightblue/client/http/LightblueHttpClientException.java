@@ -3,7 +3,7 @@ package com.redhat.lightblue.client.http;
 import com.redhat.lightblue.client.response.LightblueException;
 
 /**
- * Http exceptions, i.e. when lightblue responds with http status != 200 or does not respond at all.
+ * When lightblue does not return a response at all.
  *
  * @author dcrissman
  */
