@@ -15,7 +15,7 @@ import com.redhat.lightblue.client.model.DataError;
 import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.util.JSON;
 
-public class DefaultLightblueResponse implements LightblueResponse {
+public class DefaultLightblueResponse implements LightblueResponse, LightblueErrorResponse {
 
     private String text;
     private JsonNode json;
@@ -43,10 +43,10 @@ public class DefaultLightblueResponse implements LightblueResponse {
             json = mapper.readTree(responseText);
 
             if (hasError() || hasDataErrors()) {
-                throw new LightblueException("Lightblue exception occurred: ", this);
+                throw new LightblueResponseException("Lightblue exception occurred: ", this);
             }
         } catch (IOException e) {
-            throw new LightblueException("Unable to parse response: ", this, e);
+            throw new LightblueParseException("Unable to parse response: ", e);
         }
     }
 
@@ -149,9 +149,9 @@ public class DefaultLightblueResponse implements LightblueResponse {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T parseProcessed(final Class<T> type) throws LightblueResponseParseException {
+    public <T> T parseProcessed(final Class<T> type) throws LightblueParseException {
         if (hasError()) {
-            throw new LightblueErrorResponseException("Error returned in response: " + getText());
+            throw new LightblueParseException("Error returned in response: " + getText());
         }
 
         try {
@@ -167,7 +167,7 @@ public class DefaultLightblueResponse implements LightblueResponse {
             }
             if (!type.isArray()) {
                 if (processedNode.size() > 1) {
-                    throw new LightblueResponseParseException("Was expecting single result:" + getText() + "\n");
+                    throw new LightblueParseException("Was expecting single result:" + getText() + "\n");
                 } else {
                     return mapper.readValue(processedNode.get(0).traverse(), type);
                 }
@@ -175,7 +175,7 @@ public class DefaultLightblueResponse implements LightblueResponse {
                 return mapper.readValue(processedNode.traverse(), type);
             }
         } catch (RuntimeException | IOException e) {
-            throw new LightblueResponseParseException("Error parsing lightblue response: " + getText() + "\n", e);
+            throw new LightblueParseException("Error parsing lightblue response: " + getText() + "\n", e);
         }
     }
 }

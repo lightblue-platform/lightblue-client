@@ -36,7 +36,7 @@ public class BulkLightblueResponse {
     private JsonNode json;
     private String text;
 
-    public BulkLightblueResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueResponseParseException,
+    public BulkLightblueResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueParseException,
             LightblueException {
         requests = reqs.getRequests();
         this.text = responseText;
@@ -45,15 +45,15 @@ public class BulkLightblueResponse {
             ArrayNode resps = (ArrayNode) json.get("responses");
             for (Iterator<JsonNode> it = resps.iterator(); it.hasNext();) {
                 JsonNode resp = it.next();
-                LightblueResponse response = new DefaultLightblueResponse(resp.get("response").toString());
+                DefaultLightblueResponse response = new DefaultLightblueResponse(resp.get("response").toString());
                 JsonNode seq = resp.get("seq");
                 if (!seq.isNumber()) {
-                    throw new LightblueException("Invalid sequence.", response);
+                    throw new LightblueResponseException("Invalid sequence.", response);
                 }
                 responses.put(resp.get("seq").intValue(), response);
             }
         } catch (IOException e) {
-            throw new LightblueResponseParseException("Error parsing lightblue response: " + responseText + "\n", e);
+            throw new LightblueParseException("Error parsing lightblue response: " + responseText + "\n", e);
         }
     }
 

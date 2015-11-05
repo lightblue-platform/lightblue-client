@@ -53,10 +53,7 @@ public abstract class AbstractLightblueClientCRUDController extends AbstractCRUD
     public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws LightblueException, IOException {
         DataInsertRequestStub request = new DataInsertRequestStub(
                 entityName, entityVersion, loadResource(resourcePath));
-        LightblueResponse response = getLightblueClient().data(request);
-        assertFalse(response.getText(), response.hasError());
-
-        return response;
+        return getLightblueClient().data(request);
     }
 
 }

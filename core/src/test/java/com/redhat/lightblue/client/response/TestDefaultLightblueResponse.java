@@ -90,12 +90,12 @@ public class TestDefaultLightblueResponse {
                     "}"
             );
             fail();
-        } catch (LightblueException e) {
+        } catch (LightblueResponseException e) {
             assertNotNull(e.getLightblueResponse());
             assertNull(e.getLightblueResponse().getDataErrors());
             assertNotNull(e.getLightblueResponse().getErrors());
-            assertFalse(e.exists(LightblueException.ERR_MONGO_CRUD_NO_ACCESS));
-            assertTrue(e.exists(LightblueException.ERR_CRUD_REQUIRED));
+            assertFalse(e.exists(LightblueResponseException.ERR_MONGO_CRUD_NO_ACCESS));
+            assertTrue(e.exists(LightblueResponseException.ERR_CRUD_REQUIRED));
         }
     }
 
@@ -125,12 +125,12 @@ public class TestDefaultLightblueResponse {
                     "}"
             );
             fail();
-        } catch (LightblueException e) {
+        } catch (LightblueResponseException e) {
             assertNotNull(e.getLightblueResponse());
             assertNotNull(e.getLightblueResponse().getDataErrors());
             assertNull(e.getLightblueResponse().getErrors());
-            assertFalse(e.exists(LightblueException.ERR_MONGO_CRUD_NO_ACCESS));
-            assertTrue(e.exists(LightblueException.ERR_MONGO_CRUD_SAVE_ERROR));
+            assertFalse(e.exists(LightblueResponseException.ERR_MONGO_CRUD_NO_ACCESS));
+            assertTrue(e.exists(LightblueResponseException.ERR_MONGO_CRUD_SAVE_ERROR));
         }
     }
 
@@ -140,7 +140,7 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test
-    public void testParseProcessed_EmptyProcessed_ForArrayGeneric() throws LightblueException, LightblueResponseParseException {
+    public void testParseProcessed_EmptyProcessed_ForArrayGeneric() throws LightblueException, LightblueParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"processed\": [], \"status\": \"COMPLETE\"}");
 
         Object[] results = response.parseProcessed(Object[].class);
@@ -150,7 +150,7 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test
-    public void testParseProcessed_EmptyProcessed_ForSimpleGeneric() throws LightblueException, LightblueResponseParseException {
+    public void testParseProcessed_EmptyProcessed_ForSimpleGeneric() throws LightblueException, LightblueParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"processed\": [], \"status\": \"COMPLETE\"}");
 
         Object results = response.parseProcessed(Object.class);
@@ -159,7 +159,7 @@ public class TestDefaultLightblueResponse {
     }
 
    @Test
-    public void testParseProcessed() throws LightblueException, LightblueResponseParseException {
+    public void testParseProcessed() throws LightblueException, LightblueParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}");
 
         SimpleModelObject[] results = response.parseProcessed(SimpleModelObject[].class);
@@ -171,7 +171,7 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test
-    public void testParseProcess_NonArrayResult() throws LightblueException, LightblueResponseParseException {
+    public void testParseProcess_NonArrayResult() throws LightblueException, LightblueParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}");
         SimpleModelObject results = response.parseProcessed(SimpleModelObject.class);
 
@@ -180,7 +180,7 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test
-    public void testParseProcessed_NullProcessedNode() throws LightblueException, LightblueResponseParseException {
+    public void testParseProcessed_NullProcessedNode() throws LightblueException, LightblueParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"processed\": null, \"status\": \"COMPLETE\"}");
 
         Object results = response.parseProcessed(Object.class);
@@ -189,7 +189,7 @@ public class TestDefaultLightblueResponse {
     }
 
     @Test
-    public void testParseProcessedWithParsingError_DoesNotExist() throws LightblueException, LightblueResponseParseException {
+    public void testParseProcessedWithParsingError_DoesNotExist() throws LightblueException, LightblueParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 0, \"modifiedCount\": 0, \"status\": \"COMPLETE\"}");
 
         Object[] results = response.parseProcessed(Object[].class);
@@ -197,15 +197,15 @@ public class TestDefaultLightblueResponse {
         Assert.assertEquals(0, results.length);
     }
 
-    @Test(expected = LightblueResponseParseException.class)
-    public void testParseProcessedWithParsingError_InvalidJson() throws LightblueException, LightblueResponseParseException {
+    @Test(expected = LightblueParseException.class)
+    public void testParseProcessedWithParsingError_InvalidJson() throws LightblueException, LightblueParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"processed\":\"<p>This is not json</p>\"}");
 
         response.parseProcessed(Object[].class);
     }
 
-    @Test(expected = LightblueResponseParseException.class)
-    public void testParseProcessed_MultipleResults_ForNonArrayResponse() throws LightblueException, LightblueResponseParseException {
+    @Test(expected = LightblueParseException.class)
+    public void testParseProcessed_MultipleResults_ForNonArrayResponse() throws LightblueException, LightblueParseException {
         LightblueResponse response = new DefaultLightblueResponse("{\"matchCount\": 2, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash1\", \"field\":\"value1\"},{\"_id\": \"idhash2\", \"field\":\"value2\"}], \"status\": \"COMPLETE\"}");
 
         response.parseProcessed(Object.class);
