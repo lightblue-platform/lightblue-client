@@ -57,7 +57,7 @@
             <dependency>
                 <groupId>com.redhat.lightblue</groupId>
                 <artifactId>lightblue-core-hystrix</artifactId>
-                <version>${lightblue.rest.version}</version>
+                <version>${lightblue.core.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.netflix.hystrix</groupId>
