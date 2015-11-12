@@ -20,7 +20,7 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
 
     private final LightblueTestMethods methods;
     private final int httpServerPort;
-    private boolean removeHooks;
+    private boolean removeHooks = Boolean.TRUE;
 
     private ArtificialLightblueClientCRUDController controller;
 
@@ -46,7 +46,7 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
     protected AbstractLightblueClientCRUDController getControllerInstance() {
         if (controller == null) {
             try {
-                if (removeHooks == Boolean.TRUE)
+                if (removeHooks)
                     controller = new ArtificialLightblueClientCRUDController(httpServerPort);
                 else
                     controller = new ArtificialLightblueClientCRUDControllerWithHooks(httpServerPort);
