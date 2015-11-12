@@ -46,9 +46,9 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
     protected AbstractLightblueClientCRUDController getControllerInstance() {
         if (controller == null) {
             try {
-                if (removeHooks == Boolean.TRUE)
+                if (removeHooks)
                     controller = new ArtificialLightblueClientCRUDController(httpServerPort);
-                else if(removeHooks == Boolean.FALSE)
+                else
                     controller = new ArtificialLightblueClientCRUDControllerWithHooks(httpServerPort);
             } catch (Exception e) {
                 throw new RuntimeException("Unable to create test CRUD Controller", e);
