@@ -16,6 +16,7 @@ import com.redhat.lightblue.client.request.metadata.MetadataGetEntityRolesReques
 import com.redhat.lightblue.client.request.metadata.MetadataGetEntityVersionsRequest;
 import com.redhat.lightblue.client.request.metadata.MetadataSetDefaultVersionRequest;
 import com.redhat.lightblue.client.request.metadata.MetadataUpdateSchemaStatusRequest;
+import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
 
 public class TestMetadataRequests extends AbstractLightblueClientCRUDController {
@@ -30,7 +31,7 @@ public class TestMetadataRequests extends AbstractLightblueClientCRUDController 
     }
 
     @Test
-    public void testMetadataGetEntityNamesRequest() {
+    public void testMetadataGetEntityNamesRequest() throws LightblueException {
         MetadataGetEntityNamesRequest request = new MetadataGetEntityNamesRequest();
 
         LightblueResponse response = getLightblueClient().metadata(request);
@@ -38,7 +39,7 @@ public class TestMetadataRequests extends AbstractLightblueClientCRUDController 
     }
 
     @Test
-    public void testMetadataGetEntityVersionsRequest() {
+    public void testMetadataGetEntityVersionsRequest() throws LightblueException {
         MetadataGetEntityVersionsRequest request = new MetadataGetEntityVersionsRequest("country");
 
         LightblueResponse response = getLightblueClient().metadata(request);
@@ -46,7 +47,7 @@ public class TestMetadataRequests extends AbstractLightblueClientCRUDController 
     }
 
     @Test
-    public void testMetadataGetEntityMetadataRequest() {
+    public void testMetadataGetEntityMetadataRequest() throws LightblueException {
         MetadataGetEntityMetadataRequest request = new MetadataGetEntityMetadataRequest("country", "0.1.0-SNAPSHOT");
 
         LightblueResponse response = getLightblueClient().metadata(request);
@@ -54,7 +55,7 @@ public class TestMetadataRequests extends AbstractLightblueClientCRUDController 
     }
 
     @Test
-    public void testMetadataGetEntityDependenciesRequest() {
+    public void testMetadataGetEntityDependenciesRequest() throws LightblueException {
         MetadataGetEntityDependenciesRequest request = new MetadataGetEntityDependenciesRequest("country", "0.1.0-SNAPSHOT");
 
         LightblueResponse response = getLightblueClient().metadata(request);
@@ -62,31 +63,31 @@ public class TestMetadataRequests extends AbstractLightblueClientCRUDController 
     }
 
     @Test
-    public void testMetadataGetEntityRolesRequest() {
+    public void testMetadataGetEntityRolesRequest() throws LightblueException {
         getLightblueClient().metadata(new MetadataSetDefaultVersionRequest("country", "0.1.0-SNAPSHOT"));
-        
+
         MetadataGetEntityRolesRequest request = new MetadataGetEntityRolesRequest();
 
         LightblueResponse response = getLightblueClient().metadata(request);
         assertNotNull(response);
-        
+
         getLightblueClient().metadata(new MetadataClearDefaultVersionRequest("country"));
     }
 
     @Test
-    public void testMetadataGetEntityRolesRequest_WithEntity() {
+    public void testMetadataGetEntityRolesRequest_WithEntity() throws LightblueException {
         getLightblueClient().metadata(new MetadataSetDefaultVersionRequest("country", "0.1.0-SNAPSHOT"));
-        
+
         MetadataGetEntityRolesRequest request = new MetadataGetEntityRolesRequest("country");
 
         LightblueResponse response = getLightblueClient().metadata(request);
         assertNotNull(response);
-        
+
         getLightblueClient().metadata(new MetadataClearDefaultVersionRequest("country"));
     }
 
     @Test
-    public void testMetadataGetEntityRolesRequest_WithEntityAndVersion() {
+    public void testMetadataGetEntityRolesRequest_WithEntityAndVersion() throws LightblueException {
         MetadataGetEntityRolesRequest request = new MetadataGetEntityRolesRequest("country", "0.1.0-SNAPSHOT");
 
         LightblueResponse response = getLightblueClient().metadata(request);
@@ -94,9 +95,9 @@ public class TestMetadataRequests extends AbstractLightblueClientCRUDController 
     }
 
     @Test
-    public void testMetadataClearDefaultVersionRequest() {
+    public void testMetadataClearDefaultVersionRequest() throws LightblueException {
         getLightblueClient().metadata(new MetadataSetDefaultVersionRequest("country", "0.1.0-SNAPSHOT"));
-        
+
         MetadataClearDefaultVersionRequest request = new MetadataClearDefaultVersionRequest("country");
 
         LightblueResponse response = getLightblueClient().metadata(request);
@@ -104,17 +105,17 @@ public class TestMetadataRequests extends AbstractLightblueClientCRUDController 
     }
 
     @Test
-    public void testMetadataSetDefaultVersionRequest() {
+    public void testMetadataSetDefaultVersionRequest() throws LightblueException {
         MetadataSetDefaultVersionRequest request = new MetadataSetDefaultVersionRequest("country", "0.1.0-SNAPSHOT");
 
         LightblueResponse response = getLightblueClient().metadata(request);
         assertNotNull(response);
-        
+
         getLightblueClient().metadata(new MetadataClearDefaultVersionRequest("country"));
     }
 
     @Test
-    public void testMetadataUpdateSchemaStatusRequest() {
+    public void testMetadataUpdateSchemaStatusRequest() throws LightblueException {
         MetadataUpdateSchemaStatusRequest request = new MetadataUpdateSchemaStatusRequest("country", "0.1.0-SNAPSHOT", MetadataStatus.DISABLED, "why not");
 
         LightblueResponse response = getLightblueClient().metadata(request);
