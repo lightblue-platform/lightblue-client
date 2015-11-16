@@ -1,7 +1,5 @@
 package com.redhat.lightblue.client.request.data;
 
-import java.util.Collection;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -39,48 +37,12 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         this.queryExpression = queryExpression;
     }
 
-    @Deprecated
-    public void where(com.redhat.lightblue.client.expression.query.Query queryExpression) {
-        this.queryExpression = toq(queryExpression);
-    }
-
     public void select(Projection... projection) {
         this.projection = Projection.project(projection);
     }
 
-    @Deprecated
-    public void select(com.redhat.lightblue.client.projection.Projection... projection) {
-        Projection[] p = new Projection[projection.length];
-        for (int i = 0; i < p.length; i++)
-            p[i] = top(projection[i]);
-        select(p);
-    }
-
-    @Deprecated
-    public void select(Collection<com.redhat.lightblue.client.projection.Projection> projections) {
-        select(projections.toArray(new com.redhat.lightblue.client.projection.Projection[projections.size()]));
-    }
-
-    @Deprecated
-    public void setSortConditions(List<com.redhat.lightblue.client.request.SortCondition> sortConditions) {
-        sort(sortConditions);
-    }
-
     public void sort(Sort... sort) {
         this.sort = Sort.sort(sort);
-    }
-
-    @Deprecated
-    public void sort(com.redhat.lightblue.client.request.SortCondition... sort) {
-        Sort[] s = new Sort[sort.length];
-        for (int i = 0; i < s.length; i++)
-            s[i] = tos(sort[i]);
-        sort(s);
-    }
-
-    @Deprecated
-    public void sort(Collection<com.redhat.lightblue.client.request.SortCondition> sortConditions) {
-        sort(sortConditions.toArray(new com.redhat.lightblue.client.request.SortCondition[sortConditions.size()]));
     }
 
     public void range(Integer begin, Integer end) {

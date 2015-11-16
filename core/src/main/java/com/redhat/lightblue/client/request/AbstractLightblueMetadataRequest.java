@@ -4,8 +4,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import com.redhat.lightblue.client.util.JSON;
-
 public abstract class AbstractLightblueMetadataRequest extends AbstractLightblueRequest {
     private JsonNode body;
 
@@ -21,11 +19,6 @@ public abstract class AbstractLightblueMetadataRequest extends AbstractLightblue
     @Override
     public String getBody() {
         return getBodyJson().toString();
-    }
-
-    @Deprecated
-    public void setBody(String body) {
-        this.body = body==null?null:JSON.toJsonNode(body);
     }
 
     public AbstractLightblueMetadataRequest() {

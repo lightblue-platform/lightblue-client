@@ -1,6 +1,7 @@
 package com.redhat.lightblue.client.projection;
 
-import com.redhat.lightblue.client.expression.query.Query;
+import com.redhat.lightblue.client.Projection;
+import com.redhat.lightblue.client.Query;
 import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -12,55 +13,38 @@ public class ProjectionTest {
     @Test
     public void testFieldProjectionToJson() throws JSONException {
         String expectedJson = "{\"field\":\"*\",\"include\":true,\"recursive\":true}";
-        FieldProjection fp = new FieldProjection("*",true,true);
-        String json = fp.toJson();
+        Projection fp = Projection.field("*", true, true);
+        String json = fp.toString();
         JSONAssert.assertEquals(json, expectedJson, false);
     }
 
     @Test
     public void testArrayProjectionToJson() throws JSONException {
+        Projection myProj = Projection.field("*", false, false);
+        Query myEx = Query.withValue("statusCode", Query.BinOp.eq, "active");
+        String expectedJson = "{\"include\":true,\"field\":\"termsVerbiage\",\"match\":" + myEx.toString() + ",\"projection\":[" + myProj.toString() + "]}";
 
-        Projection myProj = new Projection (){
-            public String toJson() {
-                return "{\"field\":\"*\"}";
-            }
-        };
-        Query myEx = new Query() {
-            public String toJson() {
-                return "{\"field\":\"statusCode\",\"op\":\"=\",\"rvalue\":\"active\"}";
-            }
-        };
-        String expectedJson = "{\"include\":true,\"field\":\"termsVerbiage\",\"match\":" + myEx.toJson() + ",\"projection\":[" + myProj.toJson() + "]}";
-
-        ArrayProjection ap = new ArrayProjection("termsVerbiage", true, myEx, myProj);
-        JSONAssert.assertEquals(expectedJson, ap.toJson(), false);
+        Projection ap = Projection.array("termsVerbiage", myEx, myProj);
+        JSONAssert.assertEquals(expectedJson, ap.toString(), false);
     }
 
     @Test
     public void testRangeProjectionToJson() throws JSONException {
+        Projection myProj = Projection.field("*", false, false);
 
-        Projection myProj = new Projection (){
-            public String toJson() {
-                return "{\"field\":\"*\"}";
-            }
-        };
-        String expectedJson = "{\"field\":\"termsVerbiageTranslation\",\"include\":true,\"range\":[0,1],\"projection\":" + myProj.toJson() + "}";
-        RangeProjection rp = new RangeProjection("termsVerbiageTranslation", true, 0, 1, myProj);
-        JSONAssert.assertEquals(rp.toJson(), expectedJson, false);
+        String expectedJson = "{\"field\":\"termsVerbiageTranslation\",\"include\":true,\"range\":[0,1],\"projection\":" + myProj.toString() + "}";
+        Projection rp = Projection.array("termsVerbiageTranslation", 0, 1, myProj);
+        JSONAssert.assertEquals(rp.toString(), expectedJson, false);
     }
-    
+
     @Test
     public void testRangeProjectionToJsonNullTo() throws JSONException {
+        Projection myProj = Projection.field("*", false, false);
 
-        Projection myProj = new Projection (){
-            public String toJson() {
-                return "{\"field\":\"*\"}";
-            }
-        };
-        String expectedJson = "{\"field\":\"termsVerbiageTranslation\",\"include\":true,\"range\":[0,null],\"projection\":" + myProj.toJson() + "}";
-        RangeProjection rp = new RangeProjection("termsVerbiageTranslation", true, 0, null, myProj);
-        JSONAssert.assertEquals(rp.toJson(), expectedJson, false);
+        String expectedJson = "{\"field\":\"termsVerbiageTranslation\",\"include\":true,\"range\":[0,null],\"projection\":" + myProj.toString() + "}";
+        Projection rp = Projection.array(expectedJson, 0, null, myProj);
+
+        JSONAssert.assertEquals(rp.toString(), expectedJson, false);
     }
-
 
 }

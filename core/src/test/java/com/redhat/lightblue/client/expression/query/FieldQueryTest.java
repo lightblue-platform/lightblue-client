@@ -1,7 +1,6 @@
 package com.redhat.lightblue.client.expression.query;
 
-import com.redhat.lightblue.client.enums.ExpressionOperation;
-import com.redhat.lightblue.client.enums.NaryExpressionOperation;
+import com.redhat.lightblue.client.Query;
 import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -13,19 +12,19 @@ public class FieldQueryTest {
 
     @Test
     public void testToJsonConstructedWithStringsAndExpressionOperation() throws JSONException {
-        FieldQuery expression = new FieldQuery("field1", ExpressionOperation.EQUALS, "field2");
+        Query expression = Query.withField("field1", Query.BinOp.eq, "field2");
 
         String expectedJson = "{\"field\":\"field1\",\"op\":\"=\",\"rfield\":\"field2\"}";
 
-        JSONAssert.assertEquals(expectedJson, expression.toJson(), false);
+        JSONAssert.assertEquals(expectedJson, expression.toString(), false);
     }
 
     @Test
     public void testNaryFieldComparison() throws JSONException {
-        FieldQuery expression = new FieldQuery("field1", NaryExpressionOperation.IN, "field2");
+        Query expression = Query.withFieldValues("field1", Query.NaryOp.in, "field2");
 
         String expectedJson = "{\"field\":\"field1\",\"op\":\"$in\",\"rfield\":\"field2\"}";
 
-        JSONAssert.assertEquals(expectedJson, expression.toJson(), false);
+        JSONAssert.assertEquals(expectedJson, expression.toString(), false);
     }
 }
