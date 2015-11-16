@@ -29,7 +29,7 @@ public class ArrayProjection implements Projection {
         }
         sb.append("\"match\":");
         sb.append(queryExpression.toJson());
-        sb.append(",\"project\":[");
+        sb.append(",\"projection\":[");
         for (int i = 0; i < projection.length; i++) {
             sb.append(projection[i].toJson());
             if (i < projection.length - 1) {

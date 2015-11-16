@@ -1,7 +1,11 @@
 package com.redhat.lightblue.client;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ContainerNode;
@@ -179,6 +183,15 @@ public class Query extends Expression
     
     /**
      * <pre>
+     *   { field: <field>, regex: <pattern>, caseInsensitive: <caseInsensitive>, ... }
+     * </pre>
+     */
+    public static Query withMatchingString(String field, String value, boolean caseInsensitive) {
+        return caseInsensitive ? regex(field, escapeRegExPattern(value), caseInsensitive, false, false, false) : withValue(field, eq, value);
+    }
+    
+    /**
+     * <pre>
      *   { field: <field>, op: <op>, rvalue: <value> }
      * </pre>
      */
@@ -187,7 +200,7 @@ public class Query extends Expression
                                   Object value) {
         return withValue(field,op,Literal.value(value));
     }
-
+    
     /**
      * <pre>
      *   { field: <field>, op: <op>, rvalue: <value> }
@@ -488,6 +501,20 @@ public class Query extends Expression
         Query a = new Query(false);
         a.add(op.toString(), q.toJson());
         return a;
+    }
+    
+    private static final String ESCAPECHARS=".^$*+?()[{\\|";
+
+    public static String escapeRegExPattern(String s) {
+        StringBuilder bld = new StringBuilder();
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (ESCAPECHARS.indexOf(c) != -1)
+                bld.append("\\\\");
+            bld.append(c);
+        }
+        return bld.toString();
     }
 }
 

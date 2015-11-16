@@ -100,10 +100,13 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         if (sort != null) {
             node.set("sort", sort.toJson());
         }
-        if (begin != null && end != null) {
+        if (begin != null) {
             ArrayNode arr = JsonNodeFactory.instance.arrayNode();
             arr.add(JsonNodeFactory.instance.numberNode(begin));
+            if(end!=null)
             arr.add(JsonNodeFactory.instance.numberNode(end));
+            else
+            	arr.add(JsonNodeFactory.instance.nullNode());
             node.set("range", arr);
         }
         return node;

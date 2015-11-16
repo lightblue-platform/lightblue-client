@@ -2,6 +2,8 @@ package com.redhat.lightblue.client.integration.test;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.runners.model.TestClass;
 
@@ -18,11 +20,17 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
 
     private final LightblueTestMethods methods;
     private final int httpServerPort;
+    private boolean removeHooks = Boolean.TRUE;
 
     private ArtificialLightblueClientCRUDController controller;
 
     public LightblueExternalResource(LightblueTestMethods methods) {
         this(methods, 8000);
+    }
+
+    public LightblueExternalResource(LightblueTestMethods methods,boolean removeHooks) {
+        this(methods, 8000);
+        this.removeHooks = removeHooks;
     }
 
     public LightblueExternalResource(LightblueTestMethods methods, Integer httpServerPort) {
@@ -38,7 +46,10 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
     protected AbstractLightblueClientCRUDController getControllerInstance() {
         if (controller == null) {
             try {
-                controller = new ArtificialLightblueClientCRUDController(httpServerPort);
+                if (removeHooks)
+                    controller = new ArtificialLightblueClientCRUDController(httpServerPort);
+                else
+                    controller = new ArtificialLightblueClientCRUDControllerWithHooks(httpServerPort);
             } catch (Exception e) {
                 throw new RuntimeException("Unable to create test CRUD Controller", e);
             }
@@ -54,11 +65,11 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         return getControllerInstance().loadData(entityName, entityVersion,
                 resourcePath);
     }
-    
+
     public void cleanupMongoCollections(String... collectionNames) throws UnknownHostException {
         getControllerInstance().cleanupMongoCollections(collectionNames);
     }
-    
+
     public void cleanupMongoCollections(String dbName, String[] collectionNames) throws UnknownHostException {
         getControllerInstance().cleanupMongoCollections(dbName, collectionNames);
     }
@@ -87,5 +98,20 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         }
 
     }
+
+    private class ArtificialLightblueClientCRUDControllerWithHooks extends ArtificialLightblueClientCRUDController {
+
+        public ArtificialLightblueClientCRUDControllerWithHooks(int httpServerPort) throws Exception {
+            super(httpServerPort);
+        }
+
+        @Override
+        public Set<String> getHooksToRemove() {
+            return new HashSet<>();
+        }
+
+
+    }
+
 
 }

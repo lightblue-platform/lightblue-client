@@ -101,7 +101,7 @@ public class Projection extends Expression {
         Projection p=new Projection(false);
         p.add("field",pattern).add("include",include).add("match",match.toJson());
         if(projection!=null)
-            p.add("project",projection.toJson());
+            p.add("projection",projection.toJson());
         if(sort!=null)
             p.add("sort",sort.toJson());
         return p;
@@ -130,40 +130,43 @@ public class Projection extends Expression {
      * </pre>
      */        
     public static Projection array(String pattern,
-                                   int from,
-                                   int to,
+                                   Integer from,
+                                   Integer to,
                                    boolean include,
                                    Projection projection,
                                    Sort sort) {
         Projection p=new Projection(false);
         ArrayNode a=JsonNodeFactory.instance.arrayNode();
         a.add(JsonNodeFactory.instance.numberNode(from));
+        if(to!=null)
         a.add(JsonNodeFactory.instance.numberNode(to));
+        else
+        	a.add(JsonNodeFactory.instance.nullNode());	
         p.add("field",pattern).add("include",include).add("range",a);
         if(projection!=null)
-            p.add("project",projection.toJson());
+            p.add("projection",projection.toJson());
         if(sort!=null)
             p.add("sort",sort.toJson());
         return p;
     }
 
     public static Projection array(String pattern,
-                                   int from,
-                                   int to,
+                                   Integer from,
+                                   Integer to,
                                    Projection projection) {
         return array(pattern,from,to,true,projection,null);
     }
 
     public static Projection array(String pattern,
-                                   int from,
-                                   int to,
+                                   Integer from,
+                                   Integer to,
                                    Sort sort) {
         return array(pattern,from,to,true,null,sort);
     }
 
     public static Projection array(String pattern,
-                                   int from,
-                                   int to) {
+                                   Integer from,
+                                   Integer to) {
         return array(pattern,from,to,true,null,null);
     }
 

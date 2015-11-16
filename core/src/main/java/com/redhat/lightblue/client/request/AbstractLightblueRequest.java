@@ -50,7 +50,7 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         this.entityVersion = entityVersion;
     }
 
-    protected void appendToURI(StringBuilder restOfURI, String pathParam) {
+    public static void appendToURI(StringBuilder restOfURI, String pathParam) {
         if (!StringUtils.endsWith(restOfURI.toString(), PATH_SEPARATOR)) {
             restOfURI.append(PATH_SEPARATOR);
         }
