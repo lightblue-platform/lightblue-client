@@ -22,7 +22,7 @@ public class ProjectionTest {
     public void testArrayProjectionToJson() throws JSONException {
         Projection myProj = Projection.field("*", false, false);
         Query myEx = Query.withValue("statusCode", Query.BinOp.eq, "active");
-        String expectedJson = "{\"include\":true,\"field\":\"termsVerbiage\",\"match\":" + myEx.toString() + ",\"projection\":[" + myProj.toString() + "]}";
+        String expectedJson = "{\"include\":true,\"field\":\"termsVerbiage\",\"match\":" + myEx.toString() + ",\"projection\":" + myProj.toString() + "}";
 
         Projection ap = Projection.array("termsVerbiage", myEx, myProj);
         JSONAssert.assertEquals(expectedJson, ap.toString(), false);
@@ -42,7 +42,7 @@ public class ProjectionTest {
         Projection myProj = Projection.field("*", false, false);
 
         String expectedJson = "{\"field\":\"termsVerbiageTranslation\",\"include\":true,\"range\":[0,null],\"projection\":" + myProj.toString() + "}";
-        Projection rp = Projection.array(expectedJson, 0, null, myProj);
+        Projection rp = Projection.array("termsVerbiageTranslation", 0, null, myProj);
 
         JSONAssert.assertEquals(rp.toString(), expectedJson, false);
     }

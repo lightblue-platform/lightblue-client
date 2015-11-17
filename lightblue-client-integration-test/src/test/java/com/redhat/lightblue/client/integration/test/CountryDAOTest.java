@@ -1,10 +1,7 @@
 package com.redhat.lightblue.client.integration.test;
 
-import static com.redhat.lightblue.client.expression.query.ValueQuery.withValue;
-import static com.redhat.lightblue.client.projection.FieldProjection.includeField;
 import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadJsonNode;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.net.UnknownHostException;
 import java.util.List;
@@ -14,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.redhat.lightblue.client.Literal;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
@@ -61,7 +57,7 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         DataInsertRequest request = new DataInsertRequest(Country.objectType, Country.objectVersion);
 
         request.create(c);
-        request.returns(includeField("*"));
+        request.returns(Projection.includeField("*"));
         return client.data(request, Country[].class)[0];
     }
 
@@ -141,8 +137,8 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         cleanupMongoCollections(Country.objectType);
 
         DataFindRequest request = new DataFindRequest(Country.objectType, Country.objectVersion);
-        request.where(withValue("objectType = country"));
-        request.select(includeField("*"));
+        request.where(Query.withValue("objectType = country"));
+        request.select(Projection.includeField("*"));
         Country[] countries = client.data(request, Country[].class);
 
         Assert.assertTrue(countries.length == 0);
