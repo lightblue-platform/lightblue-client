@@ -34,51 +34,15 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         this.projection = Projection.project(projection);
     }
 
-    @Deprecated
-    public void returns(com.redhat.lightblue.client.projection.Projection... projection) {
-        Projection[] p = new Projection[projection.length];
-        for (int i = 0; i < p.length; i++)
-            p[i] = top(projection[i]);
-        returns(p);
-    }
-
-    @Deprecated
-    public void returns(Collection<com.redhat.lightblue.client.projection.Projection> projections) {
-        returns(projections.toArray(new com.redhat.lightblue.client.projection.Projection[projections.size()]));
-    }
-
     public void where(Query queryExpression) {
         this.query = queryExpression;
-    }
-
-    @Deprecated
-    public void where(com.redhat.lightblue.client.expression.query.Query queryExpression) {
-        this.query = toq(queryExpression);
     }
 
     public void updates(Update... updates) {
         update = Update.update(updates);
     }
 
-    @Deprecated
-    public void updates(com.redhat.lightblue.client.expression.update.Update... updates) {
-        Update[] u = new Update[updates.length];
-        for (int i = 0; i < u.length; i++)
-            u[i] = tou(updates[i]);
-        updates(u);
-    }
-
-    @Deprecated
-    public void updates(Collection<com.redhat.lightblue.client.expression.update.Update> updates) {
-        updates(updates.toArray(new com.redhat.lightblue.client.expression.update.Update[updates.size()]));
-    }
-
     public void setQuery(Query query) {
-        where(query);
-    }
-
-    @Deprecated
-    public void setQuery(com.redhat.lightblue.client.expression.query.Query query) {
         where(query);
     }
 
@@ -86,27 +50,8 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         updates(updates);
     }
 
-    @Deprecated
-    public void setUpdates(com.redhat.lightblue.client.expression.update.Update... updates) {
-        updates(updates);
-    }
-
-    @Deprecated
-    public void setUpdates(Collection<com.redhat.lightblue.client.expression.update.Update> updates) {
-        updates(updates.toArray(new com.redhat.lightblue.client.expression.update.Update[updates.size()]));
-    }
-
     public void setProjections(Projection... projections) {
         returns(projections);
-    }
-
-    @Deprecated
-    public void setProjections(com.redhat.lightblue.client.projection.Projection... projections) {
-        returns(projections);
-    }
-
-    public void setProjections(Collection<com.redhat.lightblue.client.projection.Projection> projections) {
-        returns(projections.toArray(new com.redhat.lightblue.client.projection.Projection[projections.size()]));
     }
 
     @Override

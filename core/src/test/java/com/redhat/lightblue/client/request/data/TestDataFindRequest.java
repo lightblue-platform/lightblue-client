@@ -1,9 +1,8 @@
 package com.redhat.lightblue.client.request.data;
 
-import com.redhat.lightblue.client.enums.SortDirection;
-import com.redhat.lightblue.client.expression.query.Query;
-import com.redhat.lightblue.client.projection.Projection;
-import com.redhat.lightblue.client.request.SortCondition;
+import com.redhat.lightblue.client.Projection;
+import com.redhat.lightblue.client.Query;
+import com.redhat.lightblue.client.Sort;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,43 +11,28 @@ import org.junit.Test;
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import java.util.ArrayList;
-import java.util.List;
+public class TestDataFindRequest extends AbstractLightblueRequestTest {
 
-public class TestDataFindRequest extends AbstractLightblueRequestTest  {
+    private final Query testQueryExpression = Query.withValue("test", Query.BinOp.neq, "hack");
 
-    private Query testQueryExpression = new Query() {
-        public String toJson() {
-            return "{\"field1\":\"test\",\"op\":\"$ne\",\"rValue\":\"hack\"}";
-        }
-    };
+    private final Projection testProjection1 = Projection.field("name", false, false);
 
-    private Projection testProjection1 = new Projection () {
-        public String toJson() {
-            return "{\"field1\":\"name\"}";
-        }
-    };
+    private final Projection testProjection2 = Projection.field("address", false, false);
 
-    private Projection testProjection2 = new Projection() {
-        public String toJson() {
-            return "{\"field2\":\"address\"}";
-        }
-    };
+    private final Sort sortCondition1 = Sort.asc("field1");
+    private final Sort sortCondition2 = Sort.desc("field2");
 
-    private SortCondition sortCondition1 = new SortCondition("field1", SortDirection.ASC);
-    private SortCondition sortCondition2 = new SortCondition("field2", SortDirection.DESC);
+    DataFindRequest request = new DataFindRequest();
 
-	DataFindRequest request = new DataFindRequest();
+    @Before
+    public void setUp() throws Exception {
+        request = new DataFindRequest(entityName, entityVersion);
+    }
 
-	@Before
-	public void setUp() throws Exception {
-		request = new DataFindRequest(entityName, entityVersion);
-	}
-
-	@Test
-	public void testGetOperationPathParam() {
-		Assert.assertEquals("find", request.getOperationPathParam());
-	}
+    @Test
+    public void testGetOperationPathParam() {
+        Assert.assertEquals("find", request.getOperationPathParam());
+    }
 
     @Test
     public void testRequestWithExpressionAndSingleProjectionFormsProperBody() throws JSONException {
@@ -72,11 +56,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
 
     @Test
     public void testRequestWithMultipleProjectionsPassedAsListFormsProperBody() throws JSONException {
-        List<Projection> projections = new ArrayList<Projection>();
-        projections.add(testProjection1);
-        projections.add(testProjection2);
-
-        request.select(projections);
+        request.select(testProjection1, testProjection2);
         request.where(testQueryExpression);
 
         String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":[" + testProjection1.toJson() + "," + testProjection2.toJson() + "]}";
@@ -88,9 +68,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
     public void testRequestWithExpressionProjectionAndSingleSortFormsProperBody() throws JSONException {
         request.select(testProjection1);
         request.where(testQueryExpression);
-        List<SortCondition> sortConditions = new ArrayList<SortCondition>();
-        sortConditions.add(sortCondition1);
-        request.sort(sortConditions);
+        request.sort(sortCondition1);
 
         String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + "}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
@@ -110,9 +88,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
     public void testSetSortConditionsIsPassthroughForSort() throws JSONException {
         request.select(testProjection1);
         request.where(testQueryExpression);
-        List<SortCondition> sortConditions = new ArrayList<SortCondition>();
-        sortConditions.add(sortCondition1);
-        request.setSortConditions(sortConditions);
+        request.sort(sortCondition1);
 
         String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + "}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
@@ -122,10 +98,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
     public void testRequestWithExpressionProjectionAndMultiSortFormsProperBody() throws JSONException {
         request.select(testProjection1);
         request.where(testQueryExpression);
-        List<SortCondition> sortConditions = new ArrayList<SortCondition>();
-        sortConditions.add(sortCondition1);
-        sortConditions.add(sortCondition2);
-        request.sort(sortConditions);
+        request.sort(sortCondition1, sortCondition2);
 
         String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":[" + sortCondition1.toJson() + "," + sortCondition2.toJson() + "]}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
@@ -140,7 +113,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
         String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":[" + sortCondition1.toJson() + "," + sortCondition2.toJson() + "]}";
         JSONAssert.assertEquals(expected, request.getBody(), false);
     }
-    
+
     @Test
     public void testRequestWithRange() throws JSONException {
         request.select(testProjection1);
@@ -148,10 +121,10 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
         request.sort(sortCondition1);
         request.range(0, 20);
 
-        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + ",\"range\": [0,20]"+ "}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + ",\"range\": [0,20]" + "}";
         JSONAssert.assertEquals(expected, request.getBody(), true);
     }
-    
+
     @Test
     public void testRequestWithRangeNullTo() throws JSONException {
         request.select(testProjection1);
@@ -159,9 +132,8 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest  {
         request.sort(sortCondition1);
         request.range(0, null);
 
-        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + ",\"range\": [0,null]"+ "}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + ",\"range\": [0,null]" + "}";
         JSONAssert.assertEquals(expected, request.getBody(), true);
     }
-
 
 }

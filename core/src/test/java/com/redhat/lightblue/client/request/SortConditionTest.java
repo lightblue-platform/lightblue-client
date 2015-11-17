@@ -1,6 +1,6 @@
 package com.redhat.lightblue.client.request;
 
-import com.redhat.lightblue.client.enums.SortDirection;
+import com.redhat.lightblue.client.Sort;
 import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -10,15 +10,12 @@ import org.skyscreamer.jsonassert.JSONAssert;
  */
 public class SortConditionTest {
 
-     
     @Test
     public void testToJsonConstructedSortCondiitionExpression() throws JSONException {
-    	
-    	
-    	 String expectedJson ="{\"field\":\"$asc\"}";
-    
-		SortCondition condition = new SortCondition("field", SortDirection.ASC)   ;  
-        JSONAssert.assertEquals(expectedJson, condition.toJson(), false);
+
+        String expectedJson = "{\"field\":\"$asc\"}";
+
+        Sort condition = Sort.asc("field");
+        JSONAssert.assertEquals(expectedJson, condition.toString(), false);
     }
-    
 }

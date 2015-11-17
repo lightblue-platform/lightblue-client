@@ -19,42 +19,6 @@ public class LiteralDataRequest extends AbstractLightblueDataRequest {
     private final String operationPathParam;
     private final Operation operation;
 
-    @Deprecated
-    public LiteralDataRequest(String body, HttpMethod httpMethod, String operationalPathParam) {
-        super();
-        this.body = JSON.toJsonNode(body);
-        this.httpMethod = httpMethod;
-        operationPathParam = operationalPathParam;
-        operation = Operation.valueOf(operationalPathParam);
-    }
-
-    @Deprecated
-    public LiteralDataRequest(String entityName, String entityVersion, String body, HttpMethod httpMethod, String operationalPathParam) {
-        super(entityName, entityVersion);
-        this.body = JSON.toJsonNode(body);
-        this.httpMethod = httpMethod;
-        operationPathParam = operationalPathParam;
-        operation = Operation.valueOf(operationalPathParam.toUpperCase());
-    }
-
-    @Deprecated
-    public LiteralDataRequest(JsonNode body, HttpMethod httpMethod, String operationalPathParam) {
-        super();
-        this.body = body;
-        this.httpMethod = httpMethod;
-        operationPathParam = operationalPathParam;
-        operation = Operation.valueOf(operationalPathParam.toUpperCase());
-    }
-
-    @Deprecated
-    public LiteralDataRequest(String entityName, String entityVersion, JsonNode body, HttpMethod httpMethod, String operationalPathParam) {
-        super(entityName, entityVersion);
-        this.body = body;
-        this.httpMethod = httpMethod;
-        operationPathParam = operationalPathParam;
-        operation = Operation.valueOf(operationalPathParam.toUpperCase());
-    }
-
     public LiteralDataRequest(JsonNode body, HttpMethod httpMethod, String operationPathParam, Operation operation) {
         super();
         this.body = body;

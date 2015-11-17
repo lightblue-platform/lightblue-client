@@ -74,32 +74,4 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
     public String toString() {
         return getHttpMethod().toString()+" "+getRestURI("/")+", body: "+getBody();
     }
-
-    /**
-     * Deprecated expression model support
-     */
-    protected com.redhat.lightblue.client.Query toq(com.redhat.lightblue.client.expression.query.Query q) {
-        return com.redhat.lightblue.client.Query.query((ContainerNode)JSON.toJsonNode(q.toJson()));
-    }
-
-    /**
-     * Deprecated expression model support
-     */
-    protected com.redhat.lightblue.client.Projection top(com.redhat.lightblue.client.projection.Projection p) {
-        return com.redhat.lightblue.client.Projection.project((ContainerNode)JSON.toJsonNode(p.toJson()));
-    }
-
-    /**
-     * Deprecated expression model support
-     */
-    protected com.redhat.lightblue.client.Sort tos(com.redhat.lightblue.client.request.SortCondition s) {
-        return com.redhat.lightblue.client.Sort.sort((ContainerNode)JSON.toJsonNode(s.toJson()));
-    }
-
-    /**
-     * Deprecated expression model support
-     */
-    protected com.redhat.lightblue.client.Update tou(com.redhat.lightblue.client.expression.update.Update u) {
-        return com.redhat.lightblue.client.Update.update((ContainerNode)JSON.toJsonNode(u.toJson()));
-    }
 }

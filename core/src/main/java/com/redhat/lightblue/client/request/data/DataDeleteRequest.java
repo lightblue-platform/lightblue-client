@@ -23,11 +23,6 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-    @Deprecated
-    public void where(com.redhat.lightblue.client.expression.query.Query queryExpression) {
-        this.queryExpression = toq(queryExpression);
-    }
-
     public void where(com.redhat.lightblue.client.Query queryExpression) {
         this.queryExpression = queryExpression;
     }

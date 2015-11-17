@@ -1,25 +1,17 @@
-/**
- * 
- */
 package com.redhat.lightblue.client.response;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.TreeMap;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.redhat.lightblue.client.model.DataError;
-import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
@@ -31,7 +23,7 @@ import com.redhat.lightblue.client.util.JSON;
  */
 public class BulkLightblueResponse {
 
-    private final Map<Integer, LightblueResponse> responses = new TreeMap<Integer, LightblueResponse>();
+    private final Map<Integer, LightblueResponse> responses = new TreeMap<>();
     private final List<? extends AbstractLightblueRequest> requests;
     private JsonNode json;
     private String text;
@@ -86,7 +78,7 @@ public class BulkLightblueResponse {
     }
 
     public List<LightblueResponse> getResponses() {
-        return new ArrayList<LightblueResponse>(responses.values());
+        return new ArrayList<>(responses.values());
     }
 
     public List<? extends AbstractLightblueRequest> getRequests() {

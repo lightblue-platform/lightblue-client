@@ -9,7 +9,6 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -193,22 +192,6 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         // config object from affecting this client after instantiation.
         Objects.requireNonNull(configuration, "configuration");
         this.configuration = new LightblueClientConfiguration(configuration);
-    }
-
-    /**
-     * @deprecated Use LightblueHttpClient(String configFilePath) if you want to specify a config file location not on the classpath Use
-     *             LightblueHttpClient(LightblueClientConfiguration configuration) if you don't want to use config files at all
-     */
-    @Deprecated
-    public LightblueHttpClient(String dataServiceURI, String metadataServiceURI, Boolean useCertAuth) {
-        configuration = new LightblueClientConfiguration();
-
-        configuration.setDataServiceURI(dataServiceURI);
-        configuration.setMetadataServiceURI(metadataServiceURI);
-        configuration.setUseCertAuth(useCertAuth);
-
-        httpTransport = defaultHttpClientFromConfig(configuration);
-        mapper = JSON.getDefaultObjectMapper();
     }
 
     @Override

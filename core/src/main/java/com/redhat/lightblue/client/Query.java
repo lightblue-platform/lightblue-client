@@ -1,11 +1,7 @@
 package com.redhat.lightblue.client;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ContainerNode;
@@ -113,6 +109,7 @@ public class Query extends Expression
             this.s=s;
         }
         
+        @Override
         public String toString() {
             return s;
         }
@@ -136,6 +133,7 @@ public class Query extends Expression
             this.s=s;
         }
         
+        @Override
         public String toString() {
             return s;
         }
@@ -151,12 +149,12 @@ public class Query extends Expression
             this.s=s;
         }
         
+        @Override
         public String toString() {
             return s;
         }
     }
 
-    
     /**
      * Constructs a query object from a json array or object
      */
