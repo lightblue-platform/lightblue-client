@@ -34,19 +34,6 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
         this.projection = Projection.project(projection);
     }
 
-    @Deprecated
-    public void returns(com.redhat.lightblue.client.projection.Projection... projection) {
-        Projection[] p = new Projection[projection.length];
-        for (int i = 0; i < p.length; i++)
-            p[i] = top(projection[i]);
-        returns(p);
-    }
-
-    @Deprecated
-    public void returns(Collection<com.redhat.lightblue.client.projection.Projection> projections) {
-        returns(projections.toArray(new com.redhat.lightblue.client.projection.Projection[projections.size()]));
-    }
-
     public void create(Object... objects) {
         if (objects[0] instanceof java.util.Collection<?>) {
             this.objects = ((Collection<?>) objects[0]).toArray();

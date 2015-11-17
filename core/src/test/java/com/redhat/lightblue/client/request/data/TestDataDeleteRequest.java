@@ -1,6 +1,6 @@
 package com.redhat.lightblue.client.request.data;
 
-import com.redhat.lightblue.client.expression.query.Query;
+import com.redhat.lightblue.client.Query;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,23 +11,19 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 public class TestDataDeleteRequest extends AbstractLightblueRequestTest {
 
-    private Query testQueryExpression = new Query() {
-        public String toJson() {
-            return "{\"field1\":\"test\",\"op\":\"$ne\",\"rValue\":\"hack\"}";
-        }
-    };
+    private Query testQueryExpression = Query.withValue("test", Query.BinOp.neq, "hack");
 
-	DataDeleteRequest request = new DataDeleteRequest();
+    DataDeleteRequest request = new DataDeleteRequest();
 
-	@Before
-	public void setUp() throws Exception {
-		request = new DataDeleteRequest(entityName, entityVersion);
-	}
+    @Before
+    public void setUp() throws Exception {
+        request = new DataDeleteRequest(entityName, entityVersion);
+    }
 
-	@Test
-	public void testGetOperationPathParam() {
-		Assert.assertEquals("delete", request.getOperationPathParam());
-	}
+    @Test
+    public void testGetOperationPathParam() {
+        Assert.assertEquals("delete", request.getOperationPathParam());
+    }
 
     @Test
     public void testRequestWithExpressionFormsProperBody() throws JSONException {

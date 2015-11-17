@@ -16,14 +16,12 @@ import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
  */
 public class MetadataUpdateSchemaStatusRequest extends AbstractLightblueMetadataRequest {
 
-
-	protected static final String COMMENT_QUERY_NAME = "comment";
+    protected static final String COMMENT_QUERY_NAME = "comment";
 
     private MetadataStatus status;
     private String comment;
 
-
-	public MetadataUpdateSchemaStatusRequest(String entityName, String entityVersion, MetadataStatus status) {
+    public MetadataUpdateSchemaStatusRequest(String entityName, String entityVersion, MetadataStatus status) {
         super(entityName, entityVersion);
         this.status = status;
     }
@@ -47,15 +45,15 @@ public class MetadataUpdateSchemaStatusRequest extends AbstractLightblueMetadata
 
     @Override
     public String getRestURI(String baseServiceURI) {
-    	StringBuilder requestURI = new StringBuilder(super.getRestURI(baseServiceURI));
-    	if (StringUtils.isNotBlank(getComment())) {
-    	    try {
+        StringBuilder requestURI = new StringBuilder(super.getRestURI(baseServiceURI));
+        if (StringUtils.isNotBlank(getComment())) {
+            try {
                 appendToURI(requestURI, COMMENT_QUERY_NAME, URLEncoder.encode(getComment(), Charset.defaultCharset().toString()));
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
         }
-    	return requestURI.toString();
+        return requestURI.toString();
 
     }
 
@@ -63,14 +61,13 @@ public class MetadataUpdateSchemaStatusRequest extends AbstractLightblueMetadata
         this.status = status;
     }
 
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     public String getComment() {
-		return comment;
-	}
+        return comment;
+    }
 
     @Override
     public JsonNode getBodyJson() {
