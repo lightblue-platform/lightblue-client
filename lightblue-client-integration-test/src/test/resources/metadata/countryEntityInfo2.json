@@ -1,0 +1,10 @@
+{
+    "name": "country",
+    "indexes": [
+    ],
+    "datastore": {
+        "backend": "mongo",
+        "datasource": "${mongo.datasource}",
+        "collection": "country"
+    }
+}

@@ -5,21 +5,6 @@ import org.apache.commons.lang.StringUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public abstract class AbstractLightblueMetadataRequest extends AbstractLightblueRequest {
-    private JsonNode body;
-
-    public void setBody(JsonNode body) {
-        this.body=body;
-    }
-
-    @Override
-    public JsonNode getBodyJson() {
-        return body;
-    }
-    
-    @Override
-    public String getBody() {
-        return getBodyJson().toString();
-    }
 
     public AbstractLightblueMetadataRequest() {
         super();
@@ -39,20 +24,30 @@ public abstract class AbstractLightblueMetadataRequest extends AbstractLightblue
 
         requestURI.append(baseServiceURI);
 
-        if (StringUtils.isNotBlank(this.getEntityName())) {
-            appendToURI(requestURI, this.getEntityName());
+        if (StringUtils.isNotBlank(getEntityName())) {
+            appendToURI(requestURI, getEntityName());
         }
 
-        if (StringUtils.isNotBlank(this.getEntityVersion())) {
-            appendToURI(requestURI, this.getEntityVersion());
+        if (StringUtils.isNotBlank(getEntityVersion())) {
+            appendToURI(requestURI, getEntityVersion());
         }
 
-        if (StringUtils.isNotBlank(this.getOperationPathParam())) {
+        if (StringUtils.isNotBlank(getOperationPathParam())) {
             appendToURI(requestURI, getOperationPathParam());
         }
 
         return requestURI.toString();
     }
 
+    @Override
+    public String getBody() {
+        JsonNode body = getBodyJson();
+        if (body == null) {
+            return null;
+        }
+        return getBodyJson().toString();
+    }
+
     public abstract String getOperationPathParam();
+
 }

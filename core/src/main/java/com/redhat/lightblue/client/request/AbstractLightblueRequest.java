@@ -21,7 +21,7 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
      * Construct request with entity name and default version
      */
     public AbstractLightblueRequest(String entityName) {
-        this(entityName,null);
+        this(entityName, null);
     }
 
     /**
@@ -40,10 +40,12 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         return entityVersion;
     }
 
+    @Deprecated
     public void setEntityName(String entityName) {
         this.entityName = entityName;
     }
 
+    @Deprecated
     public void setEntityVersion(String entityVersion) {
         this.entityVersion = entityVersion;
     }

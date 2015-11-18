@@ -1,13 +1,13 @@
 package com.redhat.lightblue.client.request.metadata;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 
+/**
+ * POST /metadata/{entityName}/{version}/default
+ */
 public class MetadataSetDefaultVersionRequest extends AbstractLightblueMetadataRequest {
-
-    public MetadataSetDefaultVersionRequest() {
-        super();
-    }
 
     public MetadataSetDefaultVersionRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -21,6 +21,11 @@ public class MetadataSetDefaultVersionRequest extends AbstractLightblueMetadataR
     @Override
     public HttpMethod getHttpMethod() {
         return HttpMethod.POST;
+    }
+
+    @Override
+    public JsonNode getBodyJson() {
+        return null;
     }
 
 }
