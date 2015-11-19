@@ -1,15 +1,15 @@
 package com.redhat.lightblue.client.request.data;
 
-import com.redhat.lightblue.client.Projection;
-import com.redhat.lightblue.client.Query;
-import com.redhat.lightblue.client.Sort;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 import org.skyscreamer.jsonassert.JSONAssert;
+
+import com.redhat.lightblue.client.Projection;
+import com.redhat.lightblue.client.Query;
+import com.redhat.lightblue.client.Sort;
+import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestDataFindRequest extends AbstractLightblueRequestTest {
 
@@ -22,7 +22,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest {
     private final Sort sortCondition1 = Sort.asc("field1");
     private final Sort sortCondition2 = Sort.desc("field2");
 
-    DataFindRequest request = new DataFindRequest();
+    private DataFindRequest request;
 
     @Before
     public void setUp() throws Exception {

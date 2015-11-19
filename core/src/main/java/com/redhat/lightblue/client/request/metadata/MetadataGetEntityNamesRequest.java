@@ -10,7 +10,7 @@ import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 public class MetadataGetEntityNamesRequest extends AbstractLightblueMetadataRequest {
 
     public MetadataGetEntityNamesRequest() {
-        super();
+        super(null);
     }
 
     @Override

@@ -6,10 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public abstract class AbstractLightblueMetadataRequest extends AbstractLightblueRequest {
 
-    public AbstractLightblueMetadataRequest() {
-        super();
-    }
-
     public AbstractLightblueMetadataRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
     }

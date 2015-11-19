@@ -3,13 +3,12 @@ package com.redhat.lightblue.client.request.data;
 import java.util.Collection;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-
-import com.redhat.lightblue.client.http.HttpMethod;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.util.JSON;
 
@@ -17,10 +16,6 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
 
     private Projection projection;
     private Object[] objects;
-
-    public DataInsertRequest() {
-        super();
-    }
 
     public DataInsertRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -45,14 +40,16 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     @Override
     public JsonNode getBodyJson() {
         ObjectNode node = JsonNodeFactory.instance.objectNode();
-        if (projection != null)
+        if (projection != null) {
             node.set("projection", projection.toJson());
+        }
         if (objects.length == 1) {
             node.set("data", JSON.toJsonNode(objects[0]));
         } else {
             ArrayNode arr = JsonNodeFactory.instance.arrayNode();
-            for (int i = 0; i < objects.length; i++)
+            for (int i = 0; i < objects.length; i++) {
                 arr.add(JSON.toJsonNode(objects[i]));
+            }
             node.set("data", arr);
         }
         return node;
