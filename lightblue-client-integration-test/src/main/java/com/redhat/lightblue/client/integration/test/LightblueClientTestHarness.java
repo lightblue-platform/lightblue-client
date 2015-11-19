@@ -1,7 +1,6 @@
 package com.redhat.lightblue.client.integration.test;
 
 import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadResource;
-import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 
@@ -17,14 +16,14 @@ import com.redhat.lightblue.rest.integration.AbstractCRUDControllerWithRest;
  *
  * @author dcrissman
  */
-public abstract class AbstractLightblueClientCRUDController extends AbstractCRUDControllerWithRest {
+public abstract class LightblueClientTestHarness extends AbstractCRUDControllerWithRest {
 
-    public AbstractLightblueClientCRUDController() throws Exception {
+    public LightblueClientTestHarness() throws Exception {
         super();
         setupSystemProperties();
     }
 
-    public AbstractLightblueClientCRUDController(int httpServerPort) throws Exception {
+    public LightblueClientTestHarness(int httpServerPort) throws Exception {
         super(httpServerPort);
         setupSystemProperties();
     }

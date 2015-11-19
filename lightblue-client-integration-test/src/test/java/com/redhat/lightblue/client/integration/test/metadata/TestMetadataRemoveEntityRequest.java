@@ -6,11 +6,11 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.redhat.lightblue.client.integration.test.AbstractLightblueClientCRUDController;
+import com.redhat.lightblue.client.integration.test.LightblueClientTestHarness;
 import com.redhat.lightblue.client.request.metadata.MetadataRemoveEntityRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 
-public class TestMetadataRemoveEntityRequest extends AbstractLightblueClientCRUDController {
+public class TestMetadataRemoveEntityRequest extends LightblueClientTestHarness {
 
     public TestMetadataRemoveEntityRequest() throws Exception {
         super();
