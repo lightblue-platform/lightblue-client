@@ -38,11 +38,11 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
 
     public DefaultLightblueResponse(String responseText, ObjectMapper mapper) throws LightblueException {
         this(mapper);
-        this.text = responseText;
+        text = responseText;
         try {
             json = mapper.readTree(responseText);
 
-            if (hasError() || hasDataErrors()) {
+            if (hasAnyErrors()) {
                 throw new LightblueResponseException("Lightblue exception occurred: ", this);
             }
         } catch (IOException e) {
@@ -70,58 +70,70 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
 
     @Override
     public boolean hasDataErrors() {
+        if (json == null) {
+            return false;
+        }
+
         JsonNode err = json.get("dataErrors");
         return err != null && !(err instanceof NullNode) && err.size() > 0;
     }
 
     @Override
-    public boolean hasError() {
-        if (json == null)
+    public boolean hasLightblueErrors() {
+        if (json == null) {
             return true;
+        }
 
         JsonNode objectTypeNode = json.get("status");
-        if (objectTypeNode == null) {
-            return false;
-        }
-        JsonNode err = json.get("errors");
-        if (err != null && !(err instanceof NullNode))
+        if(objectTypeNode != null
+                && (objectTypeNode.textValue().equalsIgnoreCase("error")
+                  || objectTypeNode.textValue().equalsIgnoreCase("partial"))){
             return true;
-        err = json.get("dataErrors");
-        if (err != null && (err instanceof ArrayNode))
-            if (err.size() > 0)
-                return true;
-        return objectTypeNode.textValue().equalsIgnoreCase("error") || objectTypeNode.textValue().equalsIgnoreCase("partial");
+        }
+
+        JsonNode err = json.get("errors");
+        return err != null && !(err instanceof NullNode) && err.size() > 0;
+    }
+
+    public boolean hasAnyErrors() {
+        return hasDataErrors() || hasLightblueErrors();
     }
 
     @Override
     public DataError[] getDataErrors() {
         List<DataError> list = new ArrayList<>();
-        if (json == null)
+        if (json == null) {
             return null;
+        }
         JsonNode err = json.get("dataErrors");
-        if (err instanceof ObjectNode)
+        if (err instanceof ObjectNode) {
             list.add(DataError.fromJson((ObjectNode) err));
-        else if (err instanceof ArrayNode)
-            for (Iterator<JsonNode> itr = ((ArrayNode) err).elements(); itr.hasNext();)
+        } else if (err instanceof ArrayNode) {
+            for (Iterator<JsonNode> itr = ((ArrayNode) err).elements(); itr.hasNext();) {
                 list.add(DataError.fromJson((ObjectNode) itr.next()));
-        else
+            }
+        } else {
             return null;
+        }
         return list.toArray(new DataError[list.size()]);
     }
 
     @Override
-    public Error[] getErrors() {
+    public Error[] getLightblueErrors() {
         List<Error> list = new ArrayList<>();
-        if (json == null)
+        if (json == null) {
             return null;
+        }
         JsonNode err = json.get("errors");
-        if (err instanceof ObjectNode)
-            list.add(Error.fromJson((ObjectNode) err));
-        else if (err instanceof ArrayNode)
-            for (Iterator<JsonNode> itr = ((ArrayNode) err).elements(); itr.hasNext();)
-                list.add(Error.fromJson((ObjectNode) itr.next()));
-        else
+        if (err instanceof ObjectNode) {
+            list.add(Error.fromJson(err));
+        } else if (err instanceof ArrayNode) {
+            for (Iterator<JsonNode> itr = ((ArrayNode) err).elements(); itr.hasNext();) {
+                list.add(Error.fromJson(itr.next()));
+            }
+        } else {
             return null;
+        }
         return list.toArray(new Error[list.size()]);
     }
 
@@ -143,6 +155,7 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
         return field.asInt();
     }
 
+    @Override
     public JsonNode getProcessed() {
         return json.get("processed");
     }
@@ -150,7 +163,7 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
     @Override
     @SuppressWarnings("unchecked")
     public <T> T parseProcessed(final Class<T> type) throws LightblueParseException {
-        if (hasError()) {
+        if (hasAnyErrors()) {
             throw new LightblueParseException("Error returned in response: " + getText());
         }
 
@@ -178,4 +191,5 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
             throw new LightblueParseException("Error parsing lightblue response: " + getText() + "\n", e);
         }
     }
+
 }

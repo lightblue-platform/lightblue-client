@@ -1,9 +1,9 @@
 package com.redhat.lightblue.client.response;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -62,13 +62,13 @@ public class TestDefaultLightblueResponse {
 
     @Test
     public void testHasError_NoErrorElement_False() {
-        assertFalse(testResponse.hasError());
+        assertFalse(testResponse.hasLightblueErrors());
     }
 
     @Test
     public void testHasError_False() throws LightblueException {
         DefaultLightblueResponse response = new DefaultLightblueResponse("{\"status\":\"successful\"}");
-        assertFalse(response.hasError());
+        assertFalse(response.hasLightblueErrors());
     }
 
     @Test
@@ -93,9 +93,9 @@ public class TestDefaultLightblueResponse {
         } catch (LightblueResponseException e) {
             assertNotNull(e.getLightblueResponse());
             assertNull(e.getLightblueResponse().getDataErrors());
-            assertNotNull(e.getLightblueResponse().getErrors());
-            assertFalse(e.exists(LightblueResponseException.ERR_MONGO_CRUD_NO_ACCESS));
-            assertTrue(e.exists(LightblueResponseException.ERR_CRUD_REQUIRED));
+            assertNotNull(e.getLightblueResponse().getLightblueErrors());
+            assertFalse(e.exists(LightblueResponseErrorCodes.ERR_MONGO_CRUD_NO_ACCESS));
+            assertTrue(e.exists(LightblueResponseErrorCodes.ERR_CRUD_REQUIRED));
         }
     }
 
@@ -128,9 +128,9 @@ public class TestDefaultLightblueResponse {
         } catch (LightblueResponseException e) {
             assertNotNull(e.getLightblueResponse());
             assertNotNull(e.getLightblueResponse().getDataErrors());
-            assertNull(e.getLightblueResponse().getErrors());
-            assertFalse(e.exists(LightblueResponseException.ERR_MONGO_CRUD_NO_ACCESS));
-            assertTrue(e.exists(LightblueResponseException.ERR_MONGO_CRUD_SAVE_ERROR));
+            assertNull(e.getLightblueResponse().getLightblueErrors());
+            assertFalse(e.exists(LightblueResponseErrorCodes.ERR_MONGO_CRUD_NO_ACCESS));
+            assertTrue(e.exists(LightblueResponseErrorCodes.ERR_MONGO_CRUD_SAVE_ERROR));
         }
     }
 

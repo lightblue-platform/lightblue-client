@@ -13,10 +13,23 @@ public interface LightblueErrorResponse {
 
     String getText();
 
-    boolean hasError();
-
+    /**
+     * @return <code>true</code> if any data errors exist on this response, otherwise <code>false</code>.
+     */
     boolean hasDataErrors();
 
-    Error[] getErrors();
+    /**
+     * @return <code>true</code> if any lightblue errors exist on this response, otherwise <code>false</code>.
+     */
+    boolean hasLightblueErrors();
+
+    /**
+     * @return returns any {@link Error}s on this response.
+     */
+    Error[] getLightblueErrors();
+
+    /**
+     * @return returns any {@link DataError}s on this reponse.
+     */
     DataError[] getDataErrors();
 }
