@@ -15,6 +15,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 
@@ -30,6 +31,11 @@ public class TestBulkDataRequest {
 	public void setUp() throws Exception {
 		request = new DataBulkRequest();
 	}
+
+    @Test
+    public void testGetHttpMethod() {
+        Assert.assertEquals(HttpMethod.POST, request.getHttpMethod());
+    }
 
 	@Test
 	public void testAddRequest() {

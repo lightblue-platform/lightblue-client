@@ -41,7 +41,7 @@ public abstract class AbstractLightblueMetadataRequest extends AbstractLightblue
         if (body == null) {
             return null;
         }
-        return getBodyJson().toString();
+        return body.toString();
     }
 
     public abstract String getOperationPathParam();

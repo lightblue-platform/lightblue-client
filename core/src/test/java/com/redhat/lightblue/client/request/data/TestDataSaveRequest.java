@@ -6,7 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 
@@ -35,6 +37,16 @@ public class TestDataSaveRequest extends AbstractLightblueRequestTest {
     @Test
     public void testGetOperationPathParam() {
         Assert.assertEquals("save", request.getOperationPathParam());
+    }
+
+    @Test
+    public void testGetOperation() {
+        Assert.assertEquals(Operation.SAVE, request.getOperation());
+    }
+
+    @Test
+    public void testGetHttpMethod() {
+        Assert.assertEquals(HttpMethod.POST, request.getHttpMethod());
     }
 
     @Test

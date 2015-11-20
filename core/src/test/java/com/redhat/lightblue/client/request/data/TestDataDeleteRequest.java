@@ -6,7 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Query;
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestDataDeleteRequest extends AbstractLightblueRequestTest {
@@ -32,6 +34,16 @@ public class TestDataDeleteRequest extends AbstractLightblueRequestTest {
         String expected = "{\"query\":" + testQueryExpression.toJson() + "}";
 
         JSONAssert.assertEquals(expected, request.getBody(), false);
+    }
+
+    @Test
+    public void testGetOperation() {
+        Assert.assertEquals(Operation.DELETE, request.getOperation());
+    }
+
+    @Test
+    public void testGetHttpMethod() {
+        Assert.assertEquals(HttpMethod.POST, request.getHttpMethod());
     }
 
 }
