@@ -8,9 +8,10 @@ import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
-import com.redhat.lightblue.client.response.BulkLightblueResponse;
+import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
+import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueException;
-import com.redhat.lightblue.client.response.LightblueResponse;
+import com.redhat.lightblue.client.response.LightblueMetadataResponse;
 import com.redhat.lightblue.hystrix.ServoGraphiteSetup;
 
 /**
@@ -23,7 +24,7 @@ public class LightblueHystrixClient implements LightblueClient {
 		ServoGraphiteSetup.initialize();
 	}
 
-	protected class MetadataHystrixCommand extends HystrixCommand<LightblueResponse> {
+    protected class MetadataHystrixCommand extends HystrixCommand<LightblueMetadataResponse> {
 		private final LightblueRequest request;
 
 		public MetadataHystrixCommand(LightblueRequest request, String groupKey, String commandKey) {
@@ -33,12 +34,12 @@ public class LightblueHystrixClient implements LightblueClient {
 		}
 
 		@Override
-		protected LightblueResponse run() throws Exception {
+        protected LightblueMetadataResponse run() throws Exception {
 			return client.metadata(request);
 		}
 	}
 
-	protected class DataHystrixCommand extends HystrixCommand<LightblueResponse> {
+    protected class DataHystrixCommand extends HystrixCommand<LightblueDataResponse> {
 		private final LightblueRequest request;
 
 		public DataHystrixCommand(LightblueRequest request, String groupKey, String commandKey) {
@@ -48,24 +49,24 @@ public class LightblueHystrixClient implements LightblueClient {
 		}
 
 		@Override
-		protected LightblueResponse run() throws Exception {
+        protected LightblueDataResponse run() throws Exception {
 			return client.data(request);
 		}
 	}
 
-	protected class BulkDataHystrixCommand extends HystrixCommand<BulkLightblueResponse> {
+    protected class BulkDataHystrixCommand extends HystrixCommand<LightblueBulkDataResponse> {
 
-        private final AbstractDataBulkRequest<AbstractLightblueDataRequest> request;
+        private final AbstractDataBulkRequest<AbstractLightblueDataRequest> requests;
 
-        protected BulkDataHystrixCommand(AbstractDataBulkRequest<AbstractLightblueDataRequest> request, String groupKey, String commandKey) {
+        protected BulkDataHystrixCommand(AbstractDataBulkRequest<AbstractLightblueDataRequest> requests, String groupKey, String commandKey) {
 			super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey)).andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
-			this.request = request;
+            this.requests = requests;
 
 		}
 
 		@Override
-		protected BulkLightblueResponse run() throws Exception {
-			return client.bulkData(request);
+        protected LightblueBulkDataResponse run() throws Exception {
+            return client.bulkData(requests);
 		}
 	}
 
@@ -187,12 +188,12 @@ public class LightblueHystrixClient implements LightblueClient {
 	}
 
 	@Override
-	public LightblueResponse metadata(LightblueRequest lightblueRequest) {
+    public LightblueMetadataResponse metadata(LightblueRequest lightblueRequest) {
 		return new MetadataHystrixCommand(lightblueRequest, groupKey, commandKey).execute();
 	}
 
 	@Override
-	public LightblueResponse data(LightblueRequest lightblueRequest) {
+    public LightblueDataResponse data(LightblueRequest lightblueRequest) {
 		return new DataHystrixCommand(lightblueRequest, groupKey, commandKey).execute();
 	}
 
@@ -202,8 +203,8 @@ public class LightblueHystrixClient implements LightblueClient {
 	}
 
 	@Override
-    public BulkLightblueResponse bulkData(AbstractDataBulkRequest<AbstractLightblueDataRequest> request) throws LightblueException {
-		return new BulkDataHystrixCommand(request, groupKey, commandKey).execute();
+    public LightblueBulkDataResponse bulkData(AbstractDataBulkRequest<AbstractLightblueDataRequest> requests) throws LightblueException {
+        return new BulkDataHystrixCommand(requests, groupKey, commandKey).execute();
 	}
 
 	@Override

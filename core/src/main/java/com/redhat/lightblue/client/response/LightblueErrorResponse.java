@@ -9,9 +9,7 @@ import com.redhat.lightblue.client.model.Error;
  * @author mpatercz
  *
  */
-public interface LightblueErrorResponse {
-
-    String getText();
+public interface LightblueErrorResponse extends LightblueResponse {
 
     /**
      * @return <code>true</code> if any data errors exist on this response, otherwise <code>false</code>.
@@ -32,4 +30,5 @@ public interface LightblueErrorResponse {
      * @return returns any {@link DataError}s on this reponse.
      */
     DataError[] getDataErrors();
+
 }

@@ -8,15 +8,9 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  */
 public interface LightblueResponse {
+
     String getText();
 
     JsonNode getJson();
 
-    int parseModifiedCount();
-
-    int parseMatchCount();
-
-    JsonNode getProcessed();
-
-    <T> T parseProcessed(Class<T> type) throws LightblueParseException;
 }

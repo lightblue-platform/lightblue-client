@@ -15,83 +15,44 @@ import com.redhat.lightblue.client.model.DataError;
 import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.util.JSON;
 
-public class DefaultLightblueResponse implements LightblueResponse, LightblueErrorResponse {
+public class DefaultLightblueDataResponse extends AbstractLightblueResponse implements LightblueDataResponse, LightblueErrorResponse {
 
-    private String text;
-    private JsonNode json;
-    private final ObjectMapper mapper;
-
-    public DefaultLightblueResponse(ObjectMapper mapper) {
-        if (mapper == null) {
-            throw new NullPointerException("ObjectMapper instance cannot be null");
-        }
-        this.mapper = mapper;
-    }
-
-    public DefaultLightblueResponse() {
-        this(JSON.getDefaultObjectMapper());
-    }
-
-    public DefaultLightblueResponse(String responseText) throws LightblueException {
+    public DefaultLightblueDataResponse(String responseText) throws LightblueParseException, LightblueResponseException {
         this(responseText, JSON.getDefaultObjectMapper());
     }
 
-    public DefaultLightblueResponse(String responseText, ObjectMapper mapper) throws LightblueException {
-        this(mapper);
-        text = responseText;
-        try {
-            json = mapper.readTree(responseText);
+    public DefaultLightblueDataResponse(String responseText, ObjectMapper mapper) throws LightblueParseException, LightblueResponseException {
+        super(responseText, mapper);
 
-            if (hasAnyErrors()) {
-                throw new LightblueResponseException("Lightblue exception occurred: ", this);
-            }
-        } catch (IOException e) {
-            throw new LightblueParseException("Unable to parse response: ", e);
+        if (hasAnyErrors()) {
+            throw new LightblueResponseException("Lightblue exception occurred: ", this);
         }
-    }
-
-    @Override
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    @Override
-    public JsonNode getJson() {
-        return json;
-    }
-
-    public void setJson(JsonNode json) {
-        this.json = json;
     }
 
     @Override
     public boolean hasDataErrors() {
-        if (json == null) {
+        if (getJson() == null) {
             return false;
         }
 
-        JsonNode err = json.get("dataErrors");
+        JsonNode err = getJson().get("dataErrors");
         return err != null && !(err instanceof NullNode) && err.size() > 0;
     }
 
     @Override
     public boolean hasLightblueErrors() {
-        if (json == null) {
+        if (getJson() == null) {
             return true;
         }
 
-        JsonNode objectTypeNode = json.get("status");
+        JsonNode objectTypeNode = getJson().get("status");
         if(objectTypeNode != null
                 && (objectTypeNode.textValue().equalsIgnoreCase("error")
                   || objectTypeNode.textValue().equalsIgnoreCase("partial"))){
             return true;
         }
 
-        JsonNode err = json.get("errors");
+        JsonNode err = getJson().get("errors");
         return err != null && !(err instanceof NullNode) && err.size() > 0;
     }
 
@@ -102,10 +63,10 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
     @Override
     public DataError[] getDataErrors() {
         List<DataError> list = new ArrayList<>();
-        if (json == null) {
+        if (getJson() == null) {
             return null;
         }
-        JsonNode err = json.get("dataErrors");
+        JsonNode err = getJson().get("dataErrors");
         if (err instanceof ObjectNode) {
             list.add(DataError.fromJson((ObjectNode) err));
         } else if (err instanceof ArrayNode) {
@@ -121,10 +82,10 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
     @Override
     public Error[] getLightblueErrors() {
         List<Error> list = new ArrayList<>();
-        if (json == null) {
+        if (getJson() == null) {
             return null;
         }
-        JsonNode err = json.get("errors");
+        JsonNode err = getJson().get("errors");
         if (err instanceof ObjectNode) {
             list.add(Error.fromJson(err));
         } else if (err instanceof ArrayNode) {
@@ -147,17 +108,9 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
         return parseInt("matchCount");
     }
 
-    private int parseInt(String fieldName) {
-        JsonNode field = json.findValue(fieldName);
-        if (field == null || field.isNull()) {
-            return 0;
-        }
-        return field.asInt();
-    }
-
     @Override
     public JsonNode getProcessed() {
-        return json.get("processed");
+        return getJson().get("processed");
     }
 
     @Override
@@ -182,10 +135,10 @@ public class DefaultLightblueResponse implements LightblueResponse, LightblueErr
                 if (processedNode.size() > 1) {
                     throw new LightblueParseException("Was expecting single result:" + getText() + "\n");
                 } else {
-                    return mapper.readValue(processedNode.get(0).traverse(), type);
+                    return getMapper().readValue(processedNode.get(0).traverse(), type);
                 }
             } else {
-                return mapper.readValue(processedNode.traverse(), type);
+                return getMapper().readValue(processedNode.traverse(), type);
             }
         } catch (RuntimeException | IOException e) {
             throw new LightblueParseException("Error parsing lightblue response: " + getText() + "\n", e);
