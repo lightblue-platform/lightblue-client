@@ -9,14 +9,14 @@ import com.redhat.lightblue.client.model.Error;
  * @author mpatercz
  *
  */
-public interface LightblueErrorResponse {
-
-    String getText();
+public interface LightblueErrorResponse extends LightblueResponse {
 
     boolean hasError();
 
     boolean hasDataErrors();
 
     Error[] getErrors();
+
     DataError[] getDataErrors();
+
 }

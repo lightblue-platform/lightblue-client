@@ -21,10 +21,10 @@ import com.redhat.lightblue.client.integration.test.pojo.Country;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
-import com.redhat.lightblue.client.response.BulkLightblueResponse;
+import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
+import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueParseException;
-import com.redhat.lightblue.client.response.LightblueResponse;
 
 /**
  * Testing your code against lightblue example.
@@ -90,8 +90,8 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         bulkRequest.add(request2);
         bulkRequest.add(request3);
 
-        BulkLightblueResponse bulkResponse = client.bulkData(bulkRequest);
-        List<LightblueResponse> responses = bulkResponse.getResponses();
+        LightblueBulkDataResponse bulkResponse = client.bulkData(bulkRequest);
+        List<LightblueDataResponse> responses = bulkResponse.getResponses();
 
         assertEquals(3, responses.size());
         assertEquals(1, responses.get(0).parseMatchCount());
@@ -115,7 +115,7 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         request.select(Projection.includeField("*"));
         request.where(Query.withMatchingString("iso2Code", "pl", true));
 
-        LightblueResponse data = client.data(request);
+        LightblueDataResponse data = client.data(request);
         Country[] countries = data.parseProcessed(Country[].class);
 
         assertEquals(1, countries.length);
