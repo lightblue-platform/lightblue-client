@@ -13,7 +13,7 @@ import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.integration.test.LightblueExternalResource.LightblueTestMethods;
 import com.redhat.lightblue.client.integration.test.pojo.Country;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
-import com.redhat.lightblue.client.response.LightblueResponse;
+import com.redhat.lightblue.client.response.LightblueDataResponse;
 
 public class TestLightblueExternalResource {
 
@@ -45,7 +45,7 @@ public class TestLightblueExternalResource {
         insert.create(c);
         insert.returns(Projection.includeFieldRecursively("*"));
 
-        LightblueResponse insertResponse = client.data(insert);
+        LightblueDataResponse insertResponse = client.data(insert);
 
         assertEquals(1, insertResponse.parseModifiedCount());
     }

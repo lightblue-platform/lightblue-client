@@ -26,7 +26,7 @@ import com.redhat.lightblue.client.util.JSON;
  */
 public class TestBulkResponse {
 
-    private BulkLightblueResponse bulkResponse;
+    private DefaultLightblueBulkDataResponse bulkResponse;
     private DataBulkRequest bulkRequest;
     private static final String jsonResponse =
             "{\"responses\":[{\"seq\":0,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}},{\"seq\":1,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}}]}";
@@ -46,7 +46,7 @@ public class TestBulkResponse {
         bulkRequest.add(dfr);
         bulkRequest.add(dfr2);
 
-        bulkResponse = new BulkLightblueResponse(jsonResponse, bulkRequest);
+        bulkResponse = new DefaultLightblueBulkDataResponse(jsonResponse, bulkRequest);
     }
 
     @Test
