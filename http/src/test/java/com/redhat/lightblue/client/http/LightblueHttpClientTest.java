@@ -66,9 +66,7 @@ public class LightblueHttpClientTest {
 		c.setDataServiceURI("http://foo/bar");
 
 		LightblueClient httpClient = new LightblueHttpClient(c);
-		DataFindRequest r = new DataFindRequest();
-		r.setEntityName("e");
-		r.setEntityVersion("v");
+        DataFindRequest r = new DataFindRequest("e", "v");
         r.where(Query.withValue("a = b"));
         r.select(Projection.includeField("foo"));
 

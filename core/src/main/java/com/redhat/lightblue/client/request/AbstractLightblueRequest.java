@@ -2,9 +2,6 @@ package com.redhat.lightblue.client.request;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.fasterxml.jackson.databind.node.ContainerNode;
-import com.redhat.lightblue.client.util.JSON;
-
 public abstract class AbstractLightblueRequest implements LightblueRequest {
 
     protected static final String PATH_SEPARATOR = "/";
@@ -12,10 +9,8 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
 	protected static final String QUERY_BEGINNER = "?";
 	protected static final String QUERY_PARAM_NAME_VALUE_SEPERATOR = "=";
 
-    private String entityName;
-    private String entityVersion;
-
-    public AbstractLightblueRequest() {}
+    private final String entityName;
+    private final String entityVersion;
 
     /**
      * Construct request with entity name and default version
@@ -38,16 +33,6 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
 
     public String getEntityVersion() {
         return entityVersion;
-    }
-
-    @Deprecated
-    public void setEntityName(String entityName) {
-        this.entityName = entityName;
-    }
-
-    @Deprecated
-    public void setEntityVersion(String entityVersion) {
-        this.entityVersion = entityVersion;
     }
 
     public static void appendToURI(StringBuilder restOfURI, String pathParam) {

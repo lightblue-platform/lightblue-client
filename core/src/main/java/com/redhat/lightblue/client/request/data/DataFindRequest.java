@@ -2,16 +2,15 @@ package com.redhat.lightblue.client.request.data;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-
-import com.redhat.lightblue.client.Query;
-import com.redhat.lightblue.client.http.HttpMethod;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.Sort;
+import com.redhat.lightblue.client.http.HttpMethod;
+import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 
 public class DataFindRequest extends AbstractLightblueDataRequest {
 
@@ -20,10 +19,6 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     private Sort sort;
     private Integer begin;
     private Integer end;
-
-    public DataFindRequest() {
-        super();
-    }
 
     public DataFindRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -65,10 +60,11 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         if (begin != null) {
             ArrayNode arr = JsonNodeFactory.instance.arrayNode();
             arr.add(JsonNodeFactory.instance.numberNode(begin));
-            if(end!=null)
-            arr.add(JsonNodeFactory.instance.numberNode(end));
-            else
-            	arr.add(JsonNodeFactory.instance.nullNode());
+            if(end!=null) {
+                arr.add(JsonNodeFactory.instance.numberNode(end));
+            } else {
+                arr.add(JsonNodeFactory.instance.nullNode());
+            }
             node.set("range", arr);
         }
         return node;
