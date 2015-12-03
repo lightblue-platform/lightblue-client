@@ -2,9 +2,12 @@ package com.redhat.lightblue.client.integration.test;
 
 import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadJsonNode;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -142,6 +145,23 @@ public class CountryDAOTest extends AbstractLightblueClientCRUDController {
         Country[] countries = client.data(request, Country[].class);
 
         Assert.assertTrue(countries.length == 0);
+    }
+
+    @Test
+    public void testGetEntityVersions() throws Exception {
+        Set<String> versions = getEntityVersions(Country.objectType);
+
+        assertNotNull(versions);
+        assertEquals(1, versions.size());
+        assertEquals(Country.objectVersion, versions.iterator().next());
+    }
+
+    @Test
+    public void testGetEntityVersions_NonExistentEntity() throws Exception {
+        Set<String> versions = getEntityVersions("fakeEntity");
+
+        assertNotNull(versions);
+        assertTrue(versions.isEmpty());
     }
 
 }

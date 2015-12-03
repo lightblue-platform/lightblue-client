@@ -12,7 +12,7 @@ import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 public class MetadataGetEntityRolesRequest extends AbstractLightblueMetadataRequest {
 
     public MetadataGetEntityRolesRequest() {
-        super();
+        super(null);
     }
 
     public MetadataGetEntityRolesRequest(String entityName) {

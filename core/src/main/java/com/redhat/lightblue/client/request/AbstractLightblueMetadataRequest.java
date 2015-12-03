@@ -6,10 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public abstract class AbstractLightblueMetadataRequest extends AbstractLightblueRequest {
 
-    public AbstractLightblueMetadataRequest() {
-        super();
-    }
-
     public AbstractLightblueMetadataRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
     }
@@ -45,7 +41,7 @@ public abstract class AbstractLightblueMetadataRequest extends AbstractLightblue
         if (body == null) {
             return null;
         }
-        return getBodyJson().toString();
+        return body.toString();
     }
 
     public abstract String getOperationPathParam();

@@ -8,12 +8,7 @@ import com.redhat.lightblue.client.http.HttpMethod;
 
 public class TestAbstractLightblueMetadataRequest extends AbstractLightblueRequestTest {
 
-	AbstractLightblueMetadataRequest testRequest = new AbstractLightblueMetadataRequest() {
-
-        @Override
-        public String getEntityName() {
-            return entityName;
-        }
+    AbstractLightblueMetadataRequest testRequest = new AbstractLightblueMetadataRequest(entityName) {
 
         @Override
         public String getEntityVersion() {
