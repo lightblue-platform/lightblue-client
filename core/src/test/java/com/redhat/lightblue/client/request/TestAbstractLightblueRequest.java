@@ -1,18 +1,26 @@
 package com.redhat.lightblue.client.request;
 
-import com.redhat.lightblue.client.http.HttpMethod;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import com.fasterxml.jackson.databind.JsonNode;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.util.JSON;
 
 public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
 
     private static class MockAbstractLightblueRequest extends AbstractLightblueRequest {
+
         private JsonNode body;
+
+        public MockAbstractLightblueRequest(String entityName) {
+            super(entityName);
+        }
+
+        public MockAbstractLightblueRequest(String entityName, String entityVersion) {
+            super(entityName, entityVersion);
+        }
 
         @Override
         public String getRestURI(String baseServiceURI) {
@@ -28,6 +36,7 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
             return getBodyJson().toString();
         }
 
+        @Override
         public JsonNode getBodyJson() {
             return body;
         }
@@ -38,18 +47,16 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
         }
     }
 
-    MockAbstractLightblueRequest testRequest = new MockAbstractLightblueRequest();
+    private MockAbstractLightblueRequest testRequest;
 
     private static final String updatedEntityName = "updatedEntity";
     private static final String updatedEntityVersion = "3.2.1";
     private static final String updatedBody = "{\"value\":\"name\"}";
     private static final String baseURI = "http://lightblue.io";
-    private static final String restURI = "http://lightblue.io/rest";
 
     @Before
     public void setUp() throws Exception {
-        testRequest.setEntityName(entityName);
-        testRequest.setEntityVersion(entityVersion);
+        testRequest = new MockAbstractLightblueRequest(entityName, entityVersion);
         testRequest.setBody(body);
     }
 
@@ -69,18 +76,6 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
     }
 
     @Test
-    public void testSetEntityName() {
-        testRequest.setEntityName(updatedEntityName);
-        Assert.assertEquals(updatedEntityName, testRequest.getEntityName());
-    }
-
-    @Test
-    public void testSetEntityVersion() {
-        testRequest.setEntityVersion(updatedEntityVersion);
-        Assert.assertEquals(updatedEntityVersion, testRequest.getEntityVersion());
-    }
-
-    @Test
     public void testSetBody() {
         testRequest.setBody(updatedBody);
         Assert.assertEquals(updatedBody, testRequest.getBody());
@@ -90,7 +85,7 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
     public void testAppendToURI() {
         StringBuilder initialURI = new StringBuilder();
         initialURI.append(baseURI);
-        testRequest.appendToURI(initialURI, "rest");
+        AbstractLightblueRequest.appendToURI(initialURI, "rest");
         Assert.assertEquals(baseURI + "/rest", initialURI.toString());
     }
 

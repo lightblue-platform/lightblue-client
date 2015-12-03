@@ -1,19 +1,21 @@
 package com.redhat.lightblue.client.request.data;
 
-import com.redhat.lightblue.client.Query;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 import org.skyscreamer.jsonassert.JSONAssert;
+
+import com.redhat.lightblue.client.Operation;
+import com.redhat.lightblue.client.Query;
+import com.redhat.lightblue.client.http.HttpMethod;
+import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestDataDeleteRequest extends AbstractLightblueRequestTest {
 
-    private Query testQueryExpression = Query.withValue("test", Query.BinOp.neq, "hack");
+    private final Query testQueryExpression = Query.withValue("test", Query.BinOp.neq, "hack");
 
-    DataDeleteRequest request = new DataDeleteRequest();
+    private DataDeleteRequest request;
 
     @Before
     public void setUp() throws Exception {
@@ -32,6 +34,16 @@ public class TestDataDeleteRequest extends AbstractLightblueRequestTest {
         String expected = "{\"query\":" + testQueryExpression.toJson() + "}";
 
         JSONAssert.assertEquals(expected, request.getBody(), false);
+    }
+
+    @Test
+    public void testGetOperation() {
+        Assert.assertEquals(Operation.DELETE, request.getOperation());
+    }
+
+    @Test
+    public void testGetHttpMethod() {
+        Assert.assertEquals(HttpMethod.POST, request.getHttpMethod());
     }
 
 }

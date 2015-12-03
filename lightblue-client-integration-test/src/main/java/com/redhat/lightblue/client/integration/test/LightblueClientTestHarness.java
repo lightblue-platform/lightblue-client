@@ -3,9 +3,14 @@ package com.redhat.lightblue.client.integration.test;
 import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadResource;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
+import com.redhat.lightblue.client.request.metadata.MetadataGetEntityVersionsRequest;
 import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.test.request.DataInsertRequestStub;
@@ -53,6 +58,27 @@ public abstract class LightblueClientTestHarness extends AbstractCRUDControllerW
         DataInsertRequestStub request = new DataInsertRequestStub(
                 entityName, entityVersion, loadResource(resourcePath));
         return getLightblueClient().data(request);
+    }
+
+    /**
+     * Helper method to be able to collect all the versions of the provided entity that currently exist in lightblue.
+     * @param entityName - name of entity to to find versions for.
+     * @return Set of entity versions
+     * @throws LightblueException
+     */
+    public Set<String> getEntityVersions(String entityName) throws LightblueException {
+        MetadataGetEntityVersionsRequest versionRequest = new MetadataGetEntityVersionsRequest(entityName);
+
+        LightblueResponse response = getLightblueClient().metadata(versionRequest);
+        ArrayNode versionNodes = (ArrayNode) response.getJson();
+
+        Set<String> versions = new HashSet<>();
+
+        for (JsonNode node : versionNodes) {
+            versions.add(node.get("version").textValue());
+        }
+
+        return versions;
     }
 
 }

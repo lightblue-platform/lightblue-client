@@ -46,10 +46,11 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
     protected LightblueClientTestHarness getControllerInstance() {
         if (controller == null) {
             try {
-                if (removeHooks)
+                if (removeHooks) {
                     controller = new ArtificialLightblueClientCRUDController(httpServerPort);
-                else
+                } else {
                     controller = new ArtificialLightblueClientCRUDControllerWithHooks(httpServerPort);
+                }
             } catch (Exception e) {
                 throw new RuntimeException("Unable to create test CRUD Controller", e);
             }
@@ -64,6 +65,10 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
     public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws IOException, LightblueException {
         return getControllerInstance().loadData(entityName, entityVersion,
                 resourcePath);
+    }
+
+    public Set<String> getEntityVersions(String entityName) throws LightblueException {
+        return getControllerInstance().getEntityVersions(entityName);
     }
 
     public void cleanupMongoCollections(String... collectionNames) throws UnknownHostException {

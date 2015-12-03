@@ -16,7 +16,7 @@ import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
-import com.redhat.lightblue.client.response.DefaultLightblueResponse;
+import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueParseException;
 import com.redhat.lightblue.client.util.JSON;
@@ -66,9 +66,7 @@ public class LightblueHttpClientTest {
 		c.setDataServiceURI("http://foo/bar");
 
 		LightblueClient httpClient = new LightblueHttpClient(c);
-		DataFindRequest r = new DataFindRequest();
-		r.setEntityName("e");
-		r.setEntityVersion("v");
+        DataFindRequest r = new DataFindRequest("e", "v");
         r.where(Query.withValue("a = b"));
         r.select(Projection.includeField("foo"));
 
@@ -78,8 +76,8 @@ public class LightblueHttpClientTest {
 	}
 
 	@Test(expected = LightblueParseException.class)
-	public void testParseInvalidJson() throws LightblueParseException {
-	    DefaultLightblueResponse r = new DefaultLightblueResponse(JSON.getDefaultObjectMapper());
+    public void testParseInvalidJson() throws Exception {
+        DefaultLightblueDataResponse r = new DefaultLightblueDataResponse("invalid json", JSON.getDefaultObjectMapper());
 
 	    r.parseProcessed(SimpleModelObject.class);
 	}

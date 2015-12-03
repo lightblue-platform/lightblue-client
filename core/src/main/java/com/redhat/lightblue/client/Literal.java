@@ -91,6 +91,10 @@ public class Literal extends ExpressionPart implements
         return new Literal(i);
     }
 
+    public static Literal value(long l) {
+        return new Literal(l);
+    }
+
     public static Literal value(double d) {
         return new Literal(d);
     }
