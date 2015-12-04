@@ -4,6 +4,7 @@
 package com.redhat.lightblue.client.request;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -38,7 +39,7 @@ public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest
      * @param requests
      * @return
      */
-    public AbstractDataBulkRequest<E> addAll(List<E> requests) {
+    public AbstractDataBulkRequest<E> addAll(Collection<E> requests) {
         this.requests.addAll(requests);
         return this;
     }
