@@ -145,4 +145,34 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
         }
     }
 
+    @Deprecated
+    @Override
+    public boolean hasError() {
+        if (getJson() == null) {
+            return true;
+        }
+
+        JsonNode objectTypeNode = getJson().get("status");
+        if (objectTypeNode == null) {
+            return false;
+        }
+        JsonNode err = getJson().get("errors");
+        if (err != null && !(err instanceof NullNode)) {
+            return true;
+        }
+        err = getJson().get("dataErrors");
+        if (err != null && (err instanceof ArrayNode)) {
+            if (err.size() > 0) {
+                return true;
+            }
+        }
+        return objectTypeNode.textValue().equalsIgnoreCase("error") || objectTypeNode.textValue().equalsIgnoreCase("partial");
+    }
+
+    @Deprecated
+    @Override
+    public Error[] getErrors() {
+        return getLightblueErrors();
+    }
+
 }

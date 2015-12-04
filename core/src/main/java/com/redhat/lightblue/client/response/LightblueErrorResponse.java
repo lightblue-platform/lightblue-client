@@ -12,6 +12,14 @@ import com.redhat.lightblue.client.model.Error;
 public interface LightblueErrorResponse extends LightblueResponse {
 
     /**
+     * Use {@link #hasLightblueErrors()}. The fact that a {@link LightblueErrorResponse} was even returned indicates
+     * that some sort of error state exists. This method returns an answer that is already known.
+     * @return <code>true</code> if the response has either errors or data errors.
+     */
+    @Deprecated
+    boolean hasError();
+
+    /**
      * @return <code>true</code> if any data errors exist on this response, otherwise <code>false</code>.
      */
     boolean hasDataErrors();
@@ -20,6 +28,12 @@ public interface LightblueErrorResponse extends LightblueResponse {
      * @return <code>true</code> if any lightblue errors exist on this response, otherwise <code>false</code>.
      */
     boolean hasLightblueErrors();
+
+    /**
+     * Use {@link #getLightblueErrors()}
+     */
+    @Deprecated
+    Error[] getErrors();
 
     /**
      * @return returns any {@link Error}s on this response.
