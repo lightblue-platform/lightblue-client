@@ -60,9 +60,7 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
                 return true;
             }
         }
-        return objectTypeNode.textValue().equalsIgnoreCase(
-                "error") || objectTypeNode.textValue().equalsIgnoreCase(
-                        "partial");
+        return objectTypeNode.textValue().equalsIgnoreCase("error") || objectTypeNode.textValue().equalsIgnoreCase("partial");
     }
 
     @Override
