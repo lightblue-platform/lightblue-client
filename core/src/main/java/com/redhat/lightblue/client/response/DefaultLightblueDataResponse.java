@@ -39,6 +39,32 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
         return err != null && !(err instanceof NullNode) && err.size() > 0;
     }
 
+    @Deprecated
+    @Override
+    public boolean hasError() {
+        if (getJson() == null) {
+            return true;
+        }
+
+        JsonNode objectTypeNode = getJson().get("status");
+        if (objectTypeNode == null) {
+            return false;
+        }
+        JsonNode err = getJson().get("errors");
+        if (err != null && !(err instanceof NullNode)) {
+            return true;
+        }
+        err = getJson().get("dataErrors");
+        if (err != null && (err instanceof ArrayNode)) {
+            if (err.size() > 0) {
+                return true;
+            }
+        }
+        return objectTypeNode.textValue().equalsIgnoreCase(
+                "error") || objectTypeNode.textValue().equalsIgnoreCase(
+                        "partial");
+    }
+
     @Override
     public boolean hasLightblueErrors() {
         if (getJson() == null) {
@@ -77,6 +103,12 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
             return null;
         }
         return list.toArray(new DataError[list.size()]);
+    }
+
+    @Deprecated
+    @Override
+    public Error[] getErrors() {
+        return getLightblueErrors();
     }
 
     @Override
@@ -143,36 +175,6 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
         } catch (RuntimeException | IOException e) {
             throw new LightblueParseException("Error parsing lightblue response: " + getText() + "\n", e);
         }
-    }
-
-    @Deprecated
-    @Override
-    public boolean hasError() {
-        if (getJson() == null) {
-            return true;
-        }
-
-        JsonNode objectTypeNode = getJson().get("status");
-        if (objectTypeNode == null) {
-            return false;
-        }
-        JsonNode err = getJson().get("errors");
-        if (err != null && !(err instanceof NullNode)) {
-            return true;
-        }
-        err = getJson().get("dataErrors");
-        if (err != null && (err instanceof ArrayNode)) {
-            if (err.size() > 0) {
-                return true;
-            }
-        }
-        return objectTypeNode.textValue().equalsIgnoreCase("error") || objectTypeNode.textValue().equalsIgnoreCase("partial");
-    }
-
-    @Deprecated
-    @Override
-    public Error[] getErrors() {
-        return getLightblueErrors();
     }
 
 }
