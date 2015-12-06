@@ -34,12 +34,17 @@ public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest
     }
 
     /**
-     * Adds a collection of requests to the end of the current request chain.
+     * Adds a collection of requests to the end of the current request chain in iteration order.
+     *
+     * <p>As the order of responses depends on the order of requests, use a collection with a
+     * reliable iteration order if you need to get a specific response for a specific request by
+     * index. Otherwise, you can also retrieve the response for a specific request using
+     * {@link com.redhat.lightblue.client.response.LightblueBulkDataResponse#getResponse(LightblueRequest)}.
      *
      * @param requests
      * @return
      */
-    public AbstractDataBulkRequest<E> addAll(Collection<E> requests) {
+    public AbstractDataBulkRequest<E> addAll(Collection<? extends E> requests) {
         this.requests.addAll(requests);
         return this;
     }
