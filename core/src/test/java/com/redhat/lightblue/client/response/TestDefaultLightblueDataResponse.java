@@ -52,13 +52,14 @@ public class TestDefaultLightblueDataResponse {
 
     @Test
     public void testHasError_NoErrorElement_False() throws Exception {
-        assertFalse(new DefaultLightblueDataResponse(initialResponseText).hasError());
+        assertFalse(
+                new DefaultLightblueDataResponse(initialResponseText).hasLightblueErrors());
     }
 
     @Test
     public void testHasError_False() throws Exception {
         DefaultLightblueDataResponse response = new DefaultLightblueDataResponse("{\"status\":\"successful\"}");
-        assertFalse(response.hasError());
+        assertFalse(response.hasLightblueErrors());
     }
 
     @Test
@@ -83,7 +84,7 @@ public class TestDefaultLightblueDataResponse {
         } catch (LightblueResponseException e) {
             assertNotNull(e.getLightblueResponse());
             assertNull(e.getLightblueResponse().getDataErrors());
-            assertNotNull(e.getLightblueResponse().getErrors());
+            assertNotNull(e.getLightblueResponse().getLightblueErrors());
             assertFalse(e.exists(LightblueResponseErrorCodes.ERR_MONGO_CRUD_NO_ACCESS));
             assertTrue(e.exists(LightblueResponseErrorCodes.ERR_CRUD_REQUIRED));
         }
@@ -118,7 +119,7 @@ public class TestDefaultLightblueDataResponse {
         } catch (LightblueResponseException e) {
             assertNotNull(e.getLightblueResponse());
             assertNotNull(e.getLightblueResponse().getDataErrors());
-            assertNull(e.getLightblueResponse().getErrors());
+            assertNull(e.getLightblueResponse().getLightblueErrors());
             assertFalse(e.exists(LightblueResponseErrorCodes.ERR_MONGO_CRUD_NO_ACCESS));
             assertTrue(e.exists(LightblueResponseErrorCodes.ERR_MONGO_CRUD_SAVE_ERROR));
         }
