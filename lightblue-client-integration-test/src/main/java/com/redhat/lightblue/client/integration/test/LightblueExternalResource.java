@@ -43,7 +43,7 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         this.httpServerPort = httpServerPort;
     }
 
-    protected AbstractLightblueClientCRUDController getControllerInstance() {
+    protected LightblueClientTestHarness getControllerInstance() {
         if (controller == null) {
             try {
                 if (removeHooks) {
@@ -91,7 +91,7 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         return getControllerInstance().getMetadataUrl();
     }
 
-    private class ArtificialLightblueClientCRUDController extends AbstractLightblueClientCRUDController {
+    private class ArtificialLightblueClientCRUDController extends LightblueClientTestHarness {
 
         public ArtificialLightblueClientCRUDController(int httpServerPort) throws Exception {
             super(httpServerPort);

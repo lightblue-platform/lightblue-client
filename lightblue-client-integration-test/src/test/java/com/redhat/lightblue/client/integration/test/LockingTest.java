@@ -7,7 +7,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.Locking;
 
-public class LockingTest extends AbstractLightblueClientCRUDController {
+public class LockingTest extends LightblueClientTestHarness {
 
     private static final String LOCK_DOMAIN = "test";
 

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.enums.MetadataStatus;
-import com.redhat.lightblue.client.integration.test.AbstractLightblueClientCRUDController;
+import com.redhat.lightblue.client.integration.test.LightblueClientTestHarness;
 import com.redhat.lightblue.client.request.metadata.MetadataClearDefaultVersionRequest;
 import com.redhat.lightblue.client.request.metadata.MetadataGetEntityDependenciesRequest;
 import com.redhat.lightblue.client.request.metadata.MetadataGetEntityMetadataRequest;
@@ -19,7 +19,7 @@ import com.redhat.lightblue.client.request.metadata.MetadataUpdateSchemaStatusRe
 import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
 
-public class TestMetadataRequests extends AbstractLightblueClientCRUDController {
+public class TestMetadataRequests extends LightblueClientTestHarness {
 
     public TestMetadataRequests() throws Exception {
         super();
