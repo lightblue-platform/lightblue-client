@@ -158,6 +158,7 @@
         <module>http</module>
         <module>hystrix</module>
         <module>lightblue-client-integration-test</module>
+        <module>jmeter-tests</module>
     </modules>
     <properties>
         <sonar.exclusions>**/*Test.java,**/*Exception.java</sonar.exclusions>
