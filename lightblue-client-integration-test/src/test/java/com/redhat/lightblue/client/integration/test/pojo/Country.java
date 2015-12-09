@@ -7,6 +7,15 @@ public class Country {
 
     private String name, iso2Code, iso3Code, optionalField;
 
+    public Country() {}
+
+    public Country(String name, String iso2Code, String iso3Code, String optionalField) {
+        this.name = name;
+        this.iso2Code = iso2Code;
+        this.iso3Code = iso3Code;
+        this.optionalField = optionalField;
+    }
+
     public String getName() {
         return name;
     }
@@ -20,7 +29,7 @@ public class Country {
     }
 
     public void setIso2Code(String iso2code) {
-        this.iso2Code = iso2code;
+        iso2Code = iso2code;
     }
 
     public String getIso3Code() {
@@ -28,7 +37,7 @@ public class Country {
     }
 
     public void setIso3Code(String iso3code) {
-        this.iso3Code = iso3code;
+        iso3Code = iso3code;
     }
 
     public String getOptionalField() {
