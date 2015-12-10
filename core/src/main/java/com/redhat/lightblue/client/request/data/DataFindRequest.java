@@ -1,6 +1,8 @@
 package com.redhat.lightblue.client.request.data;
 
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -32,8 +34,16 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         this.queryExpression = queryExpression;
     }
 
+    public void select(List<Projection> projections) {
+        projection = Projection.project(projections);
+    }
+
     public void select(Projection... projection) {
         this.projection = Projection.project(projection);
+    }
+
+    public void sort(List<Sort> sort) {
+        this.sort = Sort.sort(sort);
     }
 
     public void sort(Sort... sort) {
