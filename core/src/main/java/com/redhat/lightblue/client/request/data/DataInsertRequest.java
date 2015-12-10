@@ -1,6 +1,7 @@
 package com.redhat.lightblue.client.request.data;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -25,16 +26,20 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
+    public void returns(List<Projection> projection) {
+        this.projection = Projection.project(projection);
+    }
+
     public void returns(Projection... projection) {
         this.projection = Projection.project(projection);
     }
 
+    public void create(Collection<?> objects) {
+        create(objects.toArray());
+    }
+
     public void create(Object... objects) {
-        if (objects[0] instanceof java.util.Collection<?>) {
-            this.objects = ((Collection<?>) objects[0]).toArray();
-        } else {
-            this.objects = objects;
-        }
+        this.objects = objects;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.request.data;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -24,12 +26,20 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
+    public void returns(List<Projection> projection) {
+        this.projection = Projection.project(projection);
+    }
+
     public void returns(Projection... projection) {
         this.projection = Projection.project(projection);
     }
 
     public void where(Query queryExpression) {
         query = queryExpression;
+    }
+
+    public void updates(List<Update> updates) {
+        update = Update.update(update);
     }
 
     public void updates(Update... updates) {
@@ -40,10 +50,18 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         where(query);
     }
 
+    /**
+     * Use {@link #updates(Update...)}.
+     */
+    @Deprecated
     public void setUpdates(Update... updates) {
         updates(updates);
     }
 
+    /**
+     * Use {@link #returns(Projection...)}.
+     */
+    @Deprecated
     public void setProjections(Projection... projections) {
         returns(projections);
     }
