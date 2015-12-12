@@ -87,7 +87,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         @Override
         public boolean acquire(String callerId, String resourceId, Long ttl) throws LightblueException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, ttl, false, HttpMethod.PUT);
-            String response = httpTransport.executeRequest(req, configuration.getDataServiceURI());
+            String response = callService(req, configuration.getDataServiceURI());
             JsonNode node = getResult(response);
             if (node != null) {
                 return node.asBoolean();
@@ -99,7 +99,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         @Override
         public boolean release(String callerId, String resourceId) throws LightblueException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, false, HttpMethod.DELETE);
-            String response = httpTransport.executeRequest(req, configuration.getDataServiceURI());
+            String response = callService(req, configuration.getDataServiceURI());
             JsonNode node = getResult(response);
             if (node != null) {
                 return node.asBoolean();
@@ -111,7 +111,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         @Override
         public int getLockCount(String callerId, String resourceId) throws LightblueException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, false, HttpMethod.GET);
-            String response = httpTransport.executeRequest(req, configuration.getDataServiceURI());
+            String response = callService(req, configuration.getDataServiceURI());
             JsonNode node = getResult(response);
             if (node != null) {
                 return node.asInt();
@@ -123,7 +123,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         @Override
         public boolean ping(String callerId, String resourceId) throws LightblueException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, true, HttpMethod.PUT);
-            String response = httpTransport.executeRequest(req, configuration.getDataServiceURI());
+            String response = callService(req, configuration.getDataServiceURI());
             JsonNode node = getResult(response);
             if (node != null) {
                 return node.asBoolean();

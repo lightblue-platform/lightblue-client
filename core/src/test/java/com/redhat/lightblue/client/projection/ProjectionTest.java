@@ -1,9 +1,11 @@
 package com.redhat.lightblue.client.projection;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import org.json.JSONException;
 import org.junit.Test;
+import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 /**
@@ -45,6 +47,15 @@ public class ProjectionTest {
         Projection rp = Projection.array("termsVerbiageTranslation", 0, null, myProj);
 
         JSONAssert.assertEquals(rp.toString(), expectedJson, false);
+    }
+
+    @Test
+    public void testNestedProjectionShouldBeFlattened() throws JSONException {
+        Projection p1=Projection.project(Projection.includeField("something"),
+                                         Projection.includeField("otherthing"));
+        Projection p2=Projection.project(p1,Projection.includeField("thirdThing"));
+        Assert.assertTrue(p2.toJson() instanceof ArrayNode);
+        Assert.assertEquals(3,p2.toJson().size());
     }
 
 }

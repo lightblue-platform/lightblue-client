@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+      <groupId>com.redhat.lightblue.client</groupId>
+      <artifactId>lightblue-client-pom</artifactId>
+      <version>2.2.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>jmeter-tests</artifactId>
+    <name>lightblue-client jmeter tests: ${project.groupId}|${project.artifactId}</name>
+    <packaging>jar</packaging>
+    <dependencies>
+       <dependency>
+          <groupId>com.redhat.lightblue.client</groupId>
+          <artifactId>lightblue-client-core</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>com.redhat.lightblue.client</groupId>
+          <artifactId>lightblue-client-http</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>com.redhat.lightblue.client</groupId>
+          <artifactId>lightblue-client-hystrix</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.jmeter</groupId>
+          <artifactId>ApacheJMeter_java</artifactId>
+          <version>2.11</version>
+      </dependency>
+   </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

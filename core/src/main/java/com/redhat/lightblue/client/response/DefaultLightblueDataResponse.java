@@ -24,17 +24,22 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
     public DefaultLightblueDataResponse(String responseText, ObjectMapper mapper) throws LightblueParseException, LightblueResponseException {
         super(responseText, mapper);
 
-        if (hasError() || hasDataErrors()) {
+        if (hasAnyErrors()) {
             throw new LightblueResponseException("Lightblue exception occurred: ", this);
         }
     }
 
     @Override
     public boolean hasDataErrors() {
+        if (getJson() == null) {
+            return false;
+        }
+
         JsonNode err = getJson().get("dataErrors");
         return err != null && !(err instanceof NullNode) && err.size() > 0;
     }
 
+    @Deprecated
     @Override
     public boolean hasError() {
         if (getJson() == null) {
@@ -59,6 +64,27 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
     }
 
     @Override
+    public boolean hasLightblueErrors() {
+        if (getJson() == null) {
+            return true;
+        }
+
+        JsonNode objectTypeNode = getJson().get("status");
+        if(objectTypeNode != null
+                && (objectTypeNode.textValue().equalsIgnoreCase("error")
+                  || objectTypeNode.textValue().equalsIgnoreCase("partial"))){
+            return true;
+        }
+
+        JsonNode err = getJson().get("errors");
+        return err != null && !(err instanceof NullNode) && err.size() > 0;
+    }
+
+    public boolean hasAnyErrors() {
+        return hasDataErrors() || hasLightblueErrors();
+    }
+
+    @Override
     public DataError[] getDataErrors() {
         List<DataError> list = new ArrayList<>();
         if (getJson() == null) {
@@ -77,8 +103,14 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
         return list.toArray(new DataError[list.size()]);
     }
 
+    @Deprecated
     @Override
     public Error[] getErrors() {
+        return getLightblueErrors();
+    }
+
+    @Override
+    public Error[] getLightblueErrors() {
         List<Error> list = new ArrayList<>();
         if (getJson() == null) {
             return null;
@@ -114,7 +146,7 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
     @Override
     @SuppressWarnings("unchecked")
     public <T> T parseProcessed(final Class<T> type) throws LightblueParseException {
-        if (hasError()) {
+        if (hasAnyErrors()) {
             throw new LightblueParseException("Error returned in response: " + getText());
         }
 
@@ -142,4 +174,5 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
             throw new LightblueParseException("Error parsing lightblue response: " + getText() + "\n", e);
         }
     }
+
 }

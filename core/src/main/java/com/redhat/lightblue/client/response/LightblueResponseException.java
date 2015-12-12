@@ -45,8 +45,8 @@ public class LightblueResponseException extends LightblueException implements Li
             return errorCodes;
         }
 
-        if (lightblueResponse.getErrors() != null) {
-            for (Error e : lightblueResponse.getErrors()) {
+        if (lightblueResponse.getLightblueErrors() != null) {
+            for (Error e : lightblueResponse.getLightblueErrors()) {
                 errorCodes.add(e.getErrorCode());
             }
         }

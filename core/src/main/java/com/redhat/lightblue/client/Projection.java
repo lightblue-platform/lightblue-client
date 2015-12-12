@@ -1,6 +1,7 @@
 package com.redhat.lightblue.client;
 
 import java.util.List;
+import java.util.Iterator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ContainerNode;
@@ -181,7 +182,7 @@ public class Projection extends Expression {
         else {
             Projection x=new Projection(true);
             for(Projection p:projection)
-                ((ArrayNode)x.node).add(p.toJson());
+                x.addToArray(p.toJson());
             return x;
         }
     }
@@ -192,8 +193,21 @@ public class Projection extends Expression {
         else {
             Projection x=new Projection(true);
             for(Projection p:projection)
-                ((ArrayNode)x.node).add(p.toJson());
+                x.addToArray(p.toJson());
             return x;
+        }
+    }
+
+    /**
+     * Adds p into this array projection
+     */
+    private void addToArray(JsonNode j) {
+        if(j instanceof ArrayNode) {
+            for(Iterator<JsonNode> itr=((ArrayNode)j).elements();itr.hasNext();) {
+                addToArray(itr.next());
+            }
+        } else {
+            ((ArrayNode)node).add(j);
         }
     }
 

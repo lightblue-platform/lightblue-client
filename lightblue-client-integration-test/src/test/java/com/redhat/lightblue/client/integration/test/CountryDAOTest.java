@@ -32,7 +32,7 @@ import com.redhat.lightblue.client.response.LightblueParseException;
  * @author mpatercz
  *
  */
-public class CountryDAOTest extends AbstractLightblueClientCRUDController {
+public class CountryDAOTest extends LightblueClientTestHarness {
 
     private LightblueHttpClient client;
 

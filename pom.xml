@@ -8,7 +8,7 @@
     </parent>
     <groupId>com.redhat.lightblue.client</groupId>
     <artifactId>lightblue-client-pom</artifactId>
-    <version>2.1.0-SNAPSHOT</version>
+    <version>2.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
     <licenses>
@@ -79,7 +79,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>4.12</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -158,6 +158,7 @@
         <module>http</module>
         <module>hystrix</module>
         <module>lightblue-client-integration-test</module>
+        <!--module>jmeter-tests</module--><!-- Breaks release -->
     </modules>
     <properties>
         <sonar.exclusions>**/*Test.java,**/*Exception.java</sonar.exclusions>
@@ -168,8 +169,8 @@
         <sonar.projectName>lightblue-client</sonar.projectName>
         <rpm.install.basedir>/usr/share/jbossas/standalone/deployments</rpm.install.basedir>
 
-        <lightblue.core.version>1.10.0-SNAPSHOT</lightblue.core.version>
-        <lightblue.rest.version>1.10.0-SNAPSHOT</lightblue.rest.version>
+        <lightblue.core.version>1.9.0</lightblue.core.version>
+        <lightblue.rest.version>1.9.0</lightblue.rest.version>
     </properties>
 
     <build>
