@@ -3,6 +3,7 @@ package com.redhat.lightblue.client.http.transport;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.any;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -28,7 +29,7 @@ import com.redhat.lightblue.client.request.LightblueRequest;
 @RunWith(JUnit4.class)
 public class JavaNetHttpTransportIntegrationTest {
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule();
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
 
     private JavaNetHttpTransport client = new JavaNetHttpTransport();
 
