@@ -24,7 +24,7 @@ import com.redhat.lightblue.client.util.JSON;
  * @author bvulaj
  *
  */
-public class TestBulkResponse {
+public class TestDefaultLightblueBulkDataResponse {
 
     private DefaultLightblueBulkDataResponse bulkResponse;
     private DataBulkRequest bulkRequest;
