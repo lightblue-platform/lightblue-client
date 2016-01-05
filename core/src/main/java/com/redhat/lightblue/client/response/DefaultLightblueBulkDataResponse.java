@@ -23,34 +23,55 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
     private final Map<Integer, LightblueDataResponse> responses = new TreeMap<>();
     private final List<? extends AbstractLightblueRequest> requests;
 
-    public DefaultLightblueBulkDataResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueParseException, LightblueResponseException {
+    public DefaultLightblueBulkDataResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueParseException, BulkResponseException {
         this(responseText, JSON.getDefaultObjectMapper(), reqs);
     }
 
-    public DefaultLightblueBulkDataResponse(String responseText, ObjectMapper mapper, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueParseException, LightblueResponseException {
+    public DefaultLightblueBulkDataResponse(String responseText, ObjectMapper mapper, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueParseException, BulkResponseException {
         super(responseText, mapper);
         requests = reqs.getRequests();
 
         JsonNode resps = getJson().get("responses");
 
+        List<LightblueResponseException> exceptions = new ArrayList<>();
+
         if (resps.isArray()) {
             ArrayNode arrResps = (ArrayNode) resps;
             for (Iterator<JsonNode> it = arrResps.iterator(); it.hasNext();) {
                 JsonNode resp = it.next();
-                DefaultLightblueDataResponse response = new DefaultLightblueDataResponse(resp.get("response").toString());
                 JsonNode seq = resp.get("seq");
-                if (!seq.isNumber()) {
-                    throw new LightblueResponseException("Invalid sequence.", response);
+
+                DefaultLightblueDataResponse response;
+                try {
+                    response = new DefaultLightblueDataResponse(resp.get("response").toString());
+                } catch (LightblueResponseException e) {
+                    exceptions.add(e);
+
+                    //Append the response because it is still a valid response and seq needs to be kept.
+                    response = (DefaultLightblueDataResponse) e.getLightblueResponse();
                 }
-                responses.put(resp.get("seq").intValue(), response);
+
+                if (seq.isNumber()) {
+                    responses.put(seq.intValue(), response);
+                } else {
+                    // A bad sequence should be rare (never?)
+                    // Do not add a bad sequence to the responses because its location cannot be determined.
+                    exceptions.add(new LightblueResponseException("Invalid sequence: " + seq.toString(), response));
+                }
             }
+        }
+        else {
+            throw new LightblueParseException("Unparseable bulk data response: " + resps.toString());
+        }
+
+        if (!exceptions.isEmpty()) {
+            throw new BulkResponseException("Errors returned in responses", this, exceptions);
         }
     }
 
     @Override
     public LightblueResponse getResponse(LightblueRequest lbr) {
         return responses.get(requests.indexOf(lbr));
-
     }
 
     @Override
@@ -62,4 +83,5 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
     public List<? extends AbstractLightblueRequest> getRequests() {
         return requests;
     }
+
 }
