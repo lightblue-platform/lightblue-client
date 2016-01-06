@@ -37,7 +37,7 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
             ArrayNode arrResps = (ArrayNode) resps;
             for (Iterator<JsonNode> it = arrResps.iterator(); it.hasNext();) {
                 JsonNode resp = it.next();
-                DefaultLightblueDataResponse response = new DefaultLightblueDataResponse(resp.get("response").toString());
+                DefaultLightblueDataResponse response = new DefaultLightblueDataResponse(resp.get("response"), mapper);
                 JsonNode seq = resp.get("seq");
                 if (!seq.isNumber()) {
                     throw new LightblueResponseException("Invalid sequence.", response);
