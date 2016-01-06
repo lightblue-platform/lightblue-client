@@ -70,8 +70,13 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
     }
 
     @Override
-    public LightblueResponse getResponse(LightblueRequest lbr) {
-        return responses.get(requests.indexOf(lbr));
+    public LightblueDataResponse getResponse(LightblueRequest lbr) {
+        return getResponse(requests.indexOf(lbr));
+    }
+
+    @Override
+    public LightblueDataResponse getResponse(int seq) {
+        return responses.get(seq);
     }
 
     @Override
