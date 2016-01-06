@@ -30,6 +30,16 @@ public abstract class AbstractLightblueResponse implements LightblueResponse {
         }
     }
 
+    public AbstractLightblueResponse(JsonNode responseNode) {
+        this(responseNode, JSON.getDefaultObjectMapper());
+    }
+
+    public AbstractLightblueResponse(JsonNode responseNode, ObjectMapper mapper) {
+        json = responseNode;
+        text = responseNode.toString();
+        this.mapper = mapper;
+    }
+
     protected ObjectMapper getMapper() {
         return mapper;
     }

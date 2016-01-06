@@ -17,6 +17,18 @@ import com.redhat.lightblue.client.util.JSON;
 
 public class DefaultLightblueDataResponse extends AbstractLightblueResponse implements LightblueDataResponse, LightblueErrorResponse {
 
+    public DefaultLightblueDataResponse(JsonNode responseNode) throws LightblueResponseException {
+        this(responseNode, JSON.getDefaultObjectMapper());
+    }
+
+    public DefaultLightblueDataResponse(JsonNode responseNode, ObjectMapper mapper) throws LightblueResponseException {
+        super(responseNode, mapper);
+
+        if (hasAnyErrors()) {
+            throw new LightblueResponseException("Lightblue exception occurred: ", this);
+        }
+    }
+
     public DefaultLightblueDataResponse(String responseText) throws LightblueParseException, LightblueResponseException {
         this(responseText, JSON.getDefaultObjectMapper());
     }

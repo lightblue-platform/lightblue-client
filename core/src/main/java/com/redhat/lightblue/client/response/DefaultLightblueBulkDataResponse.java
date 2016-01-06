@@ -43,7 +43,7 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
 
                 DefaultLightblueDataResponse response;
                 try {
-                    response = new DefaultLightblueDataResponse(resp.get("response").toString());
+                    response = new DefaultLightblueDataResponse(resp.get("response"), mapper);
                 } catch (LightblueResponseException e) {
                     exceptions.add(e);
 
