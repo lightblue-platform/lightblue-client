@@ -7,7 +7,9 @@ import com.redhat.lightblue.client.request.LightblueRequest;
 
 public interface LightblueBulkDataResponse extends LightblueResponse {
 
-    LightblueResponse getResponse(LightblueRequest lbr);
+    LightblueDataResponse getResponse(LightblueRequest lbr);
+
+    LightblueDataResponse getResponse(int seq);
 
     List<LightblueDataResponse> getResponses();
 
