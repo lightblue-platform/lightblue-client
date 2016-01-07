@@ -23,11 +23,11 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
     private final Map<Integer, LightblueDataResponse> responses = new TreeMap<>();
     private final List<? extends AbstractLightblueRequest> requests;
 
-    public DefaultLightblueBulkDataResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueParseException, BulkResponseException {
+    public DefaultLightblueBulkDataResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueParseException, LightblueBulkResponseException {
         this(responseText, JSON.getDefaultObjectMapper(), reqs);
     }
 
-    public DefaultLightblueBulkDataResponse(String responseText, ObjectMapper mapper, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueParseException, BulkResponseException {
+    public DefaultLightblueBulkDataResponse(String responseText, ObjectMapper mapper, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueParseException, LightblueBulkResponseException {
         super(responseText, mapper);
         requests = reqs.getRequests();
 
@@ -65,7 +65,7 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
         }
 
         if (!exceptions.isEmpty()) {
-            throw new BulkResponseException("Errors returned in responses", this, exceptions);
+            throw new LightblueBulkResponseException("Errors returned in responses", this, exceptions);
         }
     }
 
