@@ -32,6 +32,9 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
         requests = reqs.getRequests();
 
         JsonNode resps = getJson().get("responses");
+        if (resps == null) {
+            throw new LightblueParseException("Unable to parse 'responses' node.");
+        }
 
         List<LightblueResponseException> exceptions = new ArrayList<>();
 
@@ -61,7 +64,7 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
             }
         }
         else {
-            throw new LightblueParseException("Unparseable bulk data response: " + resps.toString());
+            throw new LightblueParseException("Unparseable bulk data 'responses' node: " + resps.toString());
         }
 
         if (!exceptions.isEmpty()) {

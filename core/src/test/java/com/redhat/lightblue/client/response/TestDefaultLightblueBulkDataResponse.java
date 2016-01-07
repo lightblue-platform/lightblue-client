@@ -1,21 +1,15 @@
 /**
- * 
+ *
  */
 package com.redhat.lightblue.client.response;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.util.JSON;
@@ -62,6 +56,16 @@ public class TestDefaultLightblueBulkDataResponse {
     @Test
     public void testGetResponse() {
         assertEquals(bulkResponse.getResponses().get(0), bulkResponse.getResponse(bulkRequest.getRequests().get(0)));
+    }
+
+    @Test(expected = LightblueParseException.class)
+    public void testConstructor_With_UnexpectedJson() throws Exception {
+        new DefaultLightblueBulkDataResponse("{}", new DataBulkRequest());
+    }
+
+    @Test(expected = LightblueParseException.class)
+    public void testConstructor_With_NonArrayResponses() throws Exception {
+        new DefaultLightblueBulkDataResponse("{\"responses\":\"notAnArray\"}", new DataBulkRequest());
     }
 
 }
