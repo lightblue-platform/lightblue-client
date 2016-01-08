@@ -1,6 +1,7 @@
 package com.redhat.lightblue.client.response;
 
 import java.util.List;
+import java.util.Set;
 
 import com.redhat.lightblue.client.request.AbstractLightblueRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
@@ -14,5 +15,7 @@ public interface LightblueBulkDataResponse extends LightblueResponse {
     List<LightblueDataResponse> getResponses();
 
     List<? extends AbstractLightblueRequest> getRequests();
+
+    Set<Integer> getSeqNumbers();
 
 }

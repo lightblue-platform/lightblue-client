@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -89,6 +90,11 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
     @Override
     public List<? extends AbstractLightblueRequest> getRequests() {
         return Collections.unmodifiableList(requests);
+    }
+
+    @Override
+    public Set<Integer> getSeqNumbers() {
+        return Collections.unmodifiableSet(responses.keySet());
     }
 
 }
