@@ -238,10 +238,13 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     public DefaultLightblueBulkDataResponse bulkData(AbstractDataBulkRequest<AbstractLightblueDataRequest> lightblueRequests) throws LightblueException {
         LOGGER.debug("Calling data service with lightblueRequest: {}", lightblueRequests.toString());
 
-        return new DefaultLightblueBulkDataResponse(
-                callService(lightblueRequests, configuration.getDataServiceURI()),
-                mapper,
-                lightblueRequests);
+        String response = callService(lightblueRequests, configuration.getDataServiceURI());
+
+        try {
+            return new DefaultLightblueBulkDataResponse(response, mapper, lightblueRequests);
+        } catch (LightblueParseException e) {
+            throw new LightblueParseException("Unable to parse response " + response, e);
+        }
     }
 
     @Override

@@ -1,29 +1,29 @@
 package com.redhat.lightblue.client.response;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
 public class LightblueBulkResponseException extends LightblueException {
 
     private static final long serialVersionUID = -1204842853642316889L;
 
     private final LightblueBulkDataResponse bulkResponse;
-    private final List<? extends LightblueResponseException> exceptions;
+    private final Map<Integer, LightblueResponseException> erroredResponses;
 
     public LightblueBulkResponseException(String message,
             LightblueBulkDataResponse bulkResponse,
-            List<? extends LightblueResponseException> exceptions) {
+            Map<Integer, LightblueResponseException> erroredResponses) {
         super(message);
         this.bulkResponse = bulkResponse;
-        this.exceptions = exceptions;
+        this.erroredResponses = erroredResponses;
     }
 
     public LightblueBulkDataResponse getBulkResponse() {
         return bulkResponse;
     }
 
-    public List<? extends LightblueResponseException> getLightblueResponseExceptions() {
-        return Collections.unmodifiableList(exceptions);
+    public Map<Integer, LightblueResponseException> getLightblueResponseExceptions() {
+        return Collections.unmodifiableMap(erroredResponses);
     }
 
 }

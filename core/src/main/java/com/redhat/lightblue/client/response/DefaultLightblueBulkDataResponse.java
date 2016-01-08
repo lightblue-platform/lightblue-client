@@ -1,6 +1,7 @@
 package com.redhat.lightblue.client.response;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
             throw new LightblueParseException("Unable to parse 'responses' node.");
         }
 
-        List<LightblueResponseException> exceptions = new ArrayList<>();
+        Map<Integer, LightblueResponseException> erroredResponses = new HashMap<>();
 
         if (resps.isArray()) {
             ArrayNode arrResps = (ArrayNode) resps;
@@ -44,31 +45,28 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
                 JsonNode resp = it.next();
                 JsonNode seq = resp.get("seq");
 
-                DefaultLightblueDataResponse response;
-                try {
-                    response = new DefaultLightblueDataResponse(resp.get("response"), mapper);
-                } catch (LightblueResponseException e) {
-                    exceptions.add(e);
-
-                    //Append the response because it is still a valid response and seq needs to be kept.
-                    response = (DefaultLightblueDataResponse) e.getLightblueResponse();
+                if (!seq.isNumber()) {
+                    // A invalid sequence should not be possible, so it indicates a bad bulk response.
+                    throw new LightblueParseException("Invalid sequence: " + seq.toString());
                 }
 
-                if (seq.isNumber()) {
-                    responses.put(seq.intValue(), response);
-                } else {
-                    // A bad sequence should be rare (never?)
-                    // Do not add a bad sequence to the responses because its location cannot be determined.
-                    exceptions.add(new LightblueResponseException("Invalid sequence: " + seq.toString(), response));
+                int seqNumber = seq.intValue();
+                try {
+                    responses.put(seqNumber, new DefaultLightblueDataResponse(resp.get("response"), mapper));
+                } catch (LightblueResponseException e) {
+                    erroredResponses.put(seqNumber, e);
+
+                    //Append the response because it is still a valid errored response and seq needs to be kept.
+                    responses.put(seqNumber, (DefaultLightblueDataResponse) e.getLightblueResponse());
                 }
             }
         }
         else {
-            throw new LightblueParseException("Unparseable bulk data 'responses' node: " + resps.toString());
+            throw new LightblueParseException("Unparseable bulk data 'responses' node");
         }
 
-        if (!exceptions.isEmpty()) {
-            throw new LightblueBulkResponseException("Errors returned in responses", this, exceptions);
+        if (!erroredResponses.isEmpty()) {
+            throw new LightblueBulkResponseException("Errors returned in responses", this, erroredResponses);
         }
     }
 
