@@ -1,6 +1,7 @@
 package com.redhat.lightblue.client.response;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -82,12 +83,12 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
 
     @Override
     public List<LightblueDataResponse> getResponses() {
-        return new ArrayList<>(responses.values());
+        return Collections.unmodifiableList(new ArrayList<>(responses.values()));
     }
 
     @Override
     public List<? extends AbstractLightblueRequest> getRequests() {
-        return requests;
+        return Collections.unmodifiableList(requests);
     }
 
 }
