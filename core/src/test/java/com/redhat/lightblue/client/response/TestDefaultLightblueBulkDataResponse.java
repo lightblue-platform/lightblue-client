@@ -4,10 +4,12 @@
 package com.redhat.lightblue.client.response;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 
 import org.junit.Test;
@@ -79,7 +81,7 @@ public class TestDefaultLightblueBulkDataResponse {
     }
 
     @Test
-    public void testResponseWithError() throws LightblueParseException {
+    public void testBulkException_Responses() throws LightblueParseException {
         DataBulkRequest bulkRequest = new DataBulkRequest();
 
         DataFindRequest dfr = new DataFindRequest("foo", "bar");
@@ -100,60 +102,32 @@ public class TestDefaultLightblueBulkDataResponse {
 
         try {
             new DefaultLightblueBulkDataResponse(jsonResponseWithError, bulkRequest);
+            fail();
         } catch (LightblueBulkResponseException e) {
             //expected
-            LightblueBulkDataResponse bulkResponse = e.getBulkResponse();
-            assertNotNull(bulkResponse);
-            assertEquals(bulkResponse.getResponses().get(0), bulkResponse.getResponse(dfr));
-            assertEquals(bulkResponse.getResponses().get(1), bulkResponse.getResponse(dfrErrored));
-            assertEquals(bulkResponse.getResponses().get(2), bulkResponse.getResponse(dfr2));
 
-            Map<Integer, LightblueResponseException> erroredResponses = e.getLightblueResponseExceptions();
-            assertNotNull(erroredResponses);
-            assertEquals(1, erroredResponses.size());
-            assertEquals(bulkResponse.getResponses().get(1), erroredResponses.get(1).getLightblueResponse());
-        }
-    }
+            //getSequencedResponses
+            SortedMap<Integer, LightblueDataResponse> seqResponses = e.getBulkResponse().getSequencedResponses();
+            assertNotNull(seqResponses);
+            assertEquals(3, seqResponses.size());
 
-    @Test
-    public void testBulkException_GetSuccessfulResponsesWithSeq() throws LightblueParseException {
-        DataBulkRequest bulkRequest = new DataBulkRequest();
+            assertEquals(seqResponses.get(0), e.getBulkResponse().getResponse(dfr));
+            assertEquals(seqResponses.get(1), e.getBulkResponse().getResponse(dfrErrored));
+            assertEquals(seqResponses.get(2), e.getBulkResponse().getResponse(dfr2));
 
-        DataFindRequest dfr = new DataFindRequest("foo", "bar");
-        dfr.select(Projection.includeField("*"));
-        dfr.where(Query.regex("foo", "*", 0));
-
-        DataFindRequest dfrErrored = new DataFindRequest("fooled", "bar");
-        dfrErrored.select(Projection.includeField("*"));
-        dfrErrored.where(Query.regex("fooled", "*", 0));
-
-        DataFindRequest dfr2 = new DataFindRequest("fooz", "bar");
-        dfr2.select(Projection.includeField("*"));
-        dfr2.where(Query.regex("fooz", "*", 0));
-
-        bulkRequest.add(dfr);
-        bulkRequest.add(dfrErrored);
-        bulkRequest.add(dfr2);
-
-        try {
-            new DefaultLightblueBulkDataResponse(jsonResponseWithError, bulkRequest);
-        } catch (LightblueBulkResponseException e) {
-            //expected
-            SortedMap<Integer, LightblueDataResponse> responses = e.getSuccessfulResponsesWithSeq();
+            //getResponses
+            List<LightblueDataResponse> responses = e.getBulkResponse().getResponses();
             assertNotNull(responses);
-            assertEquals(2, responses.size());
+            assertEquals(3, responses.size());
 
-            //Responses will be keyed by sequence
             assertEquals(responses.get(0), e.getBulkResponse().getResponse(dfr));
+            assertEquals(responses.get(1), e.getBulkResponse().getResponse(dfrErrored));
             assertEquals(responses.get(2), e.getBulkResponse().getResponse(dfr2));
-
-            //Just insurance that the the underlaying set doesn't accidently get altered.
-            assertEquals(3, e.getBulkResponse().getResponses().size());
         }
     }
 
     @Test
-    public void testBulkException_GetSuccessfulResponses() throws LightblueParseException {
+    public void testBulkException_SuccessfulResponses() throws LightblueParseException {
         DataBulkRequest bulkRequest = new DataBulkRequest();
 
         DataFindRequest dfr = new DataFindRequest("foo", "bar");
@@ -174,19 +148,80 @@ public class TestDefaultLightblueBulkDataResponse {
 
         try {
             new DefaultLightblueBulkDataResponse(jsonResponseWithError, bulkRequest);
+            fail();
         } catch (LightblueBulkResponseException e) {
             //expected
-            List<LightblueDataResponse> responses = e.getSuccessfulResponses();
+            assertEquals(1, e.getLightblueResponseExceptions().size());
+
+            //getSequencedSuccessfulResponses
+            SortedMap<Integer, LightblueDataResponse> seqResponses = e.getBulkResponse().getSequencedSuccessfulResponses();
+            assertNotNull(seqResponses);
+            assertEquals(2, seqResponses.size());
+
+            assertEquals(seqResponses.get(0), e.getBulkResponse().getResponse(dfr));
+            assertNull(seqResponses.get(1));
+            assertEquals(seqResponses.get(2), e.getBulkResponse().getResponse(dfr2));
+
+            //getSuccessfulResponses
+            List<LightblueDataResponse> responses = e.getBulkResponse().getSuccessfulResponses();
             assertNotNull(responses);
             assertEquals(2, responses.size());
 
             //Responses will be ordered sequentially
             //but as errored responses are not included, the positions could be off.
             assertEquals(responses.get(0), e.getBulkResponse().getResponse(dfr));
+            assertFalse(responses.contains(e.getBulkResponse().getResponse(dfrErrored)));
             assertEquals(responses.get(1), e.getBulkResponse().getResponse(dfr2));
+        }
+    }
 
-            //Just insurance that the the underlaying set doesn't accidently get altered.
-            assertEquals(3, e.getBulkResponse().getResponses().size());
+    @Test
+    public void testBulkException_ErroredResponses() throws LightblueParseException {
+        DataBulkRequest bulkRequest = new DataBulkRequest();
+
+        DataFindRequest dfr = new DataFindRequest("foo", "bar");
+        dfr.select(Projection.includeField("*"));
+        dfr.where(Query.regex("foo", "*", 0));
+
+        DataFindRequest dfrErrored = new DataFindRequest("fooled", "bar");
+        dfrErrored.select(Projection.includeField("*"));
+        dfrErrored.where(Query.regex("fooled", "*", 0));
+
+        DataFindRequest dfr2 = new DataFindRequest("fooz", "bar");
+        dfr2.select(Projection.includeField("*"));
+        dfr2.where(Query.regex("fooz", "*", 0));
+
+        bulkRequest.add(dfr);
+        bulkRequest.add(dfrErrored);
+        bulkRequest.add(dfr2);
+
+        try {
+            new DefaultLightblueBulkDataResponse(jsonResponseWithError, bulkRequest);
+            fail();
+        } catch (LightblueBulkResponseException e) {
+            //expected
+            assertEquals(1, e.getLightblueResponseExceptions().size());
+
+            //getSequencedResponsesWithErrors
+            SortedMap<Integer, LightblueDataResponse> seqResponses = e.getBulkResponse().getSequencedResponsesWithErrors();
+            assertNotNull(seqResponses);
+            assertEquals(1, seqResponses.size());
+
+            assertNull(seqResponses.get(0));
+            assertEquals(seqResponses.get(1), e.getBulkResponse().getResponse(
+                    dfrErrored));
+            assertNull(seqResponses.get(2));
+
+            //getResponsesWithErrors
+            List<LightblueDataResponse> responses = e.getBulkResponse().getResponsesWithErrors();
+            assertNotNull(responses);
+            assertEquals(1, responses.size());
+
+            //Responses will be ordered sequentially
+            //but as successful responses are not included, the positions could be off.
+            assertFalse(responses.contains(e.getBulkResponse().getResponse(dfr)));
+            assertEquals(responses.get(0), e.getBulkResponse().getResponse(dfrErrored));
+            assertFalse(responses.contains(e.getBulkResponse().getResponse(dfr2)));
         }
     }
 

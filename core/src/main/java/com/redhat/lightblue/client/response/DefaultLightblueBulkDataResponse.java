@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
-import com.redhat.lightblue.client.request.AbstractLightblueRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.util.JSON;
 
@@ -21,16 +21,17 @@ import com.redhat.lightblue.client.util.JSON;
  * @author bvulaj
  *
  */
-public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse implements LightblueBulkDataResponse {
+public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse implements LightblueBulkDataResponse, LightblueBulkDataErrorResponse {
 
-    private final Map<Integer, LightblueDataResponse> responses = new TreeMap<>();
-    private final List<? extends AbstractLightblueRequest> requests;
+    private final SortedMap<Integer, LightblueDataResponse> responsesSuccessful = new TreeMap<>();
+    private SortedMap<Integer, LightblueDataResponse> responsesErrored;
+    private final List<? extends AbstractLightblueDataRequest> requests;
 
-    public DefaultLightblueBulkDataResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueParseException, LightblueBulkResponseException {
+    public DefaultLightblueBulkDataResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueDataRequest> reqs) throws LightblueParseException, LightblueBulkResponseException {
         this(responseText, JSON.getDefaultObjectMapper(), reqs);
     }
 
-    public DefaultLightblueBulkDataResponse(String responseText, ObjectMapper mapper, AbstractDataBulkRequest<? extends AbstractLightblueRequest> reqs) throws LightblueParseException, LightblueBulkResponseException {
+    public DefaultLightblueBulkDataResponse(String responseText, ObjectMapper mapper, AbstractDataBulkRequest<? extends AbstractLightblueDataRequest> reqs) throws LightblueParseException, LightblueBulkResponseException {
         super(responseText, mapper);
         requests = reqs.getRequests();
 
@@ -54,12 +55,13 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
 
                 int seqNumber = seq.intValue();
                 try {
-                    responses.put(seqNumber, new DefaultLightblueDataResponse(resp.get("response"), mapper));
+                    responsesSuccessful.put(seqNumber, new DefaultLightblueDataResponse(resp.get("response"), mapper));
                 } catch (LightblueResponseException e) {
                     erroredResponses.put(seqNumber, e);
-
-                    //Append the response because it is still a valid errored response and seq needs to be kept.
-                    responses.put(seqNumber, (DefaultLightblueDataResponse) e.getLightblueResponse());
+                    if (responsesErrored == null) {
+                        responsesErrored = new TreeMap<>();
+                    }
+                    responsesErrored.put(seqNumber, (DefaultLightblueDataResponse) e.getLightblueResponse());
                 }
             }
         }
@@ -79,22 +81,46 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
 
     @Override
     public LightblueDataResponse getResponse(int seq) {
-        return responses.get(seq);
+        return getSequencedResponses().get(seq);
     }
 
     @Override
     public List<LightblueDataResponse> getResponses() {
-        return Collections.unmodifiableList(new ArrayList<>(responses.values()));
+        return Collections.unmodifiableList(new ArrayList<>(getSequencedResponses().values()));
     }
 
     @Override
-    public List<? extends AbstractLightblueRequest> getRequests() {
+    public List<? extends AbstractLightblueDataRequest> getRequests() {
         return Collections.unmodifiableList(requests);
     }
 
     @Override
-    public Set<Integer> getSeqNumbers() {
-        return Collections.unmodifiableSet(responses.keySet());
+    public SortedMap<Integer, LightblueDataResponse> getSequencedResponses() {
+        SortedMap<Integer, LightblueDataResponse> allResponses = getSequencedSuccessfulResponses();
+        if (responsesErrored != null) {
+            allResponses.putAll(responsesErrored);
+        }
+        return allResponses;
+    }
+
+    @Override
+    public SortedMap<Integer, LightblueDataResponse> getSequencedSuccessfulResponses() {
+        return new TreeMap<>(responsesSuccessful);
+    }
+
+    @Override
+    public SortedMap<Integer, LightblueDataResponse> getSequencedResponsesWithErrors() {
+        return new TreeMap<>(responsesErrored);
+    }
+
+    @Override
+    public List<LightblueDataResponse> getSuccessfulResponses() {
+        return Collections.unmodifiableList(new ArrayList<>(responsesSuccessful.values()));
+    }
+
+    @Override
+    public List<LightblueDataResponse> getResponsesWithErrors() {
+        return Collections.unmodifiableList(new ArrayList<>(responsesErrored.values()));
     }
 
 }
