@@ -24,7 +24,7 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
     public DefaultLightblueDataResponse(JsonNode responseNode, ObjectMapper mapper) throws LightblueResponseException {
         super(responseNode, mapper);
 
-        if (hasAnyErrors()) {
+        if ((getJson() == null) || hasAnyErrors()) {
             throw new LightblueResponseException("Lightblue exception occurred: ", this);
         }
     }
@@ -78,7 +78,7 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
     @Override
     public boolean hasLightblueErrors() {
         if (getJson() == null) {
-            return true;
+            return false;
         }
 
         JsonNode objectTypeNode = getJson().get("status");
