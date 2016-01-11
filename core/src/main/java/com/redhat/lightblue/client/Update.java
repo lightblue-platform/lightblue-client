@@ -4,9 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
@@ -46,7 +46,7 @@ public class Update extends Expression implements ForEachUpdate {
             super(JsonNodeFactory.instance.textNode("$remove"));
         }
     }
-    
+
     /**
      * Represents a $set expression
      */
@@ -78,15 +78,15 @@ public class Update extends Expression implements ForEachUpdate {
         public Set more(String field,SetLiteral value) {
             return more(field,value.toJson());
         }
-        
+
         public Set more(String field,int i) {
             return more(field,Literal.value(i));
         }
-        
+
         public  Set more(String field,String i) {
             return more(field,Literal.value(i));
         }
-        
+
         public  Set more(String field,boolean i) {
             return more(field,Literal.value(i));
         }
@@ -104,9 +104,9 @@ public class Update extends Expression implements ForEachUpdate {
         public Add(ObjectNode node) {
             super(node);
         }
-        
+
         /**
-         * Adds a new field/value to add 
+         * Adds a new field/value to add
          */
         public Add more(String field,JsonNode value) {
             JsonNode x=((ObjectNode)node).get("$add");
@@ -119,7 +119,7 @@ public class Update extends Expression implements ForEachUpdate {
         }
 
         /**
-         * Adds a new field/value to add 
+         * Adds a new field/value to add
          */
         public Add more(String field,AddLiteral value) {
             return more(field,value.toJson());
@@ -194,7 +194,7 @@ public class Update extends Expression implements ForEachUpdate {
     public Update(ContainerNode node) {
         super(node);
     }
-    
+
     private Update(boolean arrayNode) {
         super(arrayNode);
     }
@@ -213,19 +213,21 @@ public class Update extends Expression implements ForEachUpdate {
             return update[0];
         } else {
             Update x=new Update(true);
-            for(Update u:update)
+            for(Update u:update) {
                 ((ArrayNode)x.node).add(u.toJson());
+            }
             return x;
         }
     }
 
-    public static Update update(List<Update> update) {
+    public static Update update(List<? extends Update> update) {
         if(update.size()==1) {
             return update.get(0);
         } else {
             Update x=new Update(true);
-            for(Update u:update)
+            for(Update u:update) {
                 ((ArrayNode)x.node).add(u.toJson());
+            }
             return x;
         }
     }
@@ -250,20 +252,21 @@ public class Update extends Expression implements ForEachUpdate {
     public static Set set(String field,boolean i) {
         return new Set().more(field,Literal.value(i));
     }
-    
+
     public static Set set(String field, Date date){
         return new Set().more(field, Literal.value(date));
     }
 
     /**
      * <pre>
-     *   { $unset : [ fields... ] 
+     *   { $unset : [ fields... ]
      * </pre>
      */
     public static Unset unset(String...fields) {
         Unset x=new Unset();
-        for(String f:fields)
+        for(String f:fields) {
             x.more(f);
+        }
         return x;
     }
 
@@ -308,5 +311,5 @@ public class Update extends Expression implements ForEachUpdate {
         fe.set("$update",u.toJson());
         ((ObjectNode)x.node).set("$foreach",fe);
         return x;
-    }    
+    }
 }

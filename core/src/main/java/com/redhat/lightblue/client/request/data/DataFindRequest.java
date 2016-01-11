@@ -34,7 +34,7 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         this.queryExpression = queryExpression;
     }
 
-    public void select(List<Projection> projections) {
+    public void select(List<? extends Projection> projections) {
         projection = Projection.project(projections);
     }
 
@@ -42,7 +42,7 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         this.projection = Projection.project(projection);
     }
 
-    public void sort(List<Sort> sort) {
+    public void sort(List<? extends Sort> sort) {
         this.sort = Sort.sort(sort);
     }
 
