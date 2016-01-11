@@ -14,6 +14,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Objects;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -105,6 +106,12 @@ public class SslSocketFactories {
             InputStream authCert, char[] authCertPassword,
             String authCertAlias) throws CertificateException, NoSuchAlgorithmException,
             KeyStoreException, IOException, UnrecoverableKeyException, KeyManagementException {
+        
+        Objects.requireNonNull(certAuthorityFile, "Could not load the CA cert file.  Please verify that " +
+                "the file is present, on the classpath, and configured with the correct value.");
+        Objects.requireNonNull(authCert, "Could not load the auth cert file.  Please verify that the" +
+                " file is present, on the classpath, and configured with the correct value.");
+
         X509Certificate cert = getCertificate(certAuthorityFile);
         KeyStore pkcs12KeyStore = getPkcs12KeyStore(authCert, authCertPassword);
         KeyStore sunKeyStore = getJksKeyStore(cert, pkcs12KeyStore, authCertAlias, authCertPassword);

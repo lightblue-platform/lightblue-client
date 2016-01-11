@@ -71,18 +71,32 @@ public class LightblueClientConfiguration {
         this.useCertAuth = useCertAuth;
     }
 
+    /**
+     * @return classpath reference for the CA file used to authenticate the validity of
+     *         the LB server certificate
+     */
     public String getCaFilePath() {
         return caFilePath;
     }
 
+    /**
+     * @param caFilePath classpath reference for the CA file used to authenticate the validity of
+     *                   the LB server certificate
+     */
     public void setCaFilePath(String caFilePath) {
         this.caFilePath = caFilePath;
     }
 
+    /**
+     * @return classpath reference for the private key of the LB client
+     */
     public String getCertFilePath() {
         return certFilePath;
     }
 
+    /**
+     * @param certFilePath classpath reference for the private key of the LB client
+     */
     public void setCertFilePath(String certFilePath) {
         this.certFilePath = certFilePath;
         this.certAlias = FilenameUtils.getBaseName(this.certFilePath);
