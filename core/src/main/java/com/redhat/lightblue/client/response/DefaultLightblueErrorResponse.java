@@ -14,7 +14,7 @@ import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.util.JSON;
 
 /**
- *
+ * Represents a response that may contain an error or data error from lightblue.
  *
  * @author dcrissman
  */
