@@ -3,10 +3,7 @@ package com.redhat.lightblue.client.http;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -14,28 +11,22 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.http.transport.JavaNetHttpTransport;
-import com.redhat.lightblue.client.model.DataError;
-import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueMetadataResponse;
+import com.redhat.lightblue.client.response.DefaultLightblueSingleValueResponse;
 import com.redhat.lightblue.client.response.LightblueBulkResponseException;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
-import com.redhat.lightblue.client.response.LightblueErrorResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
-import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.client.response.LightblueResponseException;
 import com.redhat.lightblue.client.util.JSON;
 
@@ -89,9 +80,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         }
     }
 
-    private final class LockingImpl extends Locking implements LightblueResponse, LightblueErrorResponse {
-        private String text;
-        private JsonNode json;
+    private final class LockingImpl extends Locking {
 
         public LockingImpl(String domain) {
             super(domain);
@@ -101,13 +90,11 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         public boolean acquire(String callerId, String resourceId, Long ttl)
                 throws LightblueParseException, LightblueHttpClientException, LightblueResponseException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, ttl, false, HttpMethod.PUT);
-            parseResponse(
+            DefaultLightblueSingleValueResponse response = new DefaultLightblueSingleValueResponse(
                     callService(req, configuration.getDataServiceURI()));
-            if (hasAnyErrors()) {
-                throw new LightblueResponseException("Unable to acquire lock.", this);
-            }
-            if (getJson() != null) {
-                return parseResultNode().asBoolean();
+
+            if (response.getJson() != null) {
+                return response.parseAsBoolean();
             } else {
                 return false;
             }
@@ -117,13 +104,11 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         public boolean release(String callerId, String resourceId)
                 throws LightblueParseException, LightblueHttpClientException, LightblueResponseException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, false, HttpMethod.DELETE);
-            parseResponse(
+            DefaultLightblueSingleValueResponse response = new DefaultLightblueSingleValueResponse(
                     callService(req, configuration.getDataServiceURI()));
-            if (hasAnyErrors()) {
-                throw new LightblueResponseException("Unable to release lock.", this);
-            }
-            if (getJson() != null) {
-                return parseResultNode().asBoolean();
+
+            if (response.getJson() != null) {
+                return response.parseAsBoolean();
             } else {
                 return false;
             }
@@ -133,13 +118,11 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         public int getLockCount(String callerId, String resourceId)
                 throws LightblueParseException, LightblueHttpClientException, LightblueResponseException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, false, HttpMethod.GET);
-            parseResponse(
+            DefaultLightblueSingleValueResponse response = new DefaultLightblueSingleValueResponse(
                     callService(req, configuration.getDataServiceURI()));
-            if (hasAnyErrors()) {
-                throw new LightblueResponseException("Unable to get lock count.", this);
-            }
-            if (getJson() != null) {
-                return parseResultNode().asInt();
+
+            if (response.getJson() != null) {
+                return response.parseAsInt();
             } else {
                 return 0;
             }
@@ -149,113 +132,14 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         public boolean ping(String callerId, String resourceId)
                 throws LightblueParseException, LightblueHttpClientException, LightblueResponseException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, true, HttpMethod.PUT);
-            parseResponse(
+            DefaultLightblueSingleValueResponse response = new DefaultLightblueSingleValueResponse(
                     callService(req, configuration.getDataServiceURI()));
-            if (hasAnyErrors()) {
-                throw new LightblueResponseException("Unable to ping lock.", this);
-            }
-            if (getJson() != null) {
-                return parseResultNode().asBoolean();
+
+            if (response.getJson() != null) {
+                return response.parseAsBoolean();
             } else {
                 return false;
             }
-        }
-
-        private void parseResponse(String response) throws LightblueParseException {
-            text = response;
-
-            try {
-                json = JSON.getDefaultObjectMapper().readTree(text);
-            } catch (IOException e) {
-                throw new LightblueParseException(e);
-            }
-        }
-
-        private JsonNode parseResultNode() throws LightblueParseException {
-            if (!(getJson() instanceof ObjectNode)) {
-                throw new LightblueParseException("Unable to parse json: " + getJson());
-            }
-
-            return ((ObjectNode) getJson()).get("result");
-        }
-
-        @Override
-        public String getText() {
-            return text;
-        }
-
-        @Override
-        public JsonNode getJson() {
-            return json;
-        }
-
-        @Override
-        public boolean hasDataErrors() {
-            if (getJson() == null) {
-                return false;
-            }
-
-            JsonNode err = getJson().get("dataErrors");
-            return err != null && !(err instanceof NullNode) && err.size() > 0;
-        }
-
-        @Override
-        public boolean hasLightblueErrors() {
-            if (getJson() == null) {
-                return false;
-            }
-
-            JsonNode objectTypeNode = getJson().get("status");
-            if (objectTypeNode != null && (objectTypeNode.textValue().equalsIgnoreCase(
-                    "error") || objectTypeNode.textValue().equalsIgnoreCase(
-                            "partial"))) {
-                return true;
-            }
-
-            JsonNode err = getJson().get("errors");
-            return err != null && !(err instanceof NullNode) && err.size() > 0;
-        }
-
-        public boolean hasAnyErrors() {
-            return hasDataErrors() || hasLightblueErrors();
-        }
-
-        @Override
-        public DataError[] getDataErrors() {
-            List<DataError> list = new ArrayList<>();
-            if (getJson() == null) {
-                return null;
-            }
-            JsonNode err = getJson().get("dataErrors");
-            if (err instanceof ObjectNode) {
-                list.add(DataError.fromJson((ObjectNode) err));
-            } else if (err instanceof ArrayNode) {
-                for (Iterator<JsonNode> itr = ((ArrayNode) err).elements(); itr.hasNext();) {
-                    list.add(DataError.fromJson((ObjectNode) itr.next()));
-                }
-            } else {
-                return null;
-            }
-            return list.toArray(new DataError[list.size()]);
-        }
-
-        @Override
-        public Error[] getLightblueErrors() {
-            List<Error> list = new ArrayList<>();
-            if (getJson() == null) {
-                return null;
-            }
-            JsonNode err = getJson().get("errors");
-            if (err instanceof ObjectNode) {
-                list.add(Error.fromJson(err));
-            } else if (err instanceof ArrayNode) {
-                for (Iterator<JsonNode> itr = ((ArrayNode) err).elements(); itr.hasNext();) {
-                    list.add(Error.fromJson(itr.next()));
-                }
-            } else {
-                return null;
-            }
-            return list.toArray(new Error[list.size()]);
         }
 
     }

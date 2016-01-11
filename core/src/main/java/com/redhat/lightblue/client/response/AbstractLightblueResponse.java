@@ -12,7 +12,7 @@ public abstract class AbstractLightblueResponse implements LightblueResponse {
     private JsonNode json;
     private final ObjectMapper mapper;
 
-    public AbstractLightblueResponse(String responseText) throws LightblueException {
+    public AbstractLightblueResponse(String responseText) throws LightblueParseException {
         this(responseText, JSON.getDefaultObjectMapper());
     }
 
