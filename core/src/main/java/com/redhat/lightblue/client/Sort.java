@@ -2,8 +2,8 @@ package com.redhat.lightblue.client;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ContainerNode;
 
 /**
  * A sort expression
@@ -11,21 +11,21 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * Usage:
  * <pre>
  *   // { "field":"$asc" }
- *   Sort.sort("field",true); 
- * 
+ *   Sort.sort("field",true);
+ *
  *   // { "field":"$desc" }
  *   Sort.sort("field",false);
  *
  *   // {"field":"$asc"}
- *   Sort.asc("field); 
+ *   Sort.asc("field);
  *
  *   // {"field":"$desc"}
  *   Sort.desc("field");
  *
  *   // [ { "x":"$asc"}, {"y":"$desc"} ]
- *   Sort.sort(Sort.asc("x"),Sort.desc("y"}); 
+ *   Sort.sort(Sort.asc("x"),Sort.desc("y"});
  *
- *   // [ { "x":"$asc"}, {"y":"$desc"} 
+ *   // [ { "x":"$asc"}, {"y":"$desc"}
  *   List<Sort> l=new ArrayList<>();
  *   l.add(Sort.asc("x"));
  *   l.add(Sort.desc("y"));
@@ -40,7 +40,7 @@ public class Sort extends Expression {
     public Sort(ContainerNode node) {
         super(node);
     }
-    
+
     private Sort(boolean arrayNode) {
         super(arrayNode);
     }
@@ -48,7 +48,7 @@ public class Sort extends Expression {
     public static Sort sort(ContainerNode node) {
         return new Sort(node);
     }
-    
+
     /**
      * <pre>
      *   { field: asc }
@@ -78,19 +78,21 @@ public class Sort extends Expression {
             return sort[0];
         } else {
             Sort s=new Sort(true);
-            for(Sort x:sort)
+            for(Sort x:sort) {
                 ((ArrayNode)s.node).add(x.toJson());
+            }
             return s;
         }
     }
 
-    public static Sort sort(List<Sort> sort) {
+    public static Sort sort(List<? extends Sort> sort) {
         if(sort.size()==1) {
             return sort.get(0);
         } else {
             Sort s=new Sort(true);
-            for(Sort x:sort)
+            for(Sort x:sort) {
                 ((ArrayNode)s.node).add(x.toJson());
+            }
             return s;
         }
     }

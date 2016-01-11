@@ -26,7 +26,7 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-    public void returns(List<Projection> projection) {
+    public void returns(List<? extends Projection> projection) {
         this.projection = Projection.project(projection);
     }
 
@@ -38,8 +38,8 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         query = queryExpression;
     }
 
-    public void updates(List<Update> updates) {
-        update = Update.update(update);
+    public void updates(List<? extends Update> updates) {
+        update = Update.update(updates);
     }
 
     public void updates(Update... updates) {
