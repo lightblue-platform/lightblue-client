@@ -1,6 +1,6 @@
 package com.redhat.lightblue.client.http;
 
-import com.redhat.lightblue.client.response.LightblueException;
+import com.redhat.lightblue.client.LightblueException;
 
 /**
  * When lightblue does not return a response at all.

@@ -1,7 +1,6 @@
 package com.redhat.lightblue.client;
 
 import java.util.UUID;
-import com.redhat.lightblue.client.response.LightblueException;
 
 public abstract class Locking {
 
