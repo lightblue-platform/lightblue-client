@@ -78,10 +78,14 @@ public abstract class Locking {
             return Locking.this.getLockCount(resourceId);
         }
 
+        public boolean release() throws LightblueException {
+            return Locking.this.release(resourceId);
+        }
+
         @Override
         public void close() throws IOException {
             try {
-                release(resourceId);
+                release();
             } catch (LightblueException e) {
                 throw new IOException("Unable to release lock: " + resourceId, e);
             }
