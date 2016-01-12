@@ -14,6 +14,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Objects;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -105,6 +106,14 @@ public class SslSocketFactories {
             InputStream authCert, char[] authCertPassword,
             String authCertAlias) throws CertificateException, NoSuchAlgorithmException,
             KeyStoreException, IOException, UnrecoverableKeyException, KeyManagementException {
+        
+        Objects.requireNonNull(certAuthorityFile, "Could not load the CA cert file.  Please verify that " +
+                "the certificate file is on the classpath or defined on the file system using the 'file://'" +
+                "prefix.");
+        Objects.requireNonNull(authCert, "Could not load the auth cert file.  Please verify that " +
+                        "the certificate file is on the classpath or defined on the file system using the " +
+                        "'file://' prefix.");
+
         X509Certificate cert = getCertificate(certAuthorityFile);
         KeyStore pkcs12KeyStore = getPkcs12KeyStore(authCert, authCertPassword);
         KeyStore sunKeyStore = getJksKeyStore(cert, pkcs12KeyStore, authCertAlias, authCertPassword);
@@ -113,7 +122,7 @@ public class SslSocketFactories {
     }
 
     private static InputStream loadFile(String filePath) throws FileNotFoundException{
-        return loadFile(Thread.currentThread().getContextClassLoader(), filePath);
+        return loadFile(SslSocketFactories.class.getClassLoader(), filePath);
     }
 
     private static InputStream loadFile(ClassLoader classLoader, String filePath) throws FileNotFoundException{
