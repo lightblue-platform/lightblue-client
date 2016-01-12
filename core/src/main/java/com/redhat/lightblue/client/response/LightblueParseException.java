@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.response;
 
+import com.redhat.lightblue.client.LightblueException;
+
 /**
  * Exception thrown when json2pojo conversion fails.
  *
