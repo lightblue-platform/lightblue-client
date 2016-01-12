@@ -113,7 +113,7 @@ public class SslSocketFactories {
     }
 
     private static InputStream loadFile(String filePath) throws FileNotFoundException{
-        return loadFile(Thread.currentThread().getContextClassLoader(), filePath);
+        return loadFile(SslSocketFactories.class.getClassLoader(), filePath);
     }
 
     private static InputStream loadFile(ClassLoader classLoader, String filePath) throws FileNotFoundException{
