@@ -8,9 +8,9 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.Locking.Lock;
-import com.redhat.lightblue.client.response.LightblueException;
 
 public class LockingTest extends LightblueClientTestHarness {
 
