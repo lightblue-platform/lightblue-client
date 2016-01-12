@@ -108,9 +108,11 @@ public class SslSocketFactories {
             KeyStoreException, IOException, UnrecoverableKeyException, KeyManagementException {
         
         Objects.requireNonNull(certAuthorityFile, "Could not load the CA cert file.  Please verify that " +
-                "the file is present, on the classpath, and configured with the correct value.");
-        Objects.requireNonNull(authCert, "Could not load the auth cert file.  Please verify that the" +
-                " file is present, on the classpath, and configured with the correct value.");
+                "the certificate file is on the classpath or defined on the file system using the 'file://'" +
+                "prefix.");
+        Objects.requireNonNull(authCert, "Could not load the auth cert file.  Please verify that " +
+                        "the certificate file is on the classpath or defined on the file system using the " +
+                        "'file://' prefix.");
 
         X509Certificate cert = getCertificate(certAuthorityFile);
         KeyStore pkcs12KeyStore = getPkcs12KeyStore(authCert, authCertPassword);
