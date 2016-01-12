@@ -9,13 +9,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.redhat.lightblue.client.LightblueClient;
+import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
-import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
 
 /**

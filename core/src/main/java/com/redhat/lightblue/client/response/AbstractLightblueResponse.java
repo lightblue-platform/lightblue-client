@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.util.JSON;
 
 public abstract class AbstractLightblueResponse implements LightblueResponse {

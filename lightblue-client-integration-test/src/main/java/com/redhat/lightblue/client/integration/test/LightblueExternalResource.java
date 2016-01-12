@@ -9,7 +9,7 @@ import org.junit.runners.model.TestClass;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.LightblueClient;
-import com.redhat.lightblue.client.response.LightblueException;
+import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
 
 public class LightblueExternalResource extends BeforeAfterTestRule {
