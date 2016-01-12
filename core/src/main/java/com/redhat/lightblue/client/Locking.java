@@ -58,8 +58,10 @@ public abstract class Locking {
     }
 
     public Lock lock(String resourceId, Long ttl) throws LightblueException {
-        acquire(resourceId, ttl);
-        return new Lock(resourceId);
+        if (acquire(resourceId, ttl)) {
+            return new Lock(resourceId);
+        }
+        return null;
     }
 
     public class Lock implements Closeable {
