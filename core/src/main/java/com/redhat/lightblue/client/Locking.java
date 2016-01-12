@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.UUID;
 
 public abstract class Locking {
@@ -11,7 +13,7 @@ public abstract class Locking {
     public Locking(String domain) {
         this.domain=domain;
     }
-    
+
     public abstract boolean acquire(String callerId,String resourceId,Long ttl) throws LightblueException;
     public abstract boolean release(String callerId,String resourceId) throws LightblueException;
     public abstract int getLockCount(String callerId,String resourceId) throws LightblueException;
@@ -28,7 +30,7 @@ public abstract class Locking {
     public String getDomain() {
         return domain;
     }
-    
+
     public boolean acquire(String resourceId,Long ttl) throws LightblueException {
         return acquire(callerId,resourceId,ttl);
     }
@@ -47,5 +49,47 @@ public abstract class Locking {
 
     public boolean ping(String resourceId) throws LightblueException {
         return ping(callerId,resourceId);
+    }
+
+    public Lock lock(String resourceId) throws LightblueException {
+        return lock(resourceId, null);
+    }
+
+    public Lock lock(String resourceId, Long ttl) throws LightblueException {
+        if (acquire(resourceId, ttl)) {
+            return new Lock(resourceId);
+        }
+        return null;
+    }
+
+    public class Lock implements Closeable {
+
+        private final String resourceId;
+
+        public Lock(String resourceId) {
+            this.resourceId = resourceId;
+        }
+
+        public boolean ping() throws LightblueException {
+            return Locking.this.ping(resourceId);
+        }
+
+        public int getLockCount() throws LightblueException {
+            return Locking.this.getLockCount(resourceId);
+        }
+
+        public boolean release() throws LightblueException {
+            return Locking.this.release(resourceId);
+        }
+
+        @Override
+        public void close() throws IOException {
+            try {
+                release();
+            } catch (LightblueException e) {
+                throw new IOException("Unable to release lock: " + resourceId, e);
+            }
+        }
+
     }
 }
