@@ -5,7 +5,6 @@ import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
-import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
 
 public interface LightblueClient {

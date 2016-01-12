@@ -4,8 +4,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.UUID;
 
-import com.redhat.lightblue.client.response.LightblueException;
-
 public abstract class Locking {
 
     private final String domain;

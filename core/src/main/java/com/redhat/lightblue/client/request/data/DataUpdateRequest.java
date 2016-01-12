@@ -50,22 +50,6 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         where(query);
     }
 
-    /**
-     * Use {@link #updates(Update...)}.
-     */
-    @Deprecated
-    public void setUpdates(Update... updates) {
-        updates(updates);
-    }
-
-    /**
-     * Use {@link #returns(Projection...)}.
-     */
-    @Deprecated
-    public void setProjections(Projection... projections) {
-        returns(projections);
-    }
-
     @Override
     public JsonNode getBodyJson() {
         ObjectNode node = JsonNodeFactory.instance.objectNode();

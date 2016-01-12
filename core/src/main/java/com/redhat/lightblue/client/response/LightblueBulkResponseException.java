@@ -3,6 +3,8 @@ package com.redhat.lightblue.client.response;
 import java.util.Collections;
 import java.util.Map;
 
+import com.redhat.lightblue.client.LightblueException;
+
 public class LightblueBulkResponseException extends LightblueException {
 
     private static final long serialVersionUID = -1204842853642316889L;

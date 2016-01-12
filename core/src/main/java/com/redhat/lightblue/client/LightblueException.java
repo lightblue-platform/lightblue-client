@@ -1,4 +1,4 @@
-package com.redhat.lightblue.client.response;
+package com.redhat.lightblue.client;
 
 /**
  * Parent of all lightblue exceptions.

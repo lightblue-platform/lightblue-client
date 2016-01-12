@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.enums.MetadataStatus;
 import com.redhat.lightblue.client.integration.test.LightblueClientTestHarness;
 import com.redhat.lightblue.client.request.metadata.MetadataClearDefaultVersionRequest;
@@ -16,7 +17,6 @@ import com.redhat.lightblue.client.request.metadata.MetadataGetEntityRolesReques
 import com.redhat.lightblue.client.request.metadata.MetadataGetEntityVersionsRequest;
 import com.redhat.lightblue.client.request.metadata.MetadataSetDefaultVersionRequest;
 import com.redhat.lightblue.client.request.metadata.MetadataUpdateSchemaStatusRequest;
-import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
 
 public class TestMetadataRequests extends LightblueClientTestHarness {
