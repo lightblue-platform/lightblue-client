@@ -1,7 +1,6 @@
 package com.redhat.lightblue.client.integration.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -13,8 +12,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.Locking.Lock;
-import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.response.LightblueResponseException;
+import com.redhat.lightblue.client.response.lock.InvalidLockException;
 
 public class LockingTest extends LightblueClientTestHarness {
 
@@ -68,10 +67,8 @@ public class LockingTest extends LightblueClientTestHarness {
         try {
             lbLocker.getLockCount("test-lock");
             fail();
-        } catch (LightblueResponseException e) {
-            Error error = e.getLightblueResponse().getLightblueErrors()[0];
-            assertNotNull(error);
-            assertTrue(error.getMsg().contains("InvalidLockException: test-lock"));
+        } catch (InvalidLockException e) {
+            assertTrue(e.getMessage().contains("Invalid resourceId: test-lock"));
         }
     }
 

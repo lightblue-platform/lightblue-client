@@ -38,7 +38,7 @@ public class DefaultLightblueErrorResponse extends AbstractLightblueResponse imp
         assertNoErrors();
     }
 
-    private void assertNoErrors() throws LightblueResponseException {
+    protected void assertNoErrors() throws LightblueResponseException {
         if ((getJson() == null) || hasAnyErrors()) {
             throw new LightblueResponseException("Error returned from lightblue.", this);
         }
