@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.response.DefaultLightblueErrorResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
@@ -17,12 +18,12 @@ public class LockResponse extends DefaultLightblueErrorResponse {
             "^.*InvalidLockException: (.+)$");
 
     public LockResponse(String responseText)
-            throws LightblueParseException, LightblueResponseException {
+            throws LightblueParseException, LightblueResponseException, LightblueException {
         super(responseText);
     }
 
     public LockResponse(String responseText, ObjectMapper mapper)
-            throws LightblueParseException, LightblueResponseException {
+            throws LightblueParseException, LightblueResponseException, LightblueException {
         super(responseText, mapper);
     }
 
@@ -43,13 +44,13 @@ public class LockResponse extends DefaultLightblueErrorResponse {
     }
 
     @Override
-    protected void assertNoErrors() throws LightblueResponseException {
+    protected void assertNoErrors() throws LightblueResponseException, LightblueException {
         Error[] errors = getLightblueErrors();
         if (errors != null) {
             for(Error error : errors){
                 Matcher m = INVALID_LOCK.matcher(error.getMsg());
                 if (m.matches()) {
-                    throw new InvalidLockException("Invalid resourceId: " + m.group(1), this);
+                    throw new InvalidLockException(m.group(1));
                 }
             }
         }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.model.DataError;
 import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.util.JSON;
@@ -20,25 +21,29 @@ import com.redhat.lightblue.client.util.JSON;
  */
 public class DefaultLightblueErrorResponse extends AbstractLightblueResponse implements LightblueErrorResponse {
 
-    public DefaultLightblueErrorResponse(JsonNode responseNode) throws LightblueResponseException {
+    public DefaultLightblueErrorResponse(JsonNode responseNode) 
+            throws LightblueResponseException, LightblueException {
         this(responseNode, JSON.getDefaultObjectMapper());
     }
 
-    public DefaultLightblueErrorResponse(JsonNode responseNode, ObjectMapper mapper) throws LightblueResponseException {
+    public DefaultLightblueErrorResponse(JsonNode responseNode, ObjectMapper mapper) 
+            throws LightblueResponseException, LightblueException {
         super(responseNode, mapper);
         assertNoErrors();
     }
 
-    public DefaultLightblueErrorResponse(String responseText) throws LightblueParseException, LightblueResponseException {
+    public DefaultLightblueErrorResponse(String responseText) 
+            throws LightblueParseException, LightblueResponseException, LightblueException {
         this(responseText, JSON.getDefaultObjectMapper());
     }
 
-    public DefaultLightblueErrorResponse(String responseText, ObjectMapper mapper) throws LightblueResponseException, LightblueParseException {
+    public DefaultLightblueErrorResponse(String responseText, ObjectMapper mapper) 
+            throws LightblueResponseException, LightblueParseException, LightblueException {
         super(responseText, mapper);
         assertNoErrors();
     }
 
-    protected void assertNoErrors() throws LightblueResponseException {
+    protected void assertNoErrors() throws LightblueResponseException, LightblueException {
         if ((getJson() == null) || hasAnyErrors()) {
             throw new LightblueResponseException("Error returned from lightblue.", this);
         }

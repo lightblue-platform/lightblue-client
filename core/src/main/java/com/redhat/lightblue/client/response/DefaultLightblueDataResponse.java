@@ -6,26 +6,27 @@ import java.lang.reflect.Array;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.redhat.lightblue.client.LightblueException;
 
 public class DefaultLightblueDataResponse extends DefaultLightblueErrorResponse implements LightblueDataResponse {
 
     public DefaultLightblueDataResponse(JsonNode responseNode) 
-            throws LightblueResponseException {
+            throws LightblueResponseException, LightblueException {
         super(responseNode);
     }
 
     public DefaultLightblueDataResponse(JsonNode responseNode, ObjectMapper mapper) 
-            throws LightblueResponseException {
+            throws LightblueResponseException, LightblueException {
         super(responseNode, mapper);
     }
 
     public DefaultLightblueDataResponse(String responseText) 
-            throws LightblueParseException, LightblueResponseException {
+            throws LightblueParseException, LightblueResponseException, LightblueException {
         super(responseText);
     }
 
     public DefaultLightblueDataResponse(String responseText, ObjectMapper mapper) 
-            throws LightblueParseException, LightblueResponseException {
+            throws LightblueParseException, LightblueResponseException, LightblueException {
         super(responseText, mapper);
     }
 

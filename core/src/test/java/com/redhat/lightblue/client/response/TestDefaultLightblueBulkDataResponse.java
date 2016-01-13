@@ -81,7 +81,7 @@ public class TestDefaultLightblueBulkDataResponse {
     }
 
     @Test
-    public void testBulkException_Responses() throws LightblueParseException {
+    public void testBulkException_Responses() throws Exception {
         DataBulkRequest bulkRequest = new DataBulkRequest();
 
         DataFindRequest dfr = new DataFindRequest("foo", "bar");
@@ -127,7 +127,7 @@ public class TestDefaultLightblueBulkDataResponse {
     }
 
     @Test
-    public void testBulkException_SuccessfulResponses() throws LightblueParseException {
+    public void testBulkException_SuccessfulResponses() throws Exception {
         DataBulkRequest bulkRequest = new DataBulkRequest();
 
         DataFindRequest dfr = new DataFindRequest("foo", "bar");
@@ -176,7 +176,7 @@ public class TestDefaultLightblueBulkDataResponse {
     }
 
     @Test
-    public void testBulkException_ErroredResponses() throws LightblueParseException {
+    public void testBulkException_ErroredResponses() throws Exception {
         DataBulkRequest bulkRequest = new DataBulkRequest();
 
         DataFindRequest dfr = new DataFindRequest("foo", "bar");
