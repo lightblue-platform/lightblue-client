@@ -5,6 +5,7 @@ import com.redhat.lightblue.client.request.data.DataInsertRequest;
 /**
  * Created by jblashka on 10/20/14.
  */
+@Deprecated
 public class DataInsertRequestStub extends DataInsertRequest {
     private final String body;
 
