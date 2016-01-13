@@ -18,12 +18,12 @@ public class LockResponse extends DefaultLightblueErrorResponse {
             "^.*InvalidLockException: (.+)$");
 
     public LockResponse(String responseText)
-            throws LightblueParseException, LightblueResponseException, LightblueException {
+            throws LightblueParseException, LightblueResponseException, LockException, LightblueException {
         super(responseText);
     }
 
     public LockResponse(String responseText, ObjectMapper mapper)
-            throws LightblueParseException, LightblueResponseException, LightblueException {
+            throws LightblueParseException, LightblueResponseException, LockException, LightblueException {
         super(responseText, mapper);
     }
 
