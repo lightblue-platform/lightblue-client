@@ -24,11 +24,11 @@ import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueMetadataResponse;
-import com.redhat.lightblue.client.response.DefaultLightblueSingleValueResponse;
 import com.redhat.lightblue.client.response.LightblueBulkResponseException;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
 import com.redhat.lightblue.client.response.LightblueResponseException;
+import com.redhat.lightblue.client.response.lock.LockResponse;
 import com.redhat.lightblue.client.util.JSON;
 
 public class LightblueHttpClient implements LightblueClient, Closeable {
@@ -91,7 +91,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         public boolean acquire(String callerId, String resourceId, Long ttl)
                 throws LightblueParseException, LightblueHttpClientException, LightblueResponseException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, ttl, false, HttpMethod.PUT);
-            DefaultLightblueSingleValueResponse response = new DefaultLightblueSingleValueResponse(
+            LockResponse response = new LockResponse(
                     callService(req, configuration.getDataServiceURI()));
 
             if (response.getJson() != null) {
@@ -105,7 +105,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         public boolean release(String callerId, String resourceId)
                 throws LightblueParseException, LightblueHttpClientException, LightblueResponseException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, false, HttpMethod.DELETE);
-            DefaultLightblueSingleValueResponse response = new DefaultLightblueSingleValueResponse(
+            LockResponse response = new LockResponse(
                     callService(req, configuration.getDataServiceURI()));
 
             if (response.getJson() != null) {
@@ -119,7 +119,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         public int getLockCount(String callerId, String resourceId)
                 throws LightblueParseException, LightblueHttpClientException, LightblueResponseException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, false, HttpMethod.GET);
-            DefaultLightblueSingleValueResponse response = new DefaultLightblueSingleValueResponse(
+            LockResponse response = new LockResponse(
                     callService(req, configuration.getDataServiceURI()));
 
             if (response.getJson() != null) {
@@ -133,7 +133,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         public boolean ping(String callerId, String resourceId)
                 throws LightblueParseException, LightblueHttpClientException, LightblueResponseException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, true, HttpMethod.PUT);
-            DefaultLightblueSingleValueResponse response = new DefaultLightblueSingleValueResponse(
+            LockResponse response = new LockResponse(
                     callService(req, configuration.getDataServiceURI()));
 
             if (response.getJson() != null) {
