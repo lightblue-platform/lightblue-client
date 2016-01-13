@@ -8,24 +8,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.LightblueException;
 
-public class DefaultLightblueDataResponse extends DefaultLightblueErrorResponse implements LightblueDataResponse {
+public class DefaultLightblueDataResponse extends AbstractLightblueResponse implements LightblueDataResponse {
 
-    public DefaultLightblueDataResponse(JsonNode responseNode) 
+    public DefaultLightblueDataResponse(JsonNode responseNode)
             throws LightblueResponseException, LightblueException {
         super(responseNode);
     }
 
-    public DefaultLightblueDataResponse(JsonNode responseNode, ObjectMapper mapper) 
+    public DefaultLightblueDataResponse(JsonNode responseNode, ObjectMapper mapper)
             throws LightblueResponseException, LightblueException {
         super(responseNode, mapper);
     }
 
-    public DefaultLightblueDataResponse(String responseText) 
+    public DefaultLightblueDataResponse(String responseText)
             throws LightblueParseException, LightblueResponseException, LightblueException {
         super(responseText);
     }
 
-    public DefaultLightblueDataResponse(String responseText, ObjectMapper mapper) 
+    public DefaultLightblueDataResponse(String responseText, ObjectMapper mapper)
             throws LightblueParseException, LightblueResponseException, LightblueException {
         super(responseText, mapper);
     }
@@ -75,6 +75,14 @@ public class DefaultLightblueDataResponse extends DefaultLightblueErrorResponse 
         } catch (RuntimeException | IOException e) {
             throw new LightblueParseException("Error parsing lightblue response: " + getText() + "\n", e);
         }
+    }
+
+    protected int parseInt(String fieldName) {
+        JsonNode field = getJson().findValue(fieldName);
+        if (field == null || field.isNull()) {
+            return 0;
+        }
+        return field.asInt();
     }
 
 }

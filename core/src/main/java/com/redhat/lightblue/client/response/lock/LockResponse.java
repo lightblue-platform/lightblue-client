@@ -8,11 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.model.Error;
-import com.redhat.lightblue.client.response.DefaultLightblueErrorResponse;
+import com.redhat.lightblue.client.response.AbstractLightblueResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
 import com.redhat.lightblue.client.response.LightblueResponseException;
 
-public class LockResponse extends DefaultLightblueErrorResponse {
+public class LockResponse extends AbstractLightblueResponse {
 
     private static final Pattern INVALID_LOCK = Pattern.compile(
             "^.*InvalidLockException: (.+)$");
