@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.Locking.Lock;
-import com.redhat.lightblue.client.response.LightblueResponseException;
 import com.redhat.lightblue.client.response.lock.InvalidLockException;
 
 public class LockingTest extends LightblueClientTestHarness {
@@ -35,21 +34,21 @@ public class LockingTest extends LightblueClientTestHarness {
         assertTrue(lbLocker.release("test-lock"));
     }
 
-    @Test(expected = LightblueResponseException.class)
+    @Test(expected = InvalidLockException.class)
     public void testPingWithError() throws Exception {
         Locking lbLocker = getLightblueClient().getLocking(LOCK_DOMAIN);
 
         lbLocker.ping("test-lock");
     }
 
-    @Test(expected = LightblueResponseException.class)
+    @Test(expected = InvalidLockException.class)
     public void testCountWithError() throws Exception {
         Locking lbLocker = getLightblueClient().getLocking(LOCK_DOMAIN);
 
         lbLocker.getLockCount("test-lock");
     }
 
-    @Test(expected = LightblueResponseException.class)
+    @Test(expected = InvalidLockException.class)
     public void testReleaseWithError() throws Exception {
         Locking lbLocker = getLightblueClient().getLocking(LOCK_DOMAIN);
 
@@ -68,7 +67,7 @@ public class LockingTest extends LightblueClientTestHarness {
             lbLocker.getLockCount("test-lock");
             fail();
         } catch (InvalidLockException e) {
-            assertTrue(e.getMessage().contains("Invalid resourceId: test-lock"));
+            assertEquals("test-lock", e.getResourceId());
         }
     }
 
