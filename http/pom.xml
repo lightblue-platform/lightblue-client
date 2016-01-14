@@ -14,11 +14,6 @@
       <artifactId>lightblue-client-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.redhat.lightblue.client</groupId>
-      <artifactId>lightblue-client-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <version>4.5</version>

@@ -43,12 +43,6 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.redhat.lightblue.client</groupId>
-                <artifactId>lightblue-client-test</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>com.redhat.lightblue.rest</groupId>
                 <artifactId>lightblue-rest-integration-test</artifactId>
                 <version>${lightblue.rest.version}</version>
@@ -154,7 +148,6 @@
     </dependencies>
     <modules>
         <module>core</module>
-        <module>lightblue-client-test</module>
         <module>http</module>
         <module>hystrix</module>
         <module>lightblue-client-integration-test</module>
