@@ -14,14 +14,14 @@ import com.redhat.lightblue.client.http.LightblueHttpClient;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.request.metadata.MetadataGetEntityVersionsRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
-import com.redhat.lightblue.rest.integration.AbstractCRUDControllerWithRest;
+import com.redhat.lightblue.rest.integration.LightblueRestTestHarness;
 
 /**
  * Provides a lightblue-client instance to talk to the running in-memory lightblue instance.
  *
  * @author dcrissman
  */
-public abstract class LightblueClientTestHarness extends AbstractCRUDControllerWithRest {
+public abstract class LightblueClientTestHarness extends LightblueRestTestHarness {
 
     public LightblueClientTestHarness() throws Exception {
         super();
