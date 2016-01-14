@@ -11,9 +11,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.http.LightblueHttpClient;
+import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.request.metadata.MetadataGetEntityVersionsRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
-import com.redhat.lightblue.client.test.request.DataInsertRequestStub;
 import com.redhat.lightblue.rest.integration.LightblueRestTestHarness;
 
 /**
@@ -55,8 +55,13 @@ public abstract class LightblueClientTestHarness extends LightblueRestTestHarnes
     }
 
     public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws LightblueException, IOException {
-        DataInsertRequestStub request = new DataInsertRequestStub(
-                entityName, entityVersion, loadResource(resourcePath));
+        final String data = loadResource(resourcePath);
+        DataInsertRequest request = new DataInsertRequest(entityName, entityVersion) {
+            @Override
+            public String getBody() {
+                return data;
+            }
+        };
         return getLightblueClient().data(request);
     }
 

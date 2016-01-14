@@ -17,11 +17,6 @@
           <artifactId>lightblue-client-http</artifactId>
       </dependency>
       <dependency>
-          <groupId>com.redhat.lightblue.client</groupId>
-          <artifactId>lightblue-client-test</artifactId>
-          <scope>compile</scope>
-      </dependency>
-      <dependency>
           <groupId>com.redhat.lightblue.rest</groupId>
           <artifactId>lightblue-rest-integration-test</artifactId>
           <scope>compile</scope>
