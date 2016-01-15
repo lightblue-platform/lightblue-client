@@ -20,6 +20,8 @@ public abstract class AbstractLightblueResponse implements LightblueResponse, Li
     private final String text;
     private JsonNode json;
     private final ObjectMapper mapper;
+    private DataError[] dataErrorCache;
+    private Error[] errorCache;
 
     public AbstractLightblueResponse(String responseText) throws LightblueParseException, LightblueResponseException, LightblueException {
         this(responseText, JSON.getDefaultObjectMapper());
@@ -94,9 +96,8 @@ public abstract class AbstractLightblueResponse implements LightblueResponse, Li
         }
 
         JsonNode objectTypeNode = getJson().get("status");
-        if (objectTypeNode != null && (objectTypeNode.textValue().equalsIgnoreCase(
-                "error") || objectTypeNode.textValue().equalsIgnoreCase(
-                        "partial"))) {
+        if (objectTypeNode != null && (objectTypeNode.textValue().equalsIgnoreCase("error") 
+                || objectTypeNode.textValue().equalsIgnoreCase("partial"))) {
             return true;
         }
 
@@ -106,40 +107,46 @@ public abstract class AbstractLightblueResponse implements LightblueResponse, Li
 
     @Override
     public DataError[] getDataErrors() {
-        List<DataError> list = new ArrayList<>();
-        if (getJson() == null) {
-            return null;
-        }
-        JsonNode err = getJson().get("dataErrors");
-        if (err instanceof ObjectNode) {
-            list.add(DataError.fromJson((ObjectNode) err));
-        } else if (err instanceof ArrayNode) {
-            for (Iterator<JsonNode> itr = ((ArrayNode) err).elements(); itr.hasNext();) {
-                list.add(DataError.fromJson((ObjectNode) itr.next()));
+        if (dataErrorCache == null) {
+            List<DataError> list = new ArrayList<>();
+            if (getJson() == null) {
+                return null;
             }
-        } else {
-            return null;
+            JsonNode err = getJson().get("dataErrors");
+            if (err instanceof ObjectNode) {
+                list.add(DataError.fromJson((ObjectNode) err));
+            } else if (err instanceof ArrayNode) {
+                for (Iterator<JsonNode> itr = ((ArrayNode) err).elements(); itr.hasNext();) {
+                    list.add(DataError.fromJson((ObjectNode) itr.next()));
+                }
+            } else {
+                return null;
+            }
+            dataErrorCache = list.toArray(new DataError[list.size()]);
         }
-        return list.toArray(new DataError[list.size()]);
+        return dataErrorCache;
     }
 
     @Override
     public Error[] getLightblueErrors() {
-        List<Error> list = new ArrayList<>();
-        if (getJson() == null) {
-            return null;
-        }
-        JsonNode err = getJson().get("errors");
-        if (err instanceof ObjectNode) {
-            list.add(Error.fromJson(err));
-        } else if (err instanceof ArrayNode) {
-            for (Iterator<JsonNode> itr = ((ArrayNode) err).elements(); itr.hasNext();) {
-                list.add(Error.fromJson(itr.next()));
+        if (errorCache == null) {
+            List<Error> list = new ArrayList<>();
+            if (getJson() == null) {
+                return null;
             }
-        } else {
-            return null;
+            JsonNode err = getJson().get("errors");
+            if (err instanceof ObjectNode) {
+                list.add(Error.fromJson(err));
+            } else if (err instanceof ArrayNode) {
+                for (Iterator<JsonNode> itr = ((ArrayNode) err).elements(); itr.hasNext();) {
+                    list.add(Error.fromJson(itr.next()));
+                }
+            } else {
+                return null;
+            }
+            errorCache = list.toArray(new Error[list.size()]);
         }
-        return list.toArray(new Error[list.size()]);
+        return errorCache;
     }
 
 }
