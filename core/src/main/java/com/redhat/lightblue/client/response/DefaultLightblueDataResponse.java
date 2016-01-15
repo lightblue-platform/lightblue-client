@@ -78,7 +78,7 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
     }
 
     protected int parseInt(String fieldName) {
-        JsonNode field = getJson().findValue(fieldName);
+        JsonNode field = getJson().get(fieldName);
         if (field == null || field.isNull()) {
             return 0;
         }
