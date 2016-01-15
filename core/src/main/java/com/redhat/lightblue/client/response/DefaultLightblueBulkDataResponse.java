@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
@@ -27,11 +28,11 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
     private SortedMap<Integer, LightblueDataResponse> responsesErrored;
     private final List<? extends AbstractLightblueDataRequest> requests;
 
-    public DefaultLightblueBulkDataResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueDataRequest> reqs) throws LightblueParseException, LightblueBulkResponseException {
+    public DefaultLightblueBulkDataResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueDataRequest> reqs) throws LightblueParseException, LightblueBulkResponseException, LightblueException {
         this(responseText, JSON.getDefaultObjectMapper(), reqs);
     }
 
-    public DefaultLightblueBulkDataResponse(String responseText, ObjectMapper mapper, AbstractDataBulkRequest<? extends AbstractLightblueDataRequest> reqs) throws LightblueParseException, LightblueBulkResponseException {
+    public DefaultLightblueBulkDataResponse(String responseText, ObjectMapper mapper, AbstractDataBulkRequest<? extends AbstractLightblueDataRequest> reqs) throws LightblueParseException, LightblueBulkResponseException, LightblueException {
         super(responseText, mapper);
         requests = reqs.getRequests();
 

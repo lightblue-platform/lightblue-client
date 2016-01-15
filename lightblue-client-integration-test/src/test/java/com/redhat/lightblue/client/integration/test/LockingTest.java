@@ -2,6 +2,7 @@ package com.redhat.lightblue.client.integration.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.Locking.Lock;
+import com.redhat.lightblue.client.response.lock.InvalidLockException;
 
 public class LockingTest extends LightblueClientTestHarness {
 
@@ -32,13 +34,41 @@ public class LockingTest extends LightblueClientTestHarness {
         assertTrue(lbLocker.release("test-lock"));
     }
 
+    @Test(expected = InvalidLockException.class)
+    public void testPingWithError() throws Exception {
+        Locking lbLocker = getLightblueClient().getLocking(LOCK_DOMAIN);
+
+        lbLocker.ping("test-lock");
+    }
+
+    @Test(expected = InvalidLockException.class)
+    public void testCountWithError() throws Exception {
+        Locking lbLocker = getLightblueClient().getLocking(LOCK_DOMAIN);
+
+        lbLocker.getLockCount("test-lock");
+    }
+
+    @Test(expected = InvalidLockException.class)
+    public void testReleaseWithError() throws Exception {
+        Locking lbLocker = getLightblueClient().getLocking(LOCK_DOMAIN);
+
+        lbLocker.release("test-lock");
+    }
+
     @Test
     public void testLock() throws LightblueException, IOException {
         Locking lbLocker = getLightblueClient().getLocking(LOCK_DOMAIN);
         try (Lock lock = lbLocker.lock("test-lock")) {
             assertEquals(1, lock.getLockCount());
         }
-        assertEquals(0, lbLocker.getLockCount("test-lock"));
+
+        //assert the lock was successfully released.
+        try {
+            lbLocker.getLockCount("test-lock");
+            fail();
+        } catch (InvalidLockException e) {
+            assertEquals("test-lock", e.getResourceId());
+        }
     }
 
 }
