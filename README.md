@@ -68,3 +68,19 @@ Now, the `client.data` call can be made in order to call Lightblue, retrieve the
 
         findRequest.select(Projection.includeFieldRecursively("*"));
 
+## Other Common Operations
+In addition to the quickstart above, below are several common operations that java developers will find useful.
+
+### Getting the Raw Lightblue Response
+Often times, it is useful to parse the status and other information provided by the Lightblue response, in addition to
+the entities.  This can be done using the following sample code:
+
+        LightblueDataResponse response = client.data(findRequest);
+
+Once a response object has been returned, the operation metadata can be interpreted:
+
+        System.out.println("Query match count: " + response.parseMatchCount());
+
+To map and inspect returned entities, simply parse the 'processed' JSON nodes:
+
+        Foo foo = response.parseProcessed(Foo.class);
