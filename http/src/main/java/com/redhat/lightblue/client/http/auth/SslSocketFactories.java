@@ -47,11 +47,12 @@ public class SslSocketFactories {
             throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
             KeyStoreException, KeyManagementException, IOException {
         if (config.useCertAuth()) {
-            InputStream caCert = loadFile(config.getCaFilePath());
-            InputStream authCert = loadFile(config.getCertFilePath());
+            try (InputStream caCert = loadFile(config.getCaFilePath());
+                    InputStream authCert = loadFile(config.getCertFilePath())) {
 
-            return defaultCertAuthSocketFactory(caCert, authCert,
-                    config.getCertPassword().toCharArray(), config.getCertAlias());
+                return defaultCertAuthSocketFactory(caCert, authCert,
+                        config.getCertPassword().toCharArray(), config.getCertAlias());
+            }
         }
 
         return defaultNoAuthSocketFactory();
@@ -95,11 +96,12 @@ public class SslSocketFactories {
     public static SSLSocketFactory javaNetSslSocketFactory(LightblueClientConfiguration config)
             throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException,
             UnrecoverableKeyException, KeyManagementException {
-        InputStream caCert = loadFile(config.getCaFilePath());
-        InputStream authCert = loadFile(config.getCertFilePath());
+        try (InputStream caCert = loadFile(config.getCaFilePath());
+                InputStream authCert = loadFile(config.getCertFilePath())) {
 
-        return javaNetSslSocketFactory(caCert, authCert, config.getCertPassword().toCharArray(),
-                config.getCertAlias());
+            return javaNetSslSocketFactory(caCert, authCert, config.getCertPassword().toCharArray(),
+                    config.getCertAlias());
+        }
     }
 
     public static SSLSocketFactory javaNetSslSocketFactory(InputStream certAuthorityFile,
