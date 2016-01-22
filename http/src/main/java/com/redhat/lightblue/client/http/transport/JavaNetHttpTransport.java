@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.ning.compress.lzf.LZFInputStream;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
+import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.http.LightblueHttpClientException;
 import com.redhat.lightblue.client.http.auth.SslSocketFactories;
 import com.redhat.lightblue.client.request.LightblueRequest;
@@ -110,7 +111,7 @@ public class JavaNetHttpTransport implements HttpTransport {
                 }
             }
 
-            connection.setRequestMethod(request.getHttpMethod().toString());
+            connection.setRequestMethod((request.getHttpMethod() != null ? request.getHttpMethod().toString() : HttpMethod.GET.name()));
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Accept-Charset", "utf-8");
 

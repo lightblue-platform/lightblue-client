@@ -27,9 +27,11 @@ public class DataBulkRequest extends AbstractDataBulkRequest<AbstractLightblueDa
             seqNode.set("seq", JsonNodeFactory.instance.numberNode(reqs.size()));
             seqNode.set("op", JsonNodeFactory.instance.textNode(req.getOperation().name().toLowerCase()));
             ObjectNode request = (ObjectNode) req.getBodyJson();
-            request.set("entity", JsonNodeFactory.instance.textNode(req.getEntityName()));
-            request.set("entityVersion", JsonNodeFactory.instance.textNode(req.getEntityVersion()));
-            seqNode.set("request", request);
+            if (request != null) {
+                request.set("entity", JsonNodeFactory.instance.textNode(req.getEntityName()));
+                request.set("entityVersion", JsonNodeFactory.instance.textNode(req.getEntityVersion()));
+                seqNode.set("request", request);
+            }
             reqs.add(seqNode);
         }
         root.set("requests", reqs);

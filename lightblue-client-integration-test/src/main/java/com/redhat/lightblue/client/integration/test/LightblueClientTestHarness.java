@@ -15,6 +15,8 @@ import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.request.metadata.MetadataGetEntityVersionsRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.rest.integration.LightblueRestTestHarness;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Provides a lightblue-client instance to talk to the running in-memory lightblue instance.
@@ -62,7 +64,9 @@ public abstract class LightblueClientTestHarness extends LightblueRestTestHarnes
                 return data;
             }
         };
-        return getLightblueClient().data(request);
+        try (LightblueHttpClient client = getLightblueClient()) {
+            return client.data(request);
+        }
     }
 
     /**
@@ -74,16 +78,20 @@ public abstract class LightblueClientTestHarness extends LightblueRestTestHarnes
     public Set<String> getEntityVersions(String entityName) throws LightblueException {
         MetadataGetEntityVersionsRequest versionRequest = new MetadataGetEntityVersionsRequest(entityName);
 
-        LightblueResponse response = getLightblueClient().metadata(versionRequest);
-        ArrayNode versionNodes = (ArrayNode) response.getJson();
+        try (LightblueHttpClient client = getLightblueClient()) {
+            LightblueResponse response = client.metadata(versionRequest);
+            ArrayNode versionNodes = (ArrayNode) response.getJson();
 
-        Set<String> versions = new HashSet<>();
+            Set<String> versions = new HashSet<>();
 
-        for (JsonNode node : versionNodes) {
-            versions.add(node.get("version").textValue());
-        }
+            for (JsonNode node : versionNodes) {
+                versions.add(node.get("version").textValue());
+            }
 
-        return versions;
+            return versions;
+        } catch (IOException ex) {
+            throw new LightblueException("Unable to close HttpClient", ex);
+        } 
     }
 
 }

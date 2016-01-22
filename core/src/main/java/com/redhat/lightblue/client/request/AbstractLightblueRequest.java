@@ -59,6 +59,6 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
 
     @Override
     public String toString() {
-        return getHttpMethod().toString()+" "+getRestURI("/")+", body: "+getBody();
+        return getHttpMethod()+" "+getRestURI("/")+", body: "+getBody();
     }
 }
