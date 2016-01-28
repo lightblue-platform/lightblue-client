@@ -2,6 +2,9 @@ package com.redhat.lightblue.client.http;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Objects;
@@ -44,7 +47,15 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 
         public LockingRequest(String domain, String callerId, String resourceId, Long ttl, boolean ping, HttpMethod method) {
             StringBuilder b = new StringBuilder(128);
-            b.append("lock/").append(domain).append('/').append(callerId).append('/').append(resourceId);
+            try {
+                b.append("lock/")
+                    .append(URLEncoder.encode(domain, StandardCharsets.UTF_8.name())).append('/')
+                    .append(URLEncoder.encode(callerId, StandardCharsets.UTF_8.name())).append('/')
+                    .append(URLEncoder.encode(resourceId, StandardCharsets.UTF_8.name()));
+            } catch (UnsupportedEncodingException e) {
+                //Shouldn't happen.
+                throw new RuntimeException("A bad Charset was used.", e);
+            }
             if (ttl != null) {
                 b.append("?ttl=").append(ttl.toString());
             } else if (ping) {
