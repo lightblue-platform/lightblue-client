@@ -56,7 +56,9 @@ public class ExpressionTest {
     @Test
     public void updateTest() throws Exception {
         eq("{'$set':{'x':1}}",Update.set("x",1));
+        eq("{'$set':{'x':10000000000}}",Update.set("x",10000000000L));
         eq("{'$set':{'x':'a','y':1}}",Update.set("x","a").more("y",1));
+        eq("{'$set':{'x':'a','y':10000000000}}",Update.set("x","a").more("y",10000000000L));
         eq("{'$unset':['a','b']}",Update.unset("a").more("b"));
         eq("{'$add':{'x':1}}",Update.addValue("x",Literal.value(1)));
         eq("{'$append': {'x':[ [],'x'] }}",Update.append("x",Literal.emptyArray()).more(Literal.value("x")));

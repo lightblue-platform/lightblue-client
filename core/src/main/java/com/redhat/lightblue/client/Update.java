@@ -83,11 +83,15 @@ public class Update extends Expression implements ForEachUpdate {
             return more(field,Literal.value(i));
         }
 
-        public  Set more(String field,String i) {
+        public Set more(String field,long i) {
             return more(field,Literal.value(i));
         }
 
-        public  Set more(String field,boolean i) {
+        public Set more(String field,String i) {
+            return more(field,Literal.value(i));
+        }
+
+        public Set more(String field,boolean i) {
             return more(field,Literal.value(i));
         }
 
@@ -242,6 +246,10 @@ public class Update extends Expression implements ForEachUpdate {
     }
 
     public static Set set(String field,int i) {
+        return new Set().more(field,Literal.value(i));
+    }
+
+    public static Set set(String field,long i) {
         return new Set().more(field,Literal.value(i));
     }
 
