@@ -67,7 +67,11 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
                 if (processedNode.size() > 1) {
                     throw new LightblueParseException("Was expecting single result:" + getText() + "\n");
                 } else {
-                    return getMapper().readValue(processedNode.get(0).traverse(), type);
+                    JsonNode resultNode = processedNode.get(0);
+                    if (resultNode != null) {
+                        return getMapper().readValue(resultNode.traverse(), type);
+                    }
+                    return null;
                 }
             } else {
                 return getMapper().readValue(processedNode.traverse(), type);
