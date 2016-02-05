@@ -163,7 +163,7 @@
     <rpm.install.basedir>/usr/share/jbossas/standalone/deployments</rpm.install.basedir>
 
     <lightblue.core.version>1.11.0-SNAPSHOT</lightblue.core.version>
-    <lightblue.rest.version>1.11.0-SNAPSHOT</lightblue.rest.version>
+    <lightblue.rest.version>2.0.0-SNAPSHOT</lightblue.rest.version>
 </properties>
 
 <build>
