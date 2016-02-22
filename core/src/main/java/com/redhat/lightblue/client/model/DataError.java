@@ -1,12 +1,12 @@
 package com.redhat.lightblue.client.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Represents errors related to data in a document
@@ -93,4 +93,10 @@ public class DataError {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "DataError [entityData=" + entityData + ", errors=" + errors + "]";
+    }
+
 }
