@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * Error object. Maintains an error code, message, and context of the error. The
  * context works as a stack of context information that can be passed to the
  * client as an indicator of where the error happened.
- * 
+ *
  */
 public final class Error extends RuntimeException {
 
@@ -57,5 +57,10 @@ public final class Error extends RuntimeException {
             return new Error(c, e, m);
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Error [context=" + context + ", errorCode=" + errorCode + ", msg=" + msg + "]";
     }
 }
