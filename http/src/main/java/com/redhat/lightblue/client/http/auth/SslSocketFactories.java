@@ -47,6 +47,7 @@ public class SslSocketFactories {
             throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
             KeyStoreException, KeyManagementException, IOException {
         if (config.useCertAuth()) {
+            validateLightblueClientConfigForCertAuth(config);
             try (InputStream caCert = loadFile(config.getCaFilePath());
                     InputStream authCert = loadFile(config.getCertFilePath())) {
 
@@ -96,6 +97,7 @@ public class SslSocketFactories {
     public static SSLSocketFactory javaNetSslSocketFactory(LightblueClientConfiguration config)
             throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException,
             UnrecoverableKeyException, KeyManagementException {
+        validateLightblueClientConfigForCertAuth(config);
         try (InputStream caCert = loadFile(config.getCaFilePath());
                 InputStream authCert = loadFile(config.getCertFilePath())) {
 
@@ -108,7 +110,7 @@ public class SslSocketFactories {
             InputStream authCert, char[] authCertPassword,
             String authCertAlias) throws CertificateException, NoSuchAlgorithmException,
             KeyStoreException, IOException, UnrecoverableKeyException, KeyManagementException {
-        
+
         Objects.requireNonNull(certAuthorityFile, "Could not load the CA cert file.  Please verify that " +
                 "the certificate file is on the classpath or defined on the file system using the 'file://'" +
                 "prefix.");
@@ -177,5 +179,17 @@ public class SslSocketFactories {
         ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
         return ctx;
+    }
+
+    private static void validateLightblueClientConfigForCertAuth(LightblueClientConfiguration config) {
+        if (config.getCaFilePath() == null) {
+            throw new IllegalArgumentException("Must provide a caFilePath.");
+        }
+        if (config.getCertFilePath() == null) {
+            throw new IllegalArgumentException("Must provide a certFilePath.");
+        }
+        if (config.getCertPassword() == null) {
+            throw new IllegalArgumentException("Must provide a certPassword.");
+        }
     }
 }
