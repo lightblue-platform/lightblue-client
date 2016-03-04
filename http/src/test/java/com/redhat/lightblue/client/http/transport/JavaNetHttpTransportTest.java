@@ -32,6 +32,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.redhat.lightblue.client.http.HttpMethod;
+import com.redhat.lightblue.client.http.LightblueHttpClient;
 import com.redhat.lightblue.client.http.LightblueHttpClientException;
 import com.redhat.lightblue.client.http.testing.doubles.FakeLightblueRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
@@ -273,6 +274,20 @@ public class JavaNetHttpTransportTest {
         inOrder.verify(mockConnection).connect();
     }
 
+    @Test(timeout = 500)
+    public void shouldUseBasicAuthIfCredentialsAreProvided() throws Exception {
+        JavaNetHttpTransport client = new JavaNetHttpTransport(mockConnectionFactory, null, null,
+                "Aladdin", "OpenSesame");
+
+        LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/foo/bar");
+
+        client.executeRequest(request, "");
+
+        InOrder inOrder = inOrder(mockConnection);
+        inOrder.verify(mockConnection).setRequestProperty("Authorization", "Basic QWxhZGRpbjpPcGVuU2VzYW1l");
+        inOrder.verify(mockConnection).connect();
+    }
+
     static class CallConnectAndReturn<T> implements Answer<T> {
         private final T returnValue;
 
@@ -285,19 +300,6 @@ public class JavaNetHttpTransportTest {
             ((HttpURLConnection) invocation.getMock()).connect();
 
             return returnValue;
-        }
-    }
-
-    static class FakeConnectionFactory implements JavaNetHttpTransport.ConnectionFactory {
-        private final HttpURLConnection connection;
-
-        FakeConnectionFactory(HttpURLConnection connection) {
-            this.connection = connection;
-        }
-
-        @Override
-        public HttpURLConnection openConnection(String uri) throws IOException {
-            return connection;
         }
     }
 }
