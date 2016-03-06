@@ -32,7 +32,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.http.LightblueHttpClient;
 import com.redhat.lightblue.client.http.LightblueHttpClientException;
 import com.redhat.lightblue.client.http.testing.doubles.FakeLightblueRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
