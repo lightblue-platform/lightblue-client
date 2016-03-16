@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.http.annotation.Obsolete;
 import org.junit.runners.model.TestClass;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,7 +15,10 @@ import com.redhat.lightblue.client.response.LightblueResponse;
 
 public class LightblueExternalResource extends BeforeAfterTestRule {
 
-    public interface LightblueTestMethods {
+    @Obsolete
+    public interface LightblueTestMethods extends LightblueTestHarnessConfig {}
+
+    public interface LightblueTestHarnessConfig {
         JsonNode[] getMetadataJsonNodes() throws Exception;
     }
 
