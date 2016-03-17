@@ -147,7 +147,6 @@
     <sonar.projectName>lightblue-client</sonar.projectName>
     <rpm.install.basedir>/usr/share/jbossas/standalone/deployments</rpm.install.basedir>
 
-    <lightblue.core.version>1.12.0-SNAPSHOT</lightblue.core.version>
     <lightblue.rest.version>2.1.0-SNAPSHOT</lightblue.rest.version>
 </properties>
 
