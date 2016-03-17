@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
+import com.redhat.lightblue.client.Range;
 import com.redhat.lightblue.client.Update;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
@@ -17,6 +18,7 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
     private Projection projection;
     private Update update;
     private Query query;
+    private Range range;
 
     public DataUpdateRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -50,6 +52,14 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         where(query);
     }
 
+    public void range(Integer begin, Integer end) {
+        range(new Range(begin, end));
+    }
+
+    public void range(Range range) {
+        this.range = range;
+    }
+
     @Override
     public JsonNode getBodyJson() {
         ObjectNode node = JsonNodeFactory.instance.objectNode();
@@ -61,6 +71,9 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         }
         if (update != null) {
             node.set("update", update.toJson());
+        }
+        if (range != null) {
+            range.appendToJson(node);
         }
         return node;
     }

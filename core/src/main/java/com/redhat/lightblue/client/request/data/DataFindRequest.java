@@ -4,12 +4,12 @@ package com.redhat.lightblue.client.request.data;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
+import com.redhat.lightblue.client.Range;
 import com.redhat.lightblue.client.Sort;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
@@ -19,8 +19,7 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     private Query queryExpression;
     private Projection projection;
     private Sort sort;
-    private Integer begin;
-    private Integer end;
+    private Range range;
 
     public DataFindRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -51,8 +50,11 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     }
 
     public void range(Integer begin, Integer end) {
-        this.begin = begin;
-        this.end = end;
+        range(new Range(begin, end));
+    }
+
+    public void range(Range range) {
+        this.range = range;
     }
 
     @Override
@@ -67,15 +69,8 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         if (sort != null) {
             node.set("sort", sort.toJson());
         }
-        if (begin != null) {
-            ArrayNode arr = JsonNodeFactory.instance.arrayNode();
-            arr.add(JsonNodeFactory.instance.numberNode(begin));
-            if(end!=null) {
-                arr.add(JsonNodeFactory.instance.numberNode(end));
-            } else {
-                arr.add(JsonNodeFactory.instance.nullNode());
-            }
-            node.set("range", arr);
+        if (range != null) {
+            range.appendToJson(node);
         }
         return node;
     }
