@@ -15,8 +15,11 @@
         </dependency>
         <dependency>
             <groupId>com.redhat.lightblue</groupId>
-            <artifactId>lightblue-graphite-publisher</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <artifactId>lightblue-core-hystrix</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-core</artifactId>
         </dependency>
     </dependencies>
 </project>
