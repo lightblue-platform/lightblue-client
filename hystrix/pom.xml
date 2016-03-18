@@ -8,18 +8,46 @@
     </parent>
     <artifactId>lightblue-client-hystrix</artifactId>
     <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
+    
+    <properties>
+        <hystrix.version>1.4.7</hystrix.version>
+        <netflix.servo.version>0.8.0</netflix.servo.version>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>com.redhat.lightblue.client</groupId>
             <artifactId>lightblue-client-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.redhat.lightblue</groupId>
-            <artifactId>lightblue-core-hystrix</artifactId>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-servo-metrics-publisher</artifactId>
+            <version>${hystrix.version}</version>
         </dependency>
         <dependency>
             <groupId>com.netflix.hystrix</groupId>
-            <artifactId>hystrix-core</artifactId>
+            <artifactId>hystrix-servo-metrics-publisher</artifactId>
+            <version>${hystrix.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-metrics-event-stream</artifactId>
+            <version>${hystrix.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.servo</groupId>
+            <artifactId>servo-graphite</artifactId>
+            <version>${netflix.servo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.timgroup</groupId>
+            <artifactId>java-statsd-client</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.servo</groupId>
+            <artifactId>servo-core</artifactId>
+            <version>${netflix.servo.version}</version>
         </dependency>
     </dependencies>
 </project>
