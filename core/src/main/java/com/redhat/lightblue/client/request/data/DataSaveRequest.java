@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
-import com.redhat.lightblue.client.Range;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.util.JSON;
@@ -19,7 +18,8 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
     private Projection projection;
     private Object[] objects;
     private Boolean upsert;
-    private Range range;
+    private Integer begin;
+    private Integer end;
 
     public DataSaveRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -30,11 +30,23 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
     }
 
     public void returns(List<? extends Projection> projection) {
+        returns(projection, null, null);
+    }
+
+    public void returns(List<? extends Projection> projection, Integer begin, Integer end) {
         this.projection = Projection.project(projection);
+        this.begin = begin;
+        this.end = end;
     }
 
     public void returns(Projection... projection) {
+        returns(projection, null, null);
+    }
+
+    public void returns(Projection[] projection, Integer begin, Integer end) {
         this.projection = Projection.project(projection);
+        this.begin = begin;
+        this.end = end;
     }
 
     public void create(Collection<?> objects) {
@@ -51,14 +63,6 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
 
     public void setUpsert(Boolean upsert) {
         this.upsert = upsert;
-    }
-
-    public void range(Integer begin, Integer end) {
-        range(new Range(begin, end));
-    }
-
-    public void range(Range range) {
-        this.range = range;
     }
 
     @Override
@@ -84,9 +88,7 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
         if (upsert != null) {
             node.set("upsert", JsonNodeFactory.instance.booleanNode(upsert));
         }
-        if (range != null) {
-            range.appendToJson(node);
-        }
+        appendRangeToJson(node, begin, end);
         return node;
     }
 

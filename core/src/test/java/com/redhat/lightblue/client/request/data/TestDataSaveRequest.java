@@ -108,10 +108,9 @@ public class TestDataSaveRequest extends AbstractLightblueRequestTest {
 
     @Test
     public void testRequestWithRange() throws JSONException {
-        request.returns(testProjection1);
+        request.returns(new Projection[]{testProjection1}, 0, 20);
         TestObj obj = new TestObj();
         request.create(obj);
-        request.range(0, 20);
 
         String expected = "{\"data\":" + obj.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"range\": [0,20]" + "}";
         JSONAssert.assertEquals(expected, request.getBody(), true);
@@ -119,10 +118,9 @@ public class TestDataSaveRequest extends AbstractLightblueRequestTest {
 
     @Test
     public void testRequestWithRangeNullTo() throws JSONException {
-        request.returns(testProjection1);
+        request.returns(new Projection[]{testProjection1}, 0, null);
         TestObj obj = new TestObj();
         request.create(obj);
-        request.range(0, null);
 
         String expected = "{\"data\":" + obj.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"range\": [0,null]" + "}";
         JSONAssert.assertEquals(expected, request.getBody(), true);

@@ -2,6 +2,9 @@ package com.redhat.lightblue.client.request;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 
 public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequest implements LightblueRequest {
@@ -32,6 +35,19 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
             appendToURI(requestURI, getEntityVersion());
         }
         return requestURI.toString();
+    }
+
+    protected void appendRangeToJson(ObjectNode node, Integer begin, Integer end) {
+        if (begin != null) {
+            ArrayNode arr = JsonNodeFactory.instance.arrayNode();
+            arr.add(JsonNodeFactory.instance.numberNode(begin));
+            if (end != null) {
+                arr.add(JsonNodeFactory.instance.numberNode(end));
+            } else {
+                arr.add(JsonNodeFactory.instance.nullNode());
+            }
+            node.set("range", arr);
+        }
     }
 
     @Override

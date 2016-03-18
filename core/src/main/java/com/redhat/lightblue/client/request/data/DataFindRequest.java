@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
-import com.redhat.lightblue.client.Range;
 import com.redhat.lightblue.client.Sort;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
@@ -19,7 +18,8 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     private Query queryExpression;
     private Projection projection;
     private Sort sort;
-    private Range range;
+    private Integer begin;
+    private Integer end;
 
     public DataFindRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -34,11 +34,23 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     }
 
     public void select(List<? extends Projection> projections) {
+        select(projections, null, null);
+    }
+
+    public void select(List<? extends Projection> projections, Integer begin, Integer end) {
         projection = Projection.project(projections);
+        this.begin = begin;
+        this.end = end;
     }
 
     public void select(Projection... projection) {
+        select(projection, null, null);
+    }
+
+    public void select(Projection[] projection, Integer begin, Integer end) {
         this.projection = Projection.project(projection);
+        this.begin = begin;
+        this.end = end;
     }
 
     public void sort(List<? extends Sort> sort) {
@@ -49,12 +61,13 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         this.sort = Sort.sort(sort);
     }
 
+    /**
+     * Use {@link #select(List, Integer, Integer)} or {@link #select(Projection[], Integer, Integer)}.
+     */
+    @Deprecated
     public void range(Integer begin, Integer end) {
-        range(new Range(begin, end));
-    }
-
-    public void range(Range range) {
-        this.range = range;
+        this.begin = begin;
+        this.end = end;
     }
 
     @Override
@@ -69,9 +82,7 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         if (sort != null) {
             node.set("sort", sort.toJson());
         }
-        if (range != null) {
-            range.appendToJson(node);
-        }
+        appendRangeToJson(node, begin, end);
         return node;
     }
 
