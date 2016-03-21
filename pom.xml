@@ -48,21 +48,6 @@
                 <version>${lightblue.rest.version}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>com.redhat.lightblue</groupId>
-                <artifactId>lightblue-core-hystrix</artifactId>
-                <version>${lightblue.core.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.hystrix</groupId>
-                <artifactId>hystrix-core</artifactId>
-                <version>1.4.7</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.hystrix</groupId>
-                <artifactId>hystrix-servo-metrics-publisher</artifactId>
-                <version>1.4.7</version>
-            </dependency>
             <!-- The io.reactivex dependency is necessary to be available on the compile time due an issue found (on java/maven) -->
             <dependency>
                 <groupId>io.reactivex</groupId>
@@ -150,7 +135,6 @@
         <module>core</module>
         <module>http</module>
         <module>hystrix</module>
-        <module>lightblue-client-integration-test</module>
         <!--module>jmeter-tests</module--><!-- Breaks release -->
 </modules>
 <properties>
@@ -162,7 +146,6 @@
     <sonar.projectName>lightblue-client</sonar.projectName>
     <rpm.install.basedir>/usr/share/jbossas/standalone/deployments</rpm.install.basedir>
 
-    <lightblue.core.version>1.12.0-SNAPSHOT</lightblue.core.version>
     <lightblue.rest.version>2.1.0-SNAPSHOT</lightblue.rest.version>
 </properties>
 
@@ -286,6 +269,9 @@
             <activation>
                 <jdk>[1.8,)</jdk>
             </activation>
+            <modules>
+                <module>lightblue-client-integration-test</module>
+            </modules>
             <build>
                 <plugins>
                     <plugin>
