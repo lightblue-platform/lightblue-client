@@ -21,6 +21,7 @@
                 ]
             }
         ],
+        "defaultVersion": "0.1.0-SNAPSHOT",
         "datastore": {
             "backend": "mongo",
             "datasource": "${mongo.datasource}",
