@@ -34,7 +34,8 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     }
 
     public void select(List<? extends Projection> projections) {
-        select(projections, null, null);
+        //deprecated range method might have already been called.
+        select(projections, begin, end);
     }
 
     public void select(List<? extends Projection> projections, Integer begin, Integer end) {
@@ -44,7 +45,8 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     }
 
     public void select(Projection... projection) {
-        select(projection, null, null);
+        //deprecated range method might have already been called.
+        select(projection, begin, end);
     }
 
     public void select(Projection[] projection, Integer begin, Integer end) {
