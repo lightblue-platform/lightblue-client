@@ -19,7 +19,7 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
     private Object[] objects;
     private Boolean upsert;
     private Integer begin;
-    private Integer end;
+    private Integer maxResults;
 
     public DataSaveRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -33,20 +33,20 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
         returns(projection, null, null);
     }
 
-    public void returns(List<? extends Projection> projection, Integer begin, Integer end) {
+    public void returns(List<? extends Projection> projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
         this.begin = begin;
-        this.end = end;
+        this.maxResults = maxResults;
     }
 
     public void returns(Projection... projection) {
         returns(projection, null, null);
     }
 
-    public void returns(Projection[] projection, Integer begin, Integer end) {
+    public void returns(Projection[] projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
         this.begin = begin;
-        this.end = end;
+        this.maxResults = maxResults;
     }
 
     public void create(Collection<?> objects) {
@@ -88,7 +88,7 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
         if (upsert != null) {
             node.set("upsert", JsonNodeFactory.instance.booleanNode(upsert));
         }
-        appendRangeToJson(node, begin, end);
+        appendRangeToJson(node, begin, maxResults);
         return node;
     }
 

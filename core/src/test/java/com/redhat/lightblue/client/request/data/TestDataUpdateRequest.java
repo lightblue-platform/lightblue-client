@@ -44,7 +44,7 @@ public class TestDataUpdateRequest extends AbstractLightblueRequestTest {
         Update update = Update.set("field1", "field1Test");
         request.updates(update);
 
-        String expected = "{\"update\":" + update.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"from\": 0, \"to\" : 20" + "}";
+        String expected = "{\"update\":" + update.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"from\": 0, \"maxResults\" : 20" + "}";
         JSONAssert.assertEquals(expected, request.getBody(), true);
     }
 

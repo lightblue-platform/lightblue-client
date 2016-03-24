@@ -100,7 +100,7 @@ public class TestDataInsertRequest extends AbstractLightblueRequestTest {
         TestObj obj = new TestObj();
         request.create(obj);
 
-        String expected = "{\"data\":" + obj.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"from\": 0, \"to\" : 20" + "}";
+        String expected = "{\"data\":" + obj.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"from\": 0, \"maxResults\" : 20" + "}";
         JSONAssert.assertEquals(expected, request.getBody(), true);
     }
 

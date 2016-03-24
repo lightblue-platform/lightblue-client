@@ -19,7 +19,7 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     private Projection projection;
     private Sort sort;
     private Integer begin;
-    private Integer end;
+    private Integer maxResults;
 
     public DataFindRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -35,24 +35,24 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
 
     public void select(List<? extends Projection> projections) {
         //deprecated range method might have already been called.
-        select(projections, begin, end);
+        select(projections, begin, maxResults);
     }
 
-    public void select(List<? extends Projection> projections, Integer begin, Integer end) {
+    public void select(List<? extends Projection> projections, Integer begin, Integer maxResults) {
         projection = Projection.project(projections);
         this.begin = begin;
-        this.end = end;
+        this.maxResults = maxResults;
     }
 
     public void select(Projection... projection) {
         //deprecated range method might have already been called.
-        select(projection, begin, end);
+        select(projection, begin, maxResults);
     }
 
-    public void select(Projection[] projection, Integer begin, Integer end) {
+    public void select(Projection[] projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
         this.begin = begin;
-        this.end = end;
+        this.maxResults = maxResults;
     }
 
     public void sort(List<? extends Sort> sort) {
@@ -69,7 +69,10 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     @Deprecated
     public void range(Integer begin, Integer end) {
         this.begin = begin;
-        this.end = end;
+        if (end != null) {
+            //'maxResults' should be 1 greater than a 'to' value.
+            maxResults = end + 1;
+        }
     }
 
     @Override
@@ -84,7 +87,7 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         if (sort != null) {
             node.set("sort", sort.toJson());
         }
-        appendRangeToJson(node, begin, end);
+        appendRangeToJson(node, begin, maxResults);
         return node;
     }
 

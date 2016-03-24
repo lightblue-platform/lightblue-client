@@ -36,11 +36,11 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
         return requestURI.toString();
     }
 
-    protected void appendRangeToJson(ObjectNode node, Integer begin, Integer end) {
+    protected void appendRangeToJson(ObjectNode node, Integer begin, Integer maxResults) {
         if (begin != null) {
             node.set("from", JsonNodeFactory.instance.numberNode(begin));
-            if (end != null) {
-                node.set("to", JsonNodeFactory.instance.numberNode(end));
+            if (maxResults != null) {
+                node.set("maxResults", JsonNodeFactory.instance.numberNode(maxResults));
             }
         }
     }

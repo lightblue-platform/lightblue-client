@@ -18,7 +18,7 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
     private Update update;
     private Query query;
     private Integer begin;
-    private Integer end;
+    private Integer maxResults;
 
     public DataUpdateRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -32,20 +32,20 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         returns(projection, null, null);
     }
 
-    public void returns(List<? extends Projection> projection, Integer begin, Integer end) {
+    public void returns(List<? extends Projection> projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
         this.begin = begin;
-        this.end = end;
+        this.maxResults = maxResults;
     }
 
     public void returns(Projection... projection) {
         returns(projection, null, null);
     }
 
-    public void returns(Projection[] projection, Integer begin, Integer end) {
+    public void returns(Projection[] projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
         this.begin = begin;
-        this.end = end;
+        this.maxResults = maxResults;
     }
 
     public void where(Query queryExpression) {
@@ -76,7 +76,7 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         if (update != null) {
             node.set("update", update.toJson());
         }
-        appendRangeToJson(node, begin, end);
+        appendRangeToJson(node, begin, maxResults);
         return node;
     }
 
