@@ -61,7 +61,7 @@ public class TestDataSaveRequest extends LightblueClientTestHarness {
 
         DataSaveRequest request = new DataSaveRequest("country");
         request.create(c1, c2);
-        request.returns(new Projection[]{Projection.includeFieldRecursively("*")}, 0, 0);
+        request.returns(new Projection[]{Projection.includeFieldRecursively("*")}, 0, 1);
         request.setUpsert(true);
         Country[] savedCountries = getLightblueClient().data(request,Country[].class);
 

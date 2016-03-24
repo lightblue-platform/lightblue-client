@@ -39,7 +39,7 @@ public class TestDataInsertRequest extends LightblueClientTestHarness {
 
         DataInsertRequest request = new DataInsertRequest("country");
         request.create(c1, c2);
-        request.returns(new Projection[]{Projection.includeFieldRecursively("*")}, 0, 0);
+        request.returns(new Projection[]{Projection.includeFieldRecursively("*")}, 0, 1);
         Country[] insertedCountries = getLightblueClient().data(request, Country[].class);
 
         assertNotNull(insertedCountries);
