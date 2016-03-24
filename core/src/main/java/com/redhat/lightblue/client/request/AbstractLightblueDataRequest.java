@@ -40,7 +40,7 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
         if (begin != null) {
             node.set("from", JsonNodeFactory.instance.numberNode(begin));
             if (end != null) {
-                node.set("maxResults", JsonNodeFactory.instance.numberNode(end));
+                node.set("to", JsonNodeFactory.instance.numberNode(end));
             }
         }
     }

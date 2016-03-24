@@ -133,7 +133,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest {
         request.sort(sortCondition1);
         request.range(0, 20);
 
-        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + ",\"range\": [0,20]" + "}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + ",\"from\": 0, \"to\" : 20" + "}";
         JSONAssert.assertEquals(expected, request.getBody(), true);
     }
 
@@ -144,7 +144,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest {
         request.sort(sortCondition1);
         request.range(0, null);
 
-        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + ",\"range\": [0,null]" + "}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + ",\"from\": 0" + "}";
         JSONAssert.assertEquals(expected, request.getBody(), true);
     }
 
