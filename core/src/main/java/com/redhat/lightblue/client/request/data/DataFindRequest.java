@@ -30,29 +30,41 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-    public void where(Query queryExpression) {
+    public DataFindRequest where(Query queryExpression) {
         this.queryExpression = queryExpression;
+
+        return this;
     }
 
-    public void select(List<? extends Projection> projections) {
+    public DataFindRequest select(List<? extends Projection> projections) {
         projection = Projection.project(projections);
+
+        return this;
     }
 
-    public void select(Projection... projection) {
+    public DataFindRequest select(Projection... projection) {
         this.projection = Projection.project(projection);
+
+        return this;
     }
 
-    public void sort(List<? extends Sort> sort) {
+    public DataFindRequest sort(List<? extends Sort> sort) {
         this.sort = Sort.sort(sort);
+
+        return this;
     }
 
-    public void sort(Sort... sort) {
+    public DataFindRequest sort(Sort... sort) {
         this.sort = Sort.sort(sort);
+
+        return this;
     }
 
-    public void range(Integer begin, Integer end) {
+    public DataFindRequest range(Integer begin, Integer end) {
         this.begin = begin;
         this.end = end;
+
+        return this;
     }
 
     @Override

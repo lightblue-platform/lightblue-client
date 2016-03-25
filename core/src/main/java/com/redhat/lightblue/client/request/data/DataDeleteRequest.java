@@ -19,8 +19,10 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-    public void where(com.redhat.lightblue.client.Query queryExpression) {
+    public DataDeleteRequest where(com.redhat.lightblue.client.Query queryExpression) {
         this.queryExpression = queryExpression;
+
+        return this;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
         }
         return node;
     }
-    
+
     @Override
     public HttpMethod getHttpMethod() {
         return HttpMethod.POST;

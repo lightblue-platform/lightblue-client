@@ -26,20 +26,28 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-    public void returns(List<? extends Projection> projection) {
+    public DataInsertRequest returns(List<? extends Projection> projection) {
         this.projection = Projection.project(projection);
+
+        return this;
     }
 
-    public void returns(Projection... projection) {
+    public DataInsertRequest returns(Projection... projection) {
         this.projection = Projection.project(projection);
+
+        return this;
     }
 
-    public void create(Collection<?> objects) {
+    public DataInsertRequest create(Collection<?> objects) {
         create(objects.toArray());
+
+        return this;
     }
 
-    public void create(Object... objects) {
+    public DataInsertRequest create(Object... objects) {
         this.objects = objects;
+
+        return this;
     }
 
     @Override

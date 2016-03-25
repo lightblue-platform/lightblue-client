@@ -26,28 +26,44 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-    public void returns(List<? extends Projection> projection) {
+    public DataUpdateRequest returns(List<? extends Projection> projection) {
         this.projection = Projection.project(projection);
+
+        return this;
     }
 
-    public void returns(Projection... projection) {
+    public DataUpdateRequest returns(Projection... projection) {
         this.projection = Projection.project(projection);
+
+        return this;
     }
 
-    public void where(Query queryExpression) {
+    public DataUpdateRequest where(Query queryExpression) {
         query = queryExpression;
+
+        return this;
     }
 
-    public void updates(List<? extends Update> updates) {
+    public DataUpdateRequest updates(List<? extends Update> updates) {
         update = Update.update(updates);
+
+        return this;
     }
 
-    public void updates(Update... updates) {
+    public DataUpdateRequest updates(Update... updates) {
         update = Update.update(updates);
+
+        return this;
     }
 
-    public void setQuery(Query query) {
+    /**
+     * @see #where(Query)
+     */
+    @Deprecated
+    public DataUpdateRequest setQuery(Query query) {
         where(query);
+
+        return this;
     }
 
     @Override
