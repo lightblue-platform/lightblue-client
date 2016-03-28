@@ -4,7 +4,6 @@ package com.redhat.lightblue.client.request.data;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
@@ -20,7 +19,7 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     private Projection projection;
     private Sort sort;
     private Integer begin;
-    private Integer end;
+    private Integer maxResults;
 
     public DataFindRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -37,13 +36,27 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
     }
 
     public DataFindRequest select(List<? extends Projection> projections) {
+        //deprecated range method might have already been called.
+        return select(projections, begin, maxResults);
+    }
+
+    public DataFindRequest select(List<? extends Projection> projections, Integer begin, Integer maxResults) {
         projection = Projection.project(projections);
+        this.begin = begin;
+        this.maxResults = maxResults;
 
         return this;
     }
 
     public DataFindRequest select(Projection... projection) {
+        //deprecated range method might have already been called.
+        return select(projection, begin, maxResults);
+    }
+
+    public DataFindRequest select(Projection[] projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
+        this.begin = begin;
+        this.maxResults = maxResults;
 
         return this;
     }
@@ -60,9 +73,18 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         return this;
     }
 
+    /**
+     * Use {@link #select(List, Integer, Integer)} or {@link #select(Projection[], Integer, Integer)}.
+     * @param begin - the 'from' parameter to send to lightblue.
+     * @param end - the 'to' parameter to send to lightblue.
+     */
+    @Deprecated
     public DataFindRequest range(Integer begin, Integer end) {
         this.begin = begin;
-        this.end = end;
+        if (end != null) {
+            //'maxResults' should be 1 greater than a 'to' value.
+            maxResults = end + 1;
+        }
 
         return this;
     }
@@ -79,16 +101,7 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         if (sort != null) {
             node.set("sort", sort.toJson());
         }
-        if (begin != null) {
-            ArrayNode arr = JsonNodeFactory.instance.arrayNode();
-            arr.add(JsonNodeFactory.instance.numberNode(begin));
-            if(end!=null) {
-                arr.add(JsonNodeFactory.instance.numberNode(end));
-            } else {
-                arr.add(JsonNodeFactory.instance.nullNode());
-            }
-            node.set("range", arr);
-        }
+        appendRangeToJson(node, begin, maxResults);
         return node;
     }
 

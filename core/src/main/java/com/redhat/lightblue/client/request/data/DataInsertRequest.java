@@ -17,6 +17,8 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
 
     private Projection projection;
     private Object[] objects;
+    private Integer begin;
+    private Integer maxResults;
 
     public DataInsertRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
@@ -27,21 +29,31 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
     }
 
     public DataInsertRequest returns(List<? extends Projection> projection) {
+        return returns(projection, null, null);
+    }
+
+    public DataInsertRequest returns(List<? extends Projection> projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
+        this.begin = begin;
+        this.maxResults = maxResults;
 
         return this;
     }
 
     public DataInsertRequest returns(Projection... projection) {
+        return returns(projection, null, null);
+    }
+
+    public DataInsertRequest returns(Projection[] projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
+        this.begin = begin;
+        this.maxResults = maxResults;
 
         return this;
     }
 
     public DataInsertRequest create(Collection<?> objects) {
-        create(objects.toArray());
-
-        return this;
+        return create(objects.toArray());
     }
 
     public DataInsertRequest create(Object... objects) {
@@ -65,6 +77,7 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
             }
             node.set("data", arr);
         }
+        appendRangeToJson(node, begin, maxResults);
         return node;
     }
 
