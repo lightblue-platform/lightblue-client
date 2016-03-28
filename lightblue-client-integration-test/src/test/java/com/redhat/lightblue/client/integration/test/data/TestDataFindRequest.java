@@ -67,36 +67,42 @@ public class TestDataFindRequest extends LightblueClientTestHarness {
      */
     @Test
     public void testWithDeprecatedRangeMethod_MiddleResultOnly() throws Exception {
+        Country c3 = new Country();
+        c3.setName("Mexico");
+        c3.setIso2Code("MX");
+        c3.setIso3Code("MEX");
+
         Country c1 = new Country();
         c1.setName("Poland");
         c1.setIso2Code("PL");
         c1.setIso3Code("POL");
+
+        Country c4 = new Country();
+        c4.setName("Thailand");
+        c4.setIso2Code("TH");
+        c4.setIso3Code("THD");
 
         Country c2 = new Country();
         c2.setName("United States");
         c2.setIso2Code("US");
         c2.setIso3Code("USA");
 
-        Country c3 = new Country();
-        c3.setName("Mexico");
-        c3.setIso2Code("MX");
-        c3.setIso3Code("MEX");
-
         DataInsertRequest insertRequest = new DataInsertRequest("country");
-        insertRequest.create(c1, c2, c3);
+        insertRequest.create(c1, c2, c3, c4);
         getLightblueClient().data(insertRequest);
 
         //Do test
         DataFindRequest findRequest = new DataFindRequest("country");
         findRequest.where(Query.withValue("objectType", Query.eq, "country"));
-        findRequest.range(1, 1);
+        findRequest.range(1, 2);
         findRequest.select(new Projection[]{Projection.includeFieldRecursively("*")});
         findRequest.sort(Sort.asc("name"));
         Country[] countries = getLightblueClient().data(findRequest, Country[].class);
 
         assertNotNull(countries);
-        assertEquals(1, countries.length);
+        assertEquals(2, countries.length);
         assertEquals("Poland", countries[0].getName());
+        assertEquals("Thailand", countries[1].getName());
     }
 
 }
