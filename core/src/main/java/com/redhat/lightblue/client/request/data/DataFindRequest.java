@@ -83,7 +83,7 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         this.begin = begin;
         if (end != null) {
             //'maxResults' should be 1 greater than a 'to' value.
-            maxResults = end + 1;
+            maxResults = end - (begin == null ? 0 : begin) + 1;
         }
 
         return this;
