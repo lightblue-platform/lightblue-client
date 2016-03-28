@@ -4,6 +4,7 @@ import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadJsonNode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,6 +27,11 @@ public class TestDataUpdateRequest extends LightblueClientTestHarness {
         return new JsonNode[]{
                 loadJsonNode("./metadata/country.json")
         };
+    }
+    
+    @Before
+    public void before() throws Exception {
+        cleanupMongoCollections("country");
     }
 
     @Test
