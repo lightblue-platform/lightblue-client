@@ -28,40 +28,56 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-    public void returns(List<? extends Projection> projection) {
-        returns(projection, null, null);
+    public DataUpdateRequest returns(List<? extends Projection> projection) {
+        return returns(projection, null, null);
     }
 
-    public void returns(List<? extends Projection> projection, Integer begin, Integer maxResults) {
+    public DataUpdateRequest returns(List<? extends Projection> projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
         this.begin = begin;
         this.maxResults = maxResults;
+
+        return this;
     }
 
-    public void returns(Projection... projection) {
-        returns(projection, null, null);
+    public DataUpdateRequest returns(Projection... projection) {
+        return returns(projection, null, null);
     }
 
-    public void returns(Projection[] projection, Integer begin, Integer maxResults) {
+    public DataUpdateRequest returns(Projection[] projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
         this.begin = begin;
         this.maxResults = maxResults;
+
+        return this;
     }
 
-    public void where(Query queryExpression) {
+    public DataUpdateRequest where(Query queryExpression) {
         query = queryExpression;
+
+        return this;
     }
 
-    public void updates(List<? extends Update> updates) {
+    public DataUpdateRequest updates(List<? extends Update> updates) {
         update = Update.update(updates);
+
+        return this;
     }
 
-    public void updates(Update... updates) {
+    public DataUpdateRequest updates(Update... updates) {
         update = Update.update(updates);
+
+        return this;
     }
 
-    public void setQuery(Query query) {
+    /**
+     * @see #where(Query)
+     */
+    @Deprecated
+    public DataUpdateRequest setQuery(Query query) {
         where(query);
+
+        return this;
     }
 
     @Override

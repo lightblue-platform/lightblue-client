@@ -29,40 +29,50 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-    public void returns(List<? extends Projection> projection) {
-        returns(projection, null, null);
+    public DataSaveRequest returns(List<? extends Projection> projection) {
+        return returns(projection, null, null);
     }
 
-    public void returns(List<? extends Projection> projection, Integer begin, Integer maxResults) {
+    public DataSaveRequest returns(List<? extends Projection> projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
         this.begin = begin;
         this.maxResults = maxResults;
+
+        return this;
     }
 
-    public void returns(Projection... projection) {
-        returns(projection, null, null);
+    public DataSaveRequest returns(Projection... projection) {
+        return returns(projection, null, null);
     }
 
-    public void returns(Projection[] projection, Integer begin, Integer maxResults) {
+    public DataSaveRequest returns(Projection[] projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
         this.begin = begin;
         this.maxResults = maxResults;
+
+        return this;
     }
 
-    public void create(Collection<?> objects) {
+    public DataSaveRequest create(Collection<?> objects) {
         create(objects.toArray());
+
+        return this;
     }
 
-    public void create(Object... objects) {
+    public DataSaveRequest create(Object... objects) {
         this.objects = objects;
+
+        return this;
     }
 
     public Boolean isUpsert() {
         return upsert;
     }
 
-    public void setUpsert(Boolean upsert) {
+    public DataSaveRequest setUpsert(Boolean upsert) {
         this.upsert = upsert;
+
+        return this;
     }
 
     @Override

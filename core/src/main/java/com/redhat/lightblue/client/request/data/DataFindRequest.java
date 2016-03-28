@@ -29,50 +29,64 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-    public void where(Query queryExpression) {
+    public DataFindRequest where(Query queryExpression) {
         this.queryExpression = queryExpression;
+
+        return this;
     }
 
-    public void select(List<? extends Projection> projections) {
+    public DataFindRequest select(List<? extends Projection> projections) {
         //deprecated range method might have already been called.
-        select(projections, begin, maxResults);
+        return select(projections, begin, maxResults);
     }
 
-    public void select(List<? extends Projection> projections, Integer begin, Integer maxResults) {
+    public DataFindRequest select(List<? extends Projection> projections, Integer begin, Integer maxResults) {
         projection = Projection.project(projections);
         this.begin = begin;
         this.maxResults = maxResults;
+
+        return this;
     }
 
-    public void select(Projection... projection) {
+    public DataFindRequest select(Projection... projection) {
         //deprecated range method might have already been called.
-        select(projection, begin, maxResults);
+        return select(projection, begin, maxResults);
     }
 
-    public void select(Projection[] projection, Integer begin, Integer maxResults) {
+    public DataFindRequest select(Projection[] projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
         this.begin = begin;
         this.maxResults = maxResults;
+
+        return this;
     }
 
-    public void sort(List<? extends Sort> sort) {
+    public DataFindRequest sort(List<? extends Sort> sort) {
         this.sort = Sort.sort(sort);
+
+        return this;
     }
 
-    public void sort(Sort... sort) {
+    public DataFindRequest sort(Sort... sort) {
         this.sort = Sort.sort(sort);
+
+        return this;
     }
 
     /**
      * Use {@link #select(List, Integer, Integer)} or {@link #select(Projection[], Integer, Integer)}.
+     * @param begin - the 'from' parameter to send to lightblue.
+     * @param end - the 'to' parameter to send to lightblue.
      */
     @Deprecated
-    public void range(Integer begin, Integer end) {
+    public DataFindRequest range(Integer begin, Integer end) {
         this.begin = begin;
         if (end != null) {
             //'maxResults' should be 1 greater than a 'to' value.
             maxResults = end + 1;
         }
+
+        return this;
     }
 
     @Override

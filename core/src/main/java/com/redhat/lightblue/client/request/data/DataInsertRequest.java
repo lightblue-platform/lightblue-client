@@ -28,32 +28,38 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-    public void returns(List<? extends Projection> projection) {
-        returns(projection, null, null);
+    public DataInsertRequest returns(List<? extends Projection> projection) {
+        return returns(projection, null, null);
     }
 
-    public void returns(List<? extends Projection> projection, Integer begin, Integer maxResults) {
+    public DataInsertRequest returns(List<? extends Projection> projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
         this.begin = begin;
         this.maxResults = maxResults;
+
+        return this;
     }
 
-    public void returns(Projection... projection) {
-        returns(projection, null, null);
+    public DataInsertRequest returns(Projection... projection) {
+        return returns(projection, null, null);
     }
 
-    public void returns(Projection[] projection, Integer begin, Integer maxResults) {
+    public DataInsertRequest returns(Projection[] projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
         this.begin = begin;
         this.maxResults = maxResults;
+
+        return this;
     }
 
-    public void create(Collection<?> objects) {
-        create(objects.toArray());
+    public DataInsertRequest create(Collection<?> objects) {
+        return create(objects.toArray());
     }
 
-    public void create(Object... objects) {
+    public DataInsertRequest create(Object... objects) {
         this.objects = objects;
+
+        return this;
     }
 
     @Override
