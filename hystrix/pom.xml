@@ -10,8 +10,8 @@
     <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
     
     <properties>
-        <hystrix.version>1.4.7</hystrix.version>
-        <netflix.servo.version>0.8.0</netflix.servo.version>
+        <hystrix.version>1.5.1</hystrix.version>
+        <netflix.servo.version>0.12.3</netflix.servo.version>
     </properties>
     
     <dependencies>
