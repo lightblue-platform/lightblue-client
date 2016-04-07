@@ -134,7 +134,7 @@
     <modules>
         <module>core</module>
         <module>http</module>
-        <module>hystrix</module>
+        <!--module>hystrix</module-->
         <!--module>jmeter-tests</module--><!-- Breaks release -->
 </modules>
 <properties>
