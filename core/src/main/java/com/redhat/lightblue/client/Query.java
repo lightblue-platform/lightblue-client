@@ -1,7 +1,9 @@
 package com.redhat.lightblue.client;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ContainerNode;
@@ -187,7 +189,51 @@ public class Query extends Expression
     public static Query withMatchingString(String field, String value, boolean caseInsensitive) {
         return caseInsensitive ? regex(field, escapeRegExPattern(value), caseInsensitive, false, false, false) : withValue(field, eq, value);
     }
+
+    /**
+     * <pre>
+     *   { field: <field>, regex: <^string$>, caseInsensitive: <caseInsensitive>, ... }
+     * </pre>
+     */
+    public static Query withString(String field, String value, boolean caseInsensitive) {
+        return caseInsensitive ? regex(field, "^"+escapeRegExPattern(value)+"$", caseInsensitive, false, false, false) : withValue(field, eq, value);
+    }
+
+    /**
+     * <pre>
+     *   { field: <field>, regex: <^string$>, caseInsensitive: true, ... }
+     * </pre>
+     */
+    public static Query withStringIgnoreCase(String field, String value) {
+        return Query.withString(field, value, true);
+    }
+
+    /**
+     * <pre>
+     *   { "$or": [{ field: <field>, regex: <^string$>, caseInsensitive: <caseInsensitive>, ... }, ... ]}
+     * </pre>
+     */
+    public static Query withStrings(String field, String[] values, boolean caseInsensitive) {
+        if (caseInsensitive) {
+            List<Query> regexList = new ArrayList<Query>();
+            for (String value: values) {
+                regexList.add(withString(field, value, true));
+            }
+            return Query.or(regexList);
+        } else {
+            return Query.withValues(field, Query.in, Literal.values(values));
+        }
+    }
     
+    /**
+     * <pre>
+     *   { "$or": [{ field: <field>, regex: <^string$>, caseInsensitive: true, ... }, ... ]}
+     * </pre>
+     */
+    public static Query withStringsIgnoreCase(String field, String[] values) {
+        return Query.withStrings(field, values, true);
+    }
+
     /**
      * <pre>
      *   { field: <field>, op: <op>, rvalue: <value> }

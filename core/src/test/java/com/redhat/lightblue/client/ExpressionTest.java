@@ -31,6 +31,14 @@ public class ExpressionTest {
         eq("{'field':'field','op':'=','rfield':'x'}",Query.withField("field = x"));
         eq("{'field':'field','op':'$in','values':['1','2','3']}",Query.withValue("field $in [1,2,3]"));
         eq("{'field':'field','op':'$in','rfield':'x'}",Query.withField("field $in x"));
+
+        eq("{'field':'field','op':'=','rvalue':'value'}",Query.withString("field", "value", false));
+        eq("{'field':'field','regex':'^value$','caseInsensitive':true,'extended':false,'multiline':false,'dotall':false}",Query.withString("field", "value", true));
+
+        eq("{'field':'field','op':'$in','values': ['value1','value2']}",Query.withStrings("field", new String[] {"value1", "value2"}, false));
+        eq("{'$or': [{'field':'field','regex':'^value1$','caseInsensitive':true,'extended':false,'multiline':false,'dotall':false},"+
+                "{'field':'field','regex':'^value2$','caseInsensitive':true,'extended':false,'multiline':false,'dotall':false}]}",
+                Query.withStrings("field", new String[] {"value1", "value2"}, true));
      }
     
     @Test
