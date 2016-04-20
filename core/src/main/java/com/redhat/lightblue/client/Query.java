@@ -201,6 +201,15 @@ public class Query extends Expression
 
     /**
      * <pre>
+     *   { field: <field>, regex: <^string$>, caseInsensitive: true, ... }
+     * </pre>
+     */
+    public static Query withStringIgnoreCase(String field, String value) {
+        return Query.withString(field, value, true);
+    }
+
+    /**
+     * <pre>
      *   { "$or": [{ field: <field>, regex: <^string$>, caseInsensitive: <caseInsensitive>, ... }, ... ]}
      * </pre>
      */
@@ -216,6 +225,15 @@ public class Query extends Expression
         }
     }
     
+    /**
+     * <pre>
+     *   { "$or": [{ field: <field>, regex: <^string$>, caseInsensitive: true, ... }, ... ]}
+     * </pre>
+     */
+    public static Query withStringsIgnoreCase(String field, String[] values) {
+        return Query.withStrings(field, values, true);
+    }
+
     /**
      * <pre>
      *   { field: <field>, op: <op>, rvalue: <value> }
