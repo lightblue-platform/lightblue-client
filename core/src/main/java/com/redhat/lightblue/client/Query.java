@@ -555,7 +555,7 @@ public class Query extends Expression
         for (int i = 0; i < n; i++) {
             char c = s.charAt(i);
             if (ESCAPECHARS.indexOf(c) != -1)
-                bld.append("\\\\");
+                bld.append("\\");
             bld.append(c);
         }
         return bld.toString();
