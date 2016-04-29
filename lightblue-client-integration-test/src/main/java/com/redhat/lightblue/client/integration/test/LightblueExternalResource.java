@@ -83,6 +83,10 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         getControllerInstance().cleanupMongoCollections(dbName, collectionNames);
     }
 
+    public void ensureHttpServerIsRunning() throws IOException {
+        getControllerInstance().ensureHttpServerIsRunning();
+    }
+
     public int getHttpPort() {
         return getControllerInstance().getHttpPort();
     }
