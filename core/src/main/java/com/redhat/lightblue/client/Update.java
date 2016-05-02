@@ -94,6 +94,10 @@ public class Update extends Expression implements ForEachUpdate {
         public Set more(String field,boolean i) {
             return more(field,Literal.value(i));
         }
+        
+        public Set more(String field, Date date) {
+            return more(field, Literal.value(date));
+        }
 
    }
 
