@@ -70,6 +70,8 @@ public class GenerateRequest extends AbstractLightblueDataRequest {
     public String getRestURI(String baseServiceURI) {
         StringBuilder bld=new StringBuilder();
         bld.append(super.getRestURI(baseServiceURI));
+        if(path==null)
+            throw new NullPointerException("path");
         appendToURI(bld,path);
         if(n!=null)
             appendToURI(bld,"n",n.toString());
