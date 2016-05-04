@@ -17,6 +17,7 @@ import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
+import com.redhat.lightblue.client.request.data.GenerateRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
 import com.redhat.lightblue.client.util.JSON;
@@ -44,6 +45,22 @@ public class LightblueHttpClientTest {
 
 		Assert.assertTrue(new SimpleModelObject("idhash", "value").equals(results[0]));
 	}
+
+    @Test
+	public void testPrimitiveMapping() throws Exception {
+		GenerateRequest request = new GenerateRequest("foo", "bar");
+                request.path("x").nValues(3);
+		String response = "{ \"processed\": [\"1\",\"2\",\"3\"], \"status\": \"COMPLETE\"}";
+		when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(response);
+
+		String[] results = client.data(request, String[].class);
+
+		Assert.assertEquals(3, results.length);
+                Assert.assertEquals("1",results[0]);
+                Assert.assertEquals("2",results[1]);
+                Assert.assertEquals("3",results[2]);
+	}
+
 
 	@Test(expected = LightblueParseException.class)
 	public void testPojoMappingWithParsingError() throws Exception {
