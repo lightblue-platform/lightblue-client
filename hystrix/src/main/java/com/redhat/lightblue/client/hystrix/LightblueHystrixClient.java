@@ -71,10 +71,10 @@ public class LightblueHystrixClient implements LightblueClient {
 	}
 
 	protected class DataTypeHystrixCommand<T> extends HystrixCommand<T> {
-		private final AbstractLightblueDataRequest request;
+		private final LightblueRequest request;
 		private final Class<T> type;
 
-		public DataTypeHystrixCommand(AbstractLightblueDataRequest request, Class<T> type, String groupKey, String commandKey) {
+		public DataTypeHystrixCommand(LightblueRequest request, Class<T> type, String groupKey, String commandKey) {
 			super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey)).andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
 
 			this.request = request;
@@ -198,7 +198,7 @@ public class LightblueHystrixClient implements LightblueClient {
 	}
 
 	@Override
-	public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws LightblueException {
+	public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws LightblueException {
 		return new DataTypeHystrixCommand<T>(lightblueRequest, type, groupKey, commandKey).execute();
 	}
 

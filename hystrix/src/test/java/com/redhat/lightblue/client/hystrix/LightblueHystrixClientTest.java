@@ -45,7 +45,7 @@ public class LightblueHystrixClientTest {
 		}
 
 		@Override
-		public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws LightblueException {
+		public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws LightblueException {
 			dataType = true;
 			return null;
 		}

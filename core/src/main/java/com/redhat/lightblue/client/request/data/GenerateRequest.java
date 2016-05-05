@@ -3,15 +3,11 @@ package com.redhat.lightblue.client.request.data;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.redhat.lightblue.client.Operation;
-import com.redhat.lightblue.client.Projection;
-import com.redhat.lightblue.client.Query;
-import com.redhat.lightblue.client.Sort;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueRequest;
 
 /**
  * Generate a value using a field's value generator
@@ -25,7 +21,7 @@ import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
  * </pre>
  * 
  */
-public class GenerateRequest extends AbstractLightblueDataRequest {
+public class GenerateRequest extends AbstractLightblueRequest {
 
     private Integer n;
     private String path;
@@ -68,10 +64,15 @@ public class GenerateRequest extends AbstractLightblueDataRequest {
 
     @Override
     public String getRestURI(String baseServiceURI) {
-        StringBuilder bld=new StringBuilder();
-        bld.append(super.getRestURI(baseServiceURI));
         if(path==null)
             throw new NullPointerException("path");
+        StringBuilder bld=new StringBuilder();
+        bld.append(baseServiceURI);
+        appendToURI(bld, "generate");
+        appendToURI(bld, getEntityName());
+        if (StringUtils.isNotBlank(getEntityVersion())) {
+            appendToURI(bld, getEntityVersion());
+        }
         appendToURI(bld,path);
         if(n!=null)
             appendToURI(bld,"n",n.toString());
@@ -84,17 +85,12 @@ public class GenerateRequest extends AbstractLightblueDataRequest {
     }
 
     @Override
+    public String getBody() {
+        return null;
+    }
+
+    @Override
     public HttpMethod getHttpMethod() {
         return HttpMethod.GET;
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "generate";
-    }
-
-    @Override
-    public Operation getOperation() {
-        return null;
     }
 }

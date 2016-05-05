@@ -240,7 +240,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     @Override
-    public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type)
+    public <T> T data(LightblueRequest lightblueRequest, Class<T> type)
             throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
         LightblueDataResponse response = data(lightblueRequest);
 

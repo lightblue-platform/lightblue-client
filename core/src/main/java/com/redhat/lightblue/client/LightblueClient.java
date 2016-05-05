@@ -17,6 +17,6 @@ public interface LightblueClient {
 
     LightblueBulkDataResponse bulkData(AbstractDataBulkRequest<AbstractLightblueDataRequest> requests) throws LightblueException;
 
-	<T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type) throws LightblueException;
+	<T> T data(LightblueRequest lightblueRequest, Class<T> type) throws LightblueException;
 
 }
