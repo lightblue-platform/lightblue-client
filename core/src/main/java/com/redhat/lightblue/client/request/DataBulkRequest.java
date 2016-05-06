@@ -23,6 +23,8 @@ public class DataBulkRequest extends AbstractDataBulkRequest<AbstractLightblueDa
         ObjectNode root = JsonNodeFactory.instance.objectNode();
         ArrayNode reqs = JsonNodeFactory.instance.arrayNode();
         for (AbstractLightblueDataRequest req : requests) {
+            if (req == null)
+                continue;
             ObjectNode seqNode = JsonNodeFactory.instance.objectNode();
             seqNode.set("seq", JsonNodeFactory.instance.numberNode(reqs.size()));
             seqNode.set("op", JsonNodeFactory.instance.textNode(req.getOperation().name().toLowerCase()));
