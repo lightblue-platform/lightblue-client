@@ -115,7 +115,7 @@ public class JavaNetHttpTransport implements HttpTransport {
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Accept-Charset", "utf-8");
 
-            if (this.compression == Compression.LZF) {
+            if (compression == Compression.LZF) {
                 LOGGER.debug("Advertising lzf decoding capabilities to lightblue");
                 connection.setRequestProperty("Accept-Encoding", "lzf");
             }
@@ -163,22 +163,20 @@ public class JavaNetHttpTransport implements HttpTransport {
         try (InputStream responseStream = connection.getInputStream()) {
             return readResponseStream(responseStream, connection);
         } catch (IOException e) {
-            try {
-                try (InputStream errorResponseStream = connection.getErrorStream()) {
-                    String errorBody = null;
-                    if (errorResponseStream != null) {
-                        errorBody = readResponseStream(errorResponseStream, connection);
-                    }
-
-                    if (errorBody != null && !errorBody.equals("")) {
-                        // this may be a valid lightblue response containing errors
-                        // but it can also be a standard html 500 or 404 from server
-                        // we will know that when we start parsing
-                        return errorBody;
-                    }
-
-                    throw new LightblueHttpClientException(e, connection.getResponseCode(), errorBody);
+            try (InputStream errorResponseStream = connection.getErrorStream()) {
+                String errorBody = null;
+                if (errorResponseStream != null) {
+                    errorBody = readResponseStream(errorResponseStream, connection);
                 }
+
+                if (errorBody != null && !errorBody.equals("")) {
+                    // this may be a valid lightblue response containing errors
+                    // but it can also be a standard html 500 or 404 from server
+                    // we will know that when we start parsing
+                    return errorBody;
+                }
+
+                throw new LightblueHttpClientException(e, connection.getResponseCode(), errorBody);
             } catch (IOException e1) {
                 throw new LightblueHttpClientException(e);
             }
