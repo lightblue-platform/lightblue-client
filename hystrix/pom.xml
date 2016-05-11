@@ -11,7 +11,7 @@
     
     <properties>
         <hystrix.version>1.5.2</hystrix.version>
-        <netflix.servo.version>0.12.5</netflix.servo.version>
+        <netflix.servo.version>0.12.6</netflix.servo.version>
     </properties>
     
     <dependencies>
