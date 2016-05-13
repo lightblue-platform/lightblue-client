@@ -102,6 +102,7 @@ public class DataFindRequest extends AbstractLightblueDataRequest {
             node.set("sort", sort.toJson());
         }
         appendRangeToJson(node, begin, maxResults);
+        appendExecutionToJson(node);
         return node;
     }
 

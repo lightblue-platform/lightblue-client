@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Sort;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
@@ -46,6 +47,15 @@ public class TestDataFindRequest {
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"sort\":{\"fakeField\":\"$asc\"}"));
+    }
+
+    @Test
+    public void testExecutionReadPreference() {
+        DataFindRequest request = new DataFindRequest("fake");
+        request.execution(Execution.MongoController.withReadPreference(Execution.MongoController.ReadPreference.primaryPreferred));
+
+        assertTrue(request.getBody(), request.getBody().contains(
+                "\"execution\":{\"readPreference\":\"primaryPreferred\"}"));
     }
 
 }

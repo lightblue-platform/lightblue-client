@@ -99,6 +99,7 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
             node.set("upsert", JsonNodeFactory.instance.booleanNode(upsert));
         }
         appendRangeToJson(node, begin, maxResults);
+        appendExecutionToJson(node);
         return node;
     }
 

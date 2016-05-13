@@ -31,6 +31,7 @@ public class DataDeleteRequest extends AbstractLightblueDataRequest {
         if (queryExpression != null) {
             node.set("query", queryExpression.toJson());
         }
+        appendExecutionToJson(node);
         return node;
     }
 

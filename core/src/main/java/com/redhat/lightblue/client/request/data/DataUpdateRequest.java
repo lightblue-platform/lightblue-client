@@ -93,6 +93,7 @@ public class DataUpdateRequest extends AbstractLightblueDataRequest {
             node.set("update", update.toJson());
         }
         appendRangeToJson(node, begin, maxResults);
+        appendExecutionToJson(node);
         return node;
     }
 

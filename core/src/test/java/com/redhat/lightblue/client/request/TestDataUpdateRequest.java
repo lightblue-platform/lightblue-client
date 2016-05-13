@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Update;
 import com.redhat.lightblue.client.request.data.DataUpdateRequest;
@@ -44,6 +45,15 @@ public class TestDataUpdateRequest {
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"projection\":{\"field\":\"*\",\"include\":true,\"recursive\":false}"));
+    }
+
+    @Test
+    public void testExecutionReadPreference() {
+        DataUpdateRequest request = new DataUpdateRequest("fake");
+        request.execution(Execution.MongoController.withReadPreference(Execution.MongoController.ReadPreference.primaryPreferred));
+
+        assertTrue(request.getBody(), request.getBody().contains(
+                "\"execution\":{\"readPreference\":\"primaryPreferred\"}"));
     }
 
 }

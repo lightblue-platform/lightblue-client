@@ -78,6 +78,7 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
             node.set("data", arr);
         }
         appendRangeToJson(node, begin, maxResults);
+        appendExecutionToJson(node);
         return node;
     }
 
