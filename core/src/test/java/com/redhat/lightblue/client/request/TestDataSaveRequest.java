@@ -41,4 +41,24 @@ public class TestDataSaveRequest {
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"execution\":{\"readPreference\":\"primaryPreferred\"}"));
     }
+
+    @Test
+    public void testExecutionWriteConcern() {
+        DataSaveRequest request = new DataSaveRequest("fake");
+        request.execution(Execution.MongoController.withWriteConcern("majority"));
+        request.create("");
+
+        assertTrue(request.getBody(), request.getBody().contains(
+                "\"execution\":{\"writeConcern\":\"majority\"}"));
+    }
+
+    @Test
+    public void testExecutionMaxQueryTimeMS() {
+        DataSaveRequest request = new DataSaveRequest("fake");
+        request.execution(Execution.MongoController.withMaxQueryTimeMS(1000));
+        request.create("");
+
+        assertTrue(request.getBody(), request.getBody().contains(
+                "\"execution\":{\"maxQueryTimeMS\":1000"));
+    }
 }

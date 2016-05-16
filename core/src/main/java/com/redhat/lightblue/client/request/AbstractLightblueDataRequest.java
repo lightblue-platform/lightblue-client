@@ -2,7 +2,6 @@ package com.redhat.lightblue.client.request;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Execution;
@@ -49,8 +48,9 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
         }
     }
 
-    public void execution(Execution execution) {
+    public AbstractLightblueDataRequest execution(Execution execution) {
         this.execution = execution;
+        return this;
     }
 
     protected void appendExecutionToJson(ObjectNode node) {

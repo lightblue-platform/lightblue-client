@@ -42,4 +42,24 @@ public class TestDataInsertRequest {
                 "\"execution\":{\"readPreference\":\"primaryPreferred\"}"));
     }
 
+    @Test
+    public void testExecutionWriteConcern() {
+        DataInsertRequest request = new DataInsertRequest("fake");
+        request.execution(Execution.MongoController.withWriteConcern("majority"));
+        request.create("");
+
+        assertTrue(request.getBody(), request.getBody().contains(
+                "\"execution\":{\"writeConcern\":\"majority\"}"));
+    }
+
+    @Test
+    public void testExecutionMaxQueryTimeMS() {
+        DataInsertRequest request = new DataInsertRequest("fake");
+        request.execution(Execution.MongoController.withMaxQueryTimeMS(1000));
+        request.create("");
+
+        assertTrue(request.getBody(), request.getBody().contains(
+                "\"execution\":{\"maxQueryTimeMS\":1000"));
+    }
+
 }

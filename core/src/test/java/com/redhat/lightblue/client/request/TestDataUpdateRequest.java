@@ -56,4 +56,22 @@ public class TestDataUpdateRequest {
                 "\"execution\":{\"readPreference\":\"primaryPreferred\"}"));
     }
 
+    @Test
+    public void testExecutionWriteConcern() {
+        DataUpdateRequest request = new DataUpdateRequest("fake");
+        request.execution(Execution.MongoController.withWriteConcern("majority"));
+
+        assertTrue(request.getBody(), request.getBody().contains(
+                "\"execution\":{\"writeConcern\":\"majority\"}"));
+    }
+
+    @Test
+    public void testExecutionMaxQueryTimeMS() {
+        DataUpdateRequest request = new DataUpdateRequest("fake");
+        request.execution(Execution.MongoController.withMaxQueryTimeMS(1000));
+
+        assertTrue(request.getBody(), request.getBody().contains(
+                "\"execution\":{\"maxQueryTimeMS\":1000"));
+    }
+
 }
