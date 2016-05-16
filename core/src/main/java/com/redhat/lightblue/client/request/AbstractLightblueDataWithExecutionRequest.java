@@ -5,19 +5,19 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Execution;
 
-public abstract class AbstractLightblueDataExecutionRequest extends AbstractLightblueDataRequest {
+public abstract class AbstractLightblueDataWithExecutionRequest extends AbstractLightblueDataRequest {
 
-    public AbstractLightblueDataExecutionRequest(String entityName, String entityVersion) {
+    public AbstractLightblueDataWithExecutionRequest(String entityName, String entityVersion) {
         super(entityName, entityVersion);
     }
 
-    public AbstractLightblueDataExecutionRequest(String entityName) {
+    public AbstractLightblueDataWithExecutionRequest(String entityName) {
         super(entityName);
     }
 
     private Execution execution = null;
 
-    public AbstractLightblueDataExecutionRequest execution(Execution execution) {
+    public AbstractLightblueDataWithExecutionRequest execution(Execution execution) {
         this.execution = execution;
         return this;
     }
@@ -29,7 +29,7 @@ public abstract class AbstractLightblueDataExecutionRequest extends AbstractLigh
 
     @Override
     public JsonNode getBodyJson() {
-        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        ObjectNode node = (ObjectNode)super.getBodyJson();
         appendExecutionToJson(node);
         return node;
     }
