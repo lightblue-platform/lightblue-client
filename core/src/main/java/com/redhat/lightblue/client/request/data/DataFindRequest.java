@@ -3,8 +3,6 @@ package com.redhat.lightblue.client.request.data;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
@@ -12,7 +10,6 @@ import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.Sort;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueDataExecutionRequest;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 
 public class DataFindRequest extends AbstractLightblueDataExecutionRequest {
 
@@ -91,8 +88,8 @@ public class DataFindRequest extends AbstractLightblueDataExecutionRequest {
     }
 
     @Override
-    public JsonNode getBodyJson() {
-        ObjectNode node = JsonNodeFactory.instance.objectNode();
+    public ObjectNode getBodyJson() {
+        ObjectNode node = (ObjectNode)super.getBodyJson();
         if (queryExpression != null) {
             node.set("query", queryExpression.toJson());
         }
@@ -103,7 +100,6 @@ public class DataFindRequest extends AbstractLightblueDataExecutionRequest {
             node.set("sort", sort.toJson());
         }
         appendRangeToJson(node, begin, maxResults);
-        appendExecutionToJson(node);
         return node;
     }
 

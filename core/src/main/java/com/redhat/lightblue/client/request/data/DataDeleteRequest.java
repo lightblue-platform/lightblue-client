@@ -1,7 +1,6 @@
 package com.redhat.lightblue.client.request.data;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Query;
@@ -27,11 +26,10 @@ public class DataDeleteRequest extends AbstractLightblueDataExecutionRequest {
 
     @Override
     public JsonNode getBodyJson() {
-        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        ObjectNode node = (ObjectNode)super.getBodyJson();
         if (queryExpression != null) {
             node.set("query", queryExpression.toJson());
         }
-        appendExecutionToJson(node);
         return node;
     }
 

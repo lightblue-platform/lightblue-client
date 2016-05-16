@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.Operation;
 
 public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequest implements LightblueRequest {
