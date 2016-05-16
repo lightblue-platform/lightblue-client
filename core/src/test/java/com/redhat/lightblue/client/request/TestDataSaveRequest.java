@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.request.data.DataSaveRequest;
 
@@ -29,5 +30,35 @@ public class TestDataSaveRequest {
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"projection\":{\"field\":\"*\",\"include\":true,\"recursive\":false}"));
+    }
+
+    @Test
+    public void testExecutionReadPreference() {
+        DataSaveRequest request = new DataSaveRequest("fake");
+        request.execution(Execution.MongoController.withReadPreference(Execution.MongoController.ReadPreference.primaryPreferred));
+        request.create("");
+
+        assertTrue(request.getBody(), request.getBody().contains(
+                "\"execution\":{\"readPreference\":\"primaryPreferred\"}"));
+    }
+
+    @Test
+    public void testExecutionWriteConcern() {
+        DataSaveRequest request = new DataSaveRequest("fake");
+        request.execution(Execution.MongoController.withWriteConcern("majority"));
+        request.create("");
+
+        assertTrue(request.getBody(), request.getBody().contains(
+                "\"execution\":{\"writeConcern\":\"majority\"}"));
+    }
+
+    @Test
+    public void testExecutionMaxQueryTimeMS() {
+        DataSaveRequest request = new DataSaveRequest("fake");
+        request.execution(Execution.MongoController.withMaxQueryTimeMS(1000));
+        request.create("");
+
+        assertTrue(request.getBody(), request.getBody().contains(
+                "\"execution\":{\"maxQueryTimeMS\":1000"));
     }
 }

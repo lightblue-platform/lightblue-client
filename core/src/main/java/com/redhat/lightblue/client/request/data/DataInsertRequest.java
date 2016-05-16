@@ -10,10 +10,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueDataWithExecutionRequest;
 import com.redhat.lightblue.client.util.JSON;
 
-public class DataInsertRequest extends AbstractLightblueDataRequest {
+public class DataInsertRequest extends AbstractLightblueDataWithExecutionRequest {
 
     private Projection projection;
     private Object[] objects;
@@ -64,7 +64,7 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
 
     @Override
     public JsonNode getBodyJson() {
-        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        ObjectNode node = (ObjectNode)super.getBodyJson();
         if (projection != null) {
             node.set("projection", projection.toJson());
         }

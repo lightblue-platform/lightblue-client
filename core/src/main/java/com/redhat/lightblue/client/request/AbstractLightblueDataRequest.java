@@ -2,6 +2,7 @@ package com.redhat.lightblue.client.request;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
@@ -48,6 +49,11 @@ public abstract class AbstractLightblueDataRequest extends AbstractLightblueRequ
     @Override
     public String getBody() {
         return (getBodyJson() == null ? null : getBodyJson().toString());
+    }
+
+    @Override
+    public JsonNode getBodyJson() {
+        return (ObjectNode) JsonNodeFactory.instance.objectNode();
     }
 
     public abstract String getOperationPathParam();
