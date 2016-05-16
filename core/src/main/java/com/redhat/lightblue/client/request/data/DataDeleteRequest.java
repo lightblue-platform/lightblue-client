@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueDataExecutionRequest;
 
-public class DataDeleteRequest extends AbstractLightblueDataRequest {
+public class DataDeleteRequest extends AbstractLightblueDataExecutionRequest {
     private Query queryExpression;
 
     public DataDeleteRequest(String entityName, String entityVersion) {

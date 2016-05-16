@@ -10,10 +10,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.http.HttpMethod;
+import com.redhat.lightblue.client.request.AbstractLightblueDataExecutionRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.util.JSON;
 
-public class DataSaveRequest extends AbstractLightblueDataRequest {
+public class DataSaveRequest extends AbstractLightblueDataExecutionRequest {
 
     private Projection projection;
     private Object[] objects;

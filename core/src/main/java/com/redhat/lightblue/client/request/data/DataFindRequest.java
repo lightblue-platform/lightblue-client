@@ -11,9 +11,10 @@ import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.Sort;
 import com.redhat.lightblue.client.http.HttpMethod;
+import com.redhat.lightblue.client.request.AbstractLightblueDataExecutionRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 
-public class DataFindRequest extends AbstractLightblueDataRequest {
+public class DataFindRequest extends AbstractLightblueDataExecutionRequest {
 
     private Query queryExpression;
     private Projection projection;

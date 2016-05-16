@@ -10,9 +10,10 @@ import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.Update;
 import com.redhat.lightblue.client.http.HttpMethod;
+import com.redhat.lightblue.client.request.AbstractLightblueDataExecutionRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 
-public class DataUpdateRequest extends AbstractLightblueDataRequest {
+public class DataUpdateRequest extends AbstractLightblueDataExecutionRequest {
 
     private Projection projection;
     private Update update;
