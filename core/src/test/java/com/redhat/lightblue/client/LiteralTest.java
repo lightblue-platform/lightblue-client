@@ -1,7 +1,11 @@
 package com.redhat.lightblue.client;
 
+import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.redhat.lightblue.client.util.ClientConstants;
 
 public class LiteralTest {
 
@@ -41,6 +45,15 @@ public class LiteralTest {
     }
 
     @Test
+    public void testBooleanPrimitiveArray() {
+        boolean[] values = new boolean[]{true, false};
+
+        Literal l = Literal.value(values);
+
+        Assert.assertEquals("[true,false]", l.toString());
+    }
+
+    @Test
     public void testNumberArray() {
         Number[] values = new Number[]{0, 1, 2};
 
@@ -63,6 +76,26 @@ public class LiteralTest {
     }
 
     @Test
+    public void testBooleanArray() {
+        Boolean[] values = new Boolean[]{true, false};
+
+        Literal l = Literal.value(values);
+
+        Assert.assertEquals("[true,false]", l.toString());
+    }
+
+    @Test
+    public void testDateArray() {
+        Date d1 = new Date();
+
+        Date[] values = new Date[]{d1};
+
+        Literal l = Literal.value(values);
+
+        Assert.assertEquals("[\"" + ClientConstants.getDateFormat().format(d1) + "\"]", l.toString());
+    }
+
+    @Test
     public void testLiteralArray() {
         Literal[] values = new Literal[]{Literal.value("hello"), Literal.value("world")};
 
@@ -70,14 +103,5 @@ public class LiteralTest {
 
         Assert.assertEquals("[\"hello\",\"world\"]", l.toString());
     }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testUnsupportedArray() {
-        FakeClass[] values = new FakeClass[]{};
-
-        Literal.value(values);
-    }
-
-    private class FakeClass {}
 
 }
