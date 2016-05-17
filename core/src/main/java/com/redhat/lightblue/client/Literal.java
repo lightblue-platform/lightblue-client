@@ -70,6 +70,25 @@ public class Literal extends ExpressionPart implements
             node=(JsonNode)x;
         } else if(x instanceof Literal) {
             node=((Literal)x).node;
+        } else if (x.getClass().isArray()) {
+            if (x instanceof Literal[]) {
+                node = toJson((Literal[]) x);
+            }
+            else if (x instanceof String[]) {
+                node = toJson(values((String[]) x));
+            }
+            else if (x instanceof Number[]) {
+                node = toJson(numbers((Number[]) x));
+            }
+            else if (x instanceof int[]){
+                node = toJson(values((int[]) x));
+            }
+            else if (x instanceof long[]){
+                node = toJson(values((long[]) x));
+            }
+            else {
+                throw new UnsupportedOperationException("Array of type " + x.getClass() + " is not supported.");
+            }
         } else {
             node=JsonNodeFactory.instance.textNode(x.toString());
         }
