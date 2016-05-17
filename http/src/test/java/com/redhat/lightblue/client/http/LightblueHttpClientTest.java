@@ -8,7 +8,8 @@ import static org.mockito.Mockito.when;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.redhat.lightblue.client.LightblueClient;
+import com.redhat.lightblue.client.Execution;
+import com.redhat.lightblue.client.Execution.MongoController.ReadPreference;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.Projection;
@@ -77,19 +78,19 @@ public class LightblueHttpClientTest {
 	}
 
 	@Test(expected = LightblueException.class)
-	public void testExceptionWhenLightblueIsDown() throws LightblueException {
+	public void testExceptionWhenLightblueIsDown() throws Exception {
 		LightblueClientConfiguration c = new LightblueClientConfiguration();
 		c.setUseCertAuth(false);
 		c.setDataServiceURI("http://foo/bar");
 
-		LightblueClient httpClient = new LightblueHttpClient(c);
-        DataFindRequest r = new DataFindRequest("e", "v");
-        r.where(Query.withValue("a = b"));
-        r.select(Projection.includeField("foo"));
+		try (LightblueHttpClient httpClient = new LightblueHttpClient(c)) {
+            DataFindRequest r = new DataFindRequest("e", "v");
+            r.where(Query.withValue("a = b"));
+            r.select(Projection.includeField("foo"));
 
-		httpClient.data(r);
-		Assert.fail();
-
+            httpClient.data(r);
+    		Assert.fail();
+		}
 	}
 
 	@Test(expected = LightblueParseException.class)
@@ -98,5 +99,89 @@ public class LightblueHttpClientTest {
 
 	    r.parseProcessed(SimpleModelObject.class);
 	}
+
+    @Test
+    public void testUsingDefaultExecution_ReadPreference() throws Exception {
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn("{}");
+
+        LightblueClientConfiguration c = new LightblueClientConfiguration();
+        c.setReadPreference(ReadPreference.primary);
+
+        try (LightblueHttpClient httpClient = new LightblueHttpClient(c, httpTransport)) {
+            DataFindRequest findRequest = new DataFindRequest("someEntity");
+            findRequest.where(Query.withValue("a = b"));
+            findRequest.select(Projection.includeField("foo"));
+
+            httpClient.data(findRequest);
+
+            String body = findRequest.getBody();
+            Assert.assertTrue(body.contains(
+                    "\"execution\":{\"readPreference\":\"primary\"}"));
+        }
+    }
+
+    @Test
+    public void testUsingDefaultExecution_WriteConcern() throws Exception {
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn("{}");
+
+        LightblueClientConfiguration c = new LightblueClientConfiguration();
+        c.setWriteConcern("majority");
+
+        try (LightblueHttpClient httpClient = new LightblueHttpClient(c, httpTransport)) {
+            DataFindRequest findRequest = new DataFindRequest("someEntity");
+            findRequest.where(Query.withValue("a = b"));
+            findRequest.select(Projection.includeField("foo"));
+
+            httpClient.data(findRequest);
+
+            String body = findRequest.getBody();
+            Assert.assertTrue(body.contains(
+                    "\"execution\":{\"writeConcern\":\"majority\"}"));
+        }
+    }
+
+    @Test
+    public void testUsingDefaultExecution_MaxQueryTimeMS() throws Exception {
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn("{}");
+
+        LightblueClientConfiguration c = new LightblueClientConfiguration();
+        c.setMaxQueryTimeMS(1000);
+
+        try (LightblueHttpClient httpClient = new LightblueHttpClient(c, httpTransport)) {
+            DataFindRequest findRequest = new DataFindRequest("someEntity");
+            findRequest.where(Query.withValue("a = b"));
+            findRequest.select(Projection.includeField("foo"));
+
+            httpClient.data(findRequest);
+
+            String body = findRequest.getBody();
+            Assert.assertTrue(body.contains(
+                    "\"execution\":{\"maxQueryTimeMS\":1000}"));
+        }
+    }
+
+    /**
+     * If Execution is explicitly set on the request, then that should override the values in lightblue-client.properties
+     */
+    @Test
+    public void testUsingDefaultExecution_OverrideExecution() throws Exception {
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn("{}");
+
+        LightblueClientConfiguration c = new LightblueClientConfiguration();
+        c.setReadPreference(ReadPreference.primary);
+
+        try (LightblueHttpClient httpClient = new LightblueHttpClient(c, httpTransport)) {
+            DataFindRequest findRequest = new DataFindRequest("someEntity");
+            findRequest.where(Query.withValue("a = b"));
+            findRequest.select(Projection.includeField("foo"));
+            findRequest.execution(Execution.MongoController.withReadPreference(ReadPreference.nearest));
+
+            httpClient.data(findRequest);
+
+            String body = findRequest.getBody();
+            Assert.assertTrue(body.contains(
+                    "\"execution\":{\"readPreference\":\"nearest\"}"));
+        }
+    }
 
 }

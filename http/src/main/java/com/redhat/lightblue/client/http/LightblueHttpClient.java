@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueException;
@@ -23,6 +24,7 @@ import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.http.transport.JavaNetHttpTransport;
 import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueDataWithExecutionRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
@@ -38,6 +40,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     private final HttpTransport httpTransport;
     private final LightblueClientConfiguration configuration;
     private final ObjectMapper mapper;
+    private Execution execution = null;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
@@ -233,6 +236,13 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     @Override
     public DefaultLightblueDataResponse data(LightblueRequest lightblueRequest)
             throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
+        if (lightblueRequest instanceof AbstractLightblueDataWithExecutionRequest) {
+            AbstractLightblueDataWithExecutionRequest executionRequest = (AbstractLightblueDataWithExecutionRequest) lightblueRequest;
+            if (!executionRequest.hasExecution()) {
+                executionRequest.execution(getExecutionInstance());
+            }
+        }
+        
         LOGGER.debug("Calling data service with lightblueRequest: {}", lightblueRequest.toString());
         return new DefaultLightblueDataResponse(
                 callService(lightblueRequest, configuration.getDataServiceURI()),
@@ -285,6 +295,38 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
             LOGGER.error("Error creating HTTP client: ", e);
             throw new RuntimeException(e);
         }
+    }
+    
+    private Execution getExecutionInstance() {
+        if (execution == null) {
+            synchronized (this) {
+                if (execution == null) {
+                    if (configuration.getReadPreference() != null) {
+                        execution = Execution.MongoController.withReadPreference(configuration.getReadPreference());
+                    }
+                    
+                    if (configuration.getWriteConcern() != null) {
+                        if(execution == null){
+                            execution = Execution.MongoController.withWriteConcern(configuration.getWriteConcern());
+                        }
+                        else {
+                            execution.addWriteConcern(configuration.getWriteConcern());
+                        }
+                    }
+                    
+                    if (configuration.getMaxQueryTimeMS() != null) {
+                        if(execution == null){
+                            execution = Execution.MongoController.withMaxQueryTimeMS(configuration.getMaxQueryTimeMS());
+                        }
+                        else {
+                            execution.addMaxQueryTimeMS(configuration.getMaxQueryTimeMS());
+                        }
+                    }
+                }
+            }
+        }
+
+        return execution;
     }
 
 }
