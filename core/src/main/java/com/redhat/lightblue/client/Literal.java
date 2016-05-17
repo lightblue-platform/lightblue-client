@@ -70,6 +70,25 @@ public class Literal extends ExpressionPart implements
             node=(JsonNode)x;
         } else if(x instanceof Literal) {
             node=((Literal)x).node;
+        } else if (x.getClass().isArray()) {
+            if (x instanceof Literal[]) {
+                node = toJson((Literal[]) x);
+            }
+            else if (x instanceof Object[]) {
+                node = toJson(values((Object[]) x));
+            }
+            else if (x instanceof int[]) {
+                node = toJson(values((int[]) x));
+            } 
+            else if (x instanceof long[]) {
+                node = toJson(values((long[]) x));
+            }
+            else if (x instanceof boolean[]) {
+                node = toJson(values((boolean[]) x));
+            }
+            else {
+                throw new UnsupportedOperationException("Array of type " + x.getClass() + " is not supported.");
+            }
         } else {
             node=JsonNodeFactory.instance.textNode(x.toString());
         }
@@ -103,6 +122,11 @@ public class Literal extends ExpressionPart implements
         return new Literal(b);
     }
 
+    /**
+     * @see Literal#value(Object)
+     * TODO method should be made private and not actually deleted
+     */
+    @Deprecated
     public static Literal[] values(int...v) {
         Literal[] ret=new Literal[v.length];
         for(int i=0;i<ret.length;i++)
@@ -110,13 +134,30 @@ public class Literal extends ExpressionPart implements
         return ret;
     }
 
+    /**
+     * @see Literal#value(Object)
+     * TODO method should be made private and not actually deleted
+     */
+    @Deprecated
     public static Literal[] values(long...v) {
         Literal[] ret=new Literal[v.length];
         for(int i=0;i<ret.length;i++)
             ret[i]=Literal.value(v[i]);
         return ret;
     }
+    
+    private static Literal[] values(boolean... v){
+        Literal[] ret = new Literal[v.length];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = Literal.value(v[i]);
+        }
+        return ret;
+    }
 
+    /**
+     * @see Literal#value(Object)
+     */
+    @Deprecated
     public static Literal[] numbers(Number...v) {
         Literal[] ret=new Literal[v.length];
         for(int i=0;i<ret.length;i++)
@@ -124,7 +165,18 @@ public class Literal extends ExpressionPart implements
         return ret;
     }
 
+    /**
+     * @see Literal#value(Object)
+     */
+    @Deprecated
     public static Literal[] values(String...v) {
+        Literal[] ret=new Literal[v.length];
+        for(int i=0;i<ret.length;i++)
+            ret[i]=Literal.value(v[i]);
+        return ret;
+    }
+    
+    private static Literal[] values(Object... v) {
         Literal[] ret=new Literal[v.length];
         for(int i=0;i<ret.length;i++)
             ret[i]=Literal.value(v[i]);
