@@ -52,7 +52,7 @@ public class TestDataFindRequest {
     @Test
     public void testExecutionReadPreference() {
         DataFindRequest request = new DataFindRequest("fake");
-        request.execution(Execution.MongoController.withReadPreference(Execution.MongoController.ReadPreference.primaryPreferred));
+        request.execution(Execution.withReadPreference(Execution.ReadPreference.primaryPreferred));
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"execution\":{\"readPreference\":\"primaryPreferred\"}"));
@@ -61,7 +61,7 @@ public class TestDataFindRequest {
     @Test
     public void testExecutionWriteConcern() {
         DataFindRequest request = new DataFindRequest("fake");
-        request.execution(Execution.MongoController.withWriteConcern("majority"));
+        request.execution(Execution.withWriteConcern("majority"));
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"execution\":{\"writeConcern\":\"majority\"}"));
@@ -70,7 +70,7 @@ public class TestDataFindRequest {
     @Test
     public void testExecutionMaxQueryTimeMS() {
         DataFindRequest request = new DataFindRequest("fake");
-        request.execution(Execution.MongoController.withMaxQueryTimeMS(1000));
+        request.execution(Execution.withMaxQueryTimeMS(1000));
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"execution\":{\"maxQueryTimeMS\":1000"));

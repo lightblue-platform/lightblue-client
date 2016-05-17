@@ -50,7 +50,7 @@ public class TestDataUpdateRequest {
     @Test
     public void testExecutionReadPreference() {
         DataUpdateRequest request = new DataUpdateRequest("fake");
-        request.execution(Execution.MongoController.withReadPreference(Execution.MongoController.ReadPreference.primaryPreferred));
+        request.execution(Execution.withReadPreference(Execution.ReadPreference.primaryPreferred));
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"execution\":{\"readPreference\":\"primaryPreferred\"}"));
@@ -59,7 +59,7 @@ public class TestDataUpdateRequest {
     @Test
     public void testExecutionWriteConcern() {
         DataUpdateRequest request = new DataUpdateRequest("fake");
-        request.execution(Execution.MongoController.withWriteConcern("majority"));
+        request.execution(Execution.withWriteConcern("majority"));
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"execution\":{\"writeConcern\":\"majority\"}"));
@@ -68,7 +68,7 @@ public class TestDataUpdateRequest {
     @Test
     public void testExecutionMaxQueryTimeMS() {
         DataUpdateRequest request = new DataUpdateRequest("fake");
-        request.execution(Execution.MongoController.withMaxQueryTimeMS(1000));
+        request.execution(Execution.withMaxQueryTimeMS(1000));
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"execution\":{\"maxQueryTimeMS\":1000"));

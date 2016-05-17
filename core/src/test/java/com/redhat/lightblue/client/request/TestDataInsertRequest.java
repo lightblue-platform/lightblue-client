@@ -35,7 +35,7 @@ public class TestDataInsertRequest {
     @Test
     public void testExecutionReadPreference() {
         DataInsertRequest request = new DataInsertRequest("fake");
-        request.execution(Execution.MongoController.withReadPreference(Execution.MongoController.ReadPreference.primaryPreferred));
+        request.execution(Execution.withReadPreference(Execution.ReadPreference.primaryPreferred));
         request.create("");
 
         assertTrue(request.getBody(), request.getBody().contains(
@@ -45,7 +45,7 @@ public class TestDataInsertRequest {
     @Test
     public void testExecutionWriteConcern() {
         DataInsertRequest request = new DataInsertRequest("fake");
-        request.execution(Execution.MongoController.withWriteConcern("majority"));
+        request.execution(Execution.withWriteConcern("majority"));
         request.create("");
 
         assertTrue(request.getBody(), request.getBody().contains(
@@ -55,7 +55,7 @@ public class TestDataInsertRequest {
     @Test
     public void testExecutionMaxQueryTimeMS() {
         DataInsertRequest request = new DataInsertRequest("fake");
-        request.execution(Execution.MongoController.withMaxQueryTimeMS(1000));
+        request.execution(Execution.withMaxQueryTimeMS(1000));
         request.create("");
 
         assertTrue(request.getBody(), request.getBody().contains(
