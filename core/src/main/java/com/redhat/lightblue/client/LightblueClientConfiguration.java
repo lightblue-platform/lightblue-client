@@ -2,7 +2,7 @@ package com.redhat.lightblue.client;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.redhat.lightblue.client.request.execution.MongoExecution.ReadPreference;
+import com.redhat.lightblue.client.MongoExecution.ReadPreference;
 
 public class LightblueClientConfiguration {
 
@@ -32,6 +32,7 @@ public class LightblueClientConfiguration {
     private ReadPreference readPreference;
     private String writeConcern;
     private Integer maxQueryTimeMS;
+    private transient Execution execution;
 
     public LightblueClientConfiguration() {
     }
@@ -154,6 +155,28 @@ public class LightblueClientConfiguration {
 
     public void setMaxQueryTimeMS(Integer maxQueryTimeMS) {
         this.maxQueryTimeMS = maxQueryTimeMS;
+    }
+
+    public Execution getExecution() {
+        if (execution == null) {
+            MongoExecution mongoExecution = new MongoExecution();
+            if (getReadPreference() != null) {
+                mongoExecution.addReadPreference(getReadPreference());
+                execution = mongoExecution;
+            }
+
+            if (getWriteConcern() != null) {
+                mongoExecution.addWriteConcern(getWriteConcern());
+                execution = mongoExecution;
+            }
+
+            if (getMaxQueryTimeMS() != null) {
+                mongoExecution.addMaxQueryTimeMS(getMaxQueryTimeMS());
+                execution = mongoExecution;
+            }
+        }
+
+        return execution;
     }
 
     @Override

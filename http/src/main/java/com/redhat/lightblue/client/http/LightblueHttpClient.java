@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueException;
@@ -25,8 +26,6 @@ import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataWithExecutionRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
-import com.redhat.lightblue.client.request.execution.Execution;
-import com.redhat.lightblue.client.request.execution.MongoExecution;
 import com.redhat.lightblue.client.response.DefaultLightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueMetadataResponse;
@@ -41,7 +40,6 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     private final HttpTransport httpTransport;
     private final LightblueClientConfiguration configuration;
     private final ObjectMapper mapper;
-    private Execution execution = null;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
@@ -240,7 +238,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         if (lightblueRequest instanceof AbstractLightblueDataWithExecutionRequest) {
             AbstractLightblueDataWithExecutionRequest executionRequest = (AbstractLightblueDataWithExecutionRequest) lightblueRequest;
             if (!executionRequest.hasExecution()) {
-                executionRequest.execution(getExecutionInstance());
+                executionRequest.execution(configuration.getExecution());
             }
         }
 
@@ -296,41 +294,6 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
             LOGGER.error("Error creating HTTP client: ", e);
             throw new RuntimeException(e);
         }
-    }
-
-    private Execution getExecutionInstance() {
-        if (execution == null) {
-            synchronized (this) {
-                if (execution == null) {
-                    MongoExecution mongoExecution = null;
-                    if (configuration.getReadPreference() != null) {
-                        mongoExecution = MongoExecution.withReadPreference(configuration.getReadPreference());
-                    }
-
-                    if (configuration.getWriteConcern() != null) {
-                        if(mongoExecution == null){
-                            mongoExecution = MongoExecution.withWriteConcern(configuration.getWriteConcern());
-                        }
-                        else {
-                            mongoExecution.addWriteConcern(configuration.getWriteConcern());
-                        }
-                    }
-
-                    if (configuration.getMaxQueryTimeMS() != null) {
-                        if(mongoExecution == null){
-                            mongoExecution = MongoExecution.withMaxQueryTimeMS(configuration.getMaxQueryTimeMS());
-                        }
-                        else {
-                            mongoExecution.addMaxQueryTimeMS(configuration.getMaxQueryTimeMS());
-                        }
-                    }
-
-                    execution = mongoExecution;
-                }
-            }
-        }
-
-        return execution;
     }
 
 }

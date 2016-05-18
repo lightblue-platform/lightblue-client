@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
-import com.redhat.lightblue.client.request.execution.MongoExecution.ReadPreference;
+import com.redhat.lightblue.client.MongoExecution.ReadPreference;
 
 /**
  * Provides factory methods for
@@ -58,9 +58,9 @@ public final class PropertiesLightblueClientConfiguration {
     private static final String CERT_FILE_PATH_KEY = "certFilePath";
     private static final String CERT_PASSWORD_KEY = "certPassword";
     private static final String COMPRESSION = "compression";
-    private static final String READ_PREFERENCE = "readPreference";
-    private static final String WRITE_CONCERN = "writeConcern";
-    private static final String MAX_QUERY_TIME_MS = "maxQueryTimeMS";
+    private static final String MONGO_READ_PREFERENCE = "execution.mongo.readPreference";
+    private static final String MONGO_WRITE_CONCERN = "execution.mongo.writeConcern";
+    private static final String MONGO_MAX_QUERY_TIME_MS = "execution.mongo.maxQueryTimeMS";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesLightblueClientConfiguration.class);
 
@@ -185,15 +185,15 @@ public final class PropertiesLightblueClientConfiguration {
         if (properties.containsKey(COMPRESSION)) {
             config.setCompression(Compression.parseCompression(properties.getProperty(COMPRESSION)));
         }
-        if (properties.containsKey(READ_PREFERENCE)) {
+        if (properties.containsKey(MONGO_READ_PREFERENCE)) {
             config.setReadPreference(ReadPreference.valueOf(
-                    properties.getProperty(READ_PREFERENCE)));
+                    properties.getProperty(MONGO_READ_PREFERENCE)));
         }
-        if (properties.containsKey(WRITE_CONCERN)) {
-            config.setWriteConcern(properties.getProperty(WRITE_CONCERN));
+        if (properties.containsKey(MONGO_WRITE_CONCERN)) {
+            config.setWriteConcern(properties.getProperty(MONGO_WRITE_CONCERN));
         }
-        if (properties.containsKey(MAX_QUERY_TIME_MS)) {
-            config.setMaxQueryTimeMS(Integer.parseInt(properties.getProperty(MAX_QUERY_TIME_MS)));
+        if (properties.containsKey(MONGO_MAX_QUERY_TIME_MS)) {
+            config.setMaxQueryTimeMS(Integer.parseInt(properties.getProperty(MONGO_MAX_QUERY_TIME_MS)));
         }
 
         return config;

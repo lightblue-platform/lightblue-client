@@ -2,7 +2,7 @@ package com.redhat.lightblue.client.request;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.redhat.lightblue.client.request.execution.Execution;
+import com.redhat.lightblue.client.Execution;
 
 public abstract class AbstractLightblueDataWithExecutionRequest extends AbstractLightblueDataRequest {
 
