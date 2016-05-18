@@ -6,9 +6,10 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.request.data.DataSaveRequest;
+import com.redhat.lightblue.client.request.execution.Execution;
+import com.redhat.lightblue.client.request.execution.MongoExecution;
 
 public class TestDataSaveRequest {
 
@@ -35,7 +36,7 @@ public class TestDataSaveRequest {
     @Test
     public void testExecutionReadPreference() {
         DataSaveRequest request = new DataSaveRequest("fake");
-        request.execution(Execution.MongoController.withReadPreference(Execution.MongoController.ReadPreference.primaryPreferred));
+        request.execution(MongoExecution.withReadPreference(MongoExecution.ReadPreference.primaryPreferred));
         request.create("");
 
         assertTrue(request.getBody(), request.getBody().contains(
@@ -45,7 +46,7 @@ public class TestDataSaveRequest {
     @Test
     public void testExecutionWriteConcern() {
         DataSaveRequest request = new DataSaveRequest("fake");
-        request.execution(Execution.MongoController.withWriteConcern("majority"));
+        request.execution(MongoExecution.withWriteConcern("majority"));
         request.create("");
 
         assertTrue(request.getBody(), request.getBody().contains(
@@ -55,7 +56,7 @@ public class TestDataSaveRequest {
     @Test
     public void testExecutionMaxQueryTimeMS() {
         DataSaveRequest request = new DataSaveRequest("fake");
-        request.execution(Execution.MongoController.withMaxQueryTimeMS(1000));
+        request.execution(MongoExecution.withMaxQueryTimeMS(1000));
         request.create("");
 
         assertTrue(request.getBody(), request.getBody().contains(
