@@ -21,9 +21,9 @@ public class LightblueHttpClientException extends LightblueException {
     }
 
     public LightblueHttpClientException(Throwable cause, int httpStatus, String responseBody) {
-        super("Lightblue http response status: "+httpStatus, cause);
-        this.httpResponseBody=responseBody;
-        this.httpStatus=httpStatus;
+        super("Lightblue http response status: " + httpStatus, cause);
+        this.httpResponseBody = responseBody;
+        this.httpStatus = httpStatus;
     }
 
     public String getHttpResponseBody() {

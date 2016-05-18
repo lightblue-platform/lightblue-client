@@ -14,7 +14,7 @@ public class TestGenerateRequest {
     public void testGenerateCall() {
         GenerateRequest request = new GenerateRequest("fake");
         request.path("x.y.*.z").nValues(100);
-        Assert.assertEquals("/generate/fake/x.y.*.z?n=100",request.getRestURI(""));
+        Assert.assertEquals("/generate/fake/x.y.*.z?n=100", request.getRestURI(""));
     }
 
 }

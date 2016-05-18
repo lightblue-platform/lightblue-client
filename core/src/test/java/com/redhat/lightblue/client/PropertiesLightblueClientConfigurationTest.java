@@ -51,8 +51,8 @@ public class PropertiesLightblueClientConfigurationTest {
         String bogusResource = "this.does.not.exist.properties";
 
         exception.expect(LightblueClientConfigurationException.class);
-        exception.expectMessage(CoreMatchers.equalTo("Could not find properties resource at " +
-                bogusResource));
+        exception.expectMessage(CoreMatchers.equalTo("Could not find properties resource at "
+                + bogusResource));
 
         PropertiesLightblueClientConfiguration.fromResource(bogusResource);
     }
@@ -101,7 +101,7 @@ public class PropertiesLightblueClientConfigurationTest {
     @Test
     public void shouldLookup_certAlias_PropertyForCertAlias() {
         Properties properties = new Properties();
-        properties.setProperty("certFilePath", "/path/to/theCert.pkcs12"); 
+        properties.setProperty("certFilePath", "/path/to/theCert.pkcs12");
 
         LightblueClientConfiguration config = PropertiesLightblueClientConfiguration.fromObject(properties);
 

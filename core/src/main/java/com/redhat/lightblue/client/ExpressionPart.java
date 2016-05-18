@@ -11,7 +11,7 @@ public abstract class ExpressionPart implements JsonObj {
     protected final JsonNode node;
 
     protected ExpressionPart(JsonNode node) {
-        this.node=node;
+        this.node = node;
     }
 
     @Override

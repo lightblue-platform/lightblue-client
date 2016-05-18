@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.redhat.lightblue.client.request;
 
@@ -23,8 +23,9 @@ public class DataBulkRequest extends AbstractDataBulkRequest<AbstractLightblueDa
         ObjectNode root = JsonNodeFactory.instance.objectNode();
         ArrayNode reqs = JsonNodeFactory.instance.arrayNode();
         for (AbstractLightblueDataRequest req : requests) {
-            if (req == null)
+            if (req == null) {
                 continue;
+            }
             ObjectNode seqNode = JsonNodeFactory.instance.objectNode();
             seqNode.set("seq", JsonNodeFactory.instance.numberNode(reqs.size()));
             if (req.getOperation() != null) {

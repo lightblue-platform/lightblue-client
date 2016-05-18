@@ -35,7 +35,7 @@ public class StubHttpServletRequest implements HttpServletRequest {
     private final byte[] body;
 
     public StubHttpServletRequest(String url, String method, String body, String contentType,
-            String urlPattern) throws MalformedURLException {
+                                  String urlPattern) throws MalformedURLException {
         this.url = new URL(url);
         this.method = method;
         this.contentType = contentType;

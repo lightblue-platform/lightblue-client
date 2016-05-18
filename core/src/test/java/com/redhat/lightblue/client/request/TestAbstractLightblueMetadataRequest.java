@@ -15,25 +15,25 @@ public class TestAbstractLightblueMetadataRequest extends AbstractLightblueReque
             return entityVersion;
         }
 
-		@Override
-		public HttpMethod getHttpMethod() {
-			return null;
-		}
+        @Override
+        public HttpMethod getHttpMethod() {
+            return null;
+        }
 
-		@Override
-		public String getOperationPathParam() {
-			return metadataOperation;
-		}
+        @Override
+        public String getOperationPathParam() {
+            return metadataOperation;
+        }
 
         @Override
         public JsonNode getBodyJson() {
             return null;
         }
-	};
+    };
 
-	@Test
-	public void testGetRestURI() {
-		Assert.assertEquals(finalMetadataURI, testRequest.getRestURI(baseURI));
-	}
+    @Test
+    public void testGetRestURI() {
+        Assert.assertEquals(finalMetadataURI, testRequest.getRestURI(baseURI));
+    }
 
 }

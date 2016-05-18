@@ -34,11 +34,14 @@ public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest
     }
 
     /**
-     * Adds a collection of requests to the end of the current request chain in iteration order.
+     * Adds a collection of requests to the end of the current request chain in
+     * iteration order.
      *
-     * <p>As the order of responses depends on the order of requests, use a collection with a
-     * reliable iteration order if you need to get a specific response for a specific request by
-     * index. Otherwise, you can also retrieve the response for a specific request using
+     * <p>
+     * As the order of responses depends on the order of requests, use a
+     * collection with a reliable iteration order if you need to get a specific
+     * response for a specific request by index. Otherwise, you can also
+     * retrieve the response for a specific request using
      * {@link com.redhat.lightblue.client.response.LightblueBulkDataResponse#getResponse(LightblueRequest)}.
      *
      * @param requests
@@ -50,7 +53,8 @@ public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest
     }
 
     /**
-     * Inserts a request at the given index. This method should not be preferred over the before / after methods.
+     * Inserts a request at the given index. This method should not be preferred
+     * over the before / after methods.
      *
      * @param request
      * @param index
@@ -62,8 +66,9 @@ public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest
     }
 
     /**
-     * Inserts a request before another specified request. This guarantees that the first request parameter will be executed, sequentially, before the second request parameter. It
-     * does not guarantee consecutive execution.
+     * Inserts a request before another specified request. This guarantees that
+     * the first request parameter will be executed, sequentially, before the
+     * second request parameter. It does not guarantee consecutive execution.
      *
      * @param request
      * @param before
@@ -75,8 +80,9 @@ public abstract class AbstractDataBulkRequest<E extends AbstractLightblueRequest
     }
 
     /**
-     * Inserts a request after another specified request. This guarantees that the first request parameter will be executed, sequentially, after the second request parameter. It
-     * does not guarantee consecutive execution.
+     * Inserts a request after another specified request. This guarantees that
+     * the first request parameter will be executed, sequentially, after the
+     * second request parameter. It does not guarantee consecutive execution.
      *
      * @param request
      * @param after
