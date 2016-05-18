@@ -31,7 +31,7 @@ public class TestDataUpdateRequest {
     }
 
     @Test
-    public void testProjectionsAsList(){
+    public void testProjectionsAsList() {
         DataUpdateRequest request = new DataUpdateRequest("fake");
         request.returns(Arrays.asList(Projection.includeField("*")));
 

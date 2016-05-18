@@ -30,8 +30,8 @@ public class BulkDataTest extends LightblueClientTestHarness {
 
     @Override
     protected JsonNode[] getMetadataJsonNodes() throws Exception {
-        return new JsonNode[] {
-                loadJsonNode("metadata/country.json")
+        return new JsonNode[]{
+            loadJsonNode("metadata/country.json")
         };
     }
 

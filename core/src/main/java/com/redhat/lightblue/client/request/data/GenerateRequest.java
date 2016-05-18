@@ -1,6 +1,5 @@
 package com.redhat.lightblue.client.request.data;
 
-
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,29 +15,29 @@ import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 /**
  * Generate a value using a field's value generator
  *
- * path: Path for the field whose value generator will be invoked
- * n: Number of values to generate, defaults to 1
+ * path: Path for the field whose value generator will be invoked n: Number of
+ * values to generate, defaults to 1
  *
  * Parse the results as:
  * <pre>
  *	String[] results = client.data(request, String[].class);
  * </pre>
- * 
+ *
  */
 public class GenerateRequest extends AbstractLightblueDataRequest {
 
     private Integer n;
     private String path;
 
-    public GenerateRequest(String entityName, String entityVersion,String path,int n) {
+    public GenerateRequest(String entityName, String entityVersion, String path, int n) {
         super(entityName, entityVersion);
-        this.path=path;
-        this.n=n;
+        this.path = path;
+        this.n = n;
     }
 
-    public GenerateRequest(String entityName, String entityVersion,String path) {
+    public GenerateRequest(String entityName, String entityVersion, String path) {
         super(entityName, entityVersion);
-        this.path=path;
+        this.path = path;
     }
 
     public GenerateRequest(String entityName, String entityVersion) {
@@ -49,12 +48,11 @@ public class GenerateRequest extends AbstractLightblueDataRequest {
         super(entityName);
     }
 
-
     /**
      * The path for the field whole value generator will be invoked
      */
     public GenerateRequest path(String path) {
-        this.path=path;
+        this.path = path;
         return this;
     }
 
@@ -62,19 +60,21 @@ public class GenerateRequest extends AbstractLightblueDataRequest {
      * Number of values to generate
      */
     public GenerateRequest nValues(int n) {
-        this.n=n;
+        this.n = n;
         return this;
     }
 
     @Override
     public String getRestURI(String baseServiceURI) {
-        StringBuilder bld=new StringBuilder();
+        StringBuilder bld = new StringBuilder();
         bld.append(super.getRestURI(baseServiceURI));
-        if(path==null)
+        if (path == null) {
             throw new NullPointerException("path");
-        appendToURI(bld,path);
-        if(n!=null)
-            appendToURI(bld,"n",n.toString());
+        }
+        appendToURI(bld, path);
+        if (n != null) {
+            appendToURI(bld, "n", n.toString());
+        }
         return bld.toString();
     }
 

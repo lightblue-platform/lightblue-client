@@ -47,7 +47,7 @@ public class LockResponse extends AbstractLightblueResponse {
     protected void assertNoErrors() throws LightblueResponseException, LightblueException {
         Error[] errors = getLightblueErrors();
         if (errors != null) {
-            for(Error error : errors){
+            for (Error error : errors) {
                 Matcher m = INVALID_LOCK.matcher(error.getMsg());
                 if (m.matches()) {
                     throw new InvalidLockException(m.group(1));

@@ -7,11 +7,11 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataCreateSchemaRequest extends AbstractLightblueRequestTest {
 
-	@Test
-	public void testGetOperationPathParam() {
+    @Test
+    public void testGetOperationPathParam() {
         MetadataCreateSchemaRequest request = new MetadataCreateSchemaRequest(entityName, entityVersion);
 
         Assert.assertEquals("schema=" + entityVersion, request.getOperationPathParam());
-	}
+    }
 
 }

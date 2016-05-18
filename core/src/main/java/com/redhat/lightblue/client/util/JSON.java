@@ -31,10 +31,13 @@ public final class JSON {
     private static ObjectMapper objectMapper;
 
     /**
-     * <p>Sets the default {@link ObjectMapper} that will be used throughout
-     * the lightblue-client unless otherwise not specified.</p>
-     * <p>This is an optional setter, in that if not set a prepared
-     * default is already available.</p>
+     * <p>
+     * Sets the default {@link ObjectMapper} that will be used throughout the
+     * lightblue-client unless otherwise not specified.</p>
+     * <p>
+     * This is an optional setter, in that if not set a prepared default is
+     * already available.</p>
+     *
      * @param m
      */
     public static void setDefaultObjectMapper(ObjectMapper m) {
@@ -87,6 +90,7 @@ public final class JSON {
         return mapper.valueToTree(obj);
     }
 
-    private JSON() {}
+    private JSON() {
+    }
 
 }

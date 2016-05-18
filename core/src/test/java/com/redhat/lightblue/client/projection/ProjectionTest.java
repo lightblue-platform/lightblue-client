@@ -51,11 +51,11 @@ public class ProjectionTest {
 
     @Test
     public void testNestedProjectionShouldBeFlattened() throws JSONException {
-        Projection p1=Projection.project(Projection.includeField("something"),
-                                         Projection.includeField("otherthing"));
-        Projection p2=Projection.project(p1,Projection.includeField("thirdThing"));
+        Projection p1 = Projection.project(Projection.includeField("something"),
+                Projection.includeField("otherthing"));
+        Projection p2 = Projection.project(p1, Projection.includeField("thirdThing"));
         Assert.assertTrue(p2.toJson() instanceof ArrayNode);
-        Assert.assertEquals(3,p2.toJson().size());
+        Assert.assertEquals(3, p2.toJson().size());
     }
 
 }

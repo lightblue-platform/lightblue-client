@@ -48,7 +48,7 @@ public class CountryDAOTest extends LightblueClientTestHarness {
 
     @Override
     protected JsonNode[] getMetadataJsonNodes() throws Exception {
-        return new JsonNode[] { loadJsonNode("metadata/country.json") };
+        return new JsonNode[]{loadJsonNode("metadata/country.json")};
     }
 
     private Country insertPL() throws LightblueException {
@@ -121,7 +121,6 @@ public class CountryDAOTest extends LightblueClientTestHarness {
         assertEquals(1, countries.length);
 
         // ---
-
         request = new DataFindRequest(Country.objectType, Country.objectVersion);
         request.select(Projection.includeField("*"));
         request.where(Query.withMatchingString("iso2Code", "pl", false));

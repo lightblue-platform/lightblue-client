@@ -1,4 +1,5 @@
 package com.redhat.lightblue.client.http.testing.doubles;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import com.redhat.lightblue.client.http.HttpMethod;

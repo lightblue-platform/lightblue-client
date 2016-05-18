@@ -101,7 +101,7 @@ public final class PropertiesLightblueClientConfiguration {
      * @param classLoader The class loader to use to find the resource.
      */
     public static LightblueClientConfiguration fromResource(String resourcePath,
-            ClassLoader classLoader) {
+                                                            ClassLoader classLoader) {
         InputStream propertiesStream = classLoader.getResourceAsStream(resourcePath);
 
         if (propertiesStream == null) {
@@ -149,6 +149,7 @@ public final class PropertiesLightblueClientConfiguration {
 
     /**
      * Reads the {@link InputStream} and substitutes system properties.
+     *
      * @return {@link Reader}
      */
     private static Reader loadInputStream(InputStream propertiesStream) throws IOException {
@@ -178,11 +179,13 @@ public final class PropertiesLightblueClientConfiguration {
         config.setDataServiceURI(properties.getProperty(DATA_SERVICE_URI_KEY));
         config.setMetadataServiceURI(properties.getProperty(METADATA_SERVICE_URI_KEY));
         config.setUseCertAuth(Boolean.parseBoolean(properties.getProperty(USE_CERT_AUTH_KEY)));
-        if (properties.containsKey(COMPRESSION))
+        if (properties.containsKey(COMPRESSION)) {
             config.setCompression(Compression.parseCompression(properties.getProperty(COMPRESSION)));
+        }
 
         return config;
     }
 
-    private PropertiesLightblueClientConfiguration() {}
+    private PropertiesLightblueClientConfiguration() {
+    }
 }

@@ -25,7 +25,7 @@ public class TestDataFindRequest extends LightblueClientTestHarness {
     @Override
     protected JsonNode[] getMetadataJsonNodes() throws Exception {
         return new JsonNode[]{
-                loadJsonNode("./metadata/country.json")
+            loadJsonNode("./metadata/country.json")
         };
     }
 
