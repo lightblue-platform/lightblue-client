@@ -16,9 +16,9 @@ import com.redhat.lightblue.client.util.JSON;
  * A Literal value, backed by a JsonNode
  */
 public class Literal extends ExpressionPart implements
-                                                Update.SetLiteral,
-                                                Update.AddLiteral,
-                                                Update.AppendInsertLiteral {
+        Update.SetLiteral,
+        Update.AddLiteral,
+        Update.AppendInsertLiteral {
 
     public Literal(int i) {
         super(JsonNodeFactory.instance.numberNode(i));
@@ -37,7 +37,7 @@ public class Literal extends ExpressionPart implements
     }
 
     public Literal(Date d) {
-        this((Object)d);
+        this((Object) d);
     }
 
     public Literal(Object x) {
@@ -46,51 +46,46 @@ public class Literal extends ExpressionPart implements
 
     public static JsonNode valueToJson(Object x) {
         JsonNode node;
-        if(x==null) {
-            node=JsonNodeFactory.instance.nullNode();
-        } else if(x instanceof Date) {
-            node=JsonNodeFactory.instance.textNode(ClientConstants.getDateFormat().format((Date)x));
-        }  else if(x instanceof Number) {
+        if (x == null) {
+            node = JsonNodeFactory.instance.nullNode();
+        } else if (x instanceof Date) {
+            node = JsonNodeFactory.instance.textNode(ClientConstants.getDateFormat().format((Date) x));
+        } else if (x instanceof Number) {
             if (x instanceof BigDecimal) {
-                node=JsonNodeFactory.instance.numberNode((BigDecimal) x);
+                node = JsonNodeFactory.instance.numberNode((BigDecimal) x);
             } else if (x instanceof BigInteger) {
-                node=JsonNodeFactory.instance.numberNode((BigInteger) x);
+                node = JsonNodeFactory.instance.numberNode((BigInteger) x);
             } else if (x instanceof Double) {
-                node=JsonNodeFactory.instance.numberNode((Double) x);
+                node = JsonNodeFactory.instance.numberNode((Double) x);
             } else if (x instanceof Float) {
-                node=JsonNodeFactory.instance.numberNode((Float) x);
+                node = JsonNodeFactory.instance.numberNode((Float) x);
             } else if (x instanceof Long) {
-                node=JsonNodeFactory.instance.numberNode((Long) x);
+                node = JsonNodeFactory.instance.numberNode((Long) x);
             } else {
-                node=JsonNodeFactory.instance.numberNode(((Number) x).intValue());
+                node = JsonNodeFactory.instance.numberNode(((Number) x).intValue());
             }
-        } else if(x instanceof Boolean) {
-            node=JsonNodeFactory.instance.booleanNode((Boolean)x);
-        } else if(x instanceof JsonNode) {
-            node=(JsonNode)x;
-        } else if(x instanceof Literal) {
-            node=((Literal)x).node;
+        } else if (x instanceof Boolean) {
+            node = JsonNodeFactory.instance.booleanNode((Boolean) x);
+        } else if (x instanceof JsonNode) {
+            node = (JsonNode) x;
+        } else if (x instanceof Literal) {
+            node = ((Literal) x).node;
         } else if (x.getClass().isArray()) {
             if (x instanceof Literal[]) {
                 node = toJson((Literal[]) x);
-            }
-            else if (x instanceof Object[]) {
+            } else if (x instanceof Object[]) {
                 node = toJson(values((Object[]) x));
-            }
-            else if (x instanceof int[]) {
+            } else if (x instanceof int[]) {
                 node = toJson(values((int[]) x));
-            } 
-            else if (x instanceof long[]) {
+            } else if (x instanceof long[]) {
                 node = toJson(values((long[]) x));
-            }
-            else if (x instanceof boolean[]) {
+            } else if (x instanceof boolean[]) {
                 node = toJson(values((boolean[]) x));
-            }
-            else {
+            } else {
                 throw new UnsupportedOperationException("Array of type " + x.getClass() + " is not supported.");
             }
         } else {
-            node=JsonNodeFactory.instance.textNode(x.toString());
+            node = JsonNodeFactory.instance.textNode(x.toString());
         }
         return node;
     }
@@ -123,30 +118,32 @@ public class Literal extends ExpressionPart implements
     }
 
     /**
-     * @see Literal#value(Object)
-     * TODO method should be made private and not actually deleted
+     * @see Literal#value(Object) TODO method should be made private and not
+     * actually deleted
      */
     @Deprecated
-    public static Literal[] values(int...v) {
-        Literal[] ret=new Literal[v.length];
-        for(int i=0;i<ret.length;i++)
-            ret[i]=Literal.value(v[i]);
+    public static Literal[] values(int... v) {
+        Literal[] ret = new Literal[v.length];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = Literal.value(v[i]);
+        }
         return ret;
     }
 
     /**
-     * @see Literal#value(Object)
-     * TODO method should be made private and not actually deleted
+     * @see Literal#value(Object) TODO method should be made private and not
+     * actually deleted
      */
     @Deprecated
-    public static Literal[] values(long...v) {
-        Literal[] ret=new Literal[v.length];
-        for(int i=0;i<ret.length;i++)
-            ret[i]=Literal.value(v[i]);
+    public static Literal[] values(long... v) {
+        Literal[] ret = new Literal[v.length];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = Literal.value(v[i]);
+        }
         return ret;
     }
-    
-    private static Literal[] values(boolean... v){
+
+    private static Literal[] values(boolean... v) {
         Literal[] ret = new Literal[v.length];
         for (int i = 0; i < ret.length; i++) {
             ret[i] = Literal.value(v[i]);
@@ -158,10 +155,11 @@ public class Literal extends ExpressionPart implements
      * @see Literal#value(Object)
      */
     @Deprecated
-    public static Literal[] numbers(Number...v) {
-        Literal[] ret=new Literal[v.length];
-        for(int i=0;i<ret.length;i++)
-            ret[i]=Literal.value(v[i]);
+    public static Literal[] numbers(Number... v) {
+        Literal[] ret = new Literal[v.length];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = Literal.value(v[i]);
+        }
         return ret;
     }
 
@@ -169,17 +167,19 @@ public class Literal extends ExpressionPart implements
      * @see Literal#value(Object)
      */
     @Deprecated
-    public static Literal[] values(String...v) {
-        Literal[] ret=new Literal[v.length];
-        for(int i=0;i<ret.length;i++)
-            ret[i]=Literal.value(v[i]);
+    public static Literal[] values(String... v) {
+        Literal[] ret = new Literal[v.length];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = Literal.value(v[i]);
+        }
         return ret;
     }
-    
+
     private static Literal[] values(Object... v) {
-        Literal[] ret=new Literal[v.length];
-        for(int i=0;i<ret.length;i++)
-            ret[i]=Literal.value(v[i]);
+        Literal[] ret = new Literal[v.length];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = Literal.value(v[i]);
+        }
         return ret;
     }
 
@@ -187,14 +187,15 @@ public class Literal extends ExpressionPart implements
         return new EmptyArray();
     }
 
-    public static EmptyObject  emptyObject() {
+    public static EmptyObject emptyObject() {
         return new EmptyObject();
     }
 
     public static JsonNode toJson(Literal[] arr) {
-        ArrayNode node=JsonNodeFactory.instance.arrayNode();
-        for(Literal x:arr)
+        ArrayNode node = JsonNodeFactory.instance.arrayNode();
+        for (Literal x : arr) {
             node.add(x.toJson());
+        }
         return node;
     }
 }

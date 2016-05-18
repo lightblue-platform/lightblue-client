@@ -5,13 +5,13 @@ import org.junit.Test;
 
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
-public class TestMetadataGetEntityMetadataRequest extends AbstractLightblueRequestTest  {
+public class TestMetadataGetEntityMetadataRequest extends AbstractLightblueRequestTest {
 
-	@Test
-	public void testGetOperationPathParam() {
+    @Test
+    public void testGetOperationPathParam() {
         MetadataGetEntityMetadataRequest request = new MetadataGetEntityMetadataRequest(entityName, entityVersion);
 
         Assert.assertEquals(null, request.getOperationPathParam());
-	}
+    }
 
 }

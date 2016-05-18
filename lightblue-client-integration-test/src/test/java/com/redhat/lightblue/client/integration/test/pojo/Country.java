@@ -7,7 +7,8 @@ public class Country {
 
     private String name, iso2Code, iso3Code, optionalField;
 
-    public Country() {}
+    public Country() {
+    }
 
     public Country(String name, String iso2Code, String iso3Code, String optionalField) {
         this.name = name;

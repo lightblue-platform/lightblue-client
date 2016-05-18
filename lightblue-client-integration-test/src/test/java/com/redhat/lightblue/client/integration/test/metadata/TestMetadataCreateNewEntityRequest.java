@@ -10,7 +10,7 @@ import com.redhat.lightblue.client.integration.test.LightblueClientTestHarness;
 import com.redhat.lightblue.client.request.metadata.MetadataCreateNewEntityRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 
-public class TestMetadataCreateNewEntityRequest  extends LightblueClientTestHarness {
+public class TestMetadataCreateNewEntityRequest extends LightblueClientTestHarness {
 
     public TestMetadataCreateNewEntityRequest() throws Exception {
         super();

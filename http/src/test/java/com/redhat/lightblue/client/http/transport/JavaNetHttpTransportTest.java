@@ -40,8 +40,8 @@ import com.redhat.lightblue.client.request.LightblueRequest;
 public class JavaNetHttpTransportTest {
     private HttpURLConnection mockConnection = mock(HttpURLConnection.class);
     private HttpsURLConnection mockSslConnection = mock(HttpsURLConnection.class);
-    private JavaNetHttpTransport.ConnectionFactory mockConnectionFactory =
-            mock(JavaNetHttpTransport.ConnectionFactory.class);
+    private JavaNetHttpTransport.ConnectionFactory mockConnectionFactory
+            = mock(JavaNetHttpTransport.ConnectionFactory.class);
 
     private JavaNetHttpTransport client = new JavaNetHttpTransport(mockConnectionFactory);
 

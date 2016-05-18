@@ -1,6 +1,5 @@
 package com.redhat.lightblue.client.request.data;
 
-
 import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -72,7 +71,9 @@ public class DataFindRequest extends AbstractLightblueDataWithExecutionRequest {
     }
 
     /**
-     * Use {@link #select(List, Integer, Integer)} or {@link #select(Projection[], Integer, Integer)}.
+     * Use {@link #select(List, Integer, Integer)} or
+     * {@link #select(Projection[], Integer, Integer)}.
+     *
      * @param begin - the 'from' parameter to send to lightblue.
      * @param end - the 'to' parameter to send to lightblue.
      */
@@ -89,7 +90,7 @@ public class DataFindRequest extends AbstractLightblueDataWithExecutionRequest {
 
     @Override
     public ObjectNode getBodyJson() {
-        ObjectNode node = (ObjectNode)super.getBodyJson();
+        ObjectNode node = (ObjectNode) super.getBodyJson();
         if (queryExpression != null) {
             node.set("query", queryExpression.toJson());
         }

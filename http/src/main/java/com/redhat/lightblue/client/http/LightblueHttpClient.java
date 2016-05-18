@@ -51,9 +51,9 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
             StringBuilder b = new StringBuilder(128);
             try {
                 b.append("lock/")
-                    .append(URLEncoder.encode(domain, StandardCharsets.UTF_8.name())).append('/')
-                    .append(URLEncoder.encode(callerId, StandardCharsets.UTF_8.name())).append('/')
-                    .append(URLEncoder.encode(resourceId, StandardCharsets.UTF_8.name()));
+                        .append(URLEncoder.encode(domain, StandardCharsets.UTF_8.name())).append('/')
+                        .append(URLEncoder.encode(callerId, StandardCharsets.UTF_8.name())).append('/')
+                        .append(URLEncoder.encode(resourceId, StandardCharsets.UTF_8.name()));
             } catch (UnsupportedEncodingException e) {
                 //Shouldn't happen.
                 throw new RuntimeException("A bad Charset was used.", e);
@@ -159,7 +159,8 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     /**
-     * This constructor will attempt to read the configuration from the default properties file on the classpath.
+     * This constructor will attempt to read the configuration from the default
+     * properties file on the classpath.
      *
      * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
      */
@@ -168,7 +169,8 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     /**
-     * This constructor will attempt to read the configuration from the specified properties file on the file system.
+     * This constructor will attempt to read the configuration from the
+     * specified properties file on the file system.
      *
      * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
      */
@@ -184,11 +186,14 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     /**
-     * This constructor will use a copy of specified configuration object and object mapper.
+     * This constructor will use a copy of specified configuration object and
+     * object mapper.
      *
      * <p>
-     * Without supplying an {@link com.fasterxml.jackson.databind.ObjectMapper} explicitly, a default is shared among all threads ({@link #mapper}). It is injectable here because
-     * of best practices: for further configuration support and unit testing.
+     * Without supplying an {@link com.fasterxml.jackson.databind.ObjectMapper}
+     * explicitly, a default is shared among all threads ({@link #mapper}). It
+     * is injectable here because of best practices: for further configuration
+     * support and unit testing.
      */
     public LightblueHttpClient(LightblueClientConfiguration configuration, ObjectMapper mapper) {
         this(configuration, defaultHttpClientFromConfig(configuration), mapper);

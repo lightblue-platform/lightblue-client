@@ -105,7 +105,7 @@ public final class PropertiesLightblueClientConfiguration {
      * @param classLoader The class loader to use to find the resource.
      */
     public static LightblueClientConfiguration fromResource(String resourcePath,
-            ClassLoader classLoader) {
+                                                            ClassLoader classLoader) {
         InputStream propertiesStream = classLoader.getResourceAsStream(resourcePath);
 
         if (propertiesStream == null) {
@@ -153,6 +153,7 @@ public final class PropertiesLightblueClientConfiguration {
 
     /**
      * Reads the {@link InputStream} and substitutes system properties.
+     *
      * @return {@link Reader}
      */
     private static Reader loadInputStream(InputStream propertiesStream) throws IOException {
@@ -199,5 +200,6 @@ public final class PropertiesLightblueClientConfiguration {
         return config;
     }
 
-    private PropertiesLightblueClientConfiguration() {}
+    private PropertiesLightblueClientConfiguration() {
+    }
 }

@@ -10,7 +10,7 @@ import com.redhat.lightblue.client.integration.test.LightblueClientTestHarness;
 import com.redhat.lightblue.client.request.metadata.MetadataUpdateEntityInfoRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 
-public class TestMetadataUpdateEntityInfoRequest extends LightblueClientTestHarness{
+public class TestMetadataUpdateEntityInfoRequest extends LightblueClientTestHarness {
 
     public TestMetadataUpdateEntityInfoRequest() throws Exception {
         super();

@@ -26,7 +26,6 @@ public class TestMetadataUpdateSchemaStatusRequest extends AbstractLightblueRequ
         Assert.assertEquals("active", request.getOperationPathParam());
     }
 
-
     @Test
     public void testGetRestURI() throws Exception {
         Assert.assertEquals(finalMetadataURIWithComment,

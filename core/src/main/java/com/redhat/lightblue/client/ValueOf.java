@@ -7,6 +7,6 @@ public final class ValueOf extends ExpressionPart implements Update.SetLiteral, 
 
     public ValueOf(String p) {
         super(JsonNodeFactory.instance.objectNode());
-        ((ObjectNode)node).set("$valueOf",JsonNodeFactory.instance.textNode(p));
+        ((ObjectNode) node).set("$valueOf", JsonNodeFactory.instance.textNode(p));
     }
 }

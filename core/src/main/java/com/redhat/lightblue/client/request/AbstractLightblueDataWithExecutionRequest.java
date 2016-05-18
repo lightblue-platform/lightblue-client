@@ -26,13 +26,14 @@ public abstract class AbstractLightblueDataWithExecutionRequest extends Abstract
     }
     
     private void appendExecutionToJson(ObjectNode node) {
-        if (execution != null)
+        if (execution != null) {
             node.set("execution", execution.toJson());
+        }
     }
 
     @Override
     public JsonNode getBodyJson() {
-        ObjectNode node = (ObjectNode)super.getBodyJson();
+        ObjectNode node = (ObjectNode) super.getBodyJson();
         appendExecutionToJson(node);
         return node;
     }

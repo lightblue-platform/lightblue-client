@@ -11,7 +11,6 @@ import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
-
 public class TestDataSaveRequest extends AbstractLightblueRequestTest {
 
     private class TestObj {

@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.node.ContainerNode;
  * // { field:x op:=, rfield: y }
  * Query.withField("x",Query.eq,"y")
  * Query.withField("x=y")
- * 
+ *
  * // { field:x, op:$in, values=[1,2,3] }
  * Query.withValues("x",Query.in,Literal.values(1,2,3))
  * Query.withValues("x $in [1,2,3]")
@@ -44,36 +44,36 @@ import com.fasterxml.jackson.databind.node.ContainerNode;
  * Query.and(Query.withValue("x=1"),Query.withValue("y=2"),Query.not(Query.withValue("z=3")))
  * Query.or(Query.withValue("x=1"),Query.withValue("y=2"),Query.not(Query.withValue("z=3")))
  * Query.logical(Query.and,Query.withValue("x=1"),Query.withValue("y=2"),Query.not(Query.withValue("z=3")))
- * 
+ *
  * // Literal query:
  * Query.query("{ \"field\":\"x\", \"op\":\"=\", \"rvalue\":1}")
- * 
+ *
  * </pre>
  */
 public class Query extends Expression
-    implements Update.UpdateQuery {
+        implements Update.UpdateQuery {
 
-    public static final BinOp eq=BinOp.eq;
-    public static final BinOp neq=BinOp.neq;
-    public static final BinOp lt=BinOp.lt;
-    public static final BinOp gt=BinOp.gt;
-    public static final BinOp lte=BinOp.lte;
-    public static final BinOp gte=BinOp.gte;
+    public static final BinOp eq = BinOp.eq;
+    public static final BinOp neq = BinOp.neq;
+    public static final BinOp lt = BinOp.lt;
+    public static final BinOp gt = BinOp.gt;
+    public static final BinOp lte = BinOp.lte;
+    public static final BinOp gte = BinOp.gte;
 
-    public static final NaryOp in=NaryOp.in;
-    public static final NaryOp nin=NaryOp.nin;
+    public static final NaryOp in = NaryOp.in;
+    public static final NaryOp nin = NaryOp.nin;
 
-    public static final ArrOp any=ArrOp.any;
-    public static final ArrOp all=ArrOp.all;
-    public static final ArrOp non=ArrOp.none;
+    public static final ArrOp any = ArrOp.any;
+    public static final ArrOp all = ArrOp.all;
+    public static final ArrOp non = ArrOp.none;
 
-    public static final LogOp and=LogOp.and;
-    public static final LogOp or=LogOp.or;
+    public static final LogOp and = LogOp.and;
+    public static final LogOp or = LogOp.or;
 
-    public static final int CASE_INSENSITIVE=1;
-    public static final int EXTENDED=2;
-    public static final int MULTILINE=4;
-    public static final int DOTALL=8;
+    public static final int CASE_INSENSITIVE = 1;
+    public static final int EXTENDED = 2;
+    public static final int MULTILINE = 4;
+    public static final int DOTALL = 8;
 
     public enum BinOp {
         eq("="),
@@ -82,21 +82,23 @@ public class Query extends Expression
         gt(">"),
         lte("<="),
         gte(">=");
-        
+
         private String s;
-        
+
         private BinOp(String s) {
-            this.s=s;
+            this.s = s;
         }
-        
+
         public String toString() {
             return s;
         }
 
         public static BinOp getOp(String x) {
-            for(BinOp v:values())
-                if(v.toString().equals(x))
+            for (BinOp v : values()) {
+                if (v.toString().equals(x)) {
                     return v;
+                }
+            }
             return null;
         }
     }
@@ -104,22 +106,24 @@ public class Query extends Expression
     public enum NaryOp {
         in("$in"),
         nin("$nin");
-        
+
         private String s;
-        
+
         private NaryOp(String s) {
-            this.s=s;
+            this.s = s;
         }
-        
+
         @Override
         public String toString() {
             return s;
         }
 
         public static NaryOp getOp(String x) {
-            for(NaryOp v:values())
-                if(v.toString().equals(x))
+            for (NaryOp v : values()) {
+                if (v.toString().equals(x)) {
                     return v;
+                }
+            }
             return null;
         }
     }
@@ -128,13 +132,13 @@ public class Query extends Expression
         any("$any"),
         all("$all"),
         none("$none");
-        
+
         private String s;
-        
+
         private ArrOp(String s) {
-            this.s=s;
+            this.s = s;
         }
-        
+
         @Override
         public String toString() {
             return s;
@@ -144,13 +148,13 @@ public class Query extends Expression
     public enum LogOp {
         and("$and"),
         or("$or");
-        
+
         private String s;
-        
+
         private LogOp(String s) {
-            this.s=s;
+            this.s = s;
         }
-        
+
         @Override
         public String toString() {
             return s;
@@ -163,7 +167,7 @@ public class Query extends Expression
     public Query(ContainerNode node) {
         super(node);
     }
-    
+
     private Query(boolean arrayNode) {
         super(arrayNode);
     }
@@ -176,11 +180,11 @@ public class Query extends Expression
     public static Query withValue(String field,
                                   BinOp op,
                                   Literal value) {
-        Query q=new Query(false);
-        q.add("field",field).add("op",op.toString()).add("rvalue",value.toJson());
+        Query q = new Query(false);
+        q.add("field", field).add("op", op.toString()).add("rvalue", value.toJson());
         return q;
     }
-    
+
     /**
      * <pre>
      *   { field: <field>, regex: <pattern>, caseInsensitive: <caseInsensitive>, ... }
@@ -196,7 +200,7 @@ public class Query extends Expression
      * </pre>
      */
     public static Query withString(String field, String value, boolean caseInsensitive) {
-        return caseInsensitive ? regex(field, "^"+escapeRegExPattern(value)+"$", caseInsensitive, false, false, false) : withValue(field, eq, value);
+        return caseInsensitive ? regex(field, "^" + escapeRegExPattern(value) + "$", caseInsensitive, false, false, false) : withValue(field, eq, value);
     }
 
     /**
@@ -216,7 +220,7 @@ public class Query extends Expression
     public static Query withStrings(String field, String[] values, boolean caseInsensitive) {
         if (caseInsensitive) {
             List<Query> regexList = new ArrayList<Query>();
-            for (String value: values) {
+            for (String value : values) {
                 regexList.add(withString(field, value, true));
             }
             return Query.or(regexList);
@@ -224,7 +228,7 @@ public class Query extends Expression
             return Query.withValues(field, Query.in, Literal.values(values));
         }
     }
-    
+
     /**
      * <pre>
      *   { "$or": [{ field: <field>, regex: <^string$>, caseInsensitive: true, ... }, ... ]}
@@ -242,9 +246,9 @@ public class Query extends Expression
     public static Query withValue(String field,
                                   BinOp op,
                                   Object value) {
-        return withValue(field,op,Literal.value(value));
+        return withValue(field, op, Literal.value(value));
     }
-    
+
     /**
      * <pre>
      *   { field: <field>, op: <op>, rvalue: <value> }
@@ -253,7 +257,7 @@ public class Query extends Expression
     public static Query withValue(String field,
                                   BinOp op,
                                   int value) {
-        return withValue(field,op,Literal.value(value));
+        return withValue(field, op, Literal.value(value));
     }
 
     /**
@@ -264,7 +268,7 @@ public class Query extends Expression
     public static Query withValue(String field,
                                   BinOp op,
                                   long value) {
-        return withValue(field,op,Literal.value(value));
+        return withValue(field, op, Literal.value(value));
     }
 
     /**
@@ -275,7 +279,7 @@ public class Query extends Expression
     public static Query withValue(String field,
                                   BinOp op,
                                   double value) {
-        return withValue(field,op,Literal.value(value));
+        return withValue(field, op, Literal.value(value));
     }
 
     /**
@@ -286,9 +290,9 @@ public class Query extends Expression
     public static Query withValue(String field,
                                   BinOp op,
                                   boolean value) {
-        return withValue(field,op,Literal.value(value));
+        return withValue(field, op, Literal.value(value));
     }
-    
+
     /**
      * <pre>
      *   { field: <field>, op: <op>, rfield: <rfield> }
@@ -297,8 +301,8 @@ public class Query extends Expression
     public static Query withField(String field,
                                   BinOp op,
                                   String rfield) {
-        Query q=new Query(false);
-        q.add("field",field).add("op",op.toString()).add("rfield",rfield);
+        Query q = new Query(false);
+        q.add("field", field).add("op", op.toString()).add("rfield", rfield);
         return q;
     }
 
@@ -309,79 +313,82 @@ public class Query extends Expression
      * </pre>
      */
     public static Query withValue(String expression) {
-        String[] parts=split(expression);
-        if(parts!=null) {
+        String[] parts = split(expression);
+        if (parts != null) {
             String field = parts[0];
             String operator = parts[1];
             String value = parts[2];
 
-            BinOp binOp=BinOp.getOp(operator);
-            if (binOp!=null) {
-                return withValue(field,binOp,value);
+            BinOp binOp = BinOp.getOp(operator);
+            if (binOp != null) {
+                return withValue(field, binOp, value);
             }
-            NaryOp naryOp=NaryOp.getOp(operator);
-            if (naryOp!=null) {
+            NaryOp naryOp = NaryOp.getOp(operator);
+            if (naryOp != null) {
                 Literal[] values = Literal.values(value.substring(1, value.length() - 1).split("\\s*,\\s*"));
-                return withValues(field,naryOp,values);
-            } 
+                return withValues(field, naryOp, values);
+            }
         }
         throw new IllegalArgumentException("'" + expression + "' is incorrect");
     }
-    
+
     /**
      * <pre>
      *   { field:<field>, op:<op>, rfield:<rfield> }
      * </pre>
      */
     public static Query withField(String expression) {
-        String[] parts=split(expression);
-        if(parts!=null) {
+        String[] parts = split(expression);
+        if (parts != null) {
             String field = parts[0];
             String operator = parts[1];
             String rfield = parts[2];
 
-            BinOp binOp=BinOp.getOp(operator);
-            if (binOp!=null) {
-                return withField(field,binOp,rfield);
+            BinOp binOp = BinOp.getOp(operator);
+            if (binOp != null) {
+                return withField(field, binOp, rfield);
             }
-            NaryOp naryOp=NaryOp.getOp(operator);
-            if (naryOp!=null) {
-                return withFieldValues(field,naryOp,rfield);
-            } 
+            NaryOp naryOp = NaryOp.getOp(operator);
+            if (naryOp != null) {
+                return withFieldValues(field, naryOp, rfield);
+            }
         }
         throw new IllegalArgumentException("'" + expression + "' is incorrect");
     }
 
     private static String[] split(String expression) {
-        int opIndex=-1;
-        String operator=null;
-        for(BinOp x:BinOp.values()) {
-            int ix=expression.indexOf(x.toString());
-            if(ix!=-1)
-                if(opIndex==-1||ix<opIndex) {
-                    opIndex=ix;
-                    operator=x.toString();
+        int opIndex = -1;
+        String operator = null;
+        for (BinOp x : BinOp.values()) {
+            int ix = expression.indexOf(x.toString());
+            if (ix != -1) {
+                if (opIndex == -1 || ix < opIndex) {
+                    opIndex = ix;
+                    operator = x.toString();
                 }
-        }
-        if(opIndex==-1) {
-            for(NaryOp x:NaryOp.values()) {
-                int ix=expression.indexOf(x.toString());
-                if(ix!=-1)
-                    if(opIndex==-1||ix<opIndex) {
-                        opIndex=ix;
-                        operator=x.toString();
-                    }
             }
         }
-        
-        if(opIndex!=-1) 
-            return new String[] {expression.substring(0,opIndex).trim(),
-                                 operator,
-                                 expression.substring(opIndex+operator.length()).trim() };
-        else
+        if (opIndex == -1) {
+            for (NaryOp x : NaryOp.values()) {
+                int ix = expression.indexOf(x.toString());
+                if (ix != -1) {
+                    if (opIndex == -1 || ix < opIndex) {
+                        opIndex = ix;
+                        operator = x.toString();
+                    }
+                }
+            }
+        }
+
+        if (opIndex != -1) {
+            return new String[]{expression.substring(0, opIndex).trim(),
+                operator,
+                expression.substring(opIndex + operator.length()).trim()};
+        } else {
             return null;
+        }
     }
-    
+
     /**
      * <pre>
      *   { field: <field>, regex: <pattern>, ... }
@@ -393,15 +400,15 @@ public class Query extends Expression
                               boolean extended,
                               boolean multiline,
                               boolean dotall) {
-        Query q=new Query(false);
-        q.add("field",field).add("regex",pattern).
-            add("caseInsensitive",caseInsensitive).
-            add("extended",extended).
-            add("multiline",multiline).
-            add("dotall",dotall);
+        Query q = new Query(false);
+        q.add("field", field).add("regex", pattern).
+                add("caseInsensitive", caseInsensitive).
+                add("extended", extended).
+                add("multiline", multiline).
+                add("dotall", dotall);
         return q;
     }
-    
+
     /**
      * <pre>
      *   { field: <field>, regex: <pattern>, ... }
@@ -410,11 +417,11 @@ public class Query extends Expression
     public static Query regex(String field,
                               String pattern,
                               int options) {
-        return regex(field,pattern,is(options,CASE_INSENSITIVE),is(options,EXTENDED), is(options,MULTILINE), is(options,DOTALL));
+        return regex(field, pattern, is(options, CASE_INSENSITIVE), is(options, EXTENDED), is(options, MULTILINE), is(options, DOTALL));
     }
 
-    private static boolean is(int options,int value) {
-        return (options&value)==value;
+    private static boolean is(int options, int value) {
+        return (options & value) == value;
     }
 
     /**
@@ -424,12 +431,12 @@ public class Query extends Expression
      */
     public static Query withValues(String field,
                                    NaryOp op,
-                                   Literal...values) {
-        Query q=new Query(false);
-        q.add("field",field).add("op",op.toString()).add("values",Literal.toJson(values));
+                                   Literal... values) {
+        Query q = new Query(false);
+        q.add("field", field).add("op", op.toString()).add("values", Literal.toJson(values));
         return q;
     }
-    
+
     /**
      * <pre>
      *   { field: <field>, op: <in/nin>, rfield: <rfield> }
@@ -438,11 +445,11 @@ public class Query extends Expression
     public static Query withFieldValues(String field,
                                         NaryOp op,
                                         String rfield) {
-        Query q=new Query(false);
-        q.add("field",field).add("op",op.toString()).add("rfield",rfield);
+        Query q = new Query(false);
+        q.add("field", field).add("op", op.toString()).add("rfield", rfield);
         return q;
     }
-    
+
     /**
      * <pre>
      *   { array: <array>, contains: <op>, values: [values] }
@@ -450,12 +457,12 @@ public class Query extends Expression
      */
     public static Query arrayContains(String array,
                                       ArrOp op,
-                                      Literal...values) {
-        Query q=new Query(false);
-        q.add("array",array).add("contains",op.toString()).add("values",Literal.toJson(values));
+                                      Literal... values) {
+        Query q = new Query(false);
+        q.add("array", array).add("contains", op.toString()).add("values", Literal.toJson(values));
         return q;
     }
-    
+
     /**
      * <pre>
      *   { array: <array>, elemMatch:<x> }
@@ -463,11 +470,11 @@ public class Query extends Expression
      */
     public static Query arrayMatch(String array,
                                    Query x) {
-        Query q=new Query(false);
-        q.add("array",array).add("elemMatch",x.toJson());
+        Query q = new Query(false);
+        q.add("array", array).add("elemMatch", x.toJson());
         return q;
     }
-    
+
     /**
      * Return a query from a json node
      */
@@ -478,27 +485,27 @@ public class Query extends Expression
     /**
      * <pre>
      *    { $not : { query } }
-     *</pre>
+     * </pre>
      */
     public static Query not(Query query) {
-        Query q=new Query(false);
-        q.add("$not",query.toJson());
+        Query q = new Query(false);
+        q.add("$not", query.toJson());
         return q;
     }
 
     /**
      * <pre>
      *    { $and : [ expressions ] }
-     *</pre>
+     * </pre>
      */
-    public static Query and(Query...expressions) {
-        return logical(LogOp.and,expressions);
+    public static Query and(Query... expressions) {
+        return logical(LogOp.and, expressions);
     }
 
     /**
      * <pre>
      *    { $and : [ expressions ] }
-     *</pre>
+     * </pre>
      */
     public static Query and(Collection<Query> expressions) {
         return logical(LogOp.and, expressions);
@@ -507,16 +514,16 @@ public class Query extends Expression
     /**
      * <pre>
      *    { $or : [ expressions ] }
-     *</pre>
+     * </pre>
      */
-    public static Query or(Query...expressions) {
-        return logical(LogOp.or,expressions);
+    public static Query or(Query... expressions) {
+        return logical(LogOp.or, expressions);
     }
 
     /**
      * <pre>
      *    { $or : [ expressions ] }
-     *</pre>
+     * </pre>
      */
     public static Query or(Collection<Query> expressions) {
         return logical(LogOp.or, expressions);
@@ -526,9 +533,9 @@ public class Query extends Expression
      * <pre>
      *    { $and : [ expressions ] }
      *    { $or : [ expressions ] }
-     *</pre>
+     * </pre>
      */
-    public static Query logical(LogOp op,Query...expressions) {
+    public static Query logical(LogOp op, Query... expressions) {
         return logical(op, Arrays.asList(expressions));
     }
 
@@ -536,29 +543,30 @@ public class Query extends Expression
      * <pre>
      *    { $and : [ expressions ] }
      *    { $or : [ expressions ] }
-     *</pre>
+     * </pre>
      */
     public static Query logical(LogOp op, Collection<Query> expressions) {
         Query q = new Query(true);
-        for (Query x : expressions)
+        for (Query x : expressions) {
             ((ArrayNode) q.node).add(x.toJson());
+        }
         Query a = new Query(false);
         a.add(op.toString(), q.toJson());
         return a;
     }
-    
-    private static final String ESCAPECHARS=".^$*+?()[{\\|";
+
+    private static final String ESCAPECHARS = ".^$*+?()[{\\|";
 
     public static String escapeRegExPattern(String s) {
         StringBuilder bld = new StringBuilder();
         int n = s.length();
         for (int i = 0; i < n; i++) {
             char c = s.charAt(i);
-            if (ESCAPECHARS.indexOf(c) != -1)
+            if (ESCAPECHARS.indexOf(c) != -1) {
                 bld.append("\\");
+            }
             bld.append(c);
         }
         return bld.toString();
     }
 }
-

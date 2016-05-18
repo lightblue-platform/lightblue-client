@@ -7,11 +7,11 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataGetEntityDependenciesRequest extends AbstractLightblueRequestTest {
 
-	@Test
-	public void testGetOperationPathParam() {
+    @Test
+    public void testGetOperationPathParam() {
         MetadataGetEntityDependenciesRequest request = new MetadataGetEntityDependenciesRequest(entityName, entityVersion);
 
-		Assert.assertEquals("dependencies", request.getOperationPathParam());
-	}
+        Assert.assertEquals("dependencies", request.getOperationPathParam());
+    }
 
 }

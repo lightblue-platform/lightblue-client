@@ -7,11 +7,11 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataUpdateEntityInfoRequest extends AbstractLightblueRequestTest {
 
-	@Test
-	public void testGetOperationPathParam() {
+    @Test
+    public void testGetOperationPathParam() {
         MetadataUpdateEntityInfoRequest request = new MetadataUpdateEntityInfoRequest(entityName);
 
-		Assert.assertEquals("", request.getOperationPathParam());
-	}
+        Assert.assertEquals("", request.getOperationPathParam());
+    }
 
 }
