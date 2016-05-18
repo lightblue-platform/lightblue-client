@@ -8,8 +8,6 @@ import static org.mockito.Mockito.when;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.redhat.lightblue.client.Execution;
-import com.redhat.lightblue.client.Execution.MongoController.ReadPreference;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.Projection;
@@ -19,6 +17,9 @@ import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.GenerateRequest;
+import com.redhat.lightblue.client.request.execution.Execution;
+import com.redhat.lightblue.client.request.execution.MongoExecution;
+import com.redhat.lightblue.client.request.execution.MongoExecution.ReadPreference;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
 import com.redhat.lightblue.client.util.JSON;
@@ -174,7 +175,7 @@ public class LightblueHttpClientTest {
             DataFindRequest findRequest = new DataFindRequest("someEntity");
             findRequest.where(Query.withValue("a = b"));
             findRequest.select(Projection.includeField("foo"));
-            findRequest.execution(Execution.MongoController.withReadPreference(ReadPreference.nearest));
+            findRequest.execution(MongoExecution.withReadPreference(ReadPreference.nearest));
 
             httpClient.data(findRequest);
 

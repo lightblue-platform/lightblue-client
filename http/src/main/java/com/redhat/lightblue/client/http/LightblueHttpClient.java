@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueException;
@@ -26,6 +25,8 @@ import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataWithExecutionRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.request.execution.Execution;
+import com.redhat.lightblue.client.request.execution.MongoExecution;
 import com.redhat.lightblue.client.response.DefaultLightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueMetadataResponse;
@@ -242,7 +243,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
                 executionRequest.execution(getExecutionInstance());
             }
         }
-        
+
         LOGGER.debug("Calling data service with lightblueRequest: {}", lightblueRequest.toString());
         return new DefaultLightblueDataResponse(
                 callService(lightblueRequest, configuration.getDataServiceURI()),
@@ -296,32 +297,35 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
             throw new RuntimeException(e);
         }
     }
-    
+
     private Execution getExecutionInstance() {
         if (execution == null) {
             synchronized (this) {
                 if (execution == null) {
+                    MongoExecution mongoExecution = null;
                     if (configuration.getReadPreference() != null) {
-                        execution = Execution.MongoController.withReadPreference(configuration.getReadPreference());
+                        mongoExecution = MongoExecution.withReadPreference(configuration.getReadPreference());
                     }
-                    
+
                     if (configuration.getWriteConcern() != null) {
-                        if(execution == null){
-                            execution = Execution.MongoController.withWriteConcern(configuration.getWriteConcern());
+                        if(mongoExecution == null){
+                            mongoExecution = MongoExecution.withWriteConcern(configuration.getWriteConcern());
                         }
                         else {
-                            execution.addWriteConcern(configuration.getWriteConcern());
+                            mongoExecution.addWriteConcern(configuration.getWriteConcern());
                         }
                     }
-                    
+
                     if (configuration.getMaxQueryTimeMS() != null) {
-                        if(execution == null){
-                            execution = Execution.MongoController.withMaxQueryTimeMS(configuration.getMaxQueryTimeMS());
+                        if(mongoExecution == null){
+                            mongoExecution = MongoExecution.withMaxQueryTimeMS(configuration.getMaxQueryTimeMS());
                         }
                         else {
-                            execution.addMaxQueryTimeMS(configuration.getMaxQueryTimeMS());
+                            mongoExecution.addMaxQueryTimeMS(configuration.getMaxQueryTimeMS());
                         }
                     }
+
+                    execution = mongoExecution;
                 }
             }
         }

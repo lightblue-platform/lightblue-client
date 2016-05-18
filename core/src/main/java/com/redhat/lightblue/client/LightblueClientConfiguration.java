@@ -2,7 +2,7 @@ package com.redhat.lightblue.client;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.redhat.lightblue.client.Execution.MongoController.ReadPreference;
+import com.redhat.lightblue.client.request.execution.MongoExecution.ReadPreference;
 
 public class LightblueClientConfiguration {
 

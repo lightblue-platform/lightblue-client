@@ -15,8 +15,8 @@ import org.apache.commons.lang.text.StrSubstitutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.redhat.lightblue.client.Execution.MongoController.ReadPreference;
 import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
+import com.redhat.lightblue.client.request.execution.MongoExecution.ReadPreference;
 
 /**
  * Provides factory methods for
@@ -186,7 +186,8 @@ public final class PropertiesLightblueClientConfiguration {
             config.setCompression(Compression.parseCompression(properties.getProperty(COMPRESSION)));
         }
         if (properties.containsKey(READ_PREFERENCE)) {
-            config.setReadPreference(ReadPreference.valueOf(properties.getProperty(READ_PREFERENCE)));
+            config.setReadPreference(ReadPreference.valueOf(
+                    properties.getProperty(READ_PREFERENCE)));
         }
         if (properties.containsKey(WRITE_CONCERN)) {
             config.setWriteConcern(properties.getProperty(WRITE_CONCERN));
@@ -194,7 +195,7 @@ public final class PropertiesLightblueClientConfiguration {
         if (properties.containsKey(MAX_QUERY_TIME_MS)) {
             config.setMaxQueryTimeMS(Integer.parseInt(properties.getProperty(MAX_QUERY_TIME_MS)));
         }
-        
+
         return config;
     }
 
