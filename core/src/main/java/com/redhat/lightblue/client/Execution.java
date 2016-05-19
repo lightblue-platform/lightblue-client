@@ -1,6 +1,4 @@
-package com.redhat.lightblue.client.request.execution;
-
-import com.redhat.lightblue.client.Expression;
+package com.redhat.lightblue.client;
 
 /**
  * https://jewzaam.gitbooks.io/lightblue-specifications/content/language_specification/execution.html
