@@ -1,8 +1,8 @@
 package com.redhat.lightblue.client;
 
-import java.util.Objects;
-
 import org.apache.commons.io.FilenameUtils;
+
+import com.redhat.lightblue.client.MongoExecution.ReadPreference;
 
 public class LightblueClientConfiguration {
 
@@ -29,6 +29,10 @@ public class LightblueClientConfiguration {
     private String certPassword;
     private String certAlias;
     private Compression compression = Compression.LZF;
+    private ReadPreference readPreference;
+    private String writeConcern;
+    private Integer maxQueryTimeMS;
+    private transient Execution execution;
 
     public LightblueClientConfiguration() {
     }
@@ -37,14 +41,17 @@ public class LightblueClientConfiguration {
      * Copy constructor.
      */
     public LightblueClientConfiguration(LightblueClientConfiguration configuration) {
-        this.dataServiceURI = configuration.dataServiceURI;
-        this.metadataServiceURI = configuration.metadataServiceURI;
-        this.useCertAuth = configuration.useCertAuth;
-        this.caFilePath = configuration.caFilePath;
-        this.certFilePath = configuration.certFilePath;
-        this.certPassword = configuration.certPassword;
-        this.certAlias = FilenameUtils.getBaseName(this.certFilePath);
-        this.compression = configuration.compression;
+        dataServiceURI = configuration.dataServiceURI;
+        metadataServiceURI = configuration.metadataServiceURI;
+        useCertAuth = configuration.useCertAuth;
+        caFilePath = configuration.caFilePath;
+        certFilePath = configuration.certFilePath;
+        certPassword = configuration.certPassword;
+        certAlias = FilenameUtils.getBaseName(certFilePath);
+        compression = configuration.compression;
+        readPreference = configuration.readPreference;
+        writeConcern = configuration.writeConcern;
+        maxQueryTimeMS = configuration.maxQueryTimeMS;
     }
 
     public String getDataServiceURI() {
@@ -103,7 +110,7 @@ public class LightblueClientConfiguration {
      */
     public void setCertFilePath(String certFilePath) {
         this.certFilePath = certFilePath;
-        this.certAlias = FilenameUtils.getBaseName(this.certFilePath);
+        certAlias = FilenameUtils.getBaseName(this.certFilePath);
     }
 
     public String getCertPassword() {
@@ -118,77 +125,6 @@ public class LightblueClientConfiguration {
         return certAlias;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        LightblueClientConfiguration that = (LightblueClientConfiguration) o;
-
-        if (useCertAuth != that.useCertAuth) {
-            return false;
-        }
-
-        if (caFilePath != null ? !caFilePath.equals(that.caFilePath) : that.caFilePath != null) {
-            return false;
-        }
-
-        if (certAlias != null ? !certAlias.equals(that.certAlias) : that.certAlias != null) {
-            return false;
-        }
-
-        if (certFilePath != null ? !certFilePath.equals(that.certFilePath)
-                : that.certFilePath != null) {
-            return false;
-        }
-
-        if (certPassword != null ? !certPassword.equals(that.certPassword)
-                : that.certPassword != null) {
-            return false;
-        }
-
-        if (dataServiceURI != null ? !dataServiceURI.equals(that.dataServiceURI)
-                : that.dataServiceURI != null) {
-            return false;
-        }
-
-        if (metadataServiceURI != null ? !metadataServiceURI.equals(that.metadataServiceURI)
-                : that.metadataServiceURI != null) {
-            return false;
-        }
-
-        if (!Objects.equals(this.compression, compression)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(useCertAuth, caFilePath, certAlias, certFilePath, certPassword,
-                dataServiceURI, metadataServiceURI, compression);
-    }
-
-    @Override
-    public String toString() {
-        return "LightblueClientConfiguration{"
-                + "dataServiceURI='" + dataServiceURI + '\''
-                + ", metadataServiceURI='" + metadataServiceURI + '\''
-                + ", useCertAuth=" + useCertAuth
-                + ", caFilePath='" + caFilePath + '\''
-                + ", certFilePath='" + certFilePath + '\''
-                + ", certPassword='" + certPassword + '\''
-                + ", certAlias='" + certAlias + '\''
-                + ", compression='" + compression + '\''
-                + '}';
-    }
-
     public Compression getCompression() {
         return compression;
     }
@@ -196,4 +132,165 @@ public class LightblueClientConfiguration {
     public void setCompression(Compression compression) {
         this.compression = compression;
     }
+
+    public ReadPreference getReadPreference() {
+        return readPreference;
+    }
+
+    public void setReadPreference(ReadPreference readPreference) {
+        this.readPreference = readPreference;
+    }
+
+    public String getWriteConcern() {
+        return writeConcern;
+    }
+
+    public void setWriteConcern(String writeConcern) {
+        this.writeConcern = writeConcern;
+    }
+
+    public Integer getMaxQueryTimeMS() {
+        return maxQueryTimeMS;
+    }
+
+    public void setMaxQueryTimeMS(Integer maxQueryTimeMS) {
+        this.maxQueryTimeMS = maxQueryTimeMS;
+    }
+
+    public Execution getExecution() {
+        if (execution == null) {
+            MongoExecution mongoExecution = new MongoExecution();
+            if (getReadPreference() != null) {
+                mongoExecution.addReadPreference(getReadPreference());
+                execution = mongoExecution;
+            }
+
+            if (getWriteConcern() != null) {
+                mongoExecution.addWriteConcern(getWriteConcern());
+                execution = mongoExecution;
+            }
+
+            if (getMaxQueryTimeMS() != null) {
+                mongoExecution.addMaxQueryTimeMS(getMaxQueryTimeMS());
+                execution = mongoExecution;
+            }
+        }
+
+        return execution;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        LightblueClientConfiguration other = (LightblueClientConfiguration) obj;
+        if (caFilePath == null) {
+            if (other.caFilePath != null) {
+                return false;
+            }
+        } else if (!caFilePath.equals(other.caFilePath)) {
+            return false;
+        }
+        if (certAlias == null) {
+            if (other.certAlias != null) {
+                return false;
+            }
+        } else if (!certAlias.equals(other.certAlias)) {
+            return false;
+        }
+        if (certFilePath == null) {
+            if (other.certFilePath != null) {
+                return false;
+            }
+        } else if (!certFilePath.equals(other.certFilePath)) {
+            return false;
+        }
+        if (certPassword == null) {
+            if (other.certPassword != null) {
+                return false;
+            }
+        } else if (!certPassword.equals(other.certPassword)) {
+            return false;
+        }
+        if (compression != other.compression) {
+            return false;
+        }
+        if (dataServiceURI == null) {
+            if (other.dataServiceURI != null) {
+                return false;
+            }
+        } else if (!dataServiceURI.equals(other.dataServiceURI)) {
+            return false;
+        }
+        if (maxQueryTimeMS == null) {
+            if (other.maxQueryTimeMS != null) {
+                return false;
+            }
+        } else if (!maxQueryTimeMS.equals(other.maxQueryTimeMS)) {
+            return false;
+        }
+        if (metadataServiceURI == null) {
+            if (other.metadataServiceURI != null) {
+                return false;
+            }
+        } else if (!metadataServiceURI.equals(other.metadataServiceURI)) {
+            return false;
+        }
+        if (readPreference != other.readPreference) {
+            return false;
+        }
+        if (useCertAuth != other.useCertAuth) {
+            return false;
+        }
+        if (writeConcern == null) {
+            if (other.writeConcern != null) {
+                return false;
+            }
+        } else if (!writeConcern.equals(other.writeConcern)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((caFilePath == null) ? 0 : caFilePath.hashCode());
+        result = prime * result + ((certAlias == null) ? 0 : certAlias.hashCode());
+        result = prime * result + ((certFilePath == null) ? 0 : certFilePath.hashCode());
+        result = prime * result + ((certPassword == null) ? 0 : certPassword.hashCode());
+        result = prime * result + ((compression == null) ? 0 : compression.hashCode());
+        result = prime * result + ((dataServiceURI == null) ? 0 : dataServiceURI.hashCode());
+        result = prime * result + ((maxQueryTimeMS == null) ? 0 : maxQueryTimeMS.hashCode());
+        result = prime * result + ((metadataServiceURI == null) ? 0 : metadataServiceURI.hashCode());
+        result = prime * result + ((readPreference == null) ? 0 : readPreference.hashCode());
+        result = prime * result + (useCertAuth ? 1231 : 1237);
+        result = prime * result + ((writeConcern == null) ? 0 : writeConcern.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "LightblueClientConfiguration [dataServiceURI=" + dataServiceURI
+                + ", metadataServiceURI=" + metadataServiceURI
+                + ", useCertAuth=" + useCertAuth
+                + ", caFilePath=" + caFilePath
+                + ", certFilePath=" + certFilePath
+                + ", certPassword=" + certPassword
+                + ", certAlias=" + certAlias
+                + ", compression=" + compression
+                + ", readPreference=" + readPreference
+                + ", writeConcern=" + writeConcern
+                + ", maxQueryTimeMS=" + maxQueryTimeMS
+                + "]";
+    }
+
 }

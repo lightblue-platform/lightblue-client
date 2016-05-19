@@ -6,10 +6,10 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import com.redhat.lightblue.client.Execution;
+import com.redhat.lightblue.client.MongoExecution;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.request.data.DataSaveRequest;
-import com.redhat.lightblue.client.request.execution.Execution;
-import com.redhat.lightblue.client.request.execution.MongoExecution;
 
 public class TestDataSaveRequest {
 

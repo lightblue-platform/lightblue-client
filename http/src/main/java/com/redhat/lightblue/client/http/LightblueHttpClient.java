@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueException;
@@ -23,6 +24,7 @@ import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.http.transport.JavaNetHttpTransport;
 import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
 import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueDataWithExecutionRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
@@ -238,6 +240,13 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     @Override
     public DefaultLightblueDataResponse data(LightblueRequest lightblueRequest)
             throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
+        if (lightblueRequest instanceof AbstractLightblueDataWithExecutionRequest) {
+            AbstractLightblueDataWithExecutionRequest executionRequest = (AbstractLightblueDataWithExecutionRequest) lightblueRequest;
+            if (!executionRequest.hasExecution()) {
+                executionRequest.execution(configuration.getExecution());
+            }
+        }
+
         LOGGER.debug("Calling data service with lightblueRequest: {}", lightblueRequest.toString());
         return new DefaultLightblueDataResponse(
                 callService(lightblueRequest, configuration.getDataServiceURI()),

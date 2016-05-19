@@ -1,4 +1,4 @@
-package com.redhat.lightblue.client.request.execution;
+package com.redhat.lightblue.client;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
@@ -40,7 +40,7 @@ public class MongoExecution extends Execution {
         return this;
     }
 
-    private MongoExecution() {
+    protected MongoExecution() {
         super();
     }
 
