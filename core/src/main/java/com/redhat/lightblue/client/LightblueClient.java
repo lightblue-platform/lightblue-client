@@ -9,7 +9,7 @@ import com.redhat.lightblue.client.response.LightblueMetadataResponse;
 
 public interface LightblueClient {
 
-	Locking getLocking(String domain);
+    Locking getLocking(String domain);
 
     LightblueMetadataResponse metadata(LightblueRequest lightblueRequest) throws LightblueException;
 
@@ -17,6 +17,6 @@ public interface LightblueClient {
 
     LightblueBulkDataResponse bulkData(AbstractDataBulkRequest<AbstractLightblueDataRequest> requests) throws LightblueException;
 
-	<T> T data(LightblueRequest lightblueRequest, Class<T> type) throws LightblueException;
+    <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws LightblueException;
 
 }

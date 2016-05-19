@@ -6,8 +6,8 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
 
     protected static final String PATH_SEPARATOR = "/";
     protected static final String QUERY_SEPARATOR = "&";
-	protected static final String QUERY_BEGINNER = "?";
-	protected static final String QUERY_PARAM_NAME_VALUE_SEPERATOR = "=";
+    protected static final String QUERY_BEGINNER = "?";
+    protected static final String QUERY_PARAM_NAME_VALUE_SEPERATOR = "=";
 
     private final String entityName;
     private final String entityVersion;
@@ -23,8 +23,8 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
      * Construct request with entity name and given version
      */
     public AbstractLightblueRequest(String entityName, String version) {
-        this.entityName=entityName;
-        entityVersion=version;
+        this.entityName = entityName;
+        entityVersion = version;
     }
 
     public String getEntityName() {
@@ -42,23 +42,22 @@ public abstract class AbstractLightblueRequest implements LightblueRequest {
         restOfURI.append(pathParam);
     }
 
-	protected void appendToURI(StringBuilder restOfURI, String queryParamName, String queryParamvalue) {
-		if (!StringUtils.endsWith(restOfURI.toString(), PATH_SEPARATOR)) {
-			if (!StringUtils.contains(restOfURI.toString(), QUERY_PARAM_NAME_VALUE_SEPERATOR)) {
-				restOfURI.append(QUERY_BEGINNER);
-			} else {
-				restOfURI.append(QUERY_SEPARATOR);
-			}
-			restOfURI.append(queryParamName);
-			restOfURI.append(QUERY_PARAM_NAME_VALUE_SEPERATOR);
-			restOfURI.append(queryParamvalue);
-		}
+    protected void appendToURI(StringBuilder restOfURI, String queryParamName, String queryParamvalue) {
+        if (!StringUtils.endsWith(restOfURI.toString(), PATH_SEPARATOR)) {
+            if (!StringUtils.contains(restOfURI.toString(), QUERY_PARAM_NAME_VALUE_SEPERATOR)) {
+                restOfURI.append(QUERY_BEGINNER);
+            } else {
+                restOfURI.append(QUERY_SEPARATOR);
+            }
+            restOfURI.append(queryParamName);
+            restOfURI.append(QUERY_PARAM_NAME_VALUE_SEPERATOR);
+            restOfURI.append(queryParamvalue);
+        }
 
-	}
-
+    }
 
     @Override
     public String toString() {
-        return getHttpMethod()+" "+getRestURI("/")+", body: "+getBody();
+        return getHttpMethod() + " " + getRestURI("/") + ", body: " + getBody();
     }
 }

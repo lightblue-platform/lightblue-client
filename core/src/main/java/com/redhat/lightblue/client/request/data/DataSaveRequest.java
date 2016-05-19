@@ -82,7 +82,7 @@ public class DataSaveRequest extends AbstractLightblueDataWithExecutionRequest {
 
     @Override
     public JsonNode getBodyJson() {
-        ObjectNode node = (ObjectNode)super.getBodyJson();
+        ObjectNode node = (ObjectNode) super.getBodyJson();
         if (projection != null) {
             node.set("projection", projection.toJson());
         }

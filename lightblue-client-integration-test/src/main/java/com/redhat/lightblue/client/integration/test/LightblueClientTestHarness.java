@@ -19,7 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Provides a lightblue-client instance to talk to the running in-memory lightblue instance.
+ * Provides a lightblue-client instance to talk to the running in-memory
+ * lightblue instance.
  *
  * @author dcrissman
  */
@@ -70,7 +71,9 @@ public abstract class LightblueClientTestHarness extends LightblueRestTestHarnes
     }
 
     /**
-     * Helper method to be able to collect all the versions of the provided entity that currently exist in lightblue.
+     * Helper method to be able to collect all the versions of the provided
+     * entity that currently exist in lightblue.
+     *
      * @param entityName - name of entity to to find versions for.
      * @return Set of entity versions
      * @throws LightblueException
@@ -91,7 +94,7 @@ public abstract class LightblueClientTestHarness extends LightblueRestTestHarnes
             return versions;
         } catch (IOException ex) {
             throw new LightblueException("Unable to close HttpClient", ex);
-        } 
+        }
     }
 
 }

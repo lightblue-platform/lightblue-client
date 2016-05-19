@@ -23,10 +23,10 @@ public class TestDataSaveRequest extends LightblueClientTestHarness {
     @Override
     protected JsonNode[] getMetadataJsonNodes() throws Exception {
         return new JsonNode[]{
-                loadJsonNode("./metadata/country.json")
+            loadJsonNode("./metadata/country.json")
         };
     }
-    
+
     @Before
     public void before() throws Exception {
         cleanupMongoCollections("country");
@@ -43,7 +43,7 @@ public class TestDataSaveRequest extends LightblueClientTestHarness {
         request.create(c1);
         request.returns(Projection.includeField("name"));
         request.setUpsert(true);
-        Country[] savedCountries = getLightblueClient().data(request,Country[].class);
+        Country[] savedCountries = getLightblueClient().data(request, Country[].class);
 
         assertNotNull(savedCountries);
         assertEquals(1, savedCountries.length);
@@ -69,7 +69,7 @@ public class TestDataSaveRequest extends LightblueClientTestHarness {
         request.create(c1, c2);
         request.returns(new Projection[]{Projection.includeFieldRecursively("*")}, 0, 1);
         request.setUpsert(true);
-        Country[] savedCountries = getLightblueClient().data(request,Country[].class);
+        Country[] savedCountries = getLightblueClient().data(request, Country[].class);
 
         assertNotNull(savedCountries);
         assertEquals(1, savedCountries.length);

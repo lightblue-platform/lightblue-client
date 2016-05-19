@@ -65,8 +65,7 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
                     responsesErrored.put(seqNumber, (DefaultLightblueDataResponse) e.getLightblueResponse());
                 }
             }
-        }
-        else {
+        } else {
             throw new LightblueParseException("Unparseable bulk data 'responses' node");
         }
 

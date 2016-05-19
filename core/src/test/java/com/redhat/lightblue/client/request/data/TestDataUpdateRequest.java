@@ -18,15 +18,15 @@ public class TestDataUpdateRequest extends AbstractLightblueRequestTest {
 
     private DataUpdateRequest request;
 
-	@Before
-	public void setUp() throws Exception {
-		request = new DataUpdateRequest(entityName, entityVersion);
-	}
+    @Before
+    public void setUp() throws Exception {
+        request = new DataUpdateRequest(entityName, entityVersion);
+    }
 
-	@Test
-	public void testGetOperationPathParam() {
-		Assert.assertEquals("update", request.getOperationPathParam());
-	}
+    @Test
+    public void testGetOperationPathParam() {
+        Assert.assertEquals("update", request.getOperationPathParam());
+    }
 
     @Test
     public void testGetOperation() {

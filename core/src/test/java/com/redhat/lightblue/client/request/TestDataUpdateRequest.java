@@ -6,10 +6,11 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Update;
 import com.redhat.lightblue.client.request.data.DataUpdateRequest;
+import com.redhat.lightblue.client.request.execution.Execution;
+import com.redhat.lightblue.client.request.execution.MongoExecution;
 
 public class TestDataUpdateRequest {
 
@@ -30,7 +31,7 @@ public class TestDataUpdateRequest {
     }
 
     @Test
-    public void testProjectionsAsList(){
+    public void testProjectionsAsList() {
         DataUpdateRequest request = new DataUpdateRequest("fake");
         request.returns(Arrays.asList(Projection.includeField("*")));
 
@@ -50,7 +51,7 @@ public class TestDataUpdateRequest {
     @Test
     public void testExecutionReadPreference() {
         DataUpdateRequest request = new DataUpdateRequest("fake");
-        request.execution(Execution.MongoController.withReadPreference(Execution.MongoController.ReadPreference.primaryPreferred));
+        request.execution(MongoExecution.withReadPreference(MongoExecution.ReadPreference.primaryPreferred));
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"execution\":{\"readPreference\":\"primaryPreferred\"}"));
@@ -59,7 +60,7 @@ public class TestDataUpdateRequest {
     @Test
     public void testExecutionWriteConcern() {
         DataUpdateRequest request = new DataUpdateRequest("fake");
-        request.execution(Execution.MongoController.withWriteConcern("majority"));
+        request.execution(MongoExecution.withWriteConcern("majority"));
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"execution\":{\"writeConcern\":\"majority\"}"));
@@ -68,7 +69,7 @@ public class TestDataUpdateRequest {
     @Test
     public void testExecutionMaxQueryTimeMS() {
         DataUpdateRequest request = new DataUpdateRequest("fake");
-        request.execution(Execution.MongoController.withMaxQueryTimeMS(1000));
+        request.execution(MongoExecution.withMaxQueryTimeMS(1000));
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"execution\":{\"maxQueryTimeMS\":1000"));

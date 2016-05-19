@@ -8,9 +8,9 @@ import com.redhat.lightblue.client.model.DataError;
 import com.redhat.lightblue.client.model.Error;
 
 /**
- * Exception thrown when lightblue returns a valid response containing data errors.
- * See {@link LightblueResponseErrorCodes} for a list of possible errors.
- * Example: client can call e.exists(ERR_REST_CRUD_REST_SAVE)
+ * Exception thrown when lightblue returns a valid response containing data
+ * errors. See {@link LightblueResponseErrorCodes} for a list of possible
+ * errors. Example: client can call e.exists(ERR_REST_CRUD_REST_SAVE)
  *
  * @author ykoer
  */
@@ -65,9 +65,10 @@ public class LightblueResponseException extends LightblueException implements Li
 
     @Override
     public String getMessage() {
-        if (lightblueResponse != null)
+        if (lightblueResponse != null) {
             return super.getMessage() + lightblueResponse.getText();
-        else
+        } else {
             return super.getMessage();
+        }
     }
 }

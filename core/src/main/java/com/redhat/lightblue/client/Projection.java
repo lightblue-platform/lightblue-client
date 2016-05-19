@@ -68,25 +68,25 @@ public class Projection extends Expression {
     public static Projection field(String pattern,
                                    boolean include,
                                    boolean recursive) {
-        Projection p=new Projection(false);
-        p.add("field",pattern).add("include",include).add("recursive",recursive);
+        Projection p = new Projection(false);
+        p.add("field", pattern).add("include", include).add("recursive", recursive);
         return p;
     }
 
     public static Projection includeField(String pattern) {
-        return field(pattern,true,false);
+        return field(pattern, true, false);
     }
 
     public static Projection excludeField(String pattern) {
-        return field(pattern,false,false);
+        return field(pattern, false, false);
     }
 
     public static Projection includeFieldRecursively(String pattern) {
-        return field(pattern,true,true);
+        return field(pattern, true, true);
     }
 
     public static Projection excludeFieldRecursively(String pattern) {
-        return field(pattern,false,true);
+        return field(pattern, false, true);
     }
 
     /**
@@ -99,13 +99,13 @@ public class Projection extends Expression {
                                    boolean include,
                                    Projection projection,
                                    Sort sort) {
-        Projection p=new Projection(false);
-        p.add("field",pattern).add("include",include).add("match",match.toJson());
-        if(projection!=null) {
-            p.add("projection",projection.toJson());
+        Projection p = new Projection(false);
+        p.add("field", pattern).add("include", include).add("match", match.toJson());
+        if (projection != null) {
+            p.add("projection", projection.toJson());
         }
-        if(sort!=null) {
-            p.add("sort",sort.toJson());
+        if (sort != null) {
+            p.add("sort", sort.toJson());
         }
         return p;
     }
@@ -113,18 +113,18 @@ public class Projection extends Expression {
     public static Projection array(String pattern,
                                    Query match,
                                    Projection projection) {
-        return array(pattern,match,true,projection,null);
+        return array(pattern, match, true, projection, null);
     }
 
     public static Projection array(String pattern,
                                    Query match,
                                    Sort sort) {
-        return array(pattern,match,true,null,sort);
+        return array(pattern, match, true, null, sort);
     }
 
     public static Projection array(String pattern,
                                    Query match) {
-        return array(pattern,match,true,null,null);
+        return array(pattern, match, true, null, null);
     }
 
     /**
@@ -138,20 +138,20 @@ public class Projection extends Expression {
                                    boolean include,
                                    Projection projection,
                                    Sort sort) {
-        Projection p=new Projection(false);
-        ArrayNode a=JsonNodeFactory.instance.arrayNode();
+        Projection p = new Projection(false);
+        ArrayNode a = JsonNodeFactory.instance.arrayNode();
         a.add(JsonNodeFactory.instance.numberNode(from));
-        if(to!=null) {
+        if (to != null) {
             a.add(JsonNodeFactory.instance.numberNode(to));
         } else {
             a.add(JsonNodeFactory.instance.nullNode());
         }
-        p.add("field",pattern).add("include",include).add("range",a);
-        if(projection!=null) {
-            p.add("projection",projection.toJson());
+        p.add("field", pattern).add("include", include).add("range", a);
+        if (projection != null) {
+            p.add("projection", projection.toJson());
         }
-        if(sort!=null) {
-            p.add("sort",sort.toJson());
+        if (sort != null) {
+            p.add("sort", sort.toJson());
         }
         return p;
     }
@@ -160,20 +160,20 @@ public class Projection extends Expression {
                                    Integer from,
                                    Integer to,
                                    Projection projection) {
-        return array(pattern,from,to,true,projection,null);
+        return array(pattern, from, to, true, projection, null);
     }
 
     public static Projection array(String pattern,
                                    Integer from,
                                    Integer to,
                                    Sort sort) {
-        return array(pattern,from,to,true,null,sort);
+        return array(pattern, from, to, true, null, sort);
     }
 
     public static Projection array(String pattern,
                                    Integer from,
                                    Integer to) {
-        return array(pattern,from,to,true,null,null);
+        return array(pattern, from, to, true, null, null);
     }
 
     /**
@@ -181,12 +181,12 @@ public class Projection extends Expression {
      *   [ projection ... ]
      * </pre>
      */
-    public static Projection project(Projection...projection) {
-        if(projection.length==1) {
+    public static Projection project(Projection... projection) {
+        if (projection.length == 1) {
             return projection[0];
         } else {
-            Projection x=new Projection(true);
-            for(Projection p:projection) {
+            Projection x = new Projection(true);
+            for (Projection p : projection) {
                 x.addToArray(p.toJson());
             }
             return x;
@@ -194,11 +194,11 @@ public class Projection extends Expression {
     }
 
     public static Projection project(List<? extends Projection> projection) {
-        if(projection.size()==1) {
+        if (projection.size() == 1) {
             return projection.get(0);
         } else {
-            Projection x=new Projection(true);
-            for(Projection p:projection) {
+            Projection x = new Projection(true);
+            for (Projection p : projection) {
                 x.addToArray(p.toJson());
             }
             return x;
@@ -209,15 +209,14 @@ public class Projection extends Expression {
      * Adds p into this array projection
      */
     private void addToArray(JsonNode j) {
-        if(j instanceof ArrayNode) {
-            for(Iterator<JsonNode> itr=((ArrayNode)j).elements();itr.hasNext();) {
+        if (j instanceof ArrayNode) {
+            for (Iterator<JsonNode> itr = ((ArrayNode) j).elements(); itr.hasNext();) {
                 addToArray(itr.next());
             }
         } else {
-            ((ArrayNode)node).add(j);
+            ((ArrayNode) node).add(j);
         }
     }
-
 
     /**
      * Returns a projection based on an array or object node
@@ -227,4 +226,3 @@ public class Projection extends Expression {
     }
 
 }
-

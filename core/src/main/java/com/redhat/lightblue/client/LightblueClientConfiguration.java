@@ -11,12 +11,12 @@ public class LightblueClientConfiguration {
 
         public static Compression parseCompression(String str) {
             switch (str) {
-            case "NONE":
-                return NONE;
-            case "LZF":
-                return LZF;
-            default:
-                throw new IllegalArgumentException("Invalid compression " + str + ". Supported values are: NONE, LZF");
+                case "NONE":
+                    return NONE;
+                case "LZF":
+                    return LZF;
+                default:
+                    throw new IllegalArgumentException("Invalid compression " + str + ". Supported values are: NONE, LZF");
             }
         }
     }
@@ -73,33 +73,33 @@ public class LightblueClientConfiguration {
 
     /**
      * @return Reference for the CA file used to authenticate the validity of
-     *         the LB server certificate.  Should either be on the classpath, or
-     *         prefixed with 'file://'.
+     * the LB server certificate. Should either be on the classpath, or prefixed
+     * with 'file://'.
      */
     public String getCaFilePath() {
         return caFilePath;
     }
 
     /**
-     * @param caFilePath Reference for the CA file used to authenticate the validity of
-     *         the LB server certificate.  Should either be on the classpath, or
-     *         prefixed with 'file://'.
+     * @param caFilePath Reference for the CA file used to authenticate the
+     * validity of the LB server certificate. Should either be on the classpath,
+     * or prefixed with 'file://'.
      */
     public void setCaFilePath(String caFilePath) {
         this.caFilePath = caFilePath;
     }
 
     /**
-     * @return Reference for the private key of the LB client.  Should either be on the
-     *          classpath, or prefixed with 'file://'/
+     * @return Reference for the private key of the LB client. Should either be
+     * on the classpath, or prefixed with 'file://'/
      */
     public String getCertFilePath() {
         return certFilePath;
     }
 
     /**
-     * @param certFilePath Reference for the private key of the LB client.  Should either be on the
-     *          classpath, or prefixed with 'file://'/
+     * @param certFilePath Reference for the private key of the LB client.
+     * Should either be on the classpath, or prefixed with 'file://'/
      */
     public void setCertFilePath(String certFilePath) {
         this.certFilePath = certFilePath;

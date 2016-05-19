@@ -16,7 +16,8 @@ import com.redhat.lightblue.client.response.LightblueResponse;
 public class LightblueExternalResource extends BeforeAfterTestRule {
 
     @Obsolete
-    public interface LightblueTestMethods extends LightblueTestHarnessConfig {}
+    public interface LightblueTestMethods extends LightblueTestHarnessConfig {
+    }
 
     public interface LightblueTestHarnessConfig {
         JsonNode[] getMetadataJsonNodes() throws Exception;
@@ -32,7 +33,7 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         this(methods, 8000);
     }
 
-    public LightblueExternalResource(LightblueTestMethods methods,boolean removeHooks) {
+    public LightblueExternalResource(LightblueTestMethods methods, boolean removeHooks) {
         this(methods, 8000);
         this.removeHooks = removeHooks;
     }
@@ -123,8 +124,6 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
             return new HashSet<>();
         }
 
-
     }
-
 
 }

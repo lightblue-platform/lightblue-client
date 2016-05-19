@@ -24,7 +24,7 @@ public class TestAbstractLightblueRequest extends AbstractLightblueRequestTest {
 
         @Override
         public String getRestURI(String baseServiceURI) {
-            return "/rest/data/find/"+updatedEntityName+"/"+updatedEntityVersion;
+            return "/rest/data/find/" + updatedEntityName + "/" + updatedEntityVersion;
         }
 
         public void setBody(String body) {

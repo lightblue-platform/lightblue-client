@@ -11,7 +11,8 @@ public class LightBlueJsonHelperImpl implements LightBlueJsonHelper {
     @Override
     public Map<String, Object> getJsonMap(String json) {
         HashMap<String, Object> result = null;
-        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
+        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {
+        };
 
         try {
             result = JSON.getDefaultObjectMapper().readValue(json, typeRef);
@@ -24,7 +25,7 @@ public class LightBlueJsonHelperImpl implements LightBlueJsonHelper {
 
     @Override
     public String createEntityPutRequestJson(String entity, String version,
-            Map<String, Object> data) {
+                                             Map<String, Object> data) {
 
         return null;
     }

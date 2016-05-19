@@ -215,8 +215,8 @@ public class AbstractLightblueProxyServletTest {
     }
 
     protected AbstractLightblueProxyServlet getTestServlet(CloseableHttpClient httpClient,
-            LightblueClientConfiguration clientConfig, final String serviceUri,
-            ServletConfig servletConfig) throws ServletException {
+                                                           LightblueClientConfiguration clientConfig, final String serviceUri,
+                                                           ServletConfig servletConfig) throws ServletException {
         Instance<LightblueClientConfiguration> instance = new StubInstance<>(clientConfig);
 
         AbstractLightblueProxyServlet servlet;
@@ -224,7 +224,8 @@ public class AbstractLightblueProxyServletTest {
             @Override
             protected String serviceUriForRequest(HttpServletRequest request) throws ServletException {
                 return serviceUri + servicePathForRequest(request);
-            };
+            }
+        ;
         };
 
         if (servletConfig == null) {

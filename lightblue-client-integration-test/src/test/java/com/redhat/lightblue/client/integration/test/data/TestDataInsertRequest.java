@@ -22,10 +22,10 @@ public class TestDataInsertRequest extends LightblueClientTestHarness {
     @Override
     protected JsonNode[] getMetadataJsonNodes() throws Exception {
         return new JsonNode[]{
-                loadJsonNode("./metadata/country.json")
+            loadJsonNode("./metadata/country.json")
         };
     }
-    
+
     @Before
     public void before() throws Exception {
         cleanupMongoCollections("country");

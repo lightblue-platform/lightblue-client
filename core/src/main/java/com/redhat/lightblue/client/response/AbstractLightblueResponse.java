@@ -96,7 +96,7 @@ public abstract class AbstractLightblueResponse implements LightblueResponse, Li
         }
 
         JsonNode objectTypeNode = getJson().get("status");
-        if (objectTypeNode != null && (objectTypeNode.textValue().equalsIgnoreCase("error") 
+        if (objectTypeNode != null && (objectTypeNode.textValue().equalsIgnoreCase("error")
                 || objectTypeNode.textValue().equalsIgnoreCase("partial"))) {
             return true;
         }

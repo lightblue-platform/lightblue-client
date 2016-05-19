@@ -22,9 +22,9 @@ public class TestAbstractLightblueDataRequest extends AbstractLightblueRequestTe
             return null;
         }
 
-            public JsonNode getBodyJson() {
-                return null;
-            }
+        public JsonNode getBodyJson() {
+            return null;
+        }
 
         @Override
         public HttpMethod getHttpMethod() {

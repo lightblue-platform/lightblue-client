@@ -5,8 +5,7 @@ import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 
 /**
- * GET /metadata/{entityName}/{version}/roles
- * GET /metadata/{entityName}/roles
+ * GET /metadata/{entityName}/{version}/roles GET /metadata/{entityName}/roles
  * GET /metadata/roles
  */
 public class MetadataGetEntityRolesRequest extends AbstractLightblueMetadataRequest {

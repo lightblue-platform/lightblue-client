@@ -12,12 +12,14 @@ import com.redhat.lightblue.client.model.Error;
 public interface LightblueErrorResponse extends LightblueResponse {
 
     /**
-     * @return <code>true</code> if any data errors exist on this response, otherwise <code>false</code>.
+     * @return <code>true</code> if any data errors exist on this response,
+     * otherwise <code>false</code>.
      */
     boolean hasDataErrors();
 
     /**
-     * @return <code>true</code> if any lightblue errors exist on this response, otherwise <code>false</code>.
+     * @return <code>true</code> if any lightblue errors exist on this response,
+     * otherwise <code>false</code>.
      */
     boolean hasLightblueErrors();
 

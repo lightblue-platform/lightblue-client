@@ -21,8 +21,8 @@ import com.redhat.lightblue.client.request.LightblueRequest;
 
 /**
  * Tests the somewhat complicated and vaguely documented semantics of JDK's
- * {@link java.net.HttpURLConnection} are followed correctly by use of a real HTTP server with real
- * real connections.
+ * {@link java.net.HttpURLConnection} are followed correctly by use of a real
+ * HTTP server with real real connections.
  *
  * @see JavaNetHttpTransportTest
  */
@@ -51,7 +51,6 @@ public class JavaNetHttpTransportIntegrationTest {
                 .willReturn(aResponse().withBody("The body").withStatus(500)));
 
         LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/");
-
 
         Assert.assertEquals("The body", client.executeRequest(request, wireMockUrl()));
     }
