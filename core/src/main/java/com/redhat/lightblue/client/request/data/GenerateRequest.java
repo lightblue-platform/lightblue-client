@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueRequest;
+import com.redhat.lightblue.client.request.LightblueDataRequest;
 
 /**
  * Generate a value using a field's value generator
@@ -20,28 +20,28 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequest;
  * </pre>
  *
  */
-public class GenerateRequest extends AbstractLightblueRequest {
+public class GenerateRequest extends LightblueDataRequest {
 
     private Integer n;
     private String path;
 
     public GenerateRequest(String entityName, String entityVersion, String path, int n) {
-        super(entityName, entityVersion);
+        super(HttpMethod.GET,"generate",entityName, entityVersion);
         this.path = path;
         this.n = n;
     }
 
     public GenerateRequest(String entityName, String entityVersion, String path) {
-        super(entityName, entityVersion);
+        super(HttpMethod.GET,"generate",entityName, entityVersion);
         this.path = path;
     }
 
     public GenerateRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
+        this(entityName, entityVersion,null);
     }
 
     public GenerateRequest(String entityName) {
-        super(entityName);
+        this(entityName,null);
     }
 
     /**
@@ -64,13 +64,7 @@ public class GenerateRequest extends AbstractLightblueRequest {
     public String getRestURI(String baseServiceURI) {
         if(path==null)
             throw new NullPointerException("path");
-        StringBuilder bld=new StringBuilder();
-        bld.append(baseServiceURI);
-        appendToURI(bld, "generate");
-        appendToURI(bld, getEntityName());
-        if (StringUtils.isNotBlank(getEntityVersion())) {
-            appendToURI(bld, getEntityVersion());
-        }
+        StringBuilder bld=new StringBuilder(super.getRestURI(baseServiceURI));
         appendToURI(bld,path);
         if(n!=null)
             appendToURI(bld,"n",n.toString());
@@ -82,13 +76,4 @@ public class GenerateRequest extends AbstractLightblueRequest {
         return null;
     }
 
-    @Override
-    public String getBody() {
-        return null;
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.GET;
-    }
 }

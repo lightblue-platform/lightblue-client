@@ -3,7 +3,7 @@ package com.redhat.lightblue.client.request.data;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.CRUDRequest;
 
 /**
  * An operation non-specific {@link AbstractLightblueDataRequest} for when the
@@ -12,34 +12,20 @@ import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
  *
  * @author dcrissman
  */
-public class LiteralDataRequest extends AbstractLightblueDataRequest {
+public class LiteralDataRequest extends CRUDRequest {
 
     private final JsonNode body;
-    private final HttpMethod httpMethod;
-    private final String operationPathParam;
     private final Operation operation;
 
-    public LiteralDataRequest(String entityName, String entityVersion, JsonNode body, HttpMethod httpMethod, String operationalPathParam, Operation operation) {
-        super(entityName, entityVersion);
+    public LiteralDataRequest(String entityName, String entityVersion, JsonNode body, HttpMethod httpMethod, String operationPathParam, Operation operation) {
+        super(httpMethod,operationPathParam,entityName, entityVersion);
         this.body = body;
-        this.httpMethod = httpMethod;
-        operationPathParam = operationalPathParam;
-        this.operation = Operation.valueOf(operationalPathParam.toUpperCase());
+        this.operation = Operation.valueOf(operationPathParam.toUpperCase());
     }
 
     @Override
     public JsonNode getBodyJson() {
         return body;
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return httpMethod;
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return operationPathParam;
     }
 
     @Override

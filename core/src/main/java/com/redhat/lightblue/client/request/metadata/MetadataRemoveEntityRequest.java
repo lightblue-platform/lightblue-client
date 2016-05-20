@@ -10,22 +10,7 @@ import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 public class MetadataRemoveEntityRequest extends AbstractLightblueMetadataRequest {
 
     public MetadataRemoveEntityRequest(String entityName) {
-        super(entityName);
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "";
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.DELETE;
-    }
-
-    @Override
-    public JsonNode getBodyJson() {
-        return null;
+        super(HttpMethod.DELETE,null,entityName,null);
     }
 
 }

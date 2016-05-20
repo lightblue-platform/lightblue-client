@@ -10,31 +10,8 @@ import org.junit.Test;
 
 public class TestAbstractLightblueDataRequest extends AbstractLightblueRequestTest {
 
-    AbstractLightblueDataRequest testRequest = new AbstractLightblueDataRequest(entityName, entityVersion) {
+    LightblueDataRequest testRequest = new LightblueDataRequest(null,dataOperation,entityName, entityVersion) {
 
-        @Override
-        public String getOperationPathParam() {
-            return dataOperation;
-        }
-
-        @Override
-        public String getBody() {
-            return null;
-        }
-
-        public JsonNode getBodyJson() {
-            return null;
-        }
-
-        @Override
-        public HttpMethod getHttpMethod() {
-            return null;
-        }
-
-        @Override
-        public Operation getOperation() {
-            return Operation.FIND;
-        }
     };
 
     @Test

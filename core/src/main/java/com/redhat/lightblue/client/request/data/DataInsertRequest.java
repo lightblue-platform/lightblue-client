@@ -10,10 +10,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueDataWithExecutionRequest;
+import com.redhat.lightblue.client.request.CRUDRequest;
 import com.redhat.lightblue.client.util.JSON;
 
-public class DataInsertRequest extends AbstractLightblueDataWithExecutionRequest {
+public class DataInsertRequest extends CRUDRequest {
 
     private Projection projection;
     private Object[] objects;
@@ -21,11 +21,11 @@ public class DataInsertRequest extends AbstractLightblueDataWithExecutionRequest
     private Integer maxResults;
 
     public DataInsertRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
+        super(HttpMethod.PUT,"insert",entityName, entityVersion);
     }
 
     public DataInsertRequest(String entityName) {
-        super(entityName);
+        this(entityName,null);
     }
 
     public DataInsertRequest returns(List<? extends Projection> projection) {
@@ -79,16 +79,6 @@ public class DataInsertRequest extends AbstractLightblueDataWithExecutionRequest
         }
         appendRangeToJson(node, begin, maxResults);
         return node;
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.PUT;
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "insert";
     }
 
     @Override

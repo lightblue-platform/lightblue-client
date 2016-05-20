@@ -11,7 +11,7 @@ public class TestMetadataRemoveEntityRequest extends AbstractLightblueRequestTes
     public void testGetOperationPathParam() {
         MetadataRemoveEntityRequest request = new MetadataRemoveEntityRequest(entityName);
 
-        Assert.assertEquals("", request.getOperationPathParam());
+        Assert.assertEquals(null, request.getOperationPathParam());
     }
 
 }

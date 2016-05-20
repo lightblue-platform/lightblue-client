@@ -10,10 +10,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueDataWithExecutionRequest;
+import com.redhat.lightblue.client.request.CRUDRequest;
 import com.redhat.lightblue.client.util.JSON;
 
-public class DataSaveRequest extends AbstractLightblueDataWithExecutionRequest {
+public class DataSaveRequest extends CRUDRequest {
 
     private Projection projection;
     private Object[] objects;
@@ -22,11 +22,11 @@ public class DataSaveRequest extends AbstractLightblueDataWithExecutionRequest {
     private Integer maxResults;
 
     public DataSaveRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
+        super(HttpMethod.POST,"save",entityName, entityVersion);
     }
 
     public DataSaveRequest(String entityName) {
-        super(entityName);
+        this(entityName,null);
     }
 
     public DataSaveRequest returns(List<? extends Projection> projection) {
@@ -76,11 +76,6 @@ public class DataSaveRequest extends AbstractLightblueDataWithExecutionRequest {
     }
 
     @Override
-    public String getOperationPathParam() {
-        return "save";
-    }
-
-    @Override
     public JsonNode getBodyJson() {
         ObjectNode node = (ObjectNode) super.getBodyJson();
         if (projection != null) {
@@ -100,11 +95,6 @@ public class DataSaveRequest extends AbstractLightblueDataWithExecutionRequest {
         }
         appendRangeToJson(node, begin, maxResults);
         return node;
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.POST;
     }
 
     @Override

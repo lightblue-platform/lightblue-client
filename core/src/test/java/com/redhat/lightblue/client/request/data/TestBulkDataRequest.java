@@ -16,8 +16,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.LightblueDataRequest;
 import com.redhat.lightblue.client.request.DataBulkRequest;
+import com.redhat.lightblue.client.request.CRUDRequest;
 
 /**
  * @author bvulaj
@@ -60,7 +61,7 @@ public class TestBulkDataRequest {
         dfr2.select(Projection.includeField("*"));
         dfr2.where(Query.regex("fooz", "*", 0));
 
-        request.addAll(Arrays.<AbstractLightblueDataRequest>asList(dfr, dfr2));
+        request.addAll(Arrays.<CRUDRequest>asList(dfr, dfr2));
         assertTrue(request.getRequests().size() == 2);
         ArrayNode requests = (ArrayNode) request.getBodyJson().get("requests");
         assertTrue(requests.size() == 2);
@@ -83,7 +84,7 @@ public class TestBulkDataRequest {
         dfr3.select(Projection.includeField("*"));
         dfr3.where(Query.regex("fooz", "*", 0));
 
-        request.addAll(Arrays.<AbstractLightblueDataRequest>asList(dfr, dfr2));
+        request.addAll(Arrays.<CRUDRequest>asList(dfr, dfr2));
         // [dfr, dfr2]
         request.insertAfter(dfr3, dfr);
         // [dfr, dfr3, dfr2]
@@ -108,7 +109,7 @@ public class TestBulkDataRequest {
         dfr3.select(Projection.includeField("*"));
         dfr3.where(Query.regex("fooz", "*", 0));
 
-        request.addAll(Arrays.<AbstractLightblueDataRequest>asList(dfr, dfr2));
+        request.addAll(Arrays.<CRUDRequest>asList(dfr, dfr2));
         // [dfr, dfr2]
         request.insertBefore(dfr3, dfr);
         // [dfr3, dfr, dfr2]
@@ -131,7 +132,7 @@ public class TestBulkDataRequest {
         dfr2.select(Projection.includeField("*"));
         dfr2.where(Query.regex("fooz", "*", 0));
 
-        request.addAll(Arrays.<AbstractLightblueDataRequest>asList(dfr, dfr2));
+        request.addAll(Arrays.<CRUDRequest>asList(dfr, dfr2));
 
         assertEquals(expected, request.getBody());
     }

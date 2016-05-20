@@ -10,22 +10,6 @@ import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 public class MetadataGetEntityMetadataRequest extends AbstractLightblueMetadataRequest {
 
     public MetadataGetEntityMetadataRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
+        super(HttpMethod.GET,null,entityName, entityVersion);
     }
-
-    @Override
-    public String getOperationPathParam() {
-        return null;
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.GET;
-    }
-
-    @Override
-    public JsonNode getBodyJson() {
-        return null;
-    }
-
 }

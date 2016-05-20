@@ -18,17 +18,7 @@ public class MetadataUpdateEntityInfoRequest extends AbstractLightblueMetadataRe
     private JsonNode body;
 
     public MetadataUpdateEntityInfoRequest(String entityName) {
-        super(entityName);
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "";
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.PUT;
+        super(HttpMethod.PUT,null,entityName,null);
     }
 
     @Override

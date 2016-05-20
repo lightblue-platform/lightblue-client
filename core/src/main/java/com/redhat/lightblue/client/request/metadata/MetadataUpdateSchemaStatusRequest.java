@@ -22,25 +22,20 @@ public class MetadataUpdateSchemaStatusRequest extends AbstractLightblueMetadata
     private String comment;
 
     public MetadataUpdateSchemaStatusRequest(String entityName, String entityVersion, MetadataStatus status) {
-        super(entityName, entityVersion);
-        this.status = status;
+        super(HttpMethod.PUT,null,entityName, entityVersion);
+        this.status=status;
     }
 
     public MetadataUpdateSchemaStatusRequest(String entityName, String entityVersion, MetadataStatus status, String comment) {
-        super(entityName, entityVersion);
-        this.status = status;
+        super(HttpMethod.PUT,null,entityName, entityVersion);
+        this.status=status;
         this.comment = comment;
 
     }
 
     @Override
     public String getOperationPathParam() {
-        return status.getStatus();
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.PUT;
+        return status.toString();
     }
 
     @Override
@@ -68,10 +63,4 @@ public class MetadataUpdateSchemaStatusRequest extends AbstractLightblueMetadata
     public String getComment() {
         return comment;
     }
-
-    @Override
-    public JsonNode getBodyJson() {
-        return null;
-    }
-
 }

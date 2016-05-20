@@ -11,9 +11,10 @@ import org.junit.Test;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.Locking;
-import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.DataBulkRequest;
+import com.redhat.lightblue.client.request.LightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
@@ -33,25 +34,25 @@ public class LightblueHystrixClientTest {
         boolean dataBulk = false;
 
         @Override
-        public LightblueMetadataResponse metadata(LightblueRequest lightblueRequest) {
+        public LightblueMetadataResponse metadata(AbstractLightblueMetadataRequest lightblueRequest) {
             metadata = true;
             return null;
         }
 
         @Override
-        public LightblueDataResponse data(LightblueRequest lightblueRequest) {
+        public LightblueDataResponse data(LightblueDataRequest lightblueRequest) {
             data = true;
             return null;
         }
 
         @Override
-        public <T> T data(LightblueRequest lightblueRequest, Class<T> type) throws LightblueException {
+        public <T> T data(LightblueDataRequest lightblueRequest, Class<T> type) throws LightblueException {
             dataType = true;
             return null;
         }
         
         @Override
-        public LightblueBulkDataResponse bulkData(AbstractDataBulkRequest<AbstractLightblueDataRequest> bulkLightblueRequest) throws LightblueException {
+        public LightblueBulkDataResponse bulkData(DataBulkRequest bulkLightblueRequest) throws LightblueException {
             dataBulk = true;
             return null;
         }

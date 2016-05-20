@@ -15,22 +15,10 @@ import com.redhat.lightblue.client.util.Utils;
  */
 public class MetadataCreateSchemaRequest extends AbstractLightblueMetadataRequest {
 
-    private final String entityVersion;
     private JsonNode body;
 
     public MetadataCreateSchemaRequest(String entityName, String entityVersion) {
-        super(entityName);
-        this.entityVersion = entityVersion;
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "schema=" + entityVersion;
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.PUT;
+        super(HttpMethod.PUT,"schema="+entityVersion,entityName,null);
     }
 
     @Override

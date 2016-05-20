@@ -13,8 +13,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.LightblueException;
-import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.DataBulkRequest;
+import com.redhat.lightblue.client.request.CRUDRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.util.JSON;
 
@@ -26,13 +26,13 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
 
     private final SortedMap<Integer, LightblueDataResponse> responsesSuccessful = new TreeMap<>();
     private SortedMap<Integer, LightblueDataResponse> responsesErrored;
-    private final List<? extends AbstractLightblueDataRequest> requests;
+    private final List<? extends CRUDRequest> requests;
 
-    public DefaultLightblueBulkDataResponse(String responseText, AbstractDataBulkRequest<? extends AbstractLightblueDataRequest> reqs) throws LightblueParseException, LightblueBulkResponseException, LightblueException {
+    public DefaultLightblueBulkDataResponse(String responseText, DataBulkRequest reqs) throws LightblueParseException, LightblueBulkResponseException, LightblueException {
         this(responseText, JSON.getDefaultObjectMapper(), reqs);
     }
 
-    public DefaultLightblueBulkDataResponse(String responseText, ObjectMapper mapper, AbstractDataBulkRequest<? extends AbstractLightblueDataRequest> reqs) throws LightblueParseException, LightblueBulkResponseException, LightblueException {
+    public DefaultLightblueBulkDataResponse(String responseText, ObjectMapper mapper, DataBulkRequest reqs) throws LightblueParseException, LightblueBulkResponseException, LightblueException {
         super(responseText, mapper);
         requests = reqs.getRequests();
 
@@ -90,7 +90,7 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
     }
 
     @Override
-    public List<? extends AbstractLightblueDataRequest> getRequests() {
+    public List<? extends CRUDRequest> getRequests() {
         return Collections.unmodifiableList(requests);
     }
 

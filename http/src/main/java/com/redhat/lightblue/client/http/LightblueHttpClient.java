@@ -22,10 +22,10 @@ import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.http.transport.JavaNetHttpTransport;
-import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
-import com.redhat.lightblue.client.request.AbstractLightblueDataWithExecutionRequest;
+import com.redhat.lightblue.client.request.DataBulkRequest;
+import com.redhat.lightblue.client.request.LightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueMetadataResponse;
@@ -43,11 +43,11 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
-    private final class LockingRequest implements LightblueRequest {
+    private final class LockingRequest extends LightblueRequest {
         private final String uri;
-        private final HttpMethod mth;
 
         public LockingRequest(String domain, String callerId, String resourceId, Long ttl, boolean ping, HttpMethod method) {
+            super(method);
             StringBuilder b = new StringBuilder(128);
             try {
                 b.append("lock/")
@@ -64,23 +64,10 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
                 b.append('/').append("ping");
             }
             uri = b.toString();
-            mth = method;
         }
 
         @Override
-        public String getBody() {
-            return null;
-        }
-
-        @Override
-        public JsonNode getBodyJson() {
-            return null;
-        }
-
-        @Override
-        public HttpMethod getHttpMethod() {
-            return mth;
-        }
+        public JsonNode getBodyJson() {return null;}
 
         @Override
         public String getRestURI(String baseServiceURI) {
@@ -224,7 +211,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      * @see com.redhat.lightblue.client.LightblueClient#metadata(com.redhat.lightblue .client.request.LightblueRequest)
      */
     @Override
-    public DefaultLightblueMetadataResponse metadata(LightblueRequest lightblueRequest) throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
+    public DefaultLightblueMetadataResponse metadata(AbstractLightblueMetadataRequest lightblueRequest) throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
         LOGGER.debug("Calling metadata service with lightblueRequest: {}", lightblueRequest.toString());
 
         return new DefaultLightblueMetadataResponse(
@@ -238,13 +225,10 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      * @see com.redhat.lightblue.client.LightblueClient#data(com.redhat.lightblue.client .request.LightblueRequest)
      */
     @Override
-    public DefaultLightblueDataResponse data(LightblueRequest lightblueRequest)
+    public DefaultLightblueDataResponse data(LightblueDataRequest lightblueRequest)
             throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
-        if (lightblueRequest instanceof AbstractLightblueDataWithExecutionRequest) {
-            AbstractLightblueDataWithExecutionRequest executionRequest = (AbstractLightblueDataWithExecutionRequest) lightblueRequest;
-            if (!executionRequest.hasExecution()) {
-                executionRequest.execution(configuration.getExecution());
-            }
+        if (!lightblueRequest.hasExecution()) {
+            lightblueRequest.execution(configuration.getExecution());
         }
 
         LOGGER.debug("Calling data service with lightblueRequest: {}", lightblueRequest.toString());
@@ -254,7 +238,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     @Override
-    public <T> T data(LightblueRequest lightblueRequest, Class<T> type)
+    public <T> T data(LightblueDataRequest lightblueRequest, Class<T> type)
             throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
         LightblueDataResponse response = data(lightblueRequest);
 
@@ -262,7 +246,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     @Override
-    public DefaultLightblueBulkDataResponse bulkData(AbstractDataBulkRequest<AbstractLightblueDataRequest> lightblueRequests) throws LightblueHttpClientException, LightblueBulkResponseException, LightblueParseException, LightblueException {
+    public DefaultLightblueBulkDataResponse bulkData(DataBulkRequest lightblueRequests) throws LightblueHttpClientException, LightblueBulkResponseException, LightblueParseException, LightblueException {
         LOGGER.debug("Calling data service with lightblueRequest: {}", lightblueRequests.toString());
 
         String response = callService(lightblueRequests, configuration.getDataServiceURI());

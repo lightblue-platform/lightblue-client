@@ -10,22 +10,6 @@ import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 public class MetadataClearDefaultVersionRequest extends AbstractLightblueMetadataRequest {
 
     public MetadataClearDefaultVersionRequest(String entityName) {
-        super(entityName);
+        super(HttpMethod.DELETE, "default", entityName);
     }
-
-    @Override
-    public String getOperationPathParam() {
-        return "default";
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.DELETE;
-    }
-
-    @Override
-    public JsonNode getBodyJson() {
-        return null;
-    }
-
 }

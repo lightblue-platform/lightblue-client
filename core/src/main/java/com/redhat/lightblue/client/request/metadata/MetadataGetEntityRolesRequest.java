@@ -11,30 +11,15 @@ import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
 public class MetadataGetEntityRolesRequest extends AbstractLightblueMetadataRequest {
 
     public MetadataGetEntityRolesRequest() {
-        super(null);
+        super(HttpMethod.GET,"roles",null,null);
     }
 
     public MetadataGetEntityRolesRequest(String entityName) {
-        super(entityName);
+        super(HttpMethod.GET,"roles",entityName,null);
     }
 
     public MetadataGetEntityRolesRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "roles";
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.GET;
-    }
-
-    @Override
-    public JsonNode getBodyJson() {
-        return null;
+        super(HttpMethod.GET,"roles",entityName, entityVersion);
     }
 
 }

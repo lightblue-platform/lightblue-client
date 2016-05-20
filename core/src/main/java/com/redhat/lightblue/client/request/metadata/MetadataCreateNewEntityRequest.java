@@ -18,17 +18,7 @@ public class MetadataCreateNewEntityRequest extends AbstractLightblueMetadataReq
     private JsonNode body;
 
     public MetadataCreateNewEntityRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "";
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.PUT;
+        super(HttpMethod.PUT,null,entityName, entityVersion);
     }
 
     @Override

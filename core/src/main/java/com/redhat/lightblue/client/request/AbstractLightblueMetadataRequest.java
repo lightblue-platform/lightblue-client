@@ -4,30 +4,48 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public abstract class AbstractLightblueMetadataRequest extends AbstractLightblueRequest {
+import com.redhat.lightblue.client.http.HttpMethod;
 
-    public AbstractLightblueMetadataRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
+public abstract class AbstractLightblueMetadataRequest extends LightblueRequest {
+
+    protected final String operationName;
+    protected final String entityName;
+    protected final String entityVersion;
+
+    public AbstractLightblueMetadataRequest(HttpMethod method,String operationName,String entityName, String entityVersion) {
+        super(method);
+        this.operationName=operationName;
+        this.entityName=entityName;
+        this.entityVersion=entityVersion;
     }
 
-    public AbstractLightblueMetadataRequest(String entityName) {
-        super(entityName);
+    public AbstractLightblueMetadataRequest(HttpMethod method,String operationName,String entityName) {
+        this(method,operationName,entityName,null);
     }
 
+    public String getOperationPathParam() {
+        return operationName;
+    }
+
+    /**
+     * Default implementation returns the following, omitting any null section:
+     * <pre>
+     *  baseServiceURI / entity / version
+     * </pre>
+     */
     @Override
     public String getRestURI(String baseServiceURI) {
-        StringBuilder requestURI = new StringBuilder();
 
+        StringBuilder requestURI = new StringBuilder();
+        
         requestURI.append(baseServiceURI);
 
-        if (StringUtils.isNotBlank(getEntityName())) {
-            appendToURI(requestURI, getEntityName());
+        if (StringUtils.isNotBlank(entityName)) {
+            appendToURI(requestURI, entityName);
+            if (StringUtils.isNotBlank(entityVersion)) {
+                appendToURI(requestURI, entityVersion);
+            }
         }
-
-        if (StringUtils.isNotBlank(getEntityVersion())) {
-            appendToURI(requestURI, getEntityVersion());
-        }
-
         if (StringUtils.isNotBlank(getOperationPathParam())) {
             appendToURI(requestURI, getOperationPathParam());
         }
@@ -36,14 +54,7 @@ public abstract class AbstractLightblueMetadataRequest extends AbstractLightblue
     }
 
     @Override
-    public String getBody() {
-        JsonNode body = getBodyJson();
-        if (body == null) {
-            return null;
-        }
-        return body.toString();
+    public JsonNode getBodyJson() {
+        return null;
     }
-
-    public abstract String getOperationPathParam();
-
 }
