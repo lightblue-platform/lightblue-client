@@ -10,7 +10,7 @@ import com.redhat.lightblue.client.hystrix.graphite.ServoGraphiteSetup;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
-import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
+import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
@@ -27,9 +27,9 @@ public class LightblueHystrixClient implements LightblueClient {
     }
 
     protected class MetadataHystrixCommand extends HystrixCommand<LightblueMetadataResponse> {
-        private final AbstractLightblueMetadataRequest request;
+        private final LightblueMetadataRequest request;
 
-        public MetadataHystrixCommand(AbstractLightblueMetadataRequest request, String groupKey, String commandKey) {
+        public MetadataHystrixCommand(LightblueMetadataRequest request, String groupKey, String commandKey) {
             super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey)).andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
 
             this.request = request;
@@ -190,7 +190,7 @@ public class LightblueHystrixClient implements LightblueClient {
     }
 
     @Override
-    public LightblueMetadataResponse metadata(AbstractLightblueMetadataRequest lightblueRequest) {
+    public LightblueMetadataResponse metadata(LightblueMetadataRequest lightblueRequest) {
         return new MetadataHystrixCommand(lightblueRequest, groupKey, commandKey).execute();
     }
 

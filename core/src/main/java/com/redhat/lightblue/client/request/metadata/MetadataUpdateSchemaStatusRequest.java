@@ -9,12 +9,12 @@ import org.apache.commons.lang.StringUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.enums.MetadataStatus;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
+import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 
 /**
  * PUT /metadata/{entityName}/{version}/{status}?comment={Change comment}
  */
-public class MetadataUpdateSchemaStatusRequest extends AbstractLightblueMetadataRequest {
+public class MetadataUpdateSchemaStatusRequest extends LightblueMetadataRequest {
 
     protected static final String COMMENT_QUERY_NAME = "comment";
 

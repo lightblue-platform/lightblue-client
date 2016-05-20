@@ -6,20 +6,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import com.redhat.lightblue.client.http.HttpMethod;
 
-public abstract class AbstractLightblueMetadataRequest extends LightblueRequest {
+public abstract class LightblueMetadataRequest extends LightblueRequest {
 
     protected final String operationName;
     protected final String entityName;
     protected final String entityVersion;
 
-    public AbstractLightblueMetadataRequest(HttpMethod method,String operationName,String entityName, String entityVersion) {
+    public LightblueMetadataRequest(HttpMethod method,String operationName,String entityName, String entityVersion) {
         super(method);
         this.operationName=operationName;
         this.entityName=entityName;
         this.entityVersion=entityVersion;
     }
 
-    public AbstractLightblueMetadataRequest(HttpMethod method,String operationName,String entityName) {
+    public LightblueMetadataRequest(HttpMethod method,String operationName,String entityName) {
         this(method,operationName,entityName,null);
     }
 
