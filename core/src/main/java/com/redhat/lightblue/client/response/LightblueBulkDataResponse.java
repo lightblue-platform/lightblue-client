@@ -3,8 +3,9 @@ package com.redhat.lightblue.client.response;
 import java.util.List;
 import java.util.SortedMap;
 
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.LightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.request.CRUDRequest;
 
 public interface LightblueBulkDataResponse extends LightblueResponse {
 
@@ -32,7 +33,7 @@ public interface LightblueBulkDataResponse extends LightblueResponse {
      * @return the {@link AbstractLightblueDataRequest} that make up this
      * {@link LightblueBulkDataResponse}.
      */
-    List<? extends AbstractLightblueDataRequest> getRequests();
+    List<? extends CRUDRequest> getRequests();
 
     /**
      * @return A {@link SortedMap} of {@link LightblueDataResponse}s keyed off

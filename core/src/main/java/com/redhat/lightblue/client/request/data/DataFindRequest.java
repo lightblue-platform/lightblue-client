@@ -8,9 +8,9 @@ import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.Sort;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueDataWithExecutionRequest;
+import com.redhat.lightblue.client.request.CRUDRequest;
 
-public class DataFindRequest extends AbstractLightblueDataWithExecutionRequest {
+public class DataFindRequest extends CRUDRequest {
 
     private Query queryExpression;
     private Projection projection;
@@ -19,11 +19,11 @@ public class DataFindRequest extends AbstractLightblueDataWithExecutionRequest {
     private Integer maxResults;
 
     public DataFindRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
+        super(HttpMethod.POST,"find",entityName,entityVersion);
     }
 
     public DataFindRequest(String entityName) {
-        super(entityName);
+        this(entityName,null);
     }
 
     public DataFindRequest where(Query queryExpression) {
@@ -102,16 +102,6 @@ public class DataFindRequest extends AbstractLightblueDataWithExecutionRequest {
         }
         appendRangeToJson(node, begin, maxResults);
         return node;
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.POST;
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "find";
     }
 
     @Override

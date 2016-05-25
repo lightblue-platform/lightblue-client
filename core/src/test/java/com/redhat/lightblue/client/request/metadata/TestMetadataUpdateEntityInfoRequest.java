@@ -11,7 +11,7 @@ public class TestMetadataUpdateEntityInfoRequest extends AbstractLightblueReques
     public void testGetOperationPathParam() {
         MetadataUpdateEntityInfoRequest request = new MetadataUpdateEntityInfoRequest(entityName);
 
-        Assert.assertEquals("", request.getOperationPathParam());
+        Assert.assertEquals(null, request.getOperationPathParam());
     }
 
 }

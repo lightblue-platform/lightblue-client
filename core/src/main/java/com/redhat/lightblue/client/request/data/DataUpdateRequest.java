@@ -9,9 +9,9 @@ import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.Update;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueDataWithExecutionRequest;
+import com.redhat.lightblue.client.request.CRUDRequest;
 
-public class DataUpdateRequest extends AbstractLightblueDataWithExecutionRequest {
+public class DataUpdateRequest extends CRUDRequest {
 
     private Projection projection;
     private Update update;
@@ -20,11 +20,11 @@ public class DataUpdateRequest extends AbstractLightblueDataWithExecutionRequest
     private Integer maxResults;
 
     public DataUpdateRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
+        super(HttpMethod.POST,"update",entityName, entityVersion);
     }
 
     public DataUpdateRequest(String entityName) {
-        super(entityName);
+        this(entityName,null);
     }
 
     public DataUpdateRequest returns(List<? extends Projection> projection) {
@@ -93,16 +93,6 @@ public class DataUpdateRequest extends AbstractLightblueDataWithExecutionRequest
         }
         appendRangeToJson(node, begin, maxResults);
         return node;
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.POST;
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "update";
     }
 
     @Override

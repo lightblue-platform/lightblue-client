@@ -11,7 +11,7 @@ public class TestMetadataCreateNewEntityRequest extends AbstractLightblueRequest
     public void testGetOperationPathParam() {
         MetadataCreateNewEntityRequest request = new MetadataCreateNewEntityRequest(entityName, entityVersion);
 
-        Assert.assertEquals("", request.getOperationPathParam());
+        Assert.assertEquals(null, request.getOperationPathParam());
     }
 
 }
