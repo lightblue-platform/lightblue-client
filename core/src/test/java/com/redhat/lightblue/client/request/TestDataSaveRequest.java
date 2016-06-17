@@ -1,17 +1,26 @@
 package com.redhat.lightblue.client.request;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.MongoExecution;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.request.data.DataSaveRequest;
 
 public class TestDataSaveRequest {
+
+    @Test
+    public void testSaveToString() {
+        DataSaveRequest request = new DataSaveRequest("fake");
+        request.returns(Arrays.asList(Projection.includeField("*")));
+        request.create("");
+
+        assertEquals(request.toString(), "POST /save/fake, body: {\"projection\":{\"field\":\"*\",\"include\":true,\"recursive\":false},\"data\":\"\"}");
+    }
 
     @Test
     public void testProjectionsAsList() {

@@ -1,17 +1,26 @@
 package com.redhat.lightblue.client.request;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.MongoExecution;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
 
 public class TestDataInsertRequest {
+
+    @Test
+    public void testInsertToString() {
+        DataInsertRequest request = new DataInsertRequest("fake");
+        request.returns(Arrays.asList(Projection.includeField("*")));
+        request.create("");
+
+        assertEquals(request.toString(), "PUT /insert/fake, body: {\"projection\":{\"field\":\"*\",\"include\":true,\"recursive\":false},\"data\":\"\"}");
+    }
 
     @Test
     public void testProjectionsAsList() {

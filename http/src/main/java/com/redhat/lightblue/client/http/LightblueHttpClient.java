@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueException;
@@ -24,8 +23,8 @@ import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.http.transport.JavaNetHttpTransport;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
-import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.LightblueMetadataRequest;
+import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueMetadataResponse;
@@ -212,8 +211,6 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      */
     @Override
     public DefaultLightblueMetadataResponse metadata(LightblueMetadataRequest lightblueRequest) throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
-        LOGGER.debug("Calling metadata service with lightblueRequest: {}", lightblueRequest.toString());
-
         return new DefaultLightblueMetadataResponse(
                 callService(lightblueRequest, configuration.getMetadataServiceURI()),
                 mapper);
@@ -231,7 +228,6 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
             lightblueRequest.execution(configuration.getExecution());
         }
 
-        LOGGER.debug("Calling data service with lightblueRequest: {}", lightblueRequest.toString());
         return new DefaultLightblueDataResponse(
                 callService(lightblueRequest, configuration.getDataServiceURI()),
                 mapper);
@@ -247,8 +243,6 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 
     @Override
     public DefaultLightblueBulkDataResponse bulkData(DataBulkRequest lightblueRequests) throws LightblueHttpClientException, LightblueBulkResponseException, LightblueParseException, LightblueException {
-        LOGGER.debug("Calling data service with lightblueRequest: {}", lightblueRequests.toString());
-
         String response = callService(lightblueRequests, configuration.getDataServiceURI());
 
         try {
@@ -264,14 +258,22 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     protected String callService(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Calling service: {}", request.toString());
+        }
+
         long t1 = System.currentTimeMillis();
 
         String responseBody = httpTransport.executeRequest(request, baseUri);
 
-        LOGGER.debug("Response received from service: {}", responseBody);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Response received from service: {}", responseBody);
+        }
 
         long t2 = new Date().getTime();
-        LOGGER.debug("Call took {}ms", t2 - t1);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Call took {}ms", t2 - t1);
+        }
 
         return responseBody;
     }
