@@ -1,18 +1,26 @@
 package com.redhat.lightblue.client.request;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.MongoExecution;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Update;
 import com.redhat.lightblue.client.request.data.DataUpdateRequest;
 
 public class TestDataUpdateRequest {
+
+    @Test
+    public void testUpdateToString() {
+        DataUpdateRequest request = new DataUpdateRequest("fake");
+        request.updates(Arrays.asList(Update.set("fakeField1", true)));
+
+        assertEquals(request.toString(), "POST /update/fake, body: {\"update\":{\"$set\":{\"fakeField1\":true}}}");
+    }
 
     @Test
     public void testUpdatesAsList() {

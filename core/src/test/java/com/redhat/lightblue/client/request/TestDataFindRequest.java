@@ -1,18 +1,27 @@
 package com.redhat.lightblue.client.request;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.redhat.lightblue.client.Execution;
 import com.redhat.lightblue.client.MongoExecution;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Sort;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 
 public class TestDataFindRequest {
+
+    @Test
+    public void testFindToString() {
+        DataFindRequest request = new DataFindRequest("fake");
+        request.select(Arrays.asList(Projection.includeField("*")));
+
+        assertEquals(request.toString(), "POST /find/fake, body: {\"projection\":{\"field\":\"*\",\"include\":true,\"recursive\":false}}");
+    }
+
 
     @Test
     public void testProjectionsAsList() {

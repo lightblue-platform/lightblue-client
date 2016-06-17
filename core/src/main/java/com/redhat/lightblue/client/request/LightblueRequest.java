@@ -70,5 +70,9 @@ public abstract class LightblueRequest {
         }
     }
 
+    @Override
+    public String toString() {
+        return getHttpMethod()+" "+getRestURI("")+", body: "+getBody();
+    }
     
 }
