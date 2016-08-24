@@ -2,6 +2,7 @@ package com.redhat.lightblue.client;
 
 import com.redhat.lightblue.client.MongoExecution.ReadPreference;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,10 +78,12 @@ public class LightblueClientConfiguration {
     public List<String> getCaFilePaths() {
         List<String> caFilePaths = new ArrayList<>();
 
-        if(hasMultipleCaCerts()) {
-            caFilePaths = Arrays.asList(caFilePath.split(CA_CERT_FILE_DELIMITER));
-        } else {
-            caFilePaths.add(caFilePath);
+        if(StringUtils.isNotBlank(caFilePath)) {
+          if(hasMultipleCaCerts()) {
+                caFilePaths = Arrays.asList(caFilePath.split(CA_CERT_FILE_DELIMITER));
+            } else {
+                caFilePaths.add(caFilePath);
+            }
         }
 
         return caFilePaths;
@@ -116,6 +119,9 @@ public class LightblueClientConfiguration {
      * with 'file://'.
      */
     public String getCaFilePath() {
+        if(StringUtils.isNotBlank(caFilePath) && hasMultipleCaCerts()) {
+            throw new IllegalStateException("There are multiple CA cert paths defined, use getCaFilePaths() instead");
+        }
         return caFilePath;
     }
 

@@ -1,6 +1,7 @@
 package com.redhat.lightblue.client.http.auth;
 
 import com.redhat.lightblue.client.LightblueClientConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -206,13 +207,13 @@ public class SslSocketFactories {
     }
 
     private static void validateLightblueClientConfigForCertAuth(LightblueClientConfiguration config) {
-        if (config.getCaFilePath() == null) {
+        if (config.getCaFilePaths().isEmpty()) {
             throw new IllegalArgumentException("Must provide a caFilePath.");
         }
-        if (config.getCertFilePath() == null) {
+        if (StringUtils.isNotBlank(config.getCertFilePath())) {
             throw new IllegalArgumentException("Must provide a certFilePath.");
         }
-        if (config.getCertPassword() == null) {
+        if (StringUtils.isNotBlank(config.getCertPassword())) {
             throw new IllegalArgumentException("Must provide a certPassword.");
         }
     }
