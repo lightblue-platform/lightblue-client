@@ -210,10 +210,10 @@ public class SslSocketFactories {
         if (config.getCaFilePaths().isEmpty()) {
             throw new IllegalArgumentException("Must provide a caFilePath.");
         }
-        if (StringUtils.isNotBlank(config.getCertFilePath())) {
+        if (StringUtils.isBlank(config.getCertFilePath())) {
             throw new IllegalArgumentException("Must provide a certFilePath.");
         }
-        if (StringUtils.isNotBlank(config.getCertPassword())) {
+        if (StringUtils.isBlank(config.getCertPassword())) {
             throw new IllegalArgumentException("Must provide a certPassword.");
         }
     }
