@@ -38,6 +38,8 @@ public class TestSSLSocketFactory {
 
         LightblueClientConfiguration config = new LightblueClientConfiguration();
         config.setUseCertAuth(true);
+        config.setCertFilePath("certificates-client/lightblue-client-1.pkcs12");
+        config.setCertPassword("secret");
 
         SslSocketFactories.fromLightblueClientConfig(config);
     }
@@ -49,7 +51,8 @@ public class TestSSLSocketFactory {
 
         LightblueClientConfiguration config = new LightblueClientConfiguration();
         config.setUseCertAuth(true);
-        config.setCaFilePath("/some/path/to/caFile.pem");
+        config.setCaFilePath("certificates-ca/lightblue-root-ca-1.pem");
+        config.setCertPassword("secret");
 
         SslSocketFactories.fromLightblueClientConfig(config);
     }
@@ -88,6 +91,7 @@ public class TestSSLSocketFactory {
         LightblueClientConfiguration config = new LightblueClientConfiguration();
         config.setUseCertAuth(true);
         config.setCaFilePath("/some/path/to/caFile.pem");
+        config.setCertPassword("secret");
 
         SslSocketFactories.javaNetSslSocketFactory(config);
     }
