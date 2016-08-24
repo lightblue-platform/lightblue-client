@@ -1,15 +1,35 @@
 package com.redhat.lightblue.client.http.auth;
 
+import com.redhat.lightblue.client.LightblueClientConfiguration;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import com.redhat.lightblue.client.LightblueClientConfiguration;
 
 public class TestSSLSocketFactory {
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
+
+
+    @Test
+    public void certFilePathsPersedCorrectlyWhenOnlyOneIsSpecified() throws Exception {
+        LightblueClientConfiguration config = new LightblueClientConfiguration();
+        config.setUseCertAuth(true);
+        config.setCaFilePath("certificates-ca/lightblue-root-ca-1.pem");
+        config.setCertFilePath("certificates-client/lightblue-client-1.pkcs12");
+        config.setCertPassword("secret");
+        SslSocketFactories.fromLightblueClientConfig(config);
+    }
+
+    @Test
+    public void certFilePathsParsedCorrectlyWhenMultipleAreSpecified() throws Exception {
+        LightblueClientConfiguration config = new LightblueClientConfiguration();
+        config.setUseCertAuth(true);
+        config.setCaFilePath("certificates-ca/lightblue-root-ca-1.pem,certificates-ca/lightblue-root-ca-2.pem");
+        config.setCertFilePath("certificates-client/lightblue-client-1.pkcs12");
+        config.setCertPassword("secret");
+        SslSocketFactories.fromLightblueClientConfig(config);
+    }
 
     @Test
     public void testFromLightblueClientConfig_MissingCaFilePath() throws Exception {
