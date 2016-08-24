@@ -1,8 +1,12 @@
 package com.redhat.lightblue.client;
 
-import org.apache.commons.io.FilenameUtils;
-
 import com.redhat.lightblue.client.MongoExecution.ReadPreference;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class LightblueClientConfiguration {
 
@@ -20,6 +24,8 @@ public class LightblueClientConfiguration {
             }
         }
     }
+
+    public static String CA_CERT_FILE_DELIMITER = ",";
 
     private String dataServiceURI;
     private String metadataServiceURI;
@@ -54,6 +60,35 @@ public class LightblueClientConfiguration {
         maxQueryTimeMS = configuration.maxQueryTimeMS;
     }
 
+    /**
+     *
+     * @return boolean whether or not the caFilePath value is actually a delimited list
+     * representing multiple CA certs
+     */
+    public boolean hasMultipleCaCerts() {
+        return (caFilePath.contains(CA_CERT_FILE_DELIMITER));
+    }
+
+    /**
+     *
+     * @return List<String> of caFilePaths generated from parsing the caFilePath
+     * value using the value specified by the CA_CERT_FILE_DELIMITER constant.
+     * If caFilePath value is not delimited, returns a List with only one path in it.
+     */
+    public List<String> getCaFilePaths() {
+        List<String> caFilePaths = new ArrayList<>();
+
+        if(StringUtils.isNotBlank(caFilePath)) {
+          if(hasMultipleCaCerts()) {
+                caFilePaths = Arrays.asList(caFilePath.split(CA_CERT_FILE_DELIMITER));
+            } else {
+                caFilePaths.add(caFilePath);
+            }
+        }
+
+        return caFilePaths;
+    }
+
     public String getDataServiceURI() {
         return dataServiceURI;
     }
@@ -84,6 +119,9 @@ public class LightblueClientConfiguration {
      * with 'file://'.
      */
     public String getCaFilePath() {
+        if(StringUtils.isNotBlank(caFilePath) && hasMultipleCaCerts()) {
+            throw new IllegalStateException("There are multiple CA cert paths defined, use getCaFilePaths() instead");
+        }
         return caFilePath;
     }
 
