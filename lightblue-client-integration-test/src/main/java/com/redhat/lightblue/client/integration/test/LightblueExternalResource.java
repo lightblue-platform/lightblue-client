@@ -21,6 +21,11 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
 
     public interface LightblueTestHarnessConfig {
         JsonNode[] getMetadataJsonNodes() throws Exception;
+
+        default boolean isGrantAnyoneAccess() {
+            return true;
+        }
+        
     }
 
     private final LightblueTestMethods methods;
@@ -109,6 +114,11 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         @Override
         protected JsonNode[] getMetadataJsonNodes() throws Exception {
             return methods.getMetadataJsonNodes();
+        }
+
+        @Override
+        public boolean isGrantAnyoneAccess() {
+            return methods.isGrantAnyoneAccess();
         }
 
     }
