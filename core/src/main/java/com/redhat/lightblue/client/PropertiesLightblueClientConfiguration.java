@@ -1,5 +1,11 @@
 package com.redhat.lightblue.client;
 
+import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
+import com.redhat.lightblue.client.MongoExecution.ReadPreference;
+import org.apache.commons.lang.text.StrSubstitutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,13 +16,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
-
-import org.apache.commons.lang.text.StrSubstitutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
-import com.redhat.lightblue.client.MongoExecution.ReadPreference;
 
 /**
  * Provides factory methods for
@@ -122,11 +121,19 @@ public final class PropertiesLightblueClientConfiguration {
      * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration}.
      *
      * @param pathToProperties A file system path, relative to the working
-     * directory of the java process.
+     * directory of the java process.  If the specified path has no leading
+     * directories, try to look for it in the classpath instead
      */
     public static LightblueClientConfiguration fromPath(Path pathToProperties) {
-        try (InputStream inStream = Files.newInputStream(pathToProperties)) {
-            return fromInputStream(inStream);
+
+        try {
+            //If specified path has no leading directories, look for the correponding file on the classpath
+            if(pathToProperties.getFileName().toString().equals(pathToProperties.toString())) {
+                return fromResource(pathToProperties.toString());
+            } else {
+                InputStream inStream = Files.newInputStream(pathToProperties);
+                return fromInputStream(inStream);
+            }
         } catch (IOException e) {
             LOGGER.error(pathToProperties + " could not be found/read", e);
             throw new LightblueClientConfigurationException("Could not read properties file from "
