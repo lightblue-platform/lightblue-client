@@ -89,7 +89,7 @@ public class CountryDAOTest extends LightblueClientTestHarness {
         bulkRequest.add(request);
         bulkRequest.add(request2);
         bulkRequest.add(request3);
-
+        System.out.println(bulkRequest);
         LightblueBulkDataResponse bulkResponse = client.bulkData(bulkRequest);
         List<LightblueDataResponse> responses = bulkResponse.getResponses();
 

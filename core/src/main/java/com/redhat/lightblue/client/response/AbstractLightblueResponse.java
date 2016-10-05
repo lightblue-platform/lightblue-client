@@ -1,6 +1,7 @@
 package com.redhat.lightblue.client.response;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,8 +16,10 @@ import com.redhat.lightblue.client.model.DataError;
 import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.util.JSON;
 
-public abstract class AbstractLightblueResponse implements LightblueResponse, LightblueErrorResponse {
+public abstract class AbstractLightblueResponse implements LightblueResponse, LightblueErrorResponse, Serializable {
 
+    private static final long serialVersionUID=1l;
+    
     private final String text;
     private JsonNode json;
     private final ObjectMapper mapper;

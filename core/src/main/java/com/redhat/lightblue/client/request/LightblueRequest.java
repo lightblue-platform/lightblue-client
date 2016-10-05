@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.request;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,7 +12,9 @@ import com.redhat.lightblue.client.http.HttpMethod;
  * Encapsulates an HTTP request to be used with a Lightblue HTTP service. This
  * means that the body, if present, will be UTF-8 JSON.
  */
-public abstract class LightblueRequest {
+public abstract class LightblueRequest implements Serializable {
+
+    private static final long serialVersionUID=1l;
 
     protected static final String PATH_SEPARATOR = "/";
     protected static final String QUERY_SEPARATOR = "&";

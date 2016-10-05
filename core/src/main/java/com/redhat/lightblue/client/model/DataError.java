@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.model;
 
+import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,8 +13,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Represents errors related to data in a document
  */
-public class DataError {
+public class DataError implements Serializable {
 
+    private static final long serialVersionUID=1l;
+    
     private JsonNode entityData;
     private List<Error> errors;
 
