@@ -15,7 +15,7 @@ public class LightblueBulkResponseException extends LightblueException {
     public LightblueBulkResponseException(String message,
                                           LightblueBulkDataErrorResponse bulkResponse,
                                           Map<Integer, LightblueResponseException> erroredResponseExceptions) {
-        super(message);
+        super(message+": "+bulkResponse.getText());
         this.bulkResponse = bulkResponse;
         this.erroredResponseExceptions = erroredResponseExceptions;
     }
