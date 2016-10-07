@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Response {
+public class HttpResponse {
 
     private final Map<String, List<String>> headers;
     private final String body;
 
-    protected Response(final String body, final Map<String, List<String>> headers) {
+    protected HttpResponse(final String body, final Map<String, List<String>> headers) {
         this.body = body;
         this.headers = headers;
     }

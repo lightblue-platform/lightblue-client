@@ -19,7 +19,7 @@ import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
-import com.redhat.lightblue.client.http.transport.Response;
+import com.redhat.lightblue.client.http.transport.HttpResponse;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.GenerateRequest;
@@ -187,7 +187,7 @@ public class LightblueHttpClientTest {
         }
     }
 
-    private static class FakeResponse extends Response {
+    private static class FakeResponse extends HttpResponse {
 
         protected FakeResponse(String body, Map<String, List<String>> headers) {
             super(body, headers);

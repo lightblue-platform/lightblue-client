@@ -30,6 +30,10 @@ public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse 
     private SortedMap<Integer, LightblueDataResponse> responsesErrored;
     private final List<? extends CRUDRequest> requests;
 
+    public DefaultLightblueBulkDataResponse(String responseText, DataBulkRequest reqs) throws LightblueParseException, LightblueBulkResponseException, LightblueException {
+        this(responseText, null, JSON.getDefaultObjectMapper(), reqs);
+    }
+    
     public DefaultLightblueBulkDataResponse(String responseText, Map<String, List<String>> headers, DataBulkRequest reqs) throws LightblueParseException, LightblueBulkResponseException, LightblueException {
         this(responseText, headers, JSON.getDefaultObjectMapper(), reqs);
     }

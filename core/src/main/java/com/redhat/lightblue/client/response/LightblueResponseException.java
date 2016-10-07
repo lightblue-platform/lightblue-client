@@ -70,7 +70,7 @@ public class LightblueResponseException extends LightblueException implements Li
         if (lightblueResponse != null) {
             StringBuffer sb = new StringBuffer(super.getMessage());
             if (!StringUtils.isEmpty(lightblueResponse.getRequestId())) {
-                sb.append(" RequestID:").append(lightblueResponse.getRequestId());
+                sb.append(" RequestID=").append(lightblueResponse.getRequestId());
             }
             sb.append(' ').append(lightblueResponse.getText());
             return sb.toString();

@@ -7,6 +7,6 @@ import com.redhat.lightblue.client.request.LightblueRequest;
 
 public interface HttpTransport extends Closeable {
 
-    Response executeRequest(LightblueRequest request, String baseUri) throws LightblueHttpClientException;
+    HttpResponse executeRequest(LightblueRequest request, String baseUri) throws LightblueHttpClientException;
 
 }
