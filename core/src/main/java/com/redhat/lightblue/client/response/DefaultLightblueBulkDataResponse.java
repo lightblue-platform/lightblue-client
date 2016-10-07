@@ -13,8 +13,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.LightblueException;
-import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.CRUDRequest;
+import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.util.JSON;
 
@@ -24,16 +24,18 @@ import com.redhat.lightblue.client.util.JSON;
  */
 public class DefaultLightblueBulkDataResponse extends AbstractLightblueResponse implements LightblueBulkDataResponse, LightblueBulkDataErrorResponse {
 
+    private static final long serialVersionUID = -1083441917471937489L;
+
     private final SortedMap<Integer, LightblueDataResponse> responsesSuccessful = new TreeMap<>();
     private SortedMap<Integer, LightblueDataResponse> responsesErrored;
     private final List<? extends CRUDRequest> requests;
 
-    public DefaultLightblueBulkDataResponse(String responseText, DataBulkRequest reqs) throws LightblueParseException, LightblueBulkResponseException, LightblueException {
-        this(responseText, JSON.getDefaultObjectMapper(), reqs);
+    public DefaultLightblueBulkDataResponse(String responseText, Map<String, List<String>> headers, DataBulkRequest reqs) throws LightblueParseException, LightblueBulkResponseException, LightblueException {
+        this(responseText, headers, JSON.getDefaultObjectMapper(), reqs);
     }
 
-    public DefaultLightblueBulkDataResponse(String responseText, ObjectMapper mapper, DataBulkRequest reqs) throws LightblueParseException, LightblueBulkResponseException, LightblueException {
-        super(responseText, mapper);
+    public DefaultLightblueBulkDataResponse(String responseText, Map<String, List<String>> headers, ObjectMapper mapper, DataBulkRequest reqs) throws LightblueParseException, LightblueBulkResponseException, LightblueException {
+        super(responseText, headers, mapper);
         requests = reqs.getRequests();
 
         JsonNode resps = getJson().get("responses");

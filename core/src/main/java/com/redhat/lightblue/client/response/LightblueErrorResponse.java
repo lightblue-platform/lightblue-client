@@ -29,8 +29,13 @@ public interface LightblueErrorResponse extends LightblueResponse {
     Error[] getLightblueErrors();
 
     /**
-     * @return returns any {@link DataError}s on this reponse.
+     * @return returns any {@link DataError}s on this response.
      */
     DataError[] getDataErrors();
+
+    /**]
+     * @return the value requestid from the lightblue session on which the error occurred.
+     */
+    String getRequestId();
 
 }

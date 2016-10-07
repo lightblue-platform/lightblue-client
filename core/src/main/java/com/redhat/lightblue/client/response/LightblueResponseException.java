@@ -3,6 +3,8 @@ package com.redhat.lightblue.client.response;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.model.DataError;
 import com.redhat.lightblue.client.model.Error;
@@ -66,7 +68,12 @@ public class LightblueResponseException extends LightblueException implements Li
     @Override
     public String getMessage() {
         if (lightblueResponse != null) {
-            return super.getMessage() + lightblueResponse.getText();
+            StringBuffer sb = new StringBuffer(super.getMessage());
+            if (!StringUtils.isEmpty(lightblueResponse.getRequestId())) {
+                sb.append(" RequestID:").append(lightblueResponse.getRequestId());
+            }
+            sb.append(' ').append(lightblueResponse.getText());
+            return sb.toString();
         } else {
             return super.getMessage();
         }

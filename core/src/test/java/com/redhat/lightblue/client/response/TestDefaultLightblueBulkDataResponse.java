@@ -53,7 +53,7 @@ public class TestDefaultLightblueBulkDataResponse {
         bulkRequest.add(dfr);
         bulkRequest.add(dfr2);
 
-        return new DefaultLightblueBulkDataResponse(jsonResponse, bulkRequest);
+        return new DefaultLightblueBulkDataResponse(jsonResponse, null, bulkRequest);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class TestDefaultLightblueBulkDataResponse {
         bulkRequest.add(dfr2);
 
         try {
-            new DefaultLightblueBulkDataResponse(jsonResponseWithError, bulkRequest);
+            new DefaultLightblueBulkDataResponse(jsonResponseWithError, null, bulkRequest);
             fail();
         } catch (LightblueBulkResponseException e) {
             //expected
@@ -147,7 +147,7 @@ public class TestDefaultLightblueBulkDataResponse {
         bulkRequest.add(dfr2);
 
         try {
-            new DefaultLightblueBulkDataResponse(jsonResponseWithError, bulkRequest);
+            new DefaultLightblueBulkDataResponse(jsonResponseWithError, null, bulkRequest);
             fail();
         } catch (LightblueBulkResponseException e) {
             //expected
@@ -196,7 +196,7 @@ public class TestDefaultLightblueBulkDataResponse {
         bulkRequest.add(dfr2);
 
         try {
-            new DefaultLightblueBulkDataResponse(jsonResponseWithError, bulkRequest);
+            new DefaultLightblueBulkDataResponse(jsonResponseWithError, null, bulkRequest);
             fail();
         } catch (LightblueBulkResponseException e) {
             //expected
@@ -229,17 +229,17 @@ public class TestDefaultLightblueBulkDataResponse {
 
     @Test(expected = LightblueParseException.class)
     public void testConstructor_With_UnexpectedJson() throws Exception {
-        new DefaultLightblueBulkDataResponse("{}", new DataBulkRequest());
+        new DefaultLightblueBulkDataResponse("{}", null, new DataBulkRequest());
     }
 
     @Test(expected = LightblueParseException.class)
     public void testConstructor_With_NonArrayResponses() throws Exception {
-        new DefaultLightblueBulkDataResponse("{\"responses\":\"notAnArray\"}", new DataBulkRequest());
+        new DefaultLightblueBulkDataResponse("{\"responses\":\"notAnArray\"}", null, new DataBulkRequest());
     }
 
     @Test(expected = LightblueParseException.class)
     public void testConstructor_With_NonNumericSeq() throws Exception {
-        new DefaultLightblueBulkDataResponse("{\"responses\":[{\"seq\":\"notint\",\"response\":{}}]}", new DataBulkRequest());
+        new DefaultLightblueBulkDataResponse("{\"responses\":[{\"seq\":\"notint\",\"response\":{}}]}", null, new DataBulkRequest());
     }
 
 }

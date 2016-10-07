@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.response.lock;
 
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,17 +16,19 @@ import com.redhat.lightblue.client.response.LightblueResponseException;
 
 public class LockResponse extends AbstractLightblueResponse {
 
+    private static final long serialVersionUID = -3529529347455807299L;
+
     private static final Pattern INVALID_LOCK = Pattern.compile(
             "^.*InvalidLockException: (.+)$");
 
-    public LockResponse(String responseText)
+    public LockResponse(String responseText, Map<String, List<String>> headers)
             throws LightblueParseException, LightblueResponseException, LockException, LightblueException {
-        super(responseText);
+        super(responseText, headers);
     }
 
-    public LockResponse(String responseText, ObjectMapper mapper)
+    public LockResponse(String responseText, Map<String, List<String>> headers, ObjectMapper mapper)
             throws LightblueParseException, LightblueResponseException, LockException, LightblueException {
-        super(responseText, mapper);
+        super(responseText, headers, mapper);
     }
 
     public boolean parseAsBoolean() throws LightblueParseException {
