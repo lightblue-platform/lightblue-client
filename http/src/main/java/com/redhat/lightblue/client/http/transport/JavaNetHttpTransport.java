@@ -101,7 +101,7 @@ public class JavaNetHttpTransport implements HttpTransport {
     }
 
     @Override
-    public String executeRequest(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
+    public HttpResponse executeRequest(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
         try {
             String url = request.getRestURI(baseUri);
             LOGGER.debug("Executing request, url={}", url);
@@ -129,7 +129,7 @@ public class JavaNetHttpTransport implements HttpTransport {
                 sendRequestBody(body, connection);
             }
 
-            return response(connection);
+            return new HttpResponse(response(connection), connection.getHeaderFields());
         } catch (ProtocolException e) {
             throw new LightblueHttpClientException(e);
         } catch (IOException e) {

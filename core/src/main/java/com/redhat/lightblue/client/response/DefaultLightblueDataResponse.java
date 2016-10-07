@@ -2,6 +2,8 @@ package com.redhat.lightblue.client.response;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,24 +12,34 @@ import com.redhat.lightblue.client.LightblueException;
 
 public class DefaultLightblueDataResponse extends AbstractLightblueResponse implements LightblueDataResponse {
 
-    public DefaultLightblueDataResponse(JsonNode responseNode)
+    private static final long serialVersionUID = 9125163307190941424L;
+
+    public DefaultLightblueDataResponse(JsonNode responseNode, Map<String, List<String>> headers)
             throws LightblueResponseException, LightblueException {
-        super(responseNode);
+        super(responseNode, headers);
     }
 
-    public DefaultLightblueDataResponse(JsonNode responseNode, ObjectMapper mapper)
+    public DefaultLightblueDataResponse(JsonNode responseNode, ObjectMapper mapper) throws LightblueResponseException, LightblueException {
+        super(responseNode, null, mapper);
+    }
+
+    public DefaultLightblueDataResponse(JsonNode responseNode, Map<String, List<String>> headers, ObjectMapper mapper)
             throws LightblueResponseException, LightblueException {
-        super(responseNode, mapper);
+        super(responseNode, headers, mapper);
     }
 
-    public DefaultLightblueDataResponse(String responseText)
-            throws LightblueParseException, LightblueResponseException, LightblueException {
-        super(responseText);
+    public DefaultLightblueDataResponse(String responseText) throws LightblueParseException, LightblueResponseException, LightblueException {
+        super(responseText, null);
     }
 
-    public DefaultLightblueDataResponse(String responseText, ObjectMapper mapper)
+    public DefaultLightblueDataResponse(String responseText, Map<String, List<String>> headers)
             throws LightblueParseException, LightblueResponseException, LightblueException {
-        super(responseText, mapper);
+        super(responseText, headers);
+    }
+
+    public DefaultLightblueDataResponse(String responseText, Map<String, List<String>> headers, ObjectMapper mapper)
+            throws LightblueParseException, LightblueResponseException, LightblueException {
+        super(responseText, headers, mapper);
     }
 
     @Override

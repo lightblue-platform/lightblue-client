@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client.response;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -12,5 +14,7 @@ public interface LightblueResponse {
     String getText();
 
     JsonNode getJson();
+
+    List<String> getHeaderValues(String key);
 
 }

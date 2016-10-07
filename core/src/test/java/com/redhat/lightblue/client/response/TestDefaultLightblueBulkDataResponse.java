@@ -229,7 +229,7 @@ public class TestDefaultLightblueBulkDataResponse {
 
     @Test(expected = LightblueParseException.class)
     public void testConstructor_With_UnexpectedJson() throws Exception {
-        new DefaultLightblueBulkDataResponse("{}", new DataBulkRequest());
+        new DefaultLightblueBulkDataResponse("{}", null, new DataBulkRequest());
     }
 
     @Test(expected = LightblueParseException.class)

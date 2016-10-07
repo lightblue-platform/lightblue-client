@@ -162,7 +162,7 @@ public class JavaNetHttpTransportTest {
         responseStream.print(konnichiWa);
         when(mockConnection.getContentLength()).thenReturn(konnichiWa.getBytes("UTF-8").length);
 
-        assertThat(client.executeRequest(helloInJapanese, ""), is(konnichiWa));
+        assertThat(client.executeRequest(helloInJapanese, "").getBody(), is(konnichiWa));
     }
 
     @Test(timeout = 500)
@@ -175,7 +175,7 @@ public class JavaNetHttpTransportTest {
         responseStream.close();
         when(mockConnection.getContentLength()).thenReturn(-1);
 
-        assertThat(client.executeRequest(helloInJapanese, ""), is(konnichiWa));
+        assertThat(client.executeRequest(helloInJapanese, "").getBody(), is(konnichiWa));
     }
 
     @Test(timeout = 500)
@@ -184,7 +184,7 @@ public class JavaNetHttpTransportTest {
 
         when(mockConnection.getContentLength()).thenReturn(0);
 
-        assertThat(client.executeRequest(getFooBar, ""), is(""));
+        assertThat(client.executeRequest(getFooBar, "").getBody(), is(""));
     }
 
     @Test(timeout = 500)
@@ -197,7 +197,7 @@ public class JavaNetHttpTransportTest {
         errorResponseStream.print(error);
         when(mockConnection.getContentLength()).thenReturn(error.getBytes("UTF-8").length);
 
-        Assert.assertEquals(error, client.executeRequest(badHelloRequest, ""));
+        Assert.assertEquals(error, client.executeRequest(badHelloRequest, "").getBody());
     }
 
     @Test(timeout = 500)
@@ -211,7 +211,7 @@ public class JavaNetHttpTransportTest {
         errorResponseStream.close();
         when(mockConnection.getContentLength()).thenReturn(-1);
 
-        Assert.assertEquals(error, client.executeRequest(badHelloRequest, ""));
+        Assert.assertEquals(error, client.executeRequest(badHelloRequest, "").getBody());
     }
 
     @Test(timeout = 500)

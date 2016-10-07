@@ -5,6 +5,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,6 +19,7 @@ import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
+import com.redhat.lightblue.client.http.transport.HttpResponse;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.GenerateRequest;
@@ -38,7 +42,7 @@ public class LightblueHttpClientTest {
 
         String response = "{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}";
 
-        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(response);
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(new FakeResponse(response, null));
 
         SimpleModelObject[] results = client.data(findRequest, SimpleModelObject[].class);
 
@@ -52,7 +56,7 @@ public class LightblueHttpClientTest {
         GenerateRequest request = new GenerateRequest("foo", "bar");
         request.path("x").nValues(3);
         String response = "{ \"processed\": [\"1\",\"2\",\"3\"], \"status\": \"COMPLETE\"}";
-        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(response);
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(new FakeResponse(response, null));
 
         String[] results = client.data(request, String[].class);
 
@@ -71,7 +75,7 @@ public class LightblueHttpClientTest {
 
         String response = "{\"processed\":\"<p>This is not json</p>\"}";
 
-        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(response);
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(new FakeResponse(response, null));
 
         client.data(findRequest, SimpleModelObject[].class);
     }
@@ -94,14 +98,14 @@ public class LightblueHttpClientTest {
 
     @Test(expected = LightblueParseException.class)
     public void testParseInvalidJson() throws Exception {
-        DefaultLightblueDataResponse r = new DefaultLightblueDataResponse("invalid json", JSON.getDefaultObjectMapper());
+        DefaultLightblueDataResponse r = new DefaultLightblueDataResponse("invalid json", null, JSON.getDefaultObjectMapper());
 
         r.parseProcessed(SimpleModelObject.class);
     }
 
     @Test
     public void testUsingDefaultExecution_ReadPreference() throws Exception {
-        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn("{}");
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(new FakeResponse("{}", null));
 
         LightblueClientConfiguration c = new LightblueClientConfiguration();
         c.setReadPreference(ReadPreference.primary);
@@ -121,7 +125,7 @@ public class LightblueHttpClientTest {
 
     @Test
     public void testUsingDefaultExecution_WriteConcern() throws Exception {
-        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn("{}");
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(new FakeResponse("{}", null));
 
         LightblueClientConfiguration c = new LightblueClientConfiguration();
         c.setWriteConcern("majority");
@@ -141,7 +145,7 @@ public class LightblueHttpClientTest {
 
     @Test
     public void testUsingDefaultExecution_MaxQueryTimeMS() throws Exception {
-        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn("{}");
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(new FakeResponse("{}", null));
 
         LightblueClientConfiguration c = new LightblueClientConfiguration();
         c.setMaxQueryTimeMS(1000);
@@ -164,7 +168,7 @@ public class LightblueHttpClientTest {
      */
     @Test
     public void testUsingDefaultExecution_OverrideExecution() throws Exception {
-        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn("{}");
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(new FakeResponse("{}", null));
 
         LightblueClientConfiguration c = new LightblueClientConfiguration();
         c.setReadPreference(ReadPreference.primary);
@@ -181,6 +185,14 @@ public class LightblueHttpClientTest {
             Assert.assertTrue(body.contains(
                     "\"execution\":{\"readPreference\":\"nearest\"}"));
         }
+    }
+
+    private static class FakeResponse extends HttpResponse {
+
+        protected FakeResponse(String body, Map<String, List<String>> headers) {
+            super(body, headers);
+        }
+
     }
 
 }

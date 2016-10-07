@@ -27,7 +27,7 @@ public class TestDefaultLightblueDataResponse {
     @Test(expected = NullPointerException.class)
     public void testConstructor_NullObjectMapper() throws Exception {
         ObjectMapper om = null;
-        new DefaultLightblueDataResponse("{}", om);
+        new DefaultLightblueDataResponse("{}", null, om);
     }
 
     @Test
