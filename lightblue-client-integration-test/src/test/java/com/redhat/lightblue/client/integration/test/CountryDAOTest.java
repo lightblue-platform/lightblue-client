@@ -175,7 +175,7 @@ public class CountryDAOTest extends LightblueClientTestHarness {
     @Test
     public void testRequestHeader() throws Exception {
         exception.expect(LightblueResponseException.class);
-        exception.expectMessage("RequestID:");
+        exception.expectMessage("RequestID");
 
         DataFindRequest request = new DataFindRequest("fake");
         request.where(Query.withValue("_id", Query.eq, "abc"));
