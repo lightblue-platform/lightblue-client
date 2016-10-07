@@ -212,7 +212,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      */
     @Override
     public DefaultLightblueMetadataResponse metadata(LightblueMetadataRequest lightblueRequest) throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
-        Response response = callService(lightblueRequest, configuration.getDataServiceURI());
+        Response response = callService(lightblueRequest, configuration.getMetadataServiceURI());
         return new DefaultLightblueMetadataResponse(
                 response.getBody(),
                 response.getHeaders(),
