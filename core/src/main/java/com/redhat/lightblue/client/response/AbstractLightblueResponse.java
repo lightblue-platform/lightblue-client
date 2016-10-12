@@ -25,7 +25,7 @@ public abstract class AbstractLightblueResponse implements LightblueResponse, Li
 
     private final String text;
     private JsonNode json;
-    private final ObjectMapper mapper;
+    private transient ObjectMapper mapper;
     private DataError[] dataErrorCache;
     private Error[] errorCache;
     private final Map<String, List<String>> headers;
@@ -71,7 +71,7 @@ public abstract class AbstractLightblueResponse implements LightblueResponse, Li
     }
 
     protected ObjectMapper getMapper() {
-        return mapper;
+        return mapper==null?JSON.getDefaultObjectMapper():mapper;
     }
 
     @Override
