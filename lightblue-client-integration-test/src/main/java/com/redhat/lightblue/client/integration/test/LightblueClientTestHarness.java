@@ -15,8 +15,8 @@ import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.request.metadata.MetadataGetEntityVersionsRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.rest.integration.LightblueRestTestHarness;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import io.undertow.security.idm.IdentityManager;
 
 /**
  * Provides a lightblue-client instance to talk to the running in-memory
@@ -33,6 +33,11 @@ public abstract class LightblueClientTestHarness extends LightblueRestTestHarnes
 
     public LightblueClientTestHarness(int httpServerPort) throws Exception {
         super(httpServerPort);
+        setupSystemProperties();
+    }
+
+    public LightblueClientTestHarness(int httpServerPort, IdentityManager identityManager) throws Exception {
+        super(httpServerPort, identityManager);
         setupSystemProperties();
     }
 
@@ -60,6 +65,9 @@ public abstract class LightblueClientTestHarness extends LightblueRestTestHarnes
     public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws LightblueException, IOException {
         final String data = loadResource(resourcePath);
         DataInsertRequest request = new DataInsertRequest(entityName, entityVersion) {
+
+            private static final long serialVersionUID = -1041659993686116395L;
+
             @Override
             public String getBody() {
                 return data;
