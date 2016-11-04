@@ -1,22 +1,12 @@
 package com.redhat.lightblue.client.http.auth;
 
-import com.redhat.lightblue.client.LightblueClientConfiguration;
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -32,6 +22,28 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.redhat.lightblue.client.LightblueClient;
+import com.redhat.lightblue.client.LightblueClientConfiguration;
+import com.redhat.lightblue.client.LightblueException;
+import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
+import com.redhat.lightblue.client.http.LightblueHttpClient;
+import com.redhat.lightblue.client.request.metadata.MetadataGetEntityNamesRequest;
 
 public class SslSocketFactories {
     private static final Logger LOGGER = LoggerFactory.getLogger(SslSocketFactories.class);
@@ -54,7 +66,7 @@ public class SslSocketFactories {
         if (config.useCertAuth()) {
             validateLightblueClientConfigForCertAuth(config);
                 return defaultCertAuthSocketFactory(getCaCertFiles(config), loadFile(config.getCertFilePath()),
-                        config.getCertPassword().toCharArray(), config.getCertAlias());
+                        config.getCertPassword().toCharArray(), config.getCertAlias(), config.isAcceptSelfSignedCert());
         }
 
         return defaultNoAuthSocketFactory();
@@ -86,14 +98,14 @@ public class SslSocketFactories {
      */
     public static SSLConnectionSocketFactory defaultCertAuthSocketFactory(
             List<InputStream> certAuthorityFiles, InputStream authCert, char[] authCertPassword,
-            String authCertAlias)
+            String authCertAlias, boolean acceptSelfSignedCert)
             throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException,
             UnrecoverableKeyException, KeyManagementException {
 
         Set<Certificate> certificates = getCertificates(certAuthorityFiles);
         KeyStore pkcs12KeyStore = getPkcs12KeyStore(authCert, authCertPassword);
         KeyStore sunKeyStore = getJksKeyStore(certificates, pkcs12KeyStore, authCertAlias, authCertPassword);
-        SSLContext sslContext = getDefaultSSLContext(sunKeyStore, pkcs12KeyStore, authCertPassword);
+        SSLContext sslContext = getSSLContext(sunKeyStore, pkcs12KeyStore, authCertPassword, acceptSelfSignedCert);
 
         return new SSLConnectionSocketFactory(sslContext, SUPPORTED_PROTOCOLS, SUPPORTED_CIPHER_SUITES,
                 NoopHostnameVerifier.INSTANCE);
@@ -105,7 +117,7 @@ public class SslSocketFactories {
         validateLightblueClientConfigForCertAuth(config);
 
         return javaNetSslSocketFactory(getCaCertFiles(config), loadFile(config.getCertFilePath()),
-                config.getCertPassword().toCharArray(), config.getCertAlias());
+                config.getCertPassword().toCharArray(), config.getCertAlias(), config.isAcceptSelfSignedCert());
     }
 
     private static List<InputStream> getCaCertFiles(LightblueClientConfiguration config) throws FileNotFoundException {
@@ -120,7 +132,7 @@ public class SslSocketFactories {
     }
 
     public static SSLSocketFactory javaNetSslSocketFactory(List<InputStream> certAuthorityFiles, InputStream authCert,
-                                                           char[] authCertPassword, String authCertAlias)
+                                                           char[] authCertPassword, String authCertAlias, boolean acceptSelfSignedCert)
             throws CertificateException, NoSuchAlgorithmException,
             KeyStoreException, IOException, UnrecoverableKeyException, KeyManagementException {
 
@@ -135,7 +147,7 @@ public class SslSocketFactories {
 
         KeyStore pkcs12KeyStore = getPkcs12KeyStore(authCert, authCertPassword);
         KeyStore sunKeyStore = getJksKeyStore(caCertificates, pkcs12KeyStore, authCertAlias, authCertPassword);
-        SSLContext sslContext = getDefaultSSLContext(sunKeyStore, pkcs12KeyStore, authCertPassword);
+        SSLContext sslContext = getSSLContext(sunKeyStore, pkcs12KeyStore, authCertPassword, acceptSelfSignedCert);
         return sslContext.getSocketFactory();
     }
 
@@ -190,18 +202,45 @@ public class SslSocketFactories {
         return jks;
     }
 
-    private static SSLContext getDefaultSSLContext(KeyStore trustKeyStore, KeyStore authKeyStore,
-                                                   char[] authCertPassword)
+    /**
+     * Naive trust manager trusts all.
+     *
+     */
+    private static TrustManager createNaiveTrustManager() {
+        return new X509TrustManager() {
+            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            }
+
+            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            }
+
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+        };
+    }
+
+    private static SSLContext getSSLContext(KeyStore trustKeyStore, KeyStore authKeyStore,
+                                                   char[] authCertPassword, boolean acceptSelfSignedCert)
             throws NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException,
             KeyManagementException {
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-        tmf.init(trustKeyStore);
+
+        TrustManager[] trustManagers = null;
+
+        if (acceptSelfSignedCert) {
+            LOGGER.warn("Accepting self-signed certs. This is very insecure - use only in dev environments!");
+            trustManagers = new TrustManager[] { createNaiveTrustManager() };
+        } else {
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+            tmf.init(trustKeyStore);
+            trustManagers = tmf.getTrustManagers();
+        }
 
         KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
         kmf.init(authKeyStore, authCertPassword);
 
         SSLContext ctx = SSLContext.getInstance(TLSV1);
-        ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+        ctx.init(kmf.getKeyManagers(), trustManagers, null);
 
         return ctx;
     }

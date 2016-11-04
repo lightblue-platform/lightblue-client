@@ -29,6 +29,7 @@ public class LightblueClientConfiguration {
 
     private String dataServiceURI;
     private String metadataServiceURI;
+    private boolean acceptSelfSignedCert = false;
     private boolean useCertAuth = false;
     private String caFilePath;
     private String certFilePath;
@@ -49,6 +50,7 @@ public class LightblueClientConfiguration {
     public LightblueClientConfiguration(LightblueClientConfiguration configuration) {
         dataServiceURI = configuration.dataServiceURI;
         metadataServiceURI = configuration.metadataServiceURI;
+        acceptSelfSignedCert = configuration.acceptSelfSignedCert;
         useCertAuth = configuration.useCertAuth;
         caFilePath = configuration.caFilePath;
         certFilePath = configuration.certFilePath;
@@ -310,6 +312,7 @@ public class LightblueClientConfiguration {
         result = prime * result + ((maxQueryTimeMS == null) ? 0 : maxQueryTimeMS.hashCode());
         result = prime * result + ((metadataServiceURI == null) ? 0 : metadataServiceURI.hashCode());
         result = prime * result + ((readPreference == null) ? 0 : readPreference.hashCode());
+        result = prime * result + (acceptSelfSignedCert ? 1232 : 1238);
         result = prime * result + (useCertAuth ? 1231 : 1237);
         result = prime * result + ((writeConcern == null) ? 0 : writeConcern.hashCode());
         return result;
@@ -319,6 +322,7 @@ public class LightblueClientConfiguration {
     public String toString() {
         return "LightblueClientConfiguration [dataServiceURI=" + dataServiceURI
                 + ", metadataServiceURI=" + metadataServiceURI
+                + ", acceptSelfSignedCert=" + acceptSelfSignedCert
                 + ", useCertAuth=" + useCertAuth
                 + ", caFilePath=" + caFilePath
                 + ", certFilePath=" + certFilePath
@@ -329,6 +333,14 @@ public class LightblueClientConfiguration {
                 + ", writeConcern=" + writeConcern
                 + ", maxQueryTimeMS=" + maxQueryTimeMS
                 + "]";
+    }
+
+    public boolean isAcceptSelfSignedCert() {
+        return acceptSelfSignedCert;
+    }
+
+    public void setAcceptSelfSignedCert(boolean acceptSelfSignedCert) {
+        this.acceptSelfSignedCert = acceptSelfSignedCert;
     }
 
 }

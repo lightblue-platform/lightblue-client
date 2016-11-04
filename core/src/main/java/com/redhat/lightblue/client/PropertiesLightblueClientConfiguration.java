@@ -52,6 +52,7 @@ public final class PropertiesLightblueClientConfiguration {
 
     private static final String DATA_SERVICE_URI_KEY = "dataServiceURI";
     private static final String METADATA_SERVICE_URI_KEY = "metadataServiceURI";
+    private static final String ACCEPT_SELF_SIGNED_CERT_KEY = "acceptSelfSignedCert";
     private static final String USE_CERT_AUTH_KEY = "useCertAuth";
     private static final String CA_FILE_PATH_KEY = "caFilePath";
     private static final String CERT_FILE_PATH_KEY = "certFilePath";
@@ -189,6 +190,7 @@ public final class PropertiesLightblueClientConfiguration {
         config.setCertPassword(properties.getProperty(CERT_PASSWORD_KEY));
         config.setDataServiceURI(properties.getProperty(DATA_SERVICE_URI_KEY));
         config.setMetadataServiceURI(properties.getProperty(METADATA_SERVICE_URI_KEY));
+        config.setAcceptSelfSignedCert(Boolean.parseBoolean(properties.getProperty(ACCEPT_SELF_SIGNED_CERT_KEY)));
         config.setUseCertAuth(Boolean.parseBoolean(properties.getProperty(USE_CERT_AUTH_KEY)));
         if (properties.containsKey(COMPRESSION)) {
             config.setCompression(Compression.parseCompression(properties.getProperty(COMPRESSION)));
