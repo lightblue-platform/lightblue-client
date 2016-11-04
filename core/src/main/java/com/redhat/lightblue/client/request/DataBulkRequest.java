@@ -17,10 +17,17 @@ import com.redhat.lightblue.client.http.HttpMethod;
  */
 public class DataBulkRequest extends LightblueRequest {
 
+    private boolean ordered = true;
+
     protected List<CRUDRequest> requests=new ArrayList<>();
 
     public DataBulkRequest() {
         super(HttpMethod.POST);
+    }
+
+    public DataBulkRequest(boolean ordered) {
+        this();
+        this.ordered = ordered;
     }
 
     /**
@@ -117,6 +124,7 @@ public class DataBulkRequest extends LightblueRequest {
     public JsonNode getBodyJson() {
         ObjectNode root = JsonNodeFactory.instance.objectNode();
         ArrayNode reqs = JsonNodeFactory.instance.arrayNode();
+        root.set("ordered", JsonNodeFactory.instance.booleanNode(ordered));
         for (CRUDRequest req : requests) {
             if (req == null) {
                 continue;
@@ -136,5 +144,13 @@ public class DataBulkRequest extends LightblueRequest {
         }
         root.set("requests", reqs);
         return root;
+    }
+
+    public boolean isOrdered() {
+        return ordered;
+    }
+
+    public void setOrdered(boolean ordered) {
+        this.ordered = ordered;
     }
 }
