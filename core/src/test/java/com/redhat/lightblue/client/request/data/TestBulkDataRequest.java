@@ -5,6 +5,7 @@ package com.redhat.lightblue.client.request.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
@@ -16,9 +17,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.LightblueDataRequest;
-import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.CRUDRequest;
+import com.redhat.lightblue.client.request.DataBulkRequest;
 
 /**
  * @author bvulaj
@@ -48,7 +48,6 @@ public class TestBulkDataRequest {
         ArrayNode requests = (ArrayNode) request.getBodyJson().get("requests");
         assertTrue(requests.size() == 1);
         assertTrue(requests.get(0).get("request").get("entity").asText().equals("foo"));
-
     }
 
     @Test
@@ -122,7 +121,7 @@ public class TestBulkDataRequest {
 
     @Test
     public void testGetJson() {
-        String expected = "{\"requests\":[{\"seq\":0,\"op\":\"find\",\"request\":{\"query\":{\"field\":\"foo\",\"regex\":\"*\",\"caseInsensitive\":false,\"extended\":false,\"multiline\":false,\"dotall\":false},\"projection\":{\"field\":\"*\",\"include\":true,\"recursive\":false},\"entity\":\"foo\",\"entityVersion\":\"bar\"}},{\"seq\":1,\"op\":\"find\",\"request\":{\"query\":{\"field\":\"fooz\",\"regex\":\"*\",\"caseInsensitive\":false,\"extended\":false,\"multiline\":false,\"dotall\":false},\"projection\":{\"field\":\"*\",\"include\":true,\"recursive\":false},\"entity\":\"fooz\",\"entityVersion\":\"bar\"}}]}";
+        String expected = "{\"ordered\":true,\"requests\":[{\"seq\":0,\"op\":\"find\",\"request\":{\"query\":{\"field\":\"foo\",\"regex\":\"*\",\"caseInsensitive\":false,\"extended\":false,\"multiline\":false,\"dotall\":false},\"projection\":{\"field\":\"*\",\"include\":true,\"recursive\":false},\"entity\":\"foo\",\"entityVersion\":\"bar\"}},{\"seq\":1,\"op\":\"find\",\"request\":{\"query\":{\"field\":\"fooz\",\"regex\":\"*\",\"caseInsensitive\":false,\"extended\":false,\"multiline\":false,\"dotall\":false},\"projection\":{\"field\":\"*\",\"include\":true,\"recursive\":false},\"entity\":\"fooz\",\"entityVersion\":\"bar\"}}]}";
 
         DataFindRequest dfr = new DataFindRequest("foo", "bar");
         dfr.select(Projection.includeField("*"));
@@ -135,6 +134,9 @@ public class TestBulkDataRequest {
         request.addAll(Arrays.<CRUDRequest>asList(dfr, dfr2));
 
         assertEquals(expected, request.getBody());
+
+        request.setOrdered(false);
+        assertFalse(request.getBodyJson().get("ordered").asBoolean());
     }
 
     @Test
