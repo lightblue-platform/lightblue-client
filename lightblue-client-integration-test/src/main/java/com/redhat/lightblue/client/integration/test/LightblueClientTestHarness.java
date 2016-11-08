@@ -47,10 +47,9 @@ public abstract class LightblueClientTestHarness extends LightblueRestTestHarnes
     }
 
     /**
-     *
-     * @return lightblue http client configuration needed to connect
+     * @return lightblue http noauth client configuration needed to connect
      */
-    protected LightblueClientConfiguration getLightblueClientConfiguration() {
+    public LightblueClientConfiguration getLightblueClientConfiguration() {
         LightblueClientConfiguration lbConf = new LightblueClientConfiguration();
         lbConf.setUseCertAuth(false);
         lbConf.setDataServiceURI(getDataUrl());
@@ -58,8 +57,31 @@ public abstract class LightblueClientTestHarness extends LightblueRestTestHarnes
         return lbConf;
     }
 
+    /**
+     * @param username - principal user name
+     * @param password - password for principal
+     * @return lightblue http basic auth client configuration needed to connect
+     */
+    public LightblueClientConfiguration getLightblueClientConfiguration(String username, String password) {
+        LightblueClientConfiguration lbConf = new LightblueClientConfiguration();
+        lbConf.setUseCertAuth(false);
+        lbConf.setBasicAuthUsername(username);
+        lbConf.setBasicAuthPassword(password);
+        lbConf.setDataServiceURI(getDataUrl());
+        lbConf.setMetadataServiceURI(getMetadataUrl());
+        return lbConf;
+    }
+
+    /**
+     * Default implementation returns a client using no auth.
+     * @return {@link LightblueHttpClient}
+     */
     public LightblueHttpClient getLightblueClient() {
-        return new LightblueHttpClient(getLightblueClientConfiguration());
+        return getLightblueClient(getLightblueClientConfiguration());
+    }
+
+    public LightblueHttpClient getLightblueClient(LightblueClientConfiguration config) {
+        return new LightblueHttpClient(config);
     }
 
     public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws LightblueException, IOException {
