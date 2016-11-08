@@ -24,17 +24,24 @@ public class TestLightblueExternalResource {
 
         @Override
         public JsonNode[] getMetadataJsonNodes() throws Exception {
-            return new JsonNode[]{loadJsonNode("./metadata/country.json")};
+            return new JsonNode[]{
+                    loadJsonNode("./metadata/country.json")
+            };
         }
 
     });
 
     @Before
-    public void before() throws IOException {
+    public void before() throws IOException, InterruptedException {
         lightblue.getControllerInstance().cleanupMongoCollections("country");
 
         if (lightblue.getControllerInstance().getIdentityManager() != null) {
             lightblue.changeIdentityManager(null);
+
+            //TODO remove sleep. There is some sort of timing issue with the server restart.
+            //DeploymentManager might be the key, but no way to get access to it today
+            // https://github.com/undertow-io/undertow/blob/master/examples/src/main/java/io/undertow/examples/servlet/ServletServer.java
+            Thread.sleep(5000);
         }
     }
 
@@ -68,7 +75,7 @@ public class TestLightblueExternalResource {
         insert.create(c);
         insert.returns(Projection.includeFieldRecursively("*"));
 
-        LightblueDataResponse insertResponse = lightblue.getLightblueClient().data(insert);
+        LightblueDataResponse insertResponse = lightblue.getLightblueClient("fakeuser", "fakepassword").data(insert);
 
         assertEquals(1, insertResponse.parseModifiedCount());
     }

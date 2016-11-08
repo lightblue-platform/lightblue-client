@@ -63,12 +63,9 @@ public abstract class LightblueClientTestHarness extends LightblueRestTestHarnes
      * @return lightblue http basic auth client configuration needed to connect
      */
     public LightblueClientConfiguration getLightblueClientConfiguration(String username, String password) {
-        LightblueClientConfiguration lbConf = new LightblueClientConfiguration();
-        lbConf.setUseCertAuth(false);
+        LightblueClientConfiguration lbConf = getLightblueClientConfiguration();
         lbConf.setBasicAuthUsername(username);
         lbConf.setBasicAuthPassword(password);
-        lbConf.setDataServiceURI(getDataUrl());
-        lbConf.setMetadataServiceURI(getMetadataUrl());
         return lbConf;
     }
 

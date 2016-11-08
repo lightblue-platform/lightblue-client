@@ -35,7 +35,7 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
 
     private final LightblueTestMethods methods;
     private final int httpServerPort;
-    private final IdentityManager identityManager;
+    private IdentityManager identityManager;
     private boolean removeHooks = Boolean.TRUE;
 
     private ArtificialLightblueClientCRUDController controller;
@@ -90,6 +90,11 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
     public LightblueClient getLightblueClient() {
         return getControllerInstance().getLightblueClient();
     }
+    
+    public LightblueClient getLightblueClient(String username, String password) {
+        LightblueClientTestHarness harness = getControllerInstance();
+        return harness.getLightblueClient(harness.getLightblueClientConfiguration(username, password));
+    }
 
     public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws IOException, LightblueException {
         return getControllerInstance().loadData(entityName, entityVersion,
@@ -132,6 +137,7 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
      * @throws IOException
      */
     public void changeIdentityManager(IdentityManager identifyManager) throws IOException {
+        this.identityManager = identifyManager;
         getControllerInstance().setIdentityManager(identifyManager);
         LightblueRestTestHarness.stopHttpServer();
         ensureHttpServerIsRunning();
