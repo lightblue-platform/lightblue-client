@@ -31,6 +31,25 @@ public class LightblueClientConfiguration {
     private String metadataServiceURI;
     private boolean acceptSelfSignedCert = false;
     private boolean useCertAuth = false;
+    private String basicAuthUsername;
+    private String basicAuthPassword;
+
+    public String getBasicAuthUsername() {
+        return basicAuthUsername;
+    }
+
+    public void setBasicAuthUsername(String basicAuthUsername) {
+        this.basicAuthUsername = basicAuthUsername;
+    }
+
+    public String getBasicAuthPassword() {
+        return basicAuthPassword;
+    }
+
+    public void setBasicAuthPassword(String basicAuthPassword) {
+        this.basicAuthPassword = basicAuthPassword;
+    }
+
     private String caFilePath;
     private String certFilePath;
     private String certPassword;

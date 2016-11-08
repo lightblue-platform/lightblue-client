@@ -58,6 +58,8 @@ public final class PropertiesLightblueClientConfiguration {
     private static final String CERT_FILE_PATH_KEY = "certFilePath";
     private static final String CERT_PASSWORD_KEY = "certPassword";
     private static final String COMPRESSION = "compression";
+    private static final String BASIC_AUTH_USERNAME_KEY = "basicAuthUsername";
+    private static final String BASIC_AUTH_PASSWORD_KEY = "basicAuthPassword";
     private static final String MONGO_READ_PREFERENCE = "execution.mongo.readPreference";
     private static final String MONGO_WRITE_CONCERN = "execution.mongo.writeConcern";
     private static final String MONGO_MAX_QUERY_TIME_MS = "execution.mongo.maxQueryTimeMS";
@@ -192,6 +194,8 @@ public final class PropertiesLightblueClientConfiguration {
         config.setMetadataServiceURI(properties.getProperty(METADATA_SERVICE_URI_KEY));
         config.setAcceptSelfSignedCert(Boolean.parseBoolean(properties.getProperty(ACCEPT_SELF_SIGNED_CERT_KEY)));
         config.setUseCertAuth(Boolean.parseBoolean(properties.getProperty(USE_CERT_AUTH_KEY)));
+        config.setBasicAuthUsername(properties.getProperty(BASIC_AUTH_USERNAME_KEY));
+        config.setBasicAuthPassword(properties.getProperty(BASIC_AUTH_PASSWORD_KEY));
         if (properties.containsKey(COMPRESSION)) {
             config.setCompression(Compression.parseCompression(properties.getProperty(COMPRESSION)));
         }

@@ -13,6 +13,7 @@ import java.util.Objects;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -35,16 +36,18 @@ import com.redhat.lightblue.client.request.LightblueRequest;
  * instance of this class, which is the default behavior if you have not passed
  * in a different {@code HttpTransport}.
  *
- * <p>
- * This implementation takes advantage of HTTP persistent connections as per:
- * <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/net/http-keepalive.html">http://docs.oracle.com/javase/7/docs/technotes/guides/net/http-keepalive.html</a>.
- * Sockets are left open to be reused after each request per Java SDK semantics.
+ * <p>This implementation takes advantage of HTTP persistent connections as per:
+ * <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/net/http-keepalive.html">
+ * http://docs.oracle.com/javase/7/docs/technotes/guides/net/http-keepalive.html</a>. Sockets are
+ * left open to be reused after each request per Java SDK semantics.
  */
 public class JavaNetHttpTransport implements HttpTransport {
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     private final ConnectionFactory connectionFactory;
     private final SSLSocketFactory sslSocketFactory;
+    private final String basicAuthUsername;
+    private final String basicAuthPassword;
     private Compression compression;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JavaNetHttpTransport.class);
@@ -61,6 +64,11 @@ public class JavaNetHttpTransport implements HttpTransport {
         this(new UrlConnectionFactory(), sslSocketFactory, Compression.LZF);
     }
 
+    public JavaNetHttpTransport(ConnectionFactory connectionFactory,
+            SSLSocketFactory sslSocketFactory, Compression compression) {
+        this(connectionFactory, sslSocketFactory, compression, null, null);
+    }
+
     /**
      * @param connectionFactory Injectable for testing. To actually make HTTP
      * requests, use another constructor or pass {@link UrlConnectionFactory}.
@@ -69,10 +77,13 @@ public class JavaNetHttpTransport implements HttpTransport {
      * @param compression Compression method to advertise to the endpoint. Does
      * not mean that compression will be actially used.
      */
-    public JavaNetHttpTransport(ConnectionFactory connectionFactory, SSLSocketFactory sslSocketFactory, Compression compression) {
+    public JavaNetHttpTransport(ConnectionFactory connectionFactory, SSLSocketFactory sslSocketFactory,
+            Compression compression, String basicAuthUsername, String basicAuthPassword) {
         this.connectionFactory = Objects.requireNonNull(connectionFactory, "connectionFactory");
         this.sslSocketFactory = sslSocketFactory;
         this.compression = compression;
+        this.basicAuthUsername = basicAuthUsername;
+        this.basicAuthPassword = basicAuthPassword == null ? "" : basicAuthPassword;
     }
 
     /**
@@ -94,7 +105,9 @@ public class JavaNetHttpTransport implements HttpTransport {
                     ? SslSocketFactories.javaNetSslSocketFactory(config)
                     : null;
 
-            return new JavaNetHttpTransport(new UrlConnectionFactory(), sslSocketFactory, config.getCompression());
+            return new JavaNetHttpTransport(new UrlConnectionFactory(), sslSocketFactory,
+                    config.getCompression(), config.getBasicAuthUsername(),
+                    config.getBasicAuthPassword());
         } catch (IOException e) {
             throw new LightblueHttpClientException(e);
         }
@@ -119,7 +132,15 @@ public class JavaNetHttpTransport implements HttpTransport {
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Accept-Charset", "utf-8");
 
-            if (compression == Compression.LZF) {
+            if (basicAuthUsername != null) {
+                String usernameAndPassword = basicAuthUsername + ":" + basicAuthPassword;
+                String encodedUsernameAndPassword =
+                        Base64.encodeBase64String(usernameAndPassword.getBytes(UTF_8));
+                String authorization = "Basic " + encodedUsernameAndPassword;
+                connection.setRequestProperty("Authorization", authorization);
+            }
+
+            if (this.compression == Compression.LZF) {
                 LOGGER.debug("Advertising lzf decoding capabilities to lightblue");
                 connection.setRequestProperty("Accept-Encoding", "lzf");
             }
