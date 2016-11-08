@@ -2,30 +2,15 @@ package com.redhat.lightblue.client.request.metadata;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
+import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 
 /**
  * GET /metadata/{entityName}/{version}/dependencies
  */
-public class MetadataGetEntityDependenciesRequest extends AbstractLightblueMetadataRequest {
+public class MetadataGetEntityDependenciesRequest extends LightblueMetadataRequest {
 
     public MetadataGetEntityDependenciesRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "dependencies";
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.GET;
-    }
-
-    @Override
-    public JsonNode getBodyJson() {
-        return null;
+        super(HttpMethod.GET,"dependencies",entityName, entityVersion);
     }
 
 }

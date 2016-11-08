@@ -1,9 +1,11 @@
 package com.redhat.lightblue.client.response;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,23 +17,29 @@ import com.redhat.lightblue.client.model.DataError;
 import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.util.JSON;
 
-public abstract class AbstractLightblueResponse implements LightblueResponse, LightblueErrorResponse {
+public abstract class AbstractLightblueResponse implements LightblueResponse, LightblueErrorResponse, Serializable {
+
+    private static final long serialVersionUID=1l;
+
+    public static final String HEADER_REQUEST_ID = "RequestID";
 
     private final String text;
     private JsonNode json;
-    private final ObjectMapper mapper;
+    private transient ObjectMapper mapper;
     private DataError[] dataErrorCache;
     private Error[] errorCache;
+    private final Map<String, List<String>> headers;
 
-    public AbstractLightblueResponse(String responseText) throws LightblueParseException, LightblueResponseException, LightblueException {
-        this(responseText, JSON.getDefaultObjectMapper());
+    public AbstractLightblueResponse(String responseText, Map<String, List<String>> headers) throws LightblueParseException, LightblueResponseException, LightblueException {
+        this(responseText, headers, JSON.getDefaultObjectMapper());
     }
 
-    public AbstractLightblueResponse(String responseText, ObjectMapper mapper) throws LightblueParseException, LightblueResponseException, LightblueException {
+    public AbstractLightblueResponse(String responseText, Map<String, List<String>> headers, ObjectMapper mapper) throws LightblueParseException, LightblueResponseException, LightblueException {
         if (mapper == null) {
             throw new NullPointerException("ObjectMapper instance cannot be null");
         }
         this.mapper = mapper;
+        this.headers = headers;
 
         text = responseText;
         try {
@@ -43,14 +51,15 @@ public abstract class AbstractLightblueResponse implements LightblueResponse, Li
         assertNoErrors();
     }
 
-    public AbstractLightblueResponse(JsonNode responseNode) throws LightblueResponseException, LightblueException {
-        this(responseNode, JSON.getDefaultObjectMapper());
+    public AbstractLightblueResponse(JsonNode responseNode, Map<String, List<String>> headers) throws LightblueResponseException, LightblueException {
+        this(responseNode, headers, JSON.getDefaultObjectMapper());
     }
 
-    public AbstractLightblueResponse(JsonNode responseNode, ObjectMapper mapper) throws LightblueResponseException, LightblueException {
+    public AbstractLightblueResponse(JsonNode responseNode, Map<String, List<String>> headers, ObjectMapper mapper) throws LightblueResponseException, LightblueException {
         json = responseNode;
         text = responseNode.toString();
         this.mapper = mapper;
+        this.headers = headers;
 
         assertNoErrors();
     }
@@ -62,7 +71,7 @@ public abstract class AbstractLightblueResponse implements LightblueResponse, Li
     }
 
     protected ObjectMapper getMapper() {
-        return mapper;
+        return mapper==null?JSON.getDefaultObjectMapper():mapper;
     }
 
     @Override
@@ -96,7 +105,7 @@ public abstract class AbstractLightblueResponse implements LightblueResponse, Li
         }
 
         JsonNode objectTypeNode = getJson().get("status");
-        if (objectTypeNode != null && (objectTypeNode.textValue().equalsIgnoreCase("error") 
+        if (objectTypeNode != null && (objectTypeNode.textValue().equalsIgnoreCase("error")
                 || objectTypeNode.textValue().equalsIgnoreCase("partial"))) {
             return true;
         }
@@ -147,6 +156,24 @@ public abstract class AbstractLightblueResponse implements LightblueResponse, Li
             errorCache = list.toArray(new Error[list.size()]);
         }
         return errorCache;
+    }
+
+    @Override
+    public List<String> getHeaderValues(String key) {
+        if (headers == null) {
+            return null;
+        }
+        return headers.get(key);
+    }
+
+    @Override
+    public String getRequestId() {
+        List<String> values = getHeaderValues(HEADER_REQUEST_ID);
+        if (values == null || values.isEmpty()) {
+            return null;
+        }
+        //There should only ever be a single value for this header.
+        return values.get(0);
     }
 
 }

@@ -11,7 +11,6 @@ import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
-
 public class TestDataInsertRequest extends AbstractLightblueRequestTest {
 
     private class TestObj {
@@ -92,6 +91,26 @@ public class TestDataInsertRequest extends AbstractLightblueRequestTest {
         String expected = "{\"data\":[" + obj1.toJson() + "," + obj2.toJson() + "],\"projection\":[" + testProjection1.toJson() + "," + testProjection2.toJson() + "]}";
 
         JSONAssert.assertEquals(expected, request.getBody(), false);
+    }
+
+    @Test
+    public void testRequestWithRange() throws JSONException {
+        request.returns(new Projection[]{testProjection1}, 0, 20);
+        TestObj obj = new TestObj();
+        request.create(obj);
+
+        String expected = "{\"data\":" + obj.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"from\": 0, \"maxResults\" : 20" + "}";
+        JSONAssert.assertEquals(expected, request.getBody(), true);
+    }
+
+    @Test
+    public void testRequestWithRangeNullTo() throws JSONException {
+        request.returns(new Projection[]{testProjection1}, 0, null);
+        TestObj obj = new TestObj();
+        request.create(obj);
+
+        String expected = "{\"data\":" + obj.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"from\": 0" + "}";
+        JSONAssert.assertEquals(expected, request.getBody(), true);
     }
 
 }

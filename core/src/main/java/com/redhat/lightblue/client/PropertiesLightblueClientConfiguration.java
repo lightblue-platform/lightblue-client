@@ -1,5 +1,11 @@
 package com.redhat.lightblue.client;
 
+import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
+import com.redhat.lightblue.client.MongoExecution.ReadPreference;
+import org.apache.commons.lang.text.StrSubstitutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,12 +16,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
-
-import org.apache.commons.lang.text.StrSubstitutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
 
 /**
  * Provides factory methods for
@@ -52,6 +52,7 @@ public final class PropertiesLightblueClientConfiguration {
 
     private static final String DATA_SERVICE_URI_KEY = "dataServiceURI";
     private static final String METADATA_SERVICE_URI_KEY = "metadataServiceURI";
+    private static final String ACCEPT_SELF_SIGNED_CERT_KEY = "acceptSelfSignedCert";
     private static final String USE_CERT_AUTH_KEY = "useCertAuth";
     private static final String CA_FILE_PATH_KEY = "caFilePath";
     private static final String CERT_FILE_PATH_KEY = "certFilePath";
@@ -59,6 +60,9 @@ public final class PropertiesLightblueClientConfiguration {
     private static final String COMPRESSION = "compression";
     private static final String BASIC_AUTH_USERNAME_KEY = "basicAuthUsername";
     private static final String BASIC_AUTH_PASSWORD_KEY = "basicAuthPassword";
+    private static final String MONGO_READ_PREFERENCE = "execution.mongo.readPreference";
+    private static final String MONGO_WRITE_CONCERN = "execution.mongo.writeConcern";
+    private static final String MONGO_MAX_QUERY_TIME_MS = "execution.mongo.maxQueryTimeMS";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesLightblueClientConfiguration.class);
 
@@ -103,7 +107,7 @@ public final class PropertiesLightblueClientConfiguration {
      * @param classLoader The class loader to use to find the resource.
      */
     public static LightblueClientConfiguration fromResource(String resourcePath,
-            ClassLoader classLoader) {
+                                                            ClassLoader classLoader) {
         InputStream propertiesStream = classLoader.getResourceAsStream(resourcePath);
 
         if (propertiesStream == null) {
@@ -120,11 +124,19 @@ public final class PropertiesLightblueClientConfiguration {
      * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration}.
      *
      * @param pathToProperties A file system path, relative to the working
-     * directory of the java process.
+     * directory of the java process.  If the specified path has no leading
+     * directories, try to look for it in the classpath instead
      */
     public static LightblueClientConfiguration fromPath(Path pathToProperties) {
-        try (InputStream inStream = Files.newInputStream(pathToProperties)) {
-            return fromInputStream(inStream);
+
+        try {
+            //If specified path has no leading directories, look for the correponding file on the classpath
+            if(pathToProperties.getFileName().toString().equals(pathToProperties.toString())) {
+                return fromResource(pathToProperties.toString());
+            } else {
+                InputStream inStream = Files.newInputStream(pathToProperties);
+                return fromInputStream(inStream);
+            }
         } catch (IOException e) {
             LOGGER.error(pathToProperties + " could not be found/read", e);
             throw new LightblueClientConfigurationException("Could not read properties file from "
@@ -151,6 +163,7 @@ public final class PropertiesLightblueClientConfiguration {
 
     /**
      * Reads the {@link InputStream} and substitutes system properties.
+     *
      * @return {@link Reader}
      */
     private static Reader loadInputStream(InputStream propertiesStream) throws IOException {
@@ -179,14 +192,27 @@ public final class PropertiesLightblueClientConfiguration {
         config.setCertPassword(properties.getProperty(CERT_PASSWORD_KEY));
         config.setDataServiceURI(properties.getProperty(DATA_SERVICE_URI_KEY));
         config.setMetadataServiceURI(properties.getProperty(METADATA_SERVICE_URI_KEY));
+        config.setAcceptSelfSignedCert(Boolean.parseBoolean(properties.getProperty(ACCEPT_SELF_SIGNED_CERT_KEY)));
         config.setUseCertAuth(Boolean.parseBoolean(properties.getProperty(USE_CERT_AUTH_KEY)));
         config.setBasicAuthUsername(properties.getProperty(BASIC_AUTH_USERNAME_KEY));
         config.setBasicAuthPassword(properties.getProperty(BASIC_AUTH_PASSWORD_KEY));
-        if (properties.containsKey(COMPRESSION))
+        if (properties.containsKey(COMPRESSION)) {
             config.setCompression(Compression.parseCompression(properties.getProperty(COMPRESSION)));
+        }
+        if (properties.containsKey(MONGO_READ_PREFERENCE)) {
+            config.setReadPreference(ReadPreference.valueOf(
+                    properties.getProperty(MONGO_READ_PREFERENCE)));
+        }
+        if (properties.containsKey(MONGO_WRITE_CONCERN)) {
+            config.setWriteConcern(properties.getProperty(MONGO_WRITE_CONCERN));
+        }
+        if (properties.containsKey(MONGO_MAX_QUERY_TIME_MS)) {
+            config.setMaxQueryTimeMS(Integer.parseInt(properties.getProperty(MONGO_MAX_QUERY_TIME_MS)));
+        }
 
         return config;
     }
 
-    private PropertiesLightblueClientConfiguration() {}
+    private PropertiesLightblueClientConfiguration() {
+    }
 }

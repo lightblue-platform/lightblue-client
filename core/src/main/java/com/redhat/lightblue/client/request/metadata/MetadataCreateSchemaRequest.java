@@ -6,31 +6,19 @@ import java.io.Reader;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
+import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 import com.redhat.lightblue.client.util.JSON;
 import com.redhat.lightblue.client.util.Utils;
 
 /**
  * PUT /metadata/{entityName}/schema={version}
  */
-public class MetadataCreateSchemaRequest extends AbstractLightblueMetadataRequest {
+public class MetadataCreateSchemaRequest extends LightblueMetadataRequest {
 
-    private final String entityVersion;
     private JsonNode body;
 
     public MetadataCreateSchemaRequest(String entityName, String entityVersion) {
-        super(entityName);
-        this.entityVersion = entityVersion;
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "schema=" + entityVersion;
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.PUT;
+        super(HttpMethod.PUT,"schema="+entityVersion,entityName,null);
     }
 
     @Override

@@ -84,7 +84,7 @@ public class JavaNetHttpTransportCompressionTest {
 
         when(mockConnection.getInputStream()).thenReturn(inResponseBody);
 
-        String response = client.executeRequest(request, "");
+        String response = client.executeRequest(request, "").getBody();
 
         Assert.assertEquals(TEST_RESPONSE, response);
     }

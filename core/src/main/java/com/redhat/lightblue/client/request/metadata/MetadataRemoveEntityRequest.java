@@ -2,30 +2,15 @@ package com.redhat.lightblue.client.request.metadata;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
+import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 
 /**
  * DELETE /metadata/{entityName}
  */
-public class MetadataRemoveEntityRequest extends AbstractLightblueMetadataRequest {
+public class MetadataRemoveEntityRequest extends LightblueMetadataRequest {
 
     public MetadataRemoveEntityRequest(String entityName) {
-        super(entityName);
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "";
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.DELETE;
-    }
-
-    @Override
-    public JsonNode getBodyJson() {
-        return null;
+        super(HttpMethod.DELETE,null,entityName,null);
     }
 
 }

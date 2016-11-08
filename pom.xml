@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -8,7 +7,7 @@
     </parent>
     <groupId>com.redhat.lightblue.client</groupId>
     <artifactId>lightblue-client-pom</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>5.7.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
     <licenses>
@@ -35,33 +34,18 @@
             <dependency>
                 <groupId>com.redhat.lightblue.client</groupId>
                 <artifactId>lightblue-client-core</artifactId>
-                <version>${project.version}</version>
+                <version>5.7.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.redhat.lightblue.client</groupId>
                 <artifactId>lightblue-client-http</artifactId>
-                <version>${project.version}</version>
+                <version>5.7.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.redhat.lightblue.rest</groupId>
                 <artifactId>lightblue-rest-integration-test</artifactId>
                 <version>${lightblue.rest.version}</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.redhat.lightblue</groupId>
-                <artifactId>lightblue-core-hystrix</artifactId>
-                <version>${lightblue.core.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.hystrix</groupId>
-                <artifactId>hystrix-core</artifactId>
-                <version>1.4.7</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.hystrix</groupId>
-                <artifactId>hystrix-servo-metrics-publisher</artifactId>
-                <version>1.4.7</version>
             </dependency>
             <!-- The io.reactivex dependency is necessary to be available on the compile time due an issue found (on java/maven) -->
             <dependency>
@@ -150,7 +134,6 @@
         <module>core</module>
         <module>http</module>
         <module>hystrix</module>
-        <module>lightblue-client-integration-test</module>
         <!--module>jmeter-tests</module--><!-- Breaks release -->
 </modules>
 <properties>
@@ -162,8 +145,7 @@
     <sonar.projectName>lightblue-client</sonar.projectName>
     <rpm.install.basedir>/usr/share/jbossas/standalone/deployments</rpm.install.basedir>
 
-    <lightblue.core.version>1.11.0-SNAPSHOT</lightblue.core.version>
-    <lightblue.rest.version>2.0.0-SNAPSHOT</lightblue.rest.version>
+    <lightblue.rest.version>2.17.0-SNAPSHOT</lightblue.rest.version>
 </properties>
 
 <build>
@@ -171,23 +153,17 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.19</version>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.maven.surefire</groupId>
-                    <artifactId>surefire-junit47</artifactId>
-                    <version>2.19</version>
-                </dependency>
-            </dependencies>
+            <version>2.19.1</version>
             <configuration>
                 <forkCount>1</forkCount>
                 <reuseForks>false</reuseForks>
+                <skipTests>true</skipTests> <!-- jdk7 will fail if tests are executed because upstream deps are jdk8 only -->
             </configuration>
         </plugin>
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>2.3.2</version>
+            <version>3.5.1</version>
             <configuration>
                 <source>1.7</source>
                 <target>1.7</target>
@@ -275,11 +251,37 @@
                             <goals>
                                 <goal>jar</goal>
                             </goals>
-                            <configuration>
-                                <additionalparam>-Xdoclint:none</additionalparam>
-                            </configuration>
                         </execution>
                     </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+    <profile>
+        <id>doclint-java8-disable</id>
+        <activation>
+            <jdk>[1.8,)</jdk>
+        </activation>
+        <modules>
+            <module>lightblue-client-integration-test</module>
+        </modules>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <additionalparam>-Xdoclint:none</additionalparam>
+                    </configuration>
+                </plugin>
+                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                      <forkCount>1</forkCount>
+                      <reuseForks>false</reuseForks>
+                      <skipTests>false</skipTests> <!-- jdk8 should run tests -->
+                  </configuration>
                 </plugin>
             </plugins>
         </build>

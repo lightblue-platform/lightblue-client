@@ -10,41 +10,61 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.CRUDRequest;
 import com.redhat.lightblue.client.util.JSON;
 
-public class DataInsertRequest extends AbstractLightblueDataRequest {
+public class DataInsertRequest extends CRUDRequest {
 
     private Projection projection;
     private Object[] objects;
+    private Integer begin;
+    private Integer maxResults;
 
     public DataInsertRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
+        super(HttpMethod.PUT,"insert",entityName, entityVersion);
     }
 
     public DataInsertRequest(String entityName) {
-        super(entityName);
+        this(entityName,null);
     }
 
-    public void returns(List<? extends Projection> projection) {
+    public DataInsertRequest returns(List<? extends Projection> projection) {
+        return returns(projection, null, null);
+    }
+
+    public DataInsertRequest returns(List<? extends Projection> projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
+        this.begin = begin;
+        this.maxResults = maxResults;
+
+        return this;
     }
 
-    public void returns(Projection... projection) {
+    public DataInsertRequest returns(Projection... projection) {
+        return returns(projection, null, null);
+    }
+
+    public DataInsertRequest returns(Projection[] projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
+        this.begin = begin;
+        this.maxResults = maxResults;
+
+        return this;
     }
 
-    public void create(Collection<?> objects) {
-        create(objects.toArray());
+    public DataInsertRequest create(Collection<?> objects) {
+        return create(objects.toArray());
     }
 
-    public void create(Object... objects) {
+    public DataInsertRequest create(Object... objects) {
         this.objects = objects;
+
+        return this;
     }
 
     @Override
     public JsonNode getBodyJson() {
-        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        ObjectNode node = (ObjectNode) super.getBodyJson();
         if (projection != null) {
             node.set("projection", projection.toJson());
         }
@@ -57,17 +77,8 @@ public class DataInsertRequest extends AbstractLightblueDataRequest {
             }
             node.set("data", arr);
         }
+        appendRangeToJson(node, begin, maxResults);
         return node;
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.PUT;
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "insert";
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.http.annotation.Obsolete;
 import org.junit.runners.model.TestClass;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,8 +15,17 @@ import com.redhat.lightblue.client.response.LightblueResponse;
 
 public class LightblueExternalResource extends BeforeAfterTestRule {
 
-    public interface LightblueTestMethods {
+    @Obsolete
+    public interface LightblueTestMethods extends LightblueTestHarnessConfig {
+    }
+
+    public interface LightblueTestHarnessConfig {
         JsonNode[] getMetadataJsonNodes() throws Exception;
+
+        default boolean isGrantAnyoneAccess() {
+            return true;
+        }
+        
     }
 
     private final LightblueTestMethods methods;
@@ -28,7 +38,7 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         this(methods, 8000);
     }
 
-    public LightblueExternalResource(LightblueTestMethods methods,boolean removeHooks) {
+    public LightblueExternalResource(LightblueTestMethods methods, boolean removeHooks) {
         this(methods, 8000);
         this.removeHooks = removeHooks;
     }
@@ -79,6 +89,10 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         getControllerInstance().cleanupMongoCollections(dbName, collectionNames);
     }
 
+    public void ensureHttpServerIsRunning() throws IOException {
+        getControllerInstance().ensureHttpServerIsRunning();
+    }
+
     public int getHttpPort() {
         return getControllerInstance().getHttpPort();
     }
@@ -102,6 +116,11 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
             return methods.getMetadataJsonNodes();
         }
 
+        @Override
+        public boolean isGrantAnyoneAccess() {
+            return methods.isGrantAnyoneAccess();
+        }
+
     }
 
     private class ArtificialLightblueClientCRUDControllerWithHooks extends ArtificialLightblueClientCRUDController {
@@ -115,8 +134,6 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
             return new HashSet<>();
         }
 
-
     }
-
 
 }

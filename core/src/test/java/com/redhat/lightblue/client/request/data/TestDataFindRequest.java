@@ -133,7 +133,8 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest {
         request.sort(sortCondition1);
         request.range(0, 20);
 
-        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + ",\"range\": [0,20]" + "}";
+        //maxResults = 21 because we are converting a 'to' value into a 'maxResults' value. Lightblue will convert back.
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + ",\"from\": 0, \"maxResults\" : 21" + "}";
         JSONAssert.assertEquals(expected, request.getBody(), true);
     }
 
@@ -144,7 +145,7 @@ public class TestDataFindRequest extends AbstractLightblueRequestTest {
         request.sort(sortCondition1);
         request.range(0, null);
 
-        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + ",\"range\": [0,null]" + "}";
+        String expected = "{\"query\":" + testQueryExpression.toJson() + ",\"projection\":" + testProjection1.toJson() + ",\"sort\":" + sortCondition1.toJson() + ",\"from\": 0" + "}";
         JSONAssert.assertEquals(expected, request.getBody(), true);
     }
 

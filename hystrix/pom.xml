@@ -1,25 +1,57 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.redhat.lightblue.client</groupId>
         <artifactId>lightblue-client-pom</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>5.7.0-SNAPSHOT</version>
     </parent>
-    <artifactId>lightblue-client-hystrix</artifactId>
+    <version>5.7.0-SNAPSHOT</version><artifactId>lightblue-client-hystrix</artifactId>
     <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
+    
+    <properties>
+        <hystrix.version>1.5.6</hystrix.version>
+        <netflix.servo.version>0.12.11</netflix.servo.version>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>com.redhat.lightblue.client</groupId>
             <artifactId>lightblue-client-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.redhat.lightblue</groupId>
-            <artifactId>lightblue-core-hystrix</artifactId>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-core</artifactId>
+            <version>${hystrix.version}</version>
         </dependency>
         <dependency>
             <groupId>com.netflix.hystrix</groupId>
-            <artifactId>hystrix-core</artifactId>
+            <artifactId>hystrix-servo-metrics-publisher</artifactId>
+            <version>${hystrix.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-servo-metrics-publisher</artifactId>
+            <version>${hystrix.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-metrics-event-stream</artifactId>
+            <version>${hystrix.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.servo</groupId>
+            <artifactId>servo-graphite</artifactId>
+            <version>${netflix.servo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.timgroup</groupId>
+            <artifactId>java-statsd-client</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.servo</groupId>
+            <artifactId>servo-core</artifactId>
+            <version>${netflix.servo.version}</version>
         </dependency>
     </dependencies>
 </project>

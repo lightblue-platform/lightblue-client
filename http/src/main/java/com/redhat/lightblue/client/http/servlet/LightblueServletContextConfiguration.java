@@ -31,16 +31,20 @@ public class LightblueServletContextConfiguration {
     }
 
     /**
-     * Max connections per route is the maximum amount of concurrent http connections to be used
-     * per route.
+     * Max connections per route is the maximum amount of concurrent http
+     * connections to be used per route.
      *
-     * <p>By default, determines the max connections per route from init parameters in the servlet
-     * context. If none are provided, a default value is used as determined by
-     * {@link #MAX_CONNECTIONS_PER_ROUTE_DEFAULT}.
+     * <p>
+     * By default, determines the max connections per route from init parameters
+     * in the servlet context. If none are provided, a default value is used as
+     * determined by {@link #MAX_CONNECTIONS_PER_ROUTE_DEFAULT}.
      *
-     * <p>See {@link #MAX_CONNECTIONS_PER_ROUTE_KEY} for the init parameter to set this value.
+     * <p>
+     * See {@link #MAX_CONNECTIONS_PER_ROUTE_KEY} for the init parameter to set
+     * this value.
      *
-     * <p>Example:
+     * <p>
+     * Example:
      * <pre><code>
      * {@code<web-app ... >}
      *     {@code<context-param>}
@@ -50,9 +54,11 @@ public class LightblueServletContextConfiguration {
      * {@code</web-app>}
      * </code></pre>
      *
-     * <p><em>Designed to be overridden if another configuration scheme is desired.</em> For
-     * example, you could configure these settings with a properties file, or by writing your own
-     * listener annotated with {@link javax.servlet.annotation.WebListener} that does not require a
+     * <p>
+     * <em>Designed to be overridden if another configuration scheme is
+     * desired.</em> For example, you could configure these settings with a
+     * properties file, or by writing your own listener annotated with
+     * {@link javax.servlet.annotation.WebListener} that does not require a
      * deployment descriptor (web.xml) element.
      *
      * @see org.apache.http.impl.conn.PoolingHttpClientConnectionManager
@@ -66,13 +72,17 @@ public class LightblueServletContextConfiguration {
     /**
      * Max connections total is the total number of concurrent http connections.
      *
-     * <p>By default, determines the max connections total from init parameters in the servlet
-     * context. If none are provided, a default value is used as determined by
-     * {@link #MAX_CONNECTIONS_TOTAL_DEFAULT}.
+     * <p>
+     * By default, determines the max connections total from init parameters in
+     * the servlet context. If none are provided, a default value is used as
+     * determined by {@link #MAX_CONNECTIONS_TOTAL_DEFAULT}.
      *
-     * <p>See {@link #MAX_CONNECTIONS_TOTAL_KEY} for the init parameter to set this value.
+     * <p>
+     * See {@link #MAX_CONNECTIONS_TOTAL_KEY} for the init parameter to set this
+     * value.
      *
-     * <p>Example:
+     * <p>
+     * Example:
      * <pre><code>
      * {@code<web-app ... >}
      *     {@code<context-param>}
@@ -82,9 +92,11 @@ public class LightblueServletContextConfiguration {
      * {@code</web-app>}
      * </code></pre>
      *
-     * <p><em>Designed to be overridden if another configuration scheme is desired.</em> For
-     * example, you could configure these settings with a properties file, or by writing your own
-     * listener annotated with {@link javax.servlet.annotation.WebListener} that does not require a
+     * <p>
+     * <em>Designed to be overridden if another configuration scheme is
+     * desired.</em> For example, you could configure these settings with a
+     * properties file, or by writing your own listener annotated with
+     * {@link javax.servlet.annotation.WebListener} that does not require a
      * deployment descriptor (web.xml) element.
      *
      * @see org.apache.http.impl.conn.PoolingHttpClientConnectionManager
@@ -96,27 +108,29 @@ public class LightblueServletContextConfiguration {
     }
 
     /**
-     * By default will use {@link #baseLightblueClientConfiguration()}. Following that, specific
-     * parameters may be overridden as context parameters:
+     * By default will use {@link #baseLightblueClientConfiguration()}.
+     * Following that, specific parameters may be overridden as context
+     * parameters:
      *
      * <dl>
-     *     <dt>dataServiceURI</dt>
-     *     <dd>The URL for the lightblue data service.</dd>
-     *     <dt>metadataServiceURI</dt>
-     *     <dd>The URL for the lightblue metadata service.</dd>
-     *     <dt>useCertAuth</dt>
-     *     <dd>Whether or not to use certificate authentication to talk to the lightblue services.</dd>
-     *     <dt>caFilePath</dt>
-     *     <dd>SSL certificate for talking with lightblue services.</dd>
-     *     <dt>certFilePath</dt>
-     *     <dd>The file path to the client certificate. This follows the semantics of
-     *     {@link java.lang.ClassLoader#getResource(String)}, which is to say it is a relative, /
-     *     separated path from the root of the classpath, and should <em>not</em> start with a forward
-     *     slash.</dd>
-     *     <dt>certPassword</dt>
-     *     <dd>The password for the client certificate.</dd>
-     *     <dt>certAlias</dt>
-     *     <dd>The alias for the client certificate. ???</dd>
+     * <dt>dataServiceURI</dt>
+     * <dd>The URL for the lightblue data service.</dd>
+     * <dt>metadataServiceURI</dt>
+     * <dd>The URL for the lightblue metadata service.</dd>
+     * <dt>useCertAuth</dt>
+     * <dd>Whether or not to use certificate authentication to talk to the
+     * lightblue services.</dd>
+     * <dt>caFilePath</dt>
+     * <dd>SSL certificate for talking with lightblue services.</dd>
+     * <dt>certFilePath</dt>
+     * <dd>The file path to the client certificate. This follows the semantics
+     * of {@link java.lang.ClassLoader#getResource(String)}, which is to say it
+     * is a relative, / separated path from the root of the classpath, and
+     * should <em>not</em> start with a forward slash.</dd>
+     * <dt>certPassword</dt>
+     * <dd>The password for the client certificate.</dd>
+     * <dt>certAlias</dt>
+     * <dd>The alias for the client certificate. ???</dd>
      * </dl>
      */
     public LightblueClientConfiguration lightblueClientConfiguration() {
@@ -159,8 +173,9 @@ public class LightblueServletContextConfiguration {
     /**
      * Returns
      * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration#fromDefault()}
-     * by default if no context parameter with key {@link #LIGHTBLUE_CLIENT_PROPERTIES_PATH_KEY} is
-     * specified. Otherwise, the path is used with
+     * by default if no context parameter with key
+     * {@link #LIGHTBLUE_CLIENT_PROPERTIES_PATH_KEY} is specified. Otherwise,
+     * the path is used with
      * {@link com.redhat.lightblue.client.PropertiesLightblueClientConfiguration#fromPath(java.nio.file.Path)}.
      */
     protected LightblueClientConfiguration baseLightblueClientConfiguration() {

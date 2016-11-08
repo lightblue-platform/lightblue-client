@@ -27,13 +27,20 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class Update extends Expression implements ForEachUpdate {
 
-    public interface AddLiteral extends JsonObj {}
-    public interface AppendInsertLiteral extends JsonObj {}
-    public interface SetLiteral extends JsonObj {}
-    public interface UpdateQuery extends JsonObj {}
+    public interface AddLiteral extends JsonObj {
+    }
 
-    public static final UpdateQuery ALL=new All();
-    public static final ForEachUpdate REMOVE=new Remove();
+    public interface AppendInsertLiteral extends JsonObj {
+    }
+
+    public interface SetLiteral extends JsonObj {
+    }
+
+    public interface UpdateQuery extends JsonObj {
+    }
+
+    public static final UpdateQuery ALL = new All();
+    public static final ForEachUpdate REMOVE = new Remove();
 
     public static class All extends ExpressionPart implements UpdateQuery {
         public All() {
@@ -62,40 +69,44 @@ public class Update extends Expression implements ForEachUpdate {
         /**
          * Add a new field/value to $set
          */
-        public Set more(String field,JsonNode value) {
-            JsonNode x=((ObjectNode)node).get("$set");
-            if(x==null) {
-                x=JsonNodeFactory.instance.objectNode();
-                ((ObjectNode)node).set("$set",x);
+        public Set more(String field, JsonNode value) {
+            JsonNode x = ((ObjectNode) node).get("$set");
+            if (x == null) {
+                x = JsonNodeFactory.instance.objectNode();
+                ((ObjectNode) node).set("$set", x);
             }
-            ((ObjectNode)x).set(field,value);
+            ((ObjectNode) x).set(field, value);
             return this;
         }
 
         /**
          * Add a new field/value to $set
          */
-        public Set more(String field,SetLiteral value) {
-            return more(field,value.toJson());
+        public Set more(String field, SetLiteral value) {
+            return more(field, value.toJson());
         }
 
-        public Set more(String field,int i) {
-            return more(field,Literal.value(i));
+        public Set more(String field, int i) {
+            return more(field, Literal.value(i));
         }
 
-        public Set more(String field,long i) {
-            return more(field,Literal.value(i));
+        public Set more(String field, long i) {
+            return more(field, Literal.value(i));
         }
 
-        public Set more(String field,String i) {
-            return more(field,Literal.value(i));
+        public Set more(String field, String i) {
+            return more(field, Literal.value(i));
         }
 
-        public Set more(String field,boolean i) {
-            return more(field,Literal.value(i));
+        public Set more(String field, boolean i) {
+            return more(field, Literal.value(i));
         }
 
-   }
+        public Set more(String field, Date date) {
+            return more(field, Literal.value(date));
+        }
+
+    }
 
     /**
      * Represents an $add expression
@@ -112,21 +123,21 @@ public class Update extends Expression implements ForEachUpdate {
         /**
          * Adds a new field/value to add
          */
-        public Add more(String field,JsonNode value) {
-            JsonNode x=((ObjectNode)node).get("$add");
-            if(x==null) {
-                x=JsonNodeFactory.instance.objectNode();
-                ((ObjectNode)node).set("$add",x);
+        public Add more(String field, JsonNode value) {
+            JsonNode x = ((ObjectNode) node).get("$add");
+            if (x == null) {
+                x = JsonNodeFactory.instance.objectNode();
+                ((ObjectNode) node).set("$add", x);
             }
-            ((ObjectNode)x).set(field,value);
+            ((ObjectNode) x).set(field, value);
             return this;
         }
 
         /**
          * Adds a new field/value to add
          */
-        public Add more(String field,AddLiteral value) {
-            return more(field,value.toJson());
+        public Add more(String field, AddLiteral value) {
+            return more(field, value.toJson());
         }
     }
 
@@ -134,18 +145,18 @@ public class Update extends Expression implements ForEachUpdate {
      * Represents an $append or $insert expression
      */
     public static class AppendInsert extends Update {
-        public AppendInsert(String op,String field) {
+        public AppendInsert(String op, String field) {
             super(JsonNodeFactory.instance.objectNode());
-            ObjectNode x=JsonNodeFactory.instance.objectNode();
-            x.set(field,JsonNodeFactory.instance.arrayNode());
-            ((ObjectNode)node).set(op,x);
+            ObjectNode x = JsonNodeFactory.instance.objectNode();
+            x.set(field, JsonNodeFactory.instance.arrayNode());
+            ((ObjectNode) node).set(op, x);
         }
 
         /**
          * Adds a new value to append/insert
          */
         public AppendInsert more(JsonNode value) {
-            ((ArrayNode)((ObjectNode)((ObjectNode)node).elements().next()).elements().next()).add(value);
+            ((ArrayNode) ((ObjectNode) ((ObjectNode) node).elements().next()).elements().next()).add(value);
             return this;
         }
 
@@ -162,7 +173,7 @@ public class Update extends Expression implements ForEachUpdate {
      */
     public static class Unset extends Update {
         public Unset() {
-             super(JsonNodeFactory.instance.objectNode());
+            super(JsonNodeFactory.instance.objectNode());
         }
 
         public Unset(ObjectNode node) {
@@ -173,18 +184,18 @@ public class Update extends Expression implements ForEachUpdate {
          * Adds a new field to unset
          */
         public Unset more(String field) {
-            JsonNode x=((ObjectNode)node).get("$unset");
-            if(x==null) {
-                x=JsonNodeFactory.instance.textNode(field);
-                ((ObjectNode)node).set("$unset",x);
+            JsonNode x = ((ObjectNode) node).get("$unset");
+            if (x == null) {
+                x = JsonNodeFactory.instance.textNode(field);
+                ((ObjectNode) node).set("$unset", x);
             } else {
                 ArrayNode arr;
-                if(!(x instanceof ArrayNode)) {
-                    arr=JsonNodeFactory.instance.arrayNode();
+                if (!(x instanceof ArrayNode)) {
+                    arr = JsonNodeFactory.instance.arrayNode();
                     arr.add(x);
-                    ((ObjectNode)node).set("$unset",arr);
+                    ((ObjectNode) node).set("$unset", arr);
                 } else {
-                    arr=(ArrayNode)x;
+                    arr = (ArrayNode) x;
                 }
                 arr.add(JsonNodeFactory.instance.textNode(field));
             }
@@ -212,25 +223,25 @@ public class Update extends Expression implements ForEachUpdate {
      *  [ update,... ]
      * </pre>
      */
-    public static Update update(Update...update) {
-        if(update.length==1) {
+    public static Update update(Update... update) {
+        if (update.length == 1) {
             return update[0];
         } else {
-            Update x=new Update(true);
-            for(Update u:update) {
-                ((ArrayNode)x.node).add(u.toJson());
+            Update x = new Update(true);
+            for (Update u : update) {
+                ((ArrayNode) x.node).add(u.toJson());
             }
             return x;
         }
     }
 
     public static Update update(List<? extends Update> update) {
-        if(update.size()==1) {
+        if (update.size() == 1) {
             return update.get(0);
         } else {
-            Update x=new Update(true);
-            for(Update u:update) {
-                ((ArrayNode)x.node).add(u.toJson());
+            Update x = new Update(true);
+            for (Update u : update) {
+                ((ArrayNode) x.node).add(u.toJson());
             }
             return x;
         }
@@ -241,27 +252,27 @@ public class Update extends Expression implements ForEachUpdate {
      *  { $set : { field: l } }
      * </pre>
      */
-    public static Set set(String field,SetLiteral l) {
-        return new Set().more(field,l);
+    public static Set set(String field, SetLiteral l) {
+        return new Set().more(field, l);
     }
 
-    public static Set set(String field,int i) {
-        return new Set().more(field,Literal.value(i));
+    public static Set set(String field, int i) {
+        return new Set().more(field, Literal.value(i));
     }
 
-    public static Set set(String field,long i) {
-        return new Set().more(field,Literal.value(i));
+    public static Set set(String field, long i) {
+        return new Set().more(field, Literal.value(i));
     }
 
-    public static Set set(String field,String i) {
-        return new Set().more(field,Literal.value(i));
+    public static Set set(String field, String i) {
+        return new Set().more(field, Literal.value(i));
     }
 
-    public static Set set(String field,boolean i) {
-        return new Set().more(field,Literal.value(i));
+    public static Set set(String field, boolean i) {
+        return new Set().more(field, Literal.value(i));
     }
 
-    public static Set set(String field, Date date){
+    public static Set set(String field, Date date) {
         return new Set().more(field, Literal.value(date));
     }
 
@@ -270,9 +281,9 @@ public class Update extends Expression implements ForEachUpdate {
      *   { $unset : [ fields... ]
      * </pre>
      */
-    public static Unset unset(String...fields) {
-        Unset x=new Unset();
-        for(String f:fields) {
+    public static Unset unset(String... fields) {
+        Unset x = new Unset();
+        for (String f : fields) {
             x.more(f);
         }
         return x;
@@ -283,8 +294,8 @@ public class Update extends Expression implements ForEachUpdate {
      *  { $add : { field: literal } }
      * </pre>
      */
-    public static Add addValue(String field,AddLiteral literal) {
-        return new Add().more(field,literal);
+    public static Add addValue(String field, AddLiteral literal) {
+        return new Add().more(field, literal);
     }
 
     /**
@@ -292,8 +303,8 @@ public class Update extends Expression implements ForEachUpdate {
      *  { $append : { path: value } }
      * </pre>
      */
-    public static AppendInsert append(String field,AppendInsertLiteral value) {
-        return new AppendInsert("$append",field).more(value);
+    public static AppendInsert append(String field, AppendInsertLiteral value) {
+        return new AppendInsert("$append", field).more(value);
     }
 
     /**
@@ -301,8 +312,8 @@ public class Update extends Expression implements ForEachUpdate {
      *  { $insert : { path: value } }
      * </pre>
      */
-    public static AppendInsert insert(String field,AppendInsertLiteral value) {
-        return new AppendInsert("$insert",field).more(value);
+    public static AppendInsert insert(String field, AppendInsertLiteral value) {
+        return new AppendInsert("$insert", field).more(value);
     }
 
     /**
@@ -313,11 +324,11 @@ public class Update extends Expression implements ForEachUpdate {
     public static Update forEach(String field,
                                  UpdateQuery q,
                                  ForEachUpdate u) {
-        Update x=new Update(false);
-        ObjectNode fe=JsonNodeFactory.instance.objectNode();
-        fe.set(field,q.toJson());
-        fe.set("$update",u.toJson());
-        ((ObjectNode)x.node).set("$foreach",fe);
+        Update x = new Update(false);
+        ObjectNode fe = JsonNodeFactory.instance.objectNode();
+        fe.set(field, q.toJson());
+        fe.set("$update", u.toJson());
+        ((ObjectNode) x.node).set("$foreach", fe);
         return x;
     }
 }

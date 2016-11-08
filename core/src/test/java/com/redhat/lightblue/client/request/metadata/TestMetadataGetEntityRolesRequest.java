@@ -8,16 +8,16 @@ import com.redhat.lightblue.client.request.AbstractLightblueRequestTest;
 
 public class TestMetadataGetEntityRolesRequest extends AbstractLightblueRequestTest {
 
-	MetadataGetEntityRolesRequest request;
+    MetadataGetEntityRolesRequest request;
 
-	@Before
-	public void setUp() throws Exception {
-		request = new MetadataGetEntityRolesRequest(entityName, entityVersion);
-	}
+    @Before
+    public void setUp() throws Exception {
+        request = new MetadataGetEntityRolesRequest(entityName, entityVersion);
+    }
 
-	@Test
-	public void testGetOperationPathParam() {
-		Assert.assertEquals("roles", request.getOperationPathParam());
-	}
+    @Test
+    public void testGetOperationPathParam() {
+        Assert.assertEquals("roles", request.getOperationPathParam());
+    }
 
 }

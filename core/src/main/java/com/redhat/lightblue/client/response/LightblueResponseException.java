@@ -3,14 +3,16 @@ package com.redhat.lightblue.client.response;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.model.DataError;
 import com.redhat.lightblue.client.model.Error;
 
 /**
- * Exception thrown when lightblue returns a valid response containing data errors.
- * See {@link LightblueResponseErrorCodes} for a list of possible errors.
- * Example: client can call e.exists(ERR_REST_CRUD_REST_SAVE)
+ * Exception thrown when lightblue returns a valid response containing data
+ * errors. See {@link LightblueResponseErrorCodes} for a list of possible
+ * errors. Example: client can call e.exists(ERR_REST_CRUD_REST_SAVE)
  *
  * @author ykoer
  */
@@ -65,9 +67,15 @@ public class LightblueResponseException extends LightblueException implements Li
 
     @Override
     public String getMessage() {
-        if (lightblueResponse != null)
-            return super.getMessage() + lightblueResponse.getText();
-        else
+        if (lightblueResponse != null) {
+            StringBuffer sb = new StringBuffer(super.getMessage());
+            if (!StringUtils.isEmpty(lightblueResponse.getRequestId())) {
+                sb.append(" RequestID=").append(lightblueResponse.getRequestId());
+            }
+            sb.append(' ').append(lightblueResponse.getText());
+            return sb.toString();
+        } else {
             return super.getMessage();
+        }
     }
 }

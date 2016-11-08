@@ -21,6 +21,7 @@ public interface LightblueResponseErrorCodes {
     public static final String ERR_MONGO_CRUD_TRANSLATION_ERROR = "mongo-crud:TranslationError";
     public static final String ERR_MONGO_CRUD_ENTITY_INDEX_NOT_CREATED = "mongo-crud:EntityIndexNotCreated";
     public static final String ERR_MONGO_CRUD_INVALID_INDEX_FIELD = "mongo-crud:InvalidIndexField";
+    public static final String ERR_MONGO_CRUD_CONCURRENT_UPDATE = "mongo-crud:ConcurrentUpdate";
     public static final String ERR_MONGO_METADATA_DUPLICATE_METADATA = "mongo-metadata:DuplicateMetadata";
     public static final String ERR_MONGO_METADATA_UNKNOWN_VERSION = "mongo-metadata:UnknownVersion";
     public static final String ERR_MONGO_METADATA_DB_ERROR = "mongo-metadata:DatabaseError";

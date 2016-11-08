@@ -29,11 +29,12 @@ import com.redhat.lightblue.client.request.LightblueRequest;
 
 /**
  * An {@link HttpTransport} which uses vanilla java.net classes to execute a
- * {@link LightblueRequest}. Recommended to use in a servlet environment which is already
- * multi-threaded by virtue of the application server. This class is thread safe, so you should use
- * an application-scoped {@link com.redhat.lightblue.client.http.LightblueHttpClient} backed by an
- * instance of this class, which is the default behavior if you have not passed in a different
- * {@code HttpTransport}.
+ * {@link LightblueRequest}. Recommended to use in a servlet environment which
+ * is already multi-threaded by virtue of the application server. This class is
+ * thread safe, so you should use an application-scoped
+ * {@link com.redhat.lightblue.client.http.LightblueHttpClient} backed by an
+ * instance of this class, which is the default behavior if you have not passed
+ * in a different {@code HttpTransport}.
  *
  * <p>This implementation takes advantage of HTTP persistent connections as per:
  * <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/net/http-keepalive.html">
@@ -58,8 +59,9 @@ public class JavaNetHttpTransport implements HttpTransport {
     public JavaNetHttpTransport(ConnectionFactory connectionFactory) {
         this(connectionFactory, null, Compression.LZF);
     }
+
     public JavaNetHttpTransport(SSLSocketFactory sslSocketFactory) {
-        this(new UrlConnectionFactory(), sslSocketFactory,  Compression.LZF);
+        this(new UrlConnectionFactory(), sslSocketFactory, Compression.LZF);
     }
 
     public JavaNetHttpTransport(ConnectionFactory connectionFactory,
@@ -68,12 +70,12 @@ public class JavaNetHttpTransport implements HttpTransport {
     }
 
     /**
-     * @param connectionFactory Injectable for testing. To actually make HTTP requests, use another
-     *                          constructor or pass {@link UrlConnectionFactory}.
-     * @param sslSocketFactory May be null, indicating {@link SSLSocketFactory#getDefault()}} will
-     *                         be used.
-     * @param compression Compression method to advertise to the endpoint. Does not mean that
-     *                    compression will be actually used. May be null.
+     * @param connectionFactory Injectable for testing. To actually make HTTP
+     * requests, use another constructor or pass {@link UrlConnectionFactory}.
+     * @param sslSocketFactory May be null, indicating
+     * {@link SSLSocketFactory#getDefault()}} will be used.
+     * @param compression Compression method to advertise to the endpoint. Does
+     * not mean that compression will be actially used.
      */
     public JavaNetHttpTransport(ConnectionFactory connectionFactory, SSLSocketFactory sslSocketFactory,
             Compression compression, String basicAuthUsername, String basicAuthPassword) {
@@ -85,10 +87,10 @@ public class JavaNetHttpTransport implements HttpTransport {
     }
 
     /**
-     * @param connectionFactory Injectable for testing. To actually make HTTP requests, use another
-     *                          constructor or pass {@link UrlConnectionFactory}.
-     * @param sslSocketFactory May be null, indicating {@link SSLSocketFactory#getDefault()}} will
-     *                         be used.
+     * @param connectionFactory Injectable for testing. To actually make HTTP
+     * requests, use another constructor or pass {@link UrlConnectionFactory}.
+     * @param sslSocketFactory May be null, indicating
+     * {@link SSLSocketFactory#getDefault()}} will be used.
      */
     public JavaNetHttpTransport(ConnectionFactory connectionFactory, SSLSocketFactory sslSocketFactory) {
         this(connectionFactory, sslSocketFactory, Compression.LZF);
@@ -112,10 +114,10 @@ public class JavaNetHttpTransport implements HttpTransport {
     }
 
     @Override
-    public String executeRequest(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
+    public HttpResponse executeRequest(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
         try {
             String url = request.getRestURI(baseUri);
-            LOGGER.debug("Executing request, url={}",url);
+            LOGGER.debug("Executing request, url={}", url);
             HttpURLConnection connection = connectionFactory.openConnection(url);
 
             if (connection instanceof HttpsURLConnection) {
@@ -148,7 +150,9 @@ public class JavaNetHttpTransport implements HttpTransport {
                 sendRequestBody(body, connection);
             }
 
-            return response(connection);
+            return new HttpResponse(response(connection), connection.getHeaderFields());
+        } catch (ProtocolException e) {
+            throw new LightblueHttpClientException(e);
         } catch (IOException e) {
             throw new LightblueHttpClientException(e);
         }
@@ -176,30 +180,28 @@ public class JavaNetHttpTransport implements HttpTransport {
     }
 
     /**
-     * Parses response, whether or not the request was successful, if possible. Reads entire input
-     * stream and closes it so the socket knows it is finished and may be put back into a pool for
-     * reuse.
+     * Parses response, whether or not the request was successful, if possible.
+     * Reads entire input stream and closes it so the socket knows it is
+     * finished and may be put back into a pool for reuse.
      */
     private String response(HttpURLConnection connection) throws LightblueHttpClientException {
         try (InputStream responseStream = connection.getInputStream()) {
             return readResponseStream(responseStream, connection);
         } catch (IOException e) {
-            try {
-                try (InputStream errorResponseStream = connection.getErrorStream()) {
-                    String errorBody = null;
-                    if (errorResponseStream != null) {
-                        errorBody = readResponseStream(errorResponseStream, connection);
-                    }
-
-                    if (errorBody != null && !errorBody.equals("")) {
-                        // this may be a valid lightblue response containing errors
-                        // but it can also be a standard html 500 or 404 from server
-                        // we will know that when we start parsing
-                        return errorBody;
-                    }
-
-                    throw new LightblueHttpClientException(e, connection.getResponseCode(), errorBody);
+            try (InputStream errorResponseStream = connection.getErrorStream()) {
+                String errorBody = null;
+                if (errorResponseStream != null) {
+                    errorBody = readResponseStream(errorResponseStream, connection);
                 }
+
+                if (errorBody != null && !errorBody.equals("")) {
+                    // this may be a valid lightblue response containing errors
+                    // but it can also be a standard html 500 or 404 from server
+                    // we will know that when we start parsing
+                    return errorBody;
+                }
+
+                throw new LightblueHttpClientException(e, connection.getResponseCode(), errorBody);
             } catch (IOException e1) {
                 throw new LightblueHttpClientException(e);
             }
@@ -207,7 +209,8 @@ public class JavaNetHttpTransport implements HttpTransport {
     }
 
     /**
-     * Tries to efficiently allocate the response string if the "Content-Length" header is set.
+     * Tries to efficiently allocate the response string if the "Content-Length"
+     * header is set.
      */
     private String readResponseStream(InputStream responseStream, HttpURLConnection connection)
             throws IOException {

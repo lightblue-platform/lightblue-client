@@ -6,29 +6,19 @@ import java.io.Reader;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueMetadataRequest;
+import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 import com.redhat.lightblue.client.util.JSON;
 import com.redhat.lightblue.client.util.Utils;
 
 /**
  * PUT /metadata/{entityName}
  */
-public class MetadataUpdateEntityInfoRequest extends AbstractLightblueMetadataRequest {
+public class MetadataUpdateEntityInfoRequest extends LightblueMetadataRequest {
 
     private JsonNode body;
 
     public MetadataUpdateEntityInfoRequest(String entityName) {
-        super(entityName);
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "";
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.PUT;
+        super(HttpMethod.PUT,null,entityName,null);
     }
 
     @Override

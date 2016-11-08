@@ -11,7 +11,9 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.LightblueException;
@@ -25,6 +27,7 @@ import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
+import com.redhat.lightblue.client.response.LightblueResponseException;
 
 /**
  * Testing your code against lightblue example.
@@ -33,6 +36,9 @@ import com.redhat.lightblue.client.response.LightblueParseException;
  *
  */
 public class CountryDAOTest extends LightblueClientTestHarness {
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     private LightblueHttpClient client;
 
@@ -48,7 +54,7 @@ public class CountryDAOTest extends LightblueClientTestHarness {
 
     @Override
     protected JsonNode[] getMetadataJsonNodes() throws Exception {
-        return new JsonNode[] { loadJsonNode("metadata/country.json") };
+        return new JsonNode[]{loadJsonNode("metadata/country.json")};
     }
 
     private Country insertPL() throws LightblueException {
@@ -89,7 +95,7 @@ public class CountryDAOTest extends LightblueClientTestHarness {
         bulkRequest.add(request);
         bulkRequest.add(request2);
         bulkRequest.add(request3);
-
+        System.out.println(bulkRequest);
         LightblueBulkDataResponse bulkResponse = client.bulkData(bulkRequest);
         List<LightblueDataResponse> responses = bulkResponse.getResponses();
 
@@ -121,7 +127,6 @@ public class CountryDAOTest extends LightblueClientTestHarness {
         assertEquals(1, countries.length);
 
         // ---
-
         request = new DataFindRequest(Country.objectType, Country.objectVersion);
         request.select(Projection.includeField("*"));
         request.where(Query.withMatchingString("iso2Code", "pl", false));
@@ -162,6 +167,20 @@ public class CountryDAOTest extends LightblueClientTestHarness {
 
         assertNotNull(versions);
         assertTrue(versions.isEmpty());
+    }
+
+    /**
+     * Verifies that the RequestID header is included in the exception message.
+     */
+    @Test
+    public void testRequestHeader() throws Exception {
+        exception.expect(LightblueResponseException.class);
+        exception.expectMessage("RequestID");
+
+        DataFindRequest request = new DataFindRequest("fake");
+        request.where(Query.withValue("_id", Query.eq, "abc"));
+
+        client.data(request);
     }
 
 }

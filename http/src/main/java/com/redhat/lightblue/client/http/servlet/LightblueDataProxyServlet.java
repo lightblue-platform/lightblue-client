@@ -10,12 +10,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * A Lightblue service proxy servlet, specifically for the data service, which adds a
- * {@code "dataServiceURI"} init parameter to define the data service URI to forward requests to,
- * or will fall back to the data service URI defines in the [possibly injected]
+ * A Lightblue service proxy servlet, specifically for the data service, which
+ * adds a {@code "dataServiceURI"} init parameter to define the data service URI
+ * to forward requests to, or will fall back to the data service URI defines in
+ * the [possibly injected]
  * {@link com.redhat.lightblue.client.LightblueClientConfiguration}.
  *
- * <p>Example usage in web.xml:
+ * <p>
+ * Example usage in web.xml:
  *
  * <pre><code>
  *   {@code<}servlet{@code>}
@@ -38,11 +40,13 @@ public final class LightblueDataProxyServlet extends AbstractLightblueProxyServl
     private String dataServiceUri;
 
     /**
-     * @see AbstractLightblueProxyServlet#AbstractLightblueProxyServlet(CloseableHttpClient, Instance)
+     * @see
+     * AbstractLightblueProxyServlet#AbstractLightblueProxyServlet(CloseableHttpClient,
+     * Instance)
      */
     @Inject
     public LightblueDataProxyServlet(CloseableHttpClient httpClient,
-            Instance<LightblueClientConfiguration> configuration) {
+                                     Instance<LightblueClientConfiguration> configuration) {
         super(httpClient, configuration);
     }
 
@@ -54,8 +58,8 @@ public final class LightblueDataProxyServlet extends AbstractLightblueProxyServl
                 configuration.getDataServiceURI());
 
         if (dataServiceUri == null) {
-            throw new LightblueServletException("No dataServiceURI defined in configuration or in" +
-                    " init parameter. Configuration checked was, " + configuration);
+            throw new LightblueServletException("No dataServiceURI defined in configuration or in"
+                    + " init parameter. Configuration checked was, " + configuration);
         }
 
         // Get rid of trailing slashes.

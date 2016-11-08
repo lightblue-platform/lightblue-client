@@ -1,13 +1,18 @@
 package com.redhat.lightblue.client;
 
-import static org.junit.Assert.assertEquals;
-
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static org.junit.Assert.assertEquals;
+
 @RunWith(JUnit4.class)
 public class LightblueClientConfigurationTest {
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
     @Test
     public void shouldCopyAllPropertiesInCopyConstructor() {
         LightblueClientConfiguration original = new LightblueClientConfiguration();
@@ -45,4 +50,24 @@ public class LightblueClientConfigurationTest {
         assertEquals("capath", copy.getCaFilePath());
         assertEquals("certpath", copy.getCertAlias());
     }
+
+    @Test
+    public void getCaFilePathShouldThrowExceptionWhenThereAreMultipleValues() throws Exception {
+        expectedException.expect(IllegalStateException.class);
+        expectedException.expectMessage("There are multiple CA cert paths defined, use getCaFilePaths() instead");
+
+        LightblueClientConfiguration config = new LightblueClientConfiguration();
+        config.setCaFilePath("cacert1.pem,cacert2.pem");
+
+        config.getCaFilePath();
+    }
+
+    @Test
+    public void getCaFilePathShouldNotThrowExceptionWhenThereIsOnlyOneValue() throws Exception {
+        LightblueClientConfiguration config = new LightblueClientConfiguration();
+        config.setCaFilePath("cacert1.pem");
+
+        config.getCaFilePath();
+    }
+
 }

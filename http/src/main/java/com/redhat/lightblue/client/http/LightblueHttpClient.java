@@ -21,8 +21,10 @@ import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.http.transport.JavaNetHttpTransport;
-import com.redhat.lightblue.client.request.AbstractDataBulkRequest;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.http.transport.HttpResponse;
+import com.redhat.lightblue.client.request.DataBulkRequest;
+import com.redhat.lightblue.client.request.LightblueDataRequest;
+import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
@@ -41,17 +43,17 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
-    private final class LockingRequest implements LightblueRequest {
+    private final class LockingRequest extends LightblueRequest {
         private final String uri;
-        private final HttpMethod mth;
 
         public LockingRequest(String domain, String callerId, String resourceId, Long ttl, boolean ping, HttpMethod method) {
+            super(method);
             StringBuilder b = new StringBuilder(128);
             try {
                 b.append("lock/")
-                    .append(URLEncoder.encode(domain, StandardCharsets.UTF_8.name())).append('/')
-                    .append(URLEncoder.encode(callerId, StandardCharsets.UTF_8.name())).append('/')
-                    .append(URLEncoder.encode(resourceId, StandardCharsets.UTF_8.name()));
+                        .append(URLEncoder.encode(domain, StandardCharsets.UTF_8.name())).append('/')
+                        .append(URLEncoder.encode(callerId, StandardCharsets.UTF_8.name())).append('/')
+                        .append(URLEncoder.encode(resourceId, StandardCharsets.UTF_8.name()));
             } catch (UnsupportedEncodingException e) {
                 //Shouldn't happen.
                 throw new RuntimeException("A bad Charset was used.", e);
@@ -62,23 +64,10 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
                 b.append('/').append("ping");
             }
             uri = b.toString();
-            mth = method;
         }
 
         @Override
-        public String getBody() {
-            return null;
-        }
-
-        @Override
-        public JsonNode getBodyJson() {
-            return null;
-        }
-
-        @Override
-        public HttpMethod getHttpMethod() {
-            return mth;
-        }
+        public JsonNode getBodyJson() {return null;}
 
         @Override
         public String getRestURI(String baseServiceURI) {
@@ -102,8 +91,8 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         public boolean acquire(String callerId, String resourceId, Long ttl)
                 throws LightblueParseException, LightblueHttpClientException, LightblueResponseException, LightblueException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, ttl, false, HttpMethod.PUT);
-            LockResponse response = new LockResponse(
-                    callService(req, configuration.getDataServiceURI()));
+            HttpResponse r = callService(req, configuration.getDataServiceURI());
+            LockResponse response = new LockResponse(r.getBody(), r.getHeaders());
 
             if (response.getJson() != null) {
                 return response.parseAsBoolean();
@@ -116,8 +105,8 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         public boolean release(String callerId, String resourceId)
                 throws LightblueParseException, LightblueHttpClientException, LightblueResponseException, LightblueException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, false, HttpMethod.DELETE);
-            LockResponse response = new LockResponse(
-                    callService(req, configuration.getDataServiceURI()));
+            HttpResponse r = callService(req, configuration.getDataServiceURI());
+            LockResponse response = new LockResponse(r.getBody(), r.getHeaders());
 
             if (response.getJson() != null) {
                 return response.parseAsBoolean();
@@ -130,8 +119,8 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         public int getLockCount(String callerId, String resourceId)
                 throws LightblueParseException, LightblueHttpClientException, LightblueResponseException, LightblueException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, false, HttpMethod.GET);
-            LockResponse response = new LockResponse(
-                    callService(req, configuration.getDataServiceURI()));
+            HttpResponse r = callService(req, configuration.getDataServiceURI());
+            LockResponse response = new LockResponse(r.getBody(), r.getHeaders());
 
             if (response.getJson() != null) {
                 return response.parseAsInt();
@@ -144,8 +133,8 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         public boolean ping(String callerId, String resourceId)
                 throws LightblueParseException, LightblueHttpClientException, LightblueResponseException, LightblueException {
             LightblueRequest req = new LockingRequest(getDomain(), callerId, resourceId, null, true, HttpMethod.PUT);
-            LockResponse response = new LockResponse(
-                    callService(req, configuration.getDataServiceURI()));
+            HttpResponse r = callService(req, configuration.getDataServiceURI());
+            LockResponse response = new LockResponse(r.getBody(), r.getHeaders());
 
             if (response.getJson() != null) {
                 return response.parseAsBoolean();
@@ -157,7 +146,8 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     /**
-     * This constructor will attempt to read the configuration from the default properties file on the classpath.
+     * This constructor will attempt to read the configuration from the default
+     * properties file on the classpath.
      *
      * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
      */
@@ -166,7 +156,8 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     /**
-     * This constructor will attempt to read the configuration from the specified properties file on the file system.
+     * This constructor will attempt to read the configuration from the
+     * specified properties file on the file system.
      *
      * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
      */
@@ -182,11 +173,14 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     /**
-     * This constructor will use a copy of specified configuration object and object mapper.
+     * This constructor will use a copy of specified configuration object and
+     * object mapper.
      *
      * <p>
-     * Without supplying an {@link com.fasterxml.jackson.databind.ObjectMapper} explicitly, a default is shared among all threads ({@link #mapper}). It is injectable here because
-     * of best practices: for further configuration support and unit testing.
+     * Without supplying an {@link com.fasterxml.jackson.databind.ObjectMapper}
+     * explicitly, a default is shared among all threads ({@link #mapper}). It
+     * is injectable here because of best practices: for further configuration
+     * support and unit testing.
      */
     public LightblueHttpClient(LightblueClientConfiguration configuration, ObjectMapper mapper) {
         this(configuration, defaultHttpClientFromConfig(configuration), mapper);
@@ -217,11 +211,11 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      * @see com.redhat.lightblue.client.LightblueClient#metadata(com.redhat.lightblue .client.request.LightblueRequest)
      */
     @Override
-    public DefaultLightblueMetadataResponse metadata(LightblueRequest lightblueRequest) throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
-        LOGGER.debug("Calling metadata service with lightblueRequest: {}", lightblueRequest.toString());
-
+    public DefaultLightblueMetadataResponse metadata(LightblueMetadataRequest lightblueRequest) throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
+        HttpResponse response = callService(lightblueRequest, configuration.getMetadataServiceURI());
         return new DefaultLightblueMetadataResponse(
-                callService(lightblueRequest, configuration.getMetadataServiceURI()),
+                response.getBody(),
+                response.getHeaders(),
                 mapper);
     }
 
@@ -231,16 +225,21 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      * @see com.redhat.lightblue.client.LightblueClient#data(com.redhat.lightblue.client .request.LightblueRequest)
      */
     @Override
-    public DefaultLightblueDataResponse data(LightblueRequest lightblueRequest)
+    public DefaultLightblueDataResponse data(LightblueDataRequest lightblueRequest)
             throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
-        LOGGER.debug("Calling data service with lightblueRequest: {}", lightblueRequest.toString());
+        if (!lightblueRequest.hasExecution()) {
+            lightblueRequest.execution(configuration.getExecution());
+        }
+
+        HttpResponse response = callService(lightblueRequest, configuration.getDataServiceURI());
         return new DefaultLightblueDataResponse(
-                callService(lightblueRequest, configuration.getDataServiceURI()),
+                response.getBody(),
+                response.getHeaders(),
                 mapper);
     }
 
     @Override
-    public <T> T data(AbstractLightblueDataRequest lightblueRequest, Class<T> type)
+    public <T> T data(LightblueDataRequest lightblueRequest, Class<T> type)
             throws LightblueParseException, LightblueResponseException, LightblueHttpClientException, LightblueException {
         LightblueDataResponse response = data(lightblueRequest);
 
@@ -248,13 +247,15 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     @Override
-    public DefaultLightblueBulkDataResponse bulkData(AbstractDataBulkRequest<AbstractLightblueDataRequest> lightblueRequests) throws LightblueHttpClientException, LightblueBulkResponseException, LightblueParseException, LightblueException {
-        LOGGER.debug("Calling data service with lightblueRequest: {}", lightblueRequests.toString());
-
-        String response = callService(lightblueRequests, configuration.getDataServiceURI());
+    public DefaultLightblueBulkDataResponse bulkData(DataBulkRequest lightblueRequests) throws LightblueHttpClientException, LightblueBulkResponseException, LightblueParseException, LightblueException {
+        HttpResponse response = callService(lightblueRequests, configuration.getDataServiceURI());
 
         try {
-            return new DefaultLightblueBulkDataResponse(response, mapper, lightblueRequests);
+            return new DefaultLightblueBulkDataResponse(
+                    response.getBody(),
+                    response.getHeaders(),
+                    mapper,
+                    lightblueRequests);
         } catch (LightblueParseException e) {
             throw new LightblueParseException("Unable to parse response " + response, e);
         }
@@ -265,17 +266,25 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         httpTransport.close();
     }
 
-    protected String callService(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
+    protected HttpResponse callService(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Calling service: {}", request.toString());
+        }
+
         long t1 = System.currentTimeMillis();
 
-        String responseBody = httpTransport.executeRequest(request, baseUri);
+        HttpResponse response = httpTransport.executeRequest(request, baseUri);
 
-        LOGGER.debug("Response received from service: {}", responseBody);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Response received from service: {}", response.getBody());
+        }
 
         long t2 = new Date().getTime();
-        LOGGER.debug("Call took {}ms", t2 - t1);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Call took {}ms", t2 - t1);
+        }
 
-        return responseBody;
+        return response;
     }
 
     private static HttpTransport defaultHttpClientFromConfig(LightblueClientConfiguration config) {

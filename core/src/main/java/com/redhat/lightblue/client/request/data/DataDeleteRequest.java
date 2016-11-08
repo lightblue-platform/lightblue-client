@@ -1,45 +1,37 @@
 package com.redhat.lightblue.client.request.data;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.CRUDRequest;
 
-public class DataDeleteRequest extends AbstractLightblueDataRequest {
+public class DataDeleteRequest extends CRUDRequest {
+
     private Query queryExpression;
 
     public DataDeleteRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
+        super(HttpMethod.POST, "delete", entityName, entityVersion);
     }
 
     public DataDeleteRequest(String entityName) {
-        super(entityName);
+        this(entityName,null);
     }
 
-    public void where(com.redhat.lightblue.client.Query queryExpression) {
+    public DataDeleteRequest where(com.redhat.lightblue.client.Query queryExpression) {
         this.queryExpression = queryExpression;
+
+        return this;
     }
 
     @Override
     public JsonNode getBodyJson() {
-        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        ObjectNode node = (ObjectNode) super.getBodyJson();
         if (queryExpression != null) {
             node.set("query", queryExpression.toJson());
         }
         return node;
-    }
-    
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.POST;
-    }
-
-    @Override
-    public String getOperationPathParam() {
-        return "delete";
     }
 
     @Override

@@ -27,7 +27,7 @@ public class TestDefaultLightblueDataResponse {
     @Test(expected = NullPointerException.class)
     public void testConstructor_NullObjectMapper() throws Exception {
         ObjectMapper om = null;
-        new DefaultLightblueDataResponse("{}", om);
+        new DefaultLightblueDataResponse("{}", null, om);
     }
 
     @Test
@@ -67,19 +67,19 @@ public class TestDefaultLightblueDataResponse {
     public void testLightblueException_Error() throws Exception {
         try {
             DefaultLightblueDataResponse response = new DefaultLightblueDataResponse(
-                    "{ " +
-                    "    \"errors\": [ " +
-                    "        { " +
-                    "            \"context\": \"rest/SaveCommand/attributeCodeSet/save(attributeCodeSet:1.0.0-SNAPSHOT)/validateDocs/validateDoc/ownerCode/required\", " +
-                    "            \"errorCode\": \"crud:Required\", " +
-                    "            \"msg\": \"ownerCode\", " +
-                    "            \"objectType\": \"error\" " +
-                    "        } " +
-                    "    ], " +
-                    "    \"matchCount\": 0, " +
-                    "    \"modifiedCount\": 0, " +
-                    "    \"status\": \"ERROR\" " +
-                    "}"
+                    "{ "
+                    + "    \"errors\": [ "
+                    + "        { "
+                    + "            \"context\": \"rest/SaveCommand/attributeCodeSet/save(attributeCodeSet:1.0.0-SNAPSHOT)/validateDocs/validateDoc/ownerCode/required\", "
+                    + "            \"errorCode\": \"crud:Required\", "
+                    + "            \"msg\": \"ownerCode\", "
+                    + "            \"objectType\": \"error\" "
+                    + "        } "
+                    + "    ], "
+                    + "    \"matchCount\": 0, "
+                    + "    \"modifiedCount\": 0, "
+                    + "    \"status\": \"ERROR\" "
+                    + "}"
             );
             fail();
         } catch (LightblueResponseException e) {
@@ -95,26 +95,26 @@ public class TestDefaultLightblueDataResponse {
     public void testLightblueException_DataError() throws Exception {
         try {
             DefaultLightblueDataResponse response = new DefaultLightblueDataResponse(
-                    "{ " +
-                    "    \"dataErrors\": [ " +
-                    "        { " +
-                    "            \"data\": { " +
-                    "                \"_id\": \"12345678\" " +
-                    "            }, " +
-                    "            \"errors\": [ " +
-                    "                { " +
-                    "                    \"context\": \"rest/InsertCommand/entity1/insert(entity1:1.0.0)/insert/insert\", " +
-                    "                    \"errorCode\": \"mongo-crud:SaveError\", " +
-                    "                    \"msg\": \"in com.redhat.lightblue.mongo.hystrix.InsertCommand\", " +
-                    "                    \"objectType\": \"error\" " +
-                    "                } " +
-                    "            ] " +
-                    "        } " +
-                    "    ], " +
-                    "    \"matchCount\": 0, " +
-                    "    \"modifiedCount\": 0, " +
-                    "    \"status\": \"ERROR\" " +
-                    "}"
+                    "{ "
+                    + "    \"dataErrors\": [ "
+                    + "        { "
+                    + "            \"data\": { "
+                    + "                \"_id\": \"12345678\" "
+                    + "            }, "
+                    + "            \"errors\": [ "
+                    + "                { "
+                    + "                    \"context\": \"rest/InsertCommand/entity1/insert(entity1:1.0.0)/insert/insert\", "
+                    + "                    \"errorCode\": \"mongo-crud:SaveError\", "
+                    + "                    \"msg\": \"in com.redhat.lightblue.mongo.hystrix.InsertCommand\", "
+                    + "                    \"objectType\": \"error\" "
+                    + "                } "
+                    + "            ] "
+                    + "        } "
+                    + "    ], "
+                    + "    \"matchCount\": 0, "
+                    + "    \"modifiedCount\": 0, "
+                    + "    \"status\": \"ERROR\" "
+                    + "}"
             );
             fail();
         } catch (LightblueResponseException e) {
@@ -150,7 +150,7 @@ public class TestDefaultLightblueDataResponse {
         Assert.assertNull(results);
     }
 
-   @Test
+    @Test
     public void testParseProcessed() throws Exception {
         DefaultLightblueDataResponse response = new DefaultLightblueDataResponse("{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}");
 
@@ -255,7 +255,8 @@ public class TestDefaultLightblueDataResponse {
 
         String _id = "", field = "";
 
-        public SimpleModelObject() {}
+        public SimpleModelObject() {
+        }
 
         public SimpleModelObject(String _id, String field) {
             super();

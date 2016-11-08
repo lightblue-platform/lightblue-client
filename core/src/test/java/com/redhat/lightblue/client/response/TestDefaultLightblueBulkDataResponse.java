@@ -26,14 +26,14 @@ import com.redhat.lightblue.client.util.JSON;
  */
 public class TestDefaultLightblueBulkDataResponse {
 
-    private static final String jsonResponse =
-            "{\"responses\":["
+    private static final String jsonResponse
+            = "{\"responses\":["
             + "{\"seq\":0,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}},"
             + "{\"seq\":1,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}}"
             + "]}";
 
-    private static final String jsonResponseWithError =
-            "{\"responses\":["
+    private static final String jsonResponseWithError
+            = "{\"responses\":["
             + "{\"seq\":0,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}},"
             + "{\"seq\":1,\"response\":{\"status\":\"ERROR\",\"modifiedCount\":0,\"matchCount\":0,\"errors\":[{\"context\":\"some context\",\"errorCode\":\"errCode\",\"msg\":\"some msg\",\"status\":\"ERROR\"}]}},"
             + "{\"seq\":2,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}}"
@@ -222,12 +222,14 @@ public class TestDefaultLightblueBulkDataResponse {
             assertFalse(responses.contains(e.getBulkResponse().getResponse(dfr)));
             assertEquals(responses.get(0), e.getBulkResponse().getResponse(dfrErrored));
             assertFalse(responses.contains(e.getBulkResponse().getResponse(dfr2)));
+
+            assertEquals("Message should contain all responses", "Errors returned in responses: {\"responses\":[{\"seq\":0,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}},{\"seq\":1,\"response\":{\"status\":\"ERROR\",\"modifiedCount\":0,\"matchCount\":0,\"errors\":[{\"context\":\"some context\",\"errorCode\":\"errCode\",\"msg\":\"some msg\",\"status\":\"ERROR\"}]}},{\"seq\":2,\"response\":{\"status\":\"COMPLETE\",\"modifiedCount\":0,\"matchCount\":1,\"processed\":[{\"identity#\":1,\"entityName\":\"foo\",\"lastUpdateDate\":\"\",\"versionText\":\"1.0.0\",\"_id\":\"\",\"audits#\":5,\"objectType\":\"audit\"}]}}]}", e.getMessage());
         }
     }
 
     @Test(expected = LightblueParseException.class)
     public void testConstructor_With_UnexpectedJson() throws Exception {
-        new DefaultLightblueBulkDataResponse("{}", new DataBulkRequest());
+        new DefaultLightblueBulkDataResponse("{}", null, new DataBulkRequest());
     }
 
     @Test(expected = LightblueParseException.class)

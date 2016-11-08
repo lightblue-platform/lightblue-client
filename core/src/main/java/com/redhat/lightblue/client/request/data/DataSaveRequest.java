@@ -10,55 +10,74 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.redhat.lightblue.client.Operation;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.http.HttpMethod;
-import com.redhat.lightblue.client.request.AbstractLightblueDataRequest;
+import com.redhat.lightblue.client.request.CRUDRequest;
 import com.redhat.lightblue.client.util.JSON;
 
-public class DataSaveRequest extends AbstractLightblueDataRequest {
+public class DataSaveRequest extends CRUDRequest {
 
     private Projection projection;
     private Object[] objects;
     private Boolean upsert;
+    private Integer begin;
+    private Integer maxResults;
 
     public DataSaveRequest(String entityName, String entityVersion) {
-        super(entityName, entityVersion);
+        super(HttpMethod.POST,"save",entityName, entityVersion);
     }
 
     public DataSaveRequest(String entityName) {
-        super(entityName);
+        this(entityName,null);
     }
 
-    public void returns(List<? extends Projection> projection) {
+    public DataSaveRequest returns(List<? extends Projection> projection) {
+        return returns(projection, null, null);
+    }
+
+    public DataSaveRequest returns(List<? extends Projection> projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
+        this.begin = begin;
+        this.maxResults = maxResults;
+
+        return this;
     }
 
-    public void returns(Projection... projection) {
+    public DataSaveRequest returns(Projection... projection) {
+        return returns(projection, null, null);
+    }
+
+    public DataSaveRequest returns(Projection[] projection, Integer begin, Integer maxResults) {
         this.projection = Projection.project(projection);
+        this.begin = begin;
+        this.maxResults = maxResults;
+
+        return this;
     }
 
-    public void create(Collection<?> objects) {
+    public DataSaveRequest create(Collection<?> objects) {
         create(objects.toArray());
+
+        return this;
     }
 
-    public void create(Object... objects) {
+    public DataSaveRequest create(Object... objects) {
         this.objects = objects;
+
+        return this;
     }
 
     public Boolean isUpsert() {
         return upsert;
     }
 
-    public void setUpsert(Boolean upsert) {
+    public DataSaveRequest setUpsert(Boolean upsert) {
         this.upsert = upsert;
-    }
 
-    @Override
-    public String getOperationPathParam() {
-        return "save";
+        return this;
     }
 
     @Override
     public JsonNode getBodyJson() {
-        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        ObjectNode node = (ObjectNode) super.getBodyJson();
         if (projection != null) {
             node.set("projection", projection.toJson());
         }
@@ -74,12 +93,8 @@ public class DataSaveRequest extends AbstractLightblueDataRequest {
         if (upsert != null) {
             node.set("upsert", JsonNodeFactory.instance.booleanNode(upsert));
         }
+        appendRangeToJson(node, begin, maxResults);
         return node;
-    }
-
-    @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.POST;
     }
 
     @Override

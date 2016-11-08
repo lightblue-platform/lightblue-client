@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.redhat.lightblue.client;
 

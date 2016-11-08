@@ -9,7 +9,8 @@ import java.nio.charset.Charset;
 
 public final class Utils {
 
-    private Utils() {}
+    private Utils() {
+    }
 
     public static final String loadResource(InputStream is) throws IOException {
         return loadResource(new InputStreamReader(is, Charset.defaultCharset()));
