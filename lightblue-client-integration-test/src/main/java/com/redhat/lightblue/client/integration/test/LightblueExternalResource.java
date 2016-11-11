@@ -5,7 +5,6 @@ import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.http.annotation.Obsolete;
 import org.junit.runners.model.TestClass;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,7 +14,7 @@ import com.redhat.lightblue.client.response.LightblueResponse;
 
 public class LightblueExternalResource extends BeforeAfterTestRule {
 
-    @Obsolete
+    @Deprecated
     public interface LightblueTestMethods extends LightblueTestHarnessConfig {
     }
 
@@ -25,25 +24,25 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         default boolean isGrantAnyoneAccess() {
             return true;
         }
-        
+
     }
 
-    private final LightblueTestMethods methods;
+    private final LightblueTestHarnessConfig methods;
     private final int httpServerPort;
     private boolean removeHooks = Boolean.TRUE;
 
     private ArtificialLightblueClientCRUDController controller;
 
-    public LightblueExternalResource(LightblueTestMethods methods) {
+    public LightblueExternalResource(LightblueTestHarnessConfig methods) {
         this(methods, 8000);
     }
 
-    public LightblueExternalResource(LightblueTestMethods methods, boolean removeHooks) {
+    public LightblueExternalResource(LightblueTestHarnessConfig methods, boolean removeHooks) {
         this(methods, 8000);
         this.removeHooks = removeHooks;
     }
 
-    public LightblueExternalResource(LightblueTestMethods methods, Integer httpServerPort) {
+    public LightblueExternalResource(LightblueTestHarnessConfig methods, Integer httpServerPort) {
         super(new TestClass(ArtificialLightblueClientCRUDController.class));
 
         if (methods == null) {
