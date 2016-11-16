@@ -5,7 +5,6 @@ import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.http.annotation.Obsolete;
 import org.junit.runners.model.TestClass;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,7 +19,7 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
 
     private final static int DEFAULT_PORT = 8000;
 
-    @Obsolete
+    @Deprecated
     public interface LightblueTestMethods extends LightblueTestHarnessConfig {
     }
 
@@ -33,35 +32,35 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
 
     }
 
-    private final LightblueTestMethods methods;
+    private final LightblueTestHarnessConfig methods;
     private final int httpServerPort;
     private IdentityManager identityManager;
     private boolean removeHooks = Boolean.TRUE;
 
     private ArtificialLightblueClientCRUDController controller;
 
-    public LightblueExternalResource(LightblueTestMethods methods) {
+    public LightblueExternalResource(LightblueTestHarnessConfig methods) {
         this(methods, DEFAULT_PORT);
     }
 
-    public LightblueExternalResource(LightblueTestMethods methods, IdentityManager identityManager) {
+    public LightblueExternalResource(LightblueTestHarnessConfig methods, IdentityManager identityManager) {
         this(methods, DEFAULT_PORT);
     }
 
-    public LightblueExternalResource(LightblueTestMethods methods, boolean removeHooks) {
+    public LightblueExternalResource(LightblueTestHarnessConfig methods, boolean removeHooks) {
         this(methods, removeHooks, null);
     }
 
-    public LightblueExternalResource(LightblueTestMethods methods, boolean removeHooks, IdentityManager identityManager) {
+    public LightblueExternalResource(LightblueTestHarnessConfig methods, boolean removeHooks, IdentityManager identityManager) {
         this(methods, DEFAULT_PORT, identityManager);
         this.removeHooks = removeHooks;
     }
 
-    public LightblueExternalResource(LightblueTestMethods methods, Integer httpServerPort) {
+    public LightblueExternalResource(LightblueTestHarnessConfig methods, Integer httpServerPort) {
         this(methods, httpServerPort, null);
     }
 
-    public LightblueExternalResource(LightblueTestMethods methods, Integer httpServerPort, IdentityManager identityManager) {
+    public LightblueExternalResource(LightblueTestHarnessConfig methods, Integer httpServerPort, IdentityManager identityManager) {
         super(new TestClass(ArtificialLightblueClientCRUDController.class));
 
         if (methods == null) {
@@ -90,7 +89,7 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
     public LightblueClient getLightblueClient() {
         return getControllerInstance().getLightblueClient();
     }
-    
+
     public LightblueClient getLightblueClient(String username, String password) {
         LightblueClientTestHarness harness = getControllerInstance();
         return harness.getLightblueClient(harness.getLightblueClientConfiguration(username, password));
@@ -137,7 +136,7 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
      * @throws IOException
      */
     public void changeIdentityManager(IdentityManager identifyManager) throws IOException {
-        this.identityManager = identifyManager;
+        identityManager = identifyManager;
         getControllerInstance().setIdentityManager(identifyManager);
         LightblueRestTestHarness.stopHttpServer();
         ensureHttpServerIsRunning();
