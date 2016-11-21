@@ -32,16 +32,11 @@ public class TestLightblueExternalResource {
     });
 
     @Before
-    public void before() throws IOException, InterruptedException {
+    public void before() throws IOException {
         lightblue.getControllerInstance().cleanupMongoCollections("country");
 
         if (lightblue.getControllerInstance().getIdentityManager() != null) {
             lightblue.changeIdentityManager(null);
-
-            //TODO remove sleep. There is some sort of timing issue with the server restart.
-            //DeploymentManager might be the key, but no way to get access to it today
-            // https://github.com/undertow-io/undertow/blob/master/examples/src/main/java/io/undertow/examples/servlet/ServletServer.java
-            Thread.sleep(5000);
         }
     }
 

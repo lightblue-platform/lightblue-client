@@ -140,6 +140,15 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         getControllerInstance().setIdentityManager(identifyManager);
         LightblueRestTestHarness.stopHttpServer();
         ensureHttpServerIsRunning();
+
+        //TODO remove sleep. There is some sort of timing issue with the server restart.
+        //DeploymentManager might be the key, but no way to get access to it today
+        // https://github.com/undertow-io/undertow/blob/master/examples/src/main/java/io/undertow/examples/servlet/ServletServer.java
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private class ArtificialLightblueClientCRUDController extends LightblueClientTestHarness {
