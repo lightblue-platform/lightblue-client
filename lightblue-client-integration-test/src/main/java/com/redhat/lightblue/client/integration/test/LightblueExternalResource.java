@@ -11,8 +11,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
+import com.redhat.lightblue.rest.integration.LightblueRestTestHarness;
+
+import io.undertow.security.idm.IdentityManager;
 
 public class LightblueExternalResource extends BeforeAfterTestRule {
+
+    private final static int DEFAULT_PORT = 8000;
 
     @Deprecated
     public interface LightblueTestMethods extends LightblueTestHarnessConfig {
@@ -29,20 +34,33 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
 
     private final LightblueTestHarnessConfig methods;
     private final int httpServerPort;
+    private IdentityManager identityManager;
     private boolean removeHooks = Boolean.TRUE;
 
     private ArtificialLightblueClientCRUDController controller;
 
     public LightblueExternalResource(LightblueTestHarnessConfig methods) {
-        this(methods, 8000);
+        this(methods, DEFAULT_PORT);
+    }
+
+    public LightblueExternalResource(LightblueTestHarnessConfig methods, IdentityManager identityManager) {
+        this(methods, DEFAULT_PORT);
     }
 
     public LightblueExternalResource(LightblueTestHarnessConfig methods, boolean removeHooks) {
-        this(methods, 8000);
+        this(methods, removeHooks, null);
+    }
+
+    public LightblueExternalResource(LightblueTestHarnessConfig methods, boolean removeHooks, IdentityManager identityManager) {
+        this(methods, DEFAULT_PORT, identityManager);
         this.removeHooks = removeHooks;
     }
 
     public LightblueExternalResource(LightblueTestHarnessConfig methods, Integer httpServerPort) {
+        this(methods, httpServerPort, null);
+    }
+
+    public LightblueExternalResource(LightblueTestHarnessConfig methods, Integer httpServerPort, IdentityManager identityManager) {
         super(new TestClass(ArtificialLightblueClientCRUDController.class));
 
         if (methods == null) {
@@ -50,15 +68,16 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         }
         this.methods = methods;
         this.httpServerPort = httpServerPort;
+        this.identityManager = identityManager;
     }
 
     protected LightblueClientTestHarness getControllerInstance() {
         if (controller == null) {
             try {
                 if (removeHooks) {
-                    controller = new ArtificialLightblueClientCRUDController(httpServerPort);
+                    controller = new ArtificialLightblueClientCRUDController(httpServerPort, identityManager);
                 } else {
-                    controller = new ArtificialLightblueClientCRUDControllerWithHooks(httpServerPort);
+                    controller = new ArtificialLightblueClientCRUDControllerWithHooks(httpServerPort, identityManager);
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Unable to create test CRUD Controller", e);
@@ -69,6 +88,11 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
 
     public LightblueClient getLightblueClient() {
         return getControllerInstance().getLightblueClient();
+    }
+
+    public LightblueClient getLightblueClient(String username, String password) {
+        LightblueClientTestHarness harness = getControllerInstance();
+        return harness.getLightblueClient(harness.getLightblueClientConfiguration(username, password));
     }
 
     public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws IOException, LightblueException {
@@ -104,10 +128,33 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         return getControllerInstance().getMetadataUrl();
     }
 
+    /**
+     * <p>This method will change the {@link IdentityManager} that the server is using. Be warned, this method will
+     * internal restart lightblue.</p>
+     * <p>A <code>null</code> value is the same as no authentication.
+     * @param identityManager - implementation of {@link IdentityManager}.
+     * @throws IOException
+     */
+    public void changeIdentityManager(IdentityManager identifyManager) throws IOException {
+        identityManager = identifyManager;
+        getControllerInstance().setIdentityManager(identifyManager);
+        LightblueRestTestHarness.stopHttpServer();
+        ensureHttpServerIsRunning();
+
+        //TODO remove sleep. There is some sort of timing issue with the server restart.
+        //DeploymentManager might be the key, but no way to get access to it today
+        // https://github.com/undertow-io/undertow/blob/master/examples/src/main/java/io/undertow/examples/servlet/ServletServer.java
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private class ArtificialLightblueClientCRUDController extends LightblueClientTestHarness {
 
-        public ArtificialLightblueClientCRUDController(int httpServerPort) throws Exception {
-            super(httpServerPort);
+        public ArtificialLightblueClientCRUDController(int httpServerPort, IdentityManager identityManager) throws Exception {
+            super(httpServerPort, identityManager);
         }
 
         @Override
@@ -124,8 +171,8 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
 
     private class ArtificialLightblueClientCRUDControllerWithHooks extends ArtificialLightblueClientCRUDController {
 
-        public ArtificialLightblueClientCRUDControllerWithHooks(int httpServerPort) throws Exception {
-            super(httpServerPort);
+        public ArtificialLightblueClientCRUDControllerWithHooks(int httpServerPort, IdentityManager identityManager) throws Exception {
+            super(httpServerPort, identityManager);
         }
 
         @Override

@@ -15,8 +15,8 @@ import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.request.metadata.MetadataGetEntityVersionsRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.rest.integration.LightblueRestTestHarness;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import io.undertow.security.idm.IdentityManager;
 
 /**
  * Provides a lightblue-client instance to talk to the running in-memory
@@ -36,16 +36,20 @@ public abstract class LightblueClientTestHarness extends LightblueRestTestHarnes
         setupSystemProperties();
     }
 
+    public LightblueClientTestHarness(int httpServerPort, IdentityManager identityManager) throws Exception {
+        super(httpServerPort, identityManager);
+        setupSystemProperties();
+    }
+
     private void setupSystemProperties() {
         System.setProperty("client.data.url", getDataUrl());
         System.setProperty("client.metadata.url", getMetadataUrl());
     }
 
     /**
-     *
-     * @return lightblue http client configuration needed to connect
+     * @return lightblue http noauth client configuration needed to connect
      */
-    protected LightblueClientConfiguration getLightblueClientConfiguration() {
+    public LightblueClientConfiguration getLightblueClientConfiguration() {
         LightblueClientConfiguration lbConf = new LightblueClientConfiguration();
         lbConf.setUseCertAuth(false);
         lbConf.setDataServiceURI(getDataUrl());
@@ -53,13 +57,36 @@ public abstract class LightblueClientTestHarness extends LightblueRestTestHarnes
         return lbConf;
     }
 
+    /**
+     * @param username - principal user name
+     * @param password - password for principal
+     * @return lightblue http basic auth client configuration needed to connect
+     */
+    public LightblueClientConfiguration getLightblueClientConfiguration(String username, String password) {
+        LightblueClientConfiguration lbConf = getLightblueClientConfiguration();
+        lbConf.setBasicAuthUsername(username);
+        lbConf.setBasicAuthPassword(password);
+        return lbConf;
+    }
+
+    /**
+     * Default implementation returns a client using no auth.
+     * @return {@link LightblueHttpClient}
+     */
     public LightblueHttpClient getLightblueClient() {
-        return new LightblueHttpClient(getLightblueClientConfiguration());
+        return getLightblueClient(getLightblueClientConfiguration());
+    }
+
+    public LightblueHttpClient getLightblueClient(LightblueClientConfiguration config) {
+        return new LightblueHttpClient(config);
     }
 
     public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws LightblueException, IOException {
         final String data = loadResource(resourcePath);
         DataInsertRequest request = new DataInsertRequest(entityName, entityVersion) {
+
+            private static final long serialVersionUID = -1041659993686116395L;
+
             @Override
             public String getBody() {
                 return data;
