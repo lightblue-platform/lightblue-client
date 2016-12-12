@@ -9,7 +9,6 @@ import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.hystrix.graphite.ServoGraphiteSetup;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
-import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
