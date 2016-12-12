@@ -30,9 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Objects;
@@ -45,38 +42,35 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(LightblueHttpClient.class);
 
     private final class LockingRequest extends LightblueRequest {
+        private String operation;
         private String domain;
         private String callerId;
         private String resourceId;
         private Long ttl;
         boolean ping;
-        Boolean usePost = false;
 
-        public LockingRequest(String domain, String callerId, String resourceId, Long ttl, boolean ping, HttpMethod method) {
+        public LockingRequest(String operation, String domain, String callerId, String resourceId, Long ttl,
+                              boolean ping, HttpMethod method) {
             super(method);
+            this.operation = operation;
             this.domain = domain;
             this.callerId = callerId;
             this.resourceId = resourceId;
             this.ttl = ttl;
             this.ping = ping;
-
-            if(HttpMethod.POST.equals(method)) {
-                usePost = true;
-            }
         }
 
         @Override
         public JsonNode getBodyJson() {
-            if(usePost) {
-                ObjectNode root = JsonNodeFactory.instance.objectNode();
-                root.set("domain", JsonNodeFactory.instance.textNode(domain));
-                root.set("callerId", JsonNodeFactory.instance.textNode(callerId));
-                root.set("resourceId", JsonNodeFactory.instance.textNode(resourceId));
-                root.set("ttl", JsonNodeFactory.instance.textNode(resourceId));
-                return root;
-            } else {
-                return null;
+            ObjectNode root = JsonNodeFactory.instance.objectNode();
+            root.set("operation", JsonNodeFactory.instance.textNode(operation));
+            root.set("domain", JsonNodeFactory.instance.textNode(domain));
+            root.set("callerId", JsonNodeFactory.instance.textNode(callerId));
+            root.set("resourceId", JsonNodeFactory.instance.textNode(resourceId));
+            if(null != ttl) {
+                root.set("ttl", JsonNodeFactory.instance.numberNode(ttl));
             }
+            return root;
         }
 
         @Override
@@ -86,59 +80,19 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
             if (!baseServiceURI.endsWith("/")) {
                 b.append('/');
             }
-            b.append(usePost ? getRestURIWithPost() : getRestURI());
+            b.append("lock/");
             return b.toString();
-        }
-
-        private String getRestURI() {
-            StringBuilder b = new StringBuilder(128);
-            try {
-                b.append("lock/")
-                        .append(URLEncoder.encode(domain, StandardCharsets.UTF_8.name())).append('/')
-                        .append(URLEncoder.encode(callerId, StandardCharsets.UTF_8.name())).append('/')
-                        .append(URLEncoder.encode(resourceId, StandardCharsets.UTF_8.name()));
-            } catch (UnsupportedEncodingException e) {
-                //Shouldn't happen.
-                throw new RuntimeException("A bad Charset was used.", e);
-            }
-            if (ttl != null) {
-                b.append("?ttl=").append(ttl.toString());
-            } else if (ping) {
-                b.append('/').append("ping");
-            }
-            return b.toString();
-        }
-
-        private String getRestURIWithPost() {
-            return "lock/";
         }
     }
 
     private final class LockingImpl extends Locking {
-
-        Boolean usePost = false;
-
         public LockingImpl(String domain) {
             super(domain);
         }
 
-        /**
-         * This implementation allows you to use POST requests for all locking activity, in case
-         * anything you want to lock by has non-allowed URL characters (like forward slash /)
-         *
-         * @param domain
-         * @param usePost
-         */
-        public LockingImpl(String domain, Boolean usePost) {
-            super(domain);
-            this.usePost = usePost;
-        }
-
         @Override
         public boolean acquire(String callerId, String resourceId, Long ttl) throws LightblueException {
-            LightblueRequest req = new LockingRequest(
-                    getDomain(), callerId, resourceId, ttl, false,
-                    usePost ? HttpMethod.POST : HttpMethod.PUT);
+            LightblueRequest req = new LockingRequest("acquire", getDomain(), callerId, resourceId, ttl, false, HttpMethod.POST);
             HttpResponse r = callService(req, configuration.getDataServiceURI());
             LockResponse response = new LockResponse(r.getBody(), r.getHeaders());
 
@@ -152,8 +106,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         @Override
         public boolean release(String callerId, String resourceId) throws LightblueException {
             LightblueRequest req = new LockingRequest(
-                    getDomain(), callerId, resourceId, null, false,
-                    usePost ? HttpMethod.POST : HttpMethod.DELETE);
+                    "release", getDomain(), callerId, resourceId, null, false, HttpMethod.POST);
             HttpResponse r = callService(req, configuration.getDataServiceURI());
             LockResponse response = new LockResponse(r.getBody(), r.getHeaders());
 
@@ -167,8 +120,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         @Override
         public int getLockCount(String callerId, String resourceId) throws LightblueException {
             LightblueRequest req = new LockingRequest(
-                    getDomain(), callerId, resourceId, null, false,
-                    usePost ? HttpMethod.POST : HttpMethod.GET);
+                    "count", getDomain(), callerId, resourceId, null, false, HttpMethod.POST);
             HttpResponse r = callService(req, configuration.getDataServiceURI());
             LockResponse response = new LockResponse(r.getBody(), r.getHeaders());
 
@@ -182,8 +134,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         @Override
         public boolean ping(String callerId, String resourceId) throws LightblueException {
             LightblueRequest req = new LockingRequest(
-                    getDomain(), callerId, resourceId, null, true,
-                    usePost ? HttpMethod.POST : HttpMethod.PUT);
+                    "ping", getDomain(), callerId, resourceId, null, true, HttpMethod.POST);
             HttpResponse r = callService(req, configuration.getDataServiceURI());
             LockResponse response = new LockResponse(r.getBody(), r.getHeaders());
 
@@ -254,11 +205,6 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     @Override
     public Locking getLocking(String domain) {
         return new LockingImpl(domain);
-    }
-
-    @Override
-    public Locking getLocking(String domain, Boolean usePost) {
-        return new LockingImpl(domain, usePost);
     }
 
     /*

@@ -213,9 +213,4 @@ public class LightblueHystrixClient implements LightblueClient {
         return new LockingImpl(domain, client.getLocking(domain));
     }
 
-    @Override
-    public Locking getLocking(String domain, Boolean usePost) {
-        return new LockingImpl(domain, client.getLocking(domain, usePost));
-    }
-
 }

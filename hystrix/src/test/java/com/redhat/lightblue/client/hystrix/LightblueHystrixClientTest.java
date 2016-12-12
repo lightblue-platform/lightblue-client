@@ -60,10 +60,6 @@ public class LightblueHystrixClientTest {
             return null;
         }
 
-        @Override
-        public Locking getLocking(String domain, Boolean usePost) {
-            return null;
-        }
     }
 
     @Test

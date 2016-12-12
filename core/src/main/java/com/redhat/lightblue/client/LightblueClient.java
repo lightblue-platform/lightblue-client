@@ -11,14 +11,6 @@ public interface LightblueClient {
 
     Locking getLocking(String domain);
 
-    /**
-     * This method allows
-     * @param domain
-     * @param usePost
-     * @return
-     */
-    Locking getLocking(String domain, Boolean usePost);
-
     LightblueMetadataResponse metadata(LightblueMetadataRequest lightblueRequest) throws LightblueException;
 
     LightblueDataResponse data(LightblueDataRequest lightblueRequest) throws LightblueException;
