@@ -80,7 +80,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
             if (!baseServiceURI.endsWith("/")) {
                 b.append('/');
             }
-            b.append("lock/");
+            b.append("lock");
             return b.toString();
         }
     }
