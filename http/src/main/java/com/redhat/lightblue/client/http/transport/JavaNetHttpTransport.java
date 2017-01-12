@@ -13,9 +13,10 @@ import java.util.Objects;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,7 +115,8 @@ public class JavaNetHttpTransport implements HttpTransport {
     }
 
     @Override
-    public HttpResponse executeRequest(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
+    public HttpResponse executeRequest(LightblueRequest request, String baseUri, ObjectMapper mapper)
+            throws LightblueHttpClientException {
         try {
             String url = request.getRestURI(baseUri);
             LOGGER.debug("Executing request, url={}", url);
@@ -128,7 +130,9 @@ public class JavaNetHttpTransport implements HttpTransport {
                 }
             }
 
-            connection.setRequestMethod((request.getHttpMethod() != null ? request.getHttpMethod().toString() : HttpMethod.GET.name()));
+            connection.setRequestMethod((request.getHttpMethod() != null
+                ? request.getHttpMethod().toString()
+                : HttpMethod.GET.name()));
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Accept-Charset", "utf-8");
 
@@ -141,13 +145,13 @@ public class JavaNetHttpTransport implements HttpTransport {
             }
 
             if (this.compression == Compression.LZF) {
-                LOGGER.debug("Advertising lzf decoding capabilities to lightblue");
+                LOGGER.trace("Advertising lzf decoding capabilities to lightblue");
                 connection.setRequestProperty("Accept-Encoding", "lzf");
             }
 
-            String body = request.getBody();
-            if (StringUtils.isNotBlank(body)) {
-                sendRequestBody(body, connection);
+            JsonNode body = request.getBodyJson();
+            if (body != null && !body.isNull()) {
+                sendRequestBody(body, connection, mapper);
             }
 
             return new HttpResponse(response(connection), connection.getHeaderFields());
@@ -163,19 +167,13 @@ public class JavaNetHttpTransport implements HttpTransport {
         // Nothing to do
     }
 
-    private void sendRequestBody(String body, HttpURLConnection connection)
+    private void sendRequestBody(Object body, HttpURLConnection connection, ObjectMapper mapper)
             throws IOException {
-        byte[] bodyUtf8Bytes = body.getBytes(UTF_8);
-        int length = bodyUtf8Bytes.length;
-
         connection.setDoOutput(true);
-        connection.setFixedLengthStreamingMode(length);
-
-        connection.setRequestProperty("Content-Length", Integer.toString(length));
         connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
 
         try (OutputStream requestStream = connection.getOutputStream()) {
-            requestStream.write(bodyUtf8Bytes);
+            mapper.writeValue(requestStream, body);
         }
     }
 
@@ -214,10 +212,10 @@ public class JavaNetHttpTransport implements HttpTransport {
      */
     private String readResponseStream(InputStream responseStream, HttpURLConnection connection)
             throws IOException {
-        LOGGER.debug("Reading response stream");
+        LOGGER.trace("Reading response stream");
         InputStream decodedStream = responseStream;
         if (compression == Compression.LZF && "lzf".equals(connection.getHeaderField("Content-Encoding"))) {
-            LOGGER.debug("Decoding lzf");
+            LOGGER.trace("Decoding lzf");
             decodedStream = new LZFInputStream(responseStream);
         }
 

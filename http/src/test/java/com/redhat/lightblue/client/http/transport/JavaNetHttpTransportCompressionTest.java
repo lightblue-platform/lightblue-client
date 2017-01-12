@@ -12,6 +12,7 @@ import java.io.PipedOutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import com.redhat.lightblue.client.http.LightblueHttpClientException;
 import com.redhat.lightblue.client.http.testing.doubles.FakeLightblueRequest;
 import com.redhat.lightblue.client.http.transport.JavaNetHttpTransportTest.CallConnectAndReturn;
 import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.util.JSON;
 
 /**
  * Testing {@link JavaNetHttpTransport}'s lzf compression support.
@@ -35,6 +37,8 @@ import com.redhat.lightblue.client.request.LightblueRequest;
  */
 @RunWith(JUnit4.class)
 public class JavaNetHttpTransportCompressionTest {
+
+    private static final ObjectMapper mapper = JSON.getDefaultObjectMapper();
 
     private HttpURLConnection mockConnection = mock(HttpURLConnection.class);
     private JavaNetHttpTransport.ConnectionFactory mockConnectionFactory = mock(JavaNetHttpTransport.ConnectionFactory.class);
@@ -51,7 +55,7 @@ public class JavaNetHttpTransportCompressionTest {
     public void shouldSetAcceptEncodingHeaderToLzfByDefault() throws LightblueHttpClientException {
         LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/foo/bar");
 
-        client.executeRequest(request, "");
+        client.executeRequest(request, "", mapper);
 
         Mockito.verify(mockConnection).setRequestProperty("Accept-Encoding", "lzf");
     }
@@ -61,7 +65,7 @@ public class JavaNetHttpTransportCompressionTest {
         LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/foo/bar");
 
         client.setCompression(Compression.NONE);
-        client.executeRequest(request, "");
+        client.executeRequest(request, "", mapper);
 
         Mockito.verify(mockConnection, never()).setRequestProperty(Mockito.eq("Accept-Encoding"), Mockito.anyString());
     }
@@ -84,7 +88,7 @@ public class JavaNetHttpTransportCompressionTest {
 
         when(mockConnection.getInputStream()).thenReturn(inResponseBody);
 
-        String response = client.executeRequest(request, "").getBody();
+        String response = client.executeRequest(request, "", mapper).getBody();
 
         Assert.assertEquals(TEST_RESPONSE, response);
     }

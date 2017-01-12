@@ -39,6 +39,7 @@ public abstract class LightblueRequest implements Serializable {
     /**
      * Requst body as string, defaults to getBodyJson().toString()
      */
+    @Deprecated
     public String getBody() {
         JsonNode body=getBodyJson();
         if(body!=null) {
