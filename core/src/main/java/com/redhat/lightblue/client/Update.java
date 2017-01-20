@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.redhat.lightblue.client.util.JSON;
 
 /**
  * Update expression
@@ -216,6 +217,18 @@ public class Update extends Expression implements ForEachUpdate {
 
     public static Update update(ContainerNode node) {
         return new Update(node);
+    }
+
+    /**
+     * Creates an update like so: $set: toJson(pojo)
+     *
+     * @param pojo
+     * @return
+     */
+    public static Update update(Object pojo) {
+      ObjectNode set = JsonNodeFactory.instance.objectNode();
+      set.set("$set", JSON.toJsonNode(pojo));
+      return new Update(set);
     }
 
     /**

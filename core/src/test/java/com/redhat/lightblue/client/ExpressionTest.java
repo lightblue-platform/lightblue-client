@@ -74,6 +74,22 @@ public class ExpressionTest {
         eq("{'$foreach': { 'x':{'field':'x','op':'=','rvalue':1},'$update':{'$set':{'y':2}}}}", Update.forEach("x", Query.withValue("x", Query.eq, 1), Update.set("y", 2)));
     }
 
+    class Pojo {
+      String foo = "bar";
+      int i = 13;
+      public String getFoo() {
+        return foo;
+      }
+      public int getI() {
+        return i;
+      }
+    }
+
+    @Test
+    public void updatePojoTest() throws Exception {
+      eq("{'$set':{'foo':'bar','i':13}}", Update.update(new Pojo()));
+    }
+
     @Test
     public void testNot() throws JSONException {
         Query testQueryExpression = Query.withValue("test", Query.BinOp.neq, "hack");
