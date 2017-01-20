@@ -2,12 +2,14 @@ package com.redhat.lightblue.client;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.redhat.lightblue.client.util.JSON;
 
 /**
  * Update expression
@@ -216,6 +218,24 @@ public class Update extends Expression implements ForEachUpdate {
 
     public static Update update(ContainerNode node) {
         return new Update(node);
+    }
+
+    /**
+     * Creates an update like so: $set: toJson(pojo)
+     *
+     * @param pojo
+     * @return
+     */
+    public static Update updatePojo(Object pojo) {
+      Objects.requireNonNull(pojo, "Pojo cannot be null");
+
+      ObjectNode set = JsonNodeFactory.instance.objectNode();
+      JsonNode pojoAsJson = JSON.toJsonNode(pojo);
+      if (!(pojoAsJson instanceof ObjectNode)) {
+        throw new IllegalArgumentException(pojo+" is not a pojo!");
+      }
+      set.set("$set", pojoAsJson);
+      return new Update(set);
     }
 
     /**

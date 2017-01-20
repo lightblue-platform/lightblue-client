@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client;
 
+import java.util.Arrays;
+
 import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -72,6 +74,47 @@ public class ExpressionTest {
         eq("{'$append': {'x':[ [],'x'] }}", Update.append("x", Literal.emptyArray()).more(Literal.value("x")));
         eq("{'$insert': {'x':[ [],'x'] }}", Update.insert("x", Literal.emptyArray()).more(Literal.value("x")));
         eq("{'$foreach': { 'x':{'field':'x','op':'=','rvalue':1},'$update':{'$set':{'y':2}}}}", Update.forEach("x", Query.withValue("x", Query.eq, 1), Update.set("y", 2)));
+    }
+
+    class Pojo {
+      String foo = "bar";
+      int i = 13;
+      public String getFoo() {
+        return foo;
+      }
+      public int getI() {
+        return i;
+      }
+    }
+
+    @Test
+    public void updatePojoValidTest() throws Exception {
+      eq("{'$set':{'foo':'bar','i':13}}", Update.updatePojo(new Pojo()));
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void updatePojoInvalidStringTest() throws Exception {
+      Update.updatePojo("foo");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void updatePojoInvalidPrimitiveTest() throws Exception {
+      Update.updatePojo(3);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void updatePojoInvalidArrayTest() throws Exception {
+      Update.updatePojo(new Pojo[] { new Pojo(), new Pojo()});
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void updatePojoInvalidListTest() throws Exception {
+      Update.updatePojo(Arrays.asList(new Pojo[] { new Pojo(), new Pojo()}));
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void updatePojoInvalidNullTest() throws Exception {
+      Update.updatePojo(null);
     }
 
     @Test
