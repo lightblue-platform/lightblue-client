@@ -1,5 +1,7 @@
 package com.redhat.lightblue.client;
 
+import java.util.Arrays;
+
 import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -86,8 +88,33 @@ public class ExpressionTest {
     }
 
     @Test
-    public void updatePojoTest() throws Exception {
-      eq("{'$set':{'foo':'bar','i':13}}", Update.update(new Pojo()));
+    public void updatePojoValidTest() throws Exception {
+      eq("{'$set':{'foo':'bar','i':13}}", Update.updatePojo(new Pojo()));
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void updatePojoInvalidStringTest() throws Exception {
+      Update.updatePojo("foo");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void updatePojoInvalidPrimitiveTest() throws Exception {
+      Update.updatePojo(3);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void updatePojoInvalidArrayTest() throws Exception {
+      Update.updatePojo(new Pojo[] { new Pojo(), new Pojo()});
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void updatePojoInvalidListTest() throws Exception {
+      Update.updatePojo(Arrays.asList(new Pojo[] { new Pojo(), new Pojo()}));
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void updatePojoInvalidNullTest() throws Exception {
+      Update.updatePojo(null);
     }
 
     @Test

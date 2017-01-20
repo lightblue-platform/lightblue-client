@@ -2,6 +2,7 @@ package com.redhat.lightblue.client;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -225,9 +226,15 @@ public class Update extends Expression implements ForEachUpdate {
      * @param pojo
      * @return
      */
-    public static Update update(Object pojo) {
+    public static Update updatePojo(Object pojo) {
+      Objects.requireNonNull(pojo, "Pojo cannot be null");
+
       ObjectNode set = JsonNodeFactory.instance.objectNode();
-      set.set("$set", JSON.toJsonNode(pojo));
+      JsonNode pojoAsJson = JSON.toJsonNode(pojo);
+      if (!(pojoAsJson instanceof ObjectNode)) {
+        throw new IllegalArgumentException(pojo+" is not a pojo!");
+      }
+      set.set("$set", pojoAsJson);
       return new Update(set);
     }
 
