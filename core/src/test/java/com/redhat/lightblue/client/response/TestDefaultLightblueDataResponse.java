@@ -163,6 +163,19 @@ public class TestDefaultLightblueDataResponse {
     }
 
     @Test
+    public void testResultMetadata() throws Exception {
+        DefaultLightblueDataResponse response = new DefaultLightblueDataResponse("{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"resultMetadata\":[{\"documentVersion\":null},{\"documentVersion\":\"123:345\"}], \"status\": \"COMPLETE\"}");
+
+        ResultMetadata[] md = response.getResultMetadata();
+
+        Assert.assertNotNull(md);
+        Assert.assertEquals(2, md.length);
+
+        Assert.assertEquals(null,md[0].getDocumentVersion());
+        Assert.assertEquals("123:345",md[1].getDocumentVersion());
+    }
+
+    @Test
     public void testParseProcess_NonArrayResult() throws Exception {
         DefaultLightblueDataResponse response = new DefaultLightblueDataResponse("{\"matchCount\": 1, \"modifiedCount\": 0, \"processed\": [{\"_id\": \"idhash\", \"field\":\"value\"}], \"status\": \"COMPLETE\"}");
         SimpleModelObject results = response.parseProcessed(SimpleModelObject.class);

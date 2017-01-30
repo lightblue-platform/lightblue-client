@@ -29,6 +29,12 @@ public class DataSaveRequest extends CRUDRequest {
         this(entityName,null);
     }
 
+    public DataSaveRequest ifCurrent(String... documentVersions) {
+        setIfCurrent(true);
+        addDocumentVersions(documentVersions);
+        return this;
+    }
+
     public DataSaveRequest returns(List<? extends Projection> projection) {
         return returns(projection, null, null);
     }
@@ -41,7 +47,7 @@ public class DataSaveRequest extends CRUDRequest {
         return this;
     }
 
-    public DataSaveRequest returns(Projection... projection) {
+   public DataSaveRequest returns(Projection... projection) {
         return returns(projection, null, null);
     }
 
@@ -94,6 +100,7 @@ public class DataSaveRequest extends CRUDRequest {
             node.set("upsert", JsonNodeFactory.instance.booleanNode(upsert));
         }
         appendRangeToJson(node, begin, maxResults);
+        appendUpdateIfCurrentToJson(node);
         return node;
     }
 

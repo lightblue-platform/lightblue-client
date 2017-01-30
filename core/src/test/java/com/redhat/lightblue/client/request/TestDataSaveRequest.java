@@ -53,6 +53,17 @@ public class TestDataSaveRequest {
     }
 
     @Test
+    public void testUpdateIfCurrent() {
+        DataSaveRequest request = new DataSaveRequest("fake");
+        request.ifCurrent("blah");
+        request.create("");
+
+        assertTrue(request.getBody(), request.getBody().contains("\"ifCurrentOnly\":true"));
+        assertTrue(request.getBody(), request.getBody().contains("\"documentVersions\":[\"blah\"]"));
+                   
+    }
+
+    @Test
     public void testExecutionWriteConcern() {
         DataSaveRequest request = new DataSaveRequest("fake");
         request.execution(MongoExecution.withWriteConcern("majority"));

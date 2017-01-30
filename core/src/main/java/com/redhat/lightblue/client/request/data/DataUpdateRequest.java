@@ -39,6 +39,12 @@ public class DataUpdateRequest extends CRUDRequest {
         return this;
     }
 
+    public DataUpdateRequest ifCurrent(String... documentVersions) {
+        setIfCurrent(true);
+        addDocumentVersions(documentVersions);
+        return this;
+    }
+
     public DataUpdateRequest returns(Projection... projection) {
         return returns(projection, null, null);
     }
@@ -92,7 +98,8 @@ public class DataUpdateRequest extends CRUDRequest {
             node.set("update", update.toJson());
         }
         appendRangeToJson(node, begin, maxResults);
-        return node;
+        appendUpdateIfCurrentToJson(node);
+       return node;
     }
 
     @Override

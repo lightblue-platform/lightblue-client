@@ -10,6 +10,8 @@ public interface LightblueDataResponse extends LightblueResponse {
 
     JsonNode getProcessed();
 
+    ResultMetadata[] getResultMetadata() throws LightblueParseException;
+
     <T> T parseProcessed(Class<T> type) throws LightblueParseException;
 
 }
