@@ -35,7 +35,7 @@ public class TestDataUpdateRequest {
         DataUpdateRequest request = new DataUpdateRequest("fake");
         request.ifCurrent("blah");
 
-        assertTrue(request.getBody(), request.getBody().contains("\"ifCurrentOnly\":true"));
+        assertTrue(request.getBody(), request.getBody().contains("\"onlyIfCurrent\":true"));
         assertTrue(request.getBody(), request.getBody().contains("\"documentVersions\":[\"blah\"]"));
                    
     }

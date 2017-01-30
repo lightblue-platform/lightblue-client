@@ -44,7 +44,7 @@ public abstract class CRUDRequest extends LightblueDataRequest {
 
     protected void appendUpdateIfCurrentToJson(ObjectNode node) {
         if(onlyIfCurrent)
-            node.set("ifCurrentOnly",JsonNodeFactory.instance.booleanNode(true));
+            node.set("onlyIfCurrent",JsonNodeFactory.instance.booleanNode(true));
         if(!documentVersions.isEmpty()) {
             ArrayNode arr=JsonNodeFactory.instance.arrayNode();
             for(String x:documentVersions) {

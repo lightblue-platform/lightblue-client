@@ -58,7 +58,7 @@ public class TestDataSaveRequest {
         request.ifCurrent("blah");
         request.create("");
 
-        assertTrue(request.getBody(), request.getBody().contains("\"ifCurrentOnly\":true"));
+        assertTrue(request.getBody(), request.getBody().contains("\"onlyIfCurrent\":true"));
         assertTrue(request.getBody(), request.getBody().contains("\"documentVersions\":[\"blah\"]"));
                    
     }
