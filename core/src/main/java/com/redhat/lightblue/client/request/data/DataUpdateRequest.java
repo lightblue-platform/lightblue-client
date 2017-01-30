@@ -39,6 +39,12 @@ public class DataUpdateRequest extends CRUDRequest {
         return this;
     }
 
+    /**
+     * Add the known document versions to update only if the document
+     * is still at the same version. They don't have to appear in any
+     * particular order, the document version contains the document id
+     * in it
+     */
     public DataUpdateRequest ifCurrent(String... documentVersions) {
         setIfCurrent(true);
         addDocumentVersions(documentVersions);
