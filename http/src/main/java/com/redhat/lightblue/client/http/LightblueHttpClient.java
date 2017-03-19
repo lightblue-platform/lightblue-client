@@ -275,7 +275,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
 
         long t1 = System.currentTimeMillis();
 
-        HttpResponse response = httpTransport.executeRequest(request, baseUri);
+        HttpResponse response = httpTransport.executeRequest(request, baseUri, mapper);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Response received from service: {}", response.getBody());

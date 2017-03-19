@@ -23,7 +23,7 @@ public class FakeLightblueRequest extends LightblueRequest {
 
     @Override
     public JsonNode getBodyJson() {
-        return JSON.toJsonNode(body);
+        return body == null ? null : JSON.toJsonNode(body);
     }
 
     @Override

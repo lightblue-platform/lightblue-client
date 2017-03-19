@@ -7,6 +7,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import com.redhat.lightblue.client.http.HttpMethod;
 import com.redhat.lightblue.client.http.LightblueHttpClientException;
 import com.redhat.lightblue.client.http.testing.doubles.FakeLightblueRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.util.JSON;
 
 /**
  * Tests the somewhat complicated and vaguely documented semantics of JDK's
@@ -28,6 +30,8 @@ import com.redhat.lightblue.client.request.LightblueRequest;
  */
 @RunWith(JUnit4.class)
 public class JavaNetHttpTransportIntegrationTest {
+    private static final ObjectMapper mapper = JSON.getDefaultObjectMapper();
+
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
 
@@ -38,9 +42,9 @@ public class JavaNetHttpTransportIntegrationTest {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withBody("The body").withStatus(200)));
 
-        LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/");
+        LightblueRequest request = new FakeLightblueRequest(null, HttpMethod.GET, "/");
 
-        String response = client.executeRequest(request, wireMockUrl()).getBody();
+        String response = client.executeRequest(request, wireMockUrl(), mapper).getBody();
 
         assertThat(response, is("The body"));
     }
@@ -50,9 +54,9 @@ public class JavaNetHttpTransportIntegrationTest {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withBody("The body").withStatus(500)));
 
-        LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/");
+        LightblueRequest request = new FakeLightblueRequest(null, HttpMethod.GET, "/");
 
-        Assert.assertEquals("The body", client.executeRequest(request, wireMockUrl()).getBody());
+        Assert.assertEquals("The body", client.executeRequest(request, wireMockUrl(), mapper).getBody());
     }
 
     @Test
@@ -60,10 +64,10 @@ public class JavaNetHttpTransportIntegrationTest {
         wireMockRule.stubFor(any(urlMatching(".*"))
                 .willReturn(aResponse().withStatus(500)));
 
-        LightblueRequest request = new FakeLightblueRequest("", HttpMethod.GET, "/");
+        LightblueRequest request = new FakeLightblueRequest(null, HttpMethod.GET, "/");
 
         try {
-            client.executeRequest(request, wireMockUrl());
+            client.executeRequest(request, wireMockUrl(), mapper);
             Assert.fail();
         } catch (LightblueHttpClientException e) {
             Assert.assertEquals(500, e.getHttpStatus());
