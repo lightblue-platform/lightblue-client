@@ -39,6 +39,18 @@ public class DataUpdateRequest extends CRUDRequest {
         return this;
     }
 
+    /**
+     * Add the known document versions to update only if the document
+     * is still at the same version. They don't have to appear in any
+     * particular order, the document version contains the document id
+     * in it
+     */
+    public DataUpdateRequest ifCurrent(String... documentVersions) {
+        setIfCurrent(true);
+        addDocumentVersions(documentVersions);
+        return this;
+    }
+
     public DataUpdateRequest returns(Projection... projection) {
         return returns(projection, null, null);
     }
@@ -92,7 +104,8 @@ public class DataUpdateRequest extends CRUDRequest {
             node.set("update", update.toJson());
         }
         appendRangeToJson(node, begin, maxResults);
-        return node;
+        appendUpdateIfCurrentToJson(node);
+       return node;
     }
 
     @Override

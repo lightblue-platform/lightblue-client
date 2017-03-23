@@ -52,6 +52,25 @@ public class DefaultLightblueDataResponse extends AbstractLightblueResponse impl
         return parseInt("matchCount");
     }
 
+    /**
+     * Returns a result metadata array where each element corresponds
+     * to the metadata for the result at the same index in processed
+     * array.
+     */
+    @Override
+    public ResultMetadata[] getResultMetadata() throws LightblueParseException {
+        JsonNode node=getJson().get("resultMetadata");
+        if(node instanceof ArrayNode) {
+            try {
+                return getMapper().readValue(node.traverse(),ResultMetadata[].class);
+            } catch (IOException e) {
+                throw new LightblueParseException("Error parsing lightblue response:"+getText()+"\n",e);
+            }
+        } else {
+            return null;
+        }
+    }
+    
     @Override
     public JsonNode getProcessed() {
         return getJson().get("processed");

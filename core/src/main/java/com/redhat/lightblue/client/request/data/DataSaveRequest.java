@@ -29,6 +29,18 @@ public class DataSaveRequest extends CRUDRequest {
         this(entityName,null);
     }
 
+    /**
+     * Add the known document versions to save only if the document is
+     * still at the same version. They don't have to appear in any
+     * particular order, the document version contains the document id
+     * in it
+     */
+    public DataSaveRequest ifCurrent(String... documentVersions) {
+        setIfCurrent(true);
+        addDocumentVersions(documentVersions);
+        return this;
+    }
+
     public DataSaveRequest returns(List<? extends Projection> projection) {
         return returns(projection, null, null);
     }
@@ -94,6 +106,7 @@ public class DataSaveRequest extends CRUDRequest {
             node.set("upsert", JsonNodeFactory.instance.booleanNode(upsert));
         }
         appendRangeToJson(node, begin, maxResults);
+        appendUpdateIfCurrentToJson(node);
         return node;
     }
 
