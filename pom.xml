@@ -134,6 +134,7 @@
         <module>core</module>
         <module>http</module>
         <module>hystrix</module>
+        <module>lightblue-client-integration-test</module>
         <!--module>jmeter-tests</module--><!-- Breaks release -->
 </modules>
 <properties>
@@ -262,9 +263,6 @@
         <activation>
             <jdk>[1.8,)</jdk>
         </activation>
-        <modules>
-            <module>lightblue-client-integration-test</module>
-        </modules>
         <build>
             <plugins>
                 <plugin>
