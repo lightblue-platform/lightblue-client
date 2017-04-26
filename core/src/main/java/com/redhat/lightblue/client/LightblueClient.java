@@ -3,9 +3,11 @@ package com.redhat.lightblue.client;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueMetadataRequest;
+import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
+import com.redhat.lightblue.client.response.LightblueStreamingResponse;
 
 public interface LightblueClient {
 
@@ -18,5 +20,7 @@ public interface LightblueClient {
     LightblueBulkDataResponse bulkData(DataBulkRequest requests) throws LightblueException;
 
     <T> T data(LightblueDataRequest lightblueRequest, Class<T> type) throws LightblueException;
+
+    LightblueStreamingResponse find(DataFindRequest req) throws LightblueException;
 
 }

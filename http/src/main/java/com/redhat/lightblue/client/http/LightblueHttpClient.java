@@ -16,6 +16,7 @@ import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
+import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueMetadataResponse;
@@ -23,12 +24,14 @@ import com.redhat.lightblue.client.response.LightblueBulkResponseException;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
 import com.redhat.lightblue.client.response.LightblueResponseException;
+import com.redhat.lightblue.client.response.LightblueStreamingResponse;
 import com.redhat.lightblue.client.response.lock.LockResponse;
 import com.redhat.lightblue.client.util.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
+import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -266,6 +269,55 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     @Override
     public void close() throws IOException {
         httpTransport.close();
+    }
+    
+    private  class StreamingClosure implements LightblueStreamingResponse.RequestCl {
+        private final DataFindRequest req;
+
+        StreamingClosure(DataFindRequest r) {
+            this.req=r;
+        }
+        @Override
+        public void submitAndIterate(final LightblueStreamingResponse.ForEachDoc f) throws LightblueException {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Calling service (streaming): {}", req.toString());
+            }
+            InputStream stream = httpTransport.executeRequestGetStream(req, configuration.getDataServiceURI());
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Response received from service, streaming");
+            }
+            if(stream!=null) {
+                try {
+                    StreamJsonParser streamParser=new StreamJsonParser(stream,mapper) {
+                            @Override
+                            public boolean documentCompleted(ObjectNode n) {
+                                JsonNode processed=n.get("processed");
+                                if(processed!=null) {
+                                    // This is a document
+                                    LightblueStreamingResponse.StreamDoc doc=LightblueStreamingResponse.StreamDoc.fromJson(n);
+                                    if(!f.processDocument(doc))
+                                        return false;
+                                } else {
+                                    // This is the header
+                                    LightblueStreamingResponse.ResponseHeader header=LightblueStreamingResponse.ResponseHeader.fromJson(n);
+                                    f.processResponseHeader(header);
+                                }
+                                return true;
+                            }
+                        };
+                    
+                } finally {
+                    try {
+                        stream.close();
+                    } catch (Exception e) {}
+                }
+            } 
+        }
+    }
+
+    @Override
+    public LightblueStreamingResponse find(DataFindRequest req) throws LightblueException {
+        return new LightblueStreamingResponse(new StreamingClosure(req),mapper);
     }
 
     protected HttpResponse callService(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
