@@ -1,4 +1,4 @@
-package com.redhat.lightblue.client.response;
+package com.redhat.lightblue.client;
 
 import java.util.List;
 import java.util.Map;
@@ -13,8 +13,17 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.model.Error;
 import com.redhat.lightblue.client.model.DataError;
 import com.redhat.lightblue.client.LightblueException;
+import com.redhat.lightblue.client.response.ResultMetadata;
 
-public class LightblueStreamingResponse {
+/**
+ * This class is used to stream results from a lightblue
+ * server. Instead of retrieving the results in a single server
+ * response, this class allows the clients to process results as they
+ * arrive. After obtaining an instance of ResultStream, call the
+ * run(f) method, and f.processDocument will be called when a new
+ * document is received from the server.
+ */
+public class ResultStream {
 
     /**
      * Contains the fields in a response other than the documents
@@ -26,17 +35,20 @@ public class LightblueStreamingResponse {
         public final String version;
         public final String status;
         public final String hostName;
+        public final Integer matchCount;
         public final List<Error> errors;
 
         public ResponseHeader(String entityName,
                               String version,
                               String status,
                               String hostName,
+                              Integer matchCount,
                               List<Error> errors) {
             this.entityName=entityName;
             this.version=version;
             this.status=status;
             this.hostName=hostName;
+            this.matchCount=matchCount;
             this.errors=errors;
         }
 
@@ -47,6 +59,7 @@ public class LightblueStreamingResponse {
                 String entityVersion=null;
                 String status=null;
                 String hostName=null;
+                Integer matchCount=null;
                 List<Error> errors=new ArrayList<Error>();
                 JsonNode x=node.get("entity");
                 if(x!=null)
@@ -60,7 +73,10 @@ public class LightblueStreamingResponse {
                 x=node.get("hostname");
                 if(x!=null)
                    hostName=x.asText();
-                x=node.get("erroors");
+                x=node.get("matchCount");
+                if(x!=null)
+                    matchCpunt=x.asInt();
+                x=node.get("errors");
                 if(x!=null) {
                     if(x instanceof ArrayNode) {
                         for(int i=0;i<x.size();i++) {
@@ -71,7 +87,7 @@ public class LightblueStreamingResponse {
                     }
                 }
                 
-                ret=new ResponseHeader(entityName,entityVersion,status,hostName,errors);
+                ret=new ResponseHeader(entityName,entityVersion,status,hostName,matchCount,errors);
             }
             return ret;
         }
@@ -84,31 +100,10 @@ public class LightblueStreamingResponse {
      * received or not
      */
     public static class StreamDoc {
-        protected boolean lastDoc;
-        protected ResultMetadata rmd;
-        protected ObjectNode doc;
+        public boolean lastDoc;
+        public ResultMetadata resultMetadata;
+        public ObjectNode doc;
 
-        /**
-         * If this is true, then this is the last document received
-         * from the stream
-         */
-        public boolean isLast() {
-            return lastDoc;
-        }
-
-        /**
-         * Returns the result metadata
-         */
-        public ResultMetadata getResultMetadata() {
-            return rmd;
-        }
-
-        /**
-         * Returns the document
-         */
-        public ObjectNode getDoc() {
-            return doc;
-        }
 
         /**
          * Construct a StreamDoc from the json node
@@ -122,7 +117,7 @@ public class LightblueStreamingResponse {
                     ret.doc=(ObjectNode)x;
                 x=node.get("resultMetadata");
                 if(x instanceof ObjectNode) {
-                    ret.rmd=ResultMetadata.fromJson((ObjectNode)x);
+                    ret.resultMetadata=ResultMetadata.fromJson((ObjectNode)x);
                 }
                 x=node.get("last");
                 if(x instanceof BooleanNode)
@@ -191,7 +186,7 @@ public class LightblueStreamingResponse {
         public boolean processDocument(StreamDoc doc) {
             StreamObj<T> obj=new StreamObj<T>();
             obj.lastDoc=doc.lastDoc;
-            obj.rmd=doc.rmd;
+            obj.resultMetadata=doc.resultMetadata;
             try {
                 obj.obj=objectMapper.treeToValue(doc.doc,type);
             } catch (Exception e) {
@@ -218,7 +213,7 @@ public class LightblueStreamingResponse {
     public final RequestCl requestClosure;
     public final ObjectMapper mapper;
     
-    public LightblueStreamingResponse(RequestCl req,ObjectMapper mapper) {
+    public ResultStream(RequestCl req,ObjectMapper mapper) {
         this.requestClosure=req;
         this.mapper=mapper;
     }

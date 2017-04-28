@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.Locking;
+import com.redhat.lightblue.client.ResultStream;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 import com.redhat.lightblue.client.http.transport.HttpResponse;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
@@ -24,7 +26,7 @@ import com.redhat.lightblue.client.response.LightblueBulkResponseException;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
 import com.redhat.lightblue.client.response.LightblueResponseException;
-import com.redhat.lightblue.client.response.LightblueStreamingResponse;
+import com.redhat.lightblue.client.response.ResultMetadata;
 import com.redhat.lightblue.client.response.lock.LockResponse;
 import com.redhat.lightblue.client.util.JSON;
 import org.slf4j.Logger;
@@ -36,6 +38,9 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Objects;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class LightblueHttpClient implements LightblueClient, Closeable {
     private final HttpTransport httpTransport;
@@ -271,14 +276,14 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         httpTransport.close();
     }
     
-    private  class StreamingClosure implements LightblueStreamingResponse.RequestCl {
+    private  class StreamingClosure implements ResultStream.RequestCl {
         private final DataFindRequest req;
 
         StreamingClosure(DataFindRequest r) {
             this.req=r;
         }
         @Override
-        public void submitAndIterate(final LightblueStreamingResponse.ForEachDoc f) throws LightblueException {
+        public void submitAndIterate(final ResultStream.ForEachDoc f) throws LightblueException {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Calling service (streaming): {}", req.toString());
             }
@@ -288,24 +293,59 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
             }
             if(stream!=null) {
                 try {
+                    // StreamParser handles both of the following cases:
+                    //   1- results are being streamed
+                    //   2- results are *not* being streamed, and there is only one json document
                     StreamJsonParser streamParser=new StreamJsonParser(stream,mapper) {
                             @Override
                             public boolean documentCompleted(ObjectNode n) {
+                                JsonNode status=n.get("status");
+                                if(status!=null) {
+                                    // This is a header, or it has the header in it
+                                    ResultStream.ResponseHeader header=ResultStream.ResponseHeader.fromJson(n);
+                                    f.processResponseHeader(header);
+                                }
                                 JsonNode processed=n.get("processed");
-                                if(processed!=null) {
-                                    // This is a document
-                                    LightblueStreamingResponse.StreamDoc doc=LightblueStreamingResponse.StreamDoc.fromJson(n);
+                                if(processed instanceof ArrayNode) {
+                                    // This has multiple docs in it
+                                    // The results are not being streamed
+                                    List<ResultMetadata> lrmd=new ArrayList<ResultMetadata>();
+                                    JsonNode rmd=n.get("resultMetadata");
+                                    if(rmd instanceof ArrayNode) {
+                                        for(Iterator<JsonNode> itr=rmd.elements();itr.hasNext();) {
+                                            lrmd.add(ResultMetadata.fromJson((ObjectNode)itr.next()));
+                                        }
+                                    }
+                                    int k=0;
+                                    for(Iterator<JsonNode> itr=processed.elements();itr.hasNext();k++) {
+                                        JsonNode docNode=itr.next();
+                                        ResultMetadata md;
+                                        if(lrmd.size()>k) {
+                                            md=lrmd.get(k);
+                                        } else {
+                                            md=null;
+                                        }
+                                        ResultStream.StreamDoc doc=new ResultStream.StreamDoc();
+                                        doc.doc=(ObjectNode)docNode;
+                                        doc.resultMetadata=md;
+                                        doc.lastDoc=!itr.hasNext();
+                                        if(!f.processDocument(doc))
+                                            return false;
+                                    }
+                                } else if(processed instanceof ObjectNode) {
+                                    // Single document
+                                    // The results are being streamed
+                                    ResultStream.StreamDoc doc=ResultStream.StreamDoc.fromJson(n);
                                     if(!f.processDocument(doc))
                                         return false;
-                                } else {
-                                    // This is the header
-                                    LightblueStreamingResponse.ResponseHeader header=LightblueStreamingResponse.ResponseHeader.fromJson(n);
-                                    f.processResponseHeader(header);
                                 }
                                 return true;
                             }
                         };
+                    streamParser.parse();
                     
+                } catch (IOException e) {
+                    throw new LightblueException(e);
                 } finally {
                     try {
                         stream.close();
@@ -316,8 +356,8 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     }
 
     @Override
-    public LightblueStreamingResponse find(DataFindRequest req) throws LightblueException {
-        return new LightblueStreamingResponse(new StreamingClosure(req),mapper);
+    public ResultStream prepareFind(DataFindRequest req) throws LightblueException {
+        return new ResultStream(new StreamingClosure(req),mapper);
     }
 
     protected HttpResponse callService(LightblueRequest request, String baseUri) throws LightblueHttpClientException {

@@ -8,6 +8,7 @@ package com.redhat.lightblue.client.hystrix;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.Locking;
+import com.redhat.lightblue.client.ResultStream;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueMetadataRequest;
@@ -15,7 +16,6 @@ import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
-import com.redhat.lightblue.client.response.LightblueStreamingResponse;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -63,7 +63,7 @@ public class LightblueHystrixClientTest {
         }
 
         @Override
-        public LightblueStreamingResponse find(DataFindRequest req) throws LightblueException {
+        public ResultStream prepareFind(DataFindRequest req) throws LightblueException {
             return null;
         }
 
