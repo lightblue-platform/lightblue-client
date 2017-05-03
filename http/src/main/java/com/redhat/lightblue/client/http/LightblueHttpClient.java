@@ -275,12 +275,23 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     public void close() throws IOException {
         httpTransport.close();
     }
+
+    private static class StreamingDataFindRequest extends DataFindRequest {
+        public StreamingDataFindRequest(DataFindRequest r) {
+            super(r);
+        }
+
+        @Override
+        public String getRestURI(String baseServiceURI) {
+            return super.getRestURI(baseServiceURI)+"?stream=true";
+        }
+    }
     
     private  class StreamingClosure implements ResultStream.RequestCl {
-        private final DataFindRequest req;
+        private final StreamingDataFindRequest req;
 
         StreamingClosure(DataFindRequest r) {
-            this.req=r;
+            this.req=new StreamingDataFindRequest(r);
         }
         @Override
         public void submitAndIterate(final ResultStream.ForEachDoc f) throws LightblueException {

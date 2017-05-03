@@ -27,6 +27,10 @@ public abstract class LightblueRequest implements Serializable {
         this.httpMethod=method;
     }
 
+    public LightblueRequest(LightblueRequest r) {
+        this.httpMethod=r.httpMethod;
+    }
+
     public HttpMethod getHttpMethod() {
         return httpMethod;
     }

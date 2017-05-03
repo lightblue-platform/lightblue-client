@@ -24,6 +24,12 @@ public abstract class CRUDRequest extends LightblueDataRequest {
         super(method,operationName, entityName, entityVersion);
     }
 
+    public CRUDRequest(CRUDRequest r) {
+        super(r);
+        onlyIfCurrent=r.onlyIfCurrent;
+        documentVersions.addAll(r.documentVersions);
+    }
+
     public boolean isIfCurrent() {
         return onlyIfCurrent;
     }

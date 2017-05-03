@@ -25,6 +25,13 @@ public abstract class LightblueDataRequest extends LightblueRequest {
         this.entityVersion=entityVersion;
     }
 
+    public LightblueDataRequest(LightblueDataRequest r) {
+        super(r);
+        this.operationName=r.operationName;
+        this.entityName=r.entityName;
+        this.entityVersion=r.entityVersion;
+    }
+
     public String getOperationPathParam() {
         return operationName;
     }
