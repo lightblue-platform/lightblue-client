@@ -75,7 +75,7 @@ public class ResultStream {
                    hostName=x.asText();
                 x=node.get("matchCount");
                 if(x!=null)
-                    matchCpunt=x.asInt();
+                    matchCount=x.asInt();
                 x=node.get("errors");
                 if(x!=null) {
                     if(x instanceof ArrayNode) {
