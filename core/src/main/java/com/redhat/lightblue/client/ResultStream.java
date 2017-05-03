@@ -133,14 +133,10 @@ public class ResultStream {
      * constructed from the json document
      */
     public static class StreamObj<T>  extends StreamDoc {
-        private T obj;
-
         /**
          * The POJO read from the stream
          */
-        public T getObj() {
-            return obj;
-        }
+        public T obj;
     }
 
     /**
