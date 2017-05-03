@@ -78,6 +78,7 @@ public class TestDataSaveRequest extends LightblueClientTestHarness {
         request.create(c1, c2);
         request.returns(new Projection[]{Projection.includeFieldRecursively("*")}, 0, 1);
         request.setUpsert(true);
+        System.out.println("Request:"+request.getBody());
         Country[] savedCountries = getLightblueClient().data(request, Country[].class);
 
         assertNotNull(savedCountries);
@@ -148,6 +149,7 @@ public class TestDataSaveRequest extends LightblueClientTestHarness {
         f.where(Query.withValue("iso2Code",Query.eq,Literal.value("PL")));
         
         DefaultLightblueDataResponse r=getLightblueClient().data(f);
+        System.out.println("Result:"+r.getJson());
         Country c=r.parseProcessed(Country.class);
         assertNotNull(c);
         assertEquals(1,r.getResultMetadata().length);
