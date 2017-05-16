@@ -320,6 +320,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
                                 if(processed instanceof ArrayNode) {
                                     // This has multiple docs in it
                                     // The results are not being streamed
+                                    LOGGER.debug("Results are not being streamed, retrieving all results");
                                     List<ResultMetadata> lrmd=new ArrayList<ResultMetadata>();
                                     JsonNode rmd=n.get("resultMetadata");
                                     if(rmd instanceof ArrayNode) {
@@ -346,9 +347,12 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
                                 } else if(processed instanceof ObjectNode) {
                                     // Single document
                                     // The results are being streamed
+                                    LOGGER.debug("Retrieved one document from stream");
                                     ResultStream.StreamDoc doc=ResultStream.StreamDoc.fromJson(n);
-                                    if(!f.processDocument(doc))
+                                    if(!f.processDocument(doc)) {
+                                        LOGGER.debug("Stream processing cancelled");
                                         return false;
+                                    }
                                 }
                                 return true;
                             }
