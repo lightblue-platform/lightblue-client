@@ -255,5 +255,8 @@ public class SslSocketFactories {
         if (StringUtils.isBlank(config.getCertPassword())) {
             throw new IllegalArgumentException("Must provide a certPassword.");
         }
+        if (StringUtils.isBlank(config.getCertAlias())) {
+            throw new IllegalArgumentException("Must provide certAlias.");
+        }
     }
 }

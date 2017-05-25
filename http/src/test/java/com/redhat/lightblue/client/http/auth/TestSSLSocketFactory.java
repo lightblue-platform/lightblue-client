@@ -18,6 +18,7 @@ public class TestSSLSocketFactory {
         config.setCaFilePath("certificates-ca/lightblue-root-ca-1.pem");
         config.setCertFilePath("certificates-client/lightblue-client-1.pkcs12");
         config.setCertPassword("secret");
+        config.setCertAlias("lightblue-client-1");
         SslSocketFactories.fromLightblueClientConfig(config);
     }
 
@@ -28,6 +29,7 @@ public class TestSSLSocketFactory {
         config.setCaFilePath("certificates-ca/lightblue-root-ca-1.pem,certificates-ca/lightblue-root-ca-2.pem");
         config.setCertFilePath("certificates-client/lightblue-client-1.pkcs12");
         config.setCertPassword("secret");
+        config.setCertAlias("lightblue-client-1");
         SslSocketFactories.fromLightblueClientConfig(config);
     }
 
