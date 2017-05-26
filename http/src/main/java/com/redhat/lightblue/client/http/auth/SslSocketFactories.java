@@ -1,13 +1,7 @@
 package com.redhat.lightblue.client.http.auth;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-import java.security.Key;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -15,10 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -38,12 +29,7 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
-import com.redhat.lightblue.client.LightblueException;
-import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
-import com.redhat.lightblue.client.http.LightblueHttpClient;
-import com.redhat.lightblue.client.request.metadata.MetadataGetEntityNamesRequest;
 
 public class SslSocketFactories {
     private static final Logger LOGGER = LoggerFactory.getLogger(SslSocketFactories.class);
@@ -52,7 +38,6 @@ public class SslSocketFactories {
 
     private static final String[] SUPPORTED_PROTOCOLS = new String[]{TLSV1};
     private static final String[] SUPPORTED_CIPHER_SUITES = null;
-    private static final String FILE_PROTOCOL = "file://";
 
     /**
      * @return A default SSL socket factory based on whether or not the
@@ -65,8 +50,11 @@ public class SslSocketFactories {
             KeyStoreException, KeyManagementException, IOException {
         if (config.useCertAuth()) {
             validateLightblueClientConfigForCertAuth(config);
-                return defaultCertAuthSocketFactory(getCaCertFiles(config), loadFile(config.getCertFilePath()),
-                        config.getCertPassword().toCharArray(), config.getCertAlias(), config.isAcceptSelfSignedCert());
+
+            return defaultCertAuthSocketFactory(
+                    CertificateManager.getCaCertFiles(config.getCaFilePaths()),
+                    CertificateManager.loadFile(config.getCertFilePath()),
+                    config.getCertPassword().toCharArray(), config.getCertAlias(), config.isAcceptSelfSignedCert());
         }
 
         return defaultNoAuthSocketFactory();
@@ -102,9 +90,9 @@ public class SslSocketFactories {
             throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException,
             UnrecoverableKeyException, KeyManagementException {
 
-        Set<Certificate> certificates = getCertificates(certAuthorityFiles);
-        KeyStore pkcs12KeyStore = getPkcs12KeyStore(authCert, authCertPassword);
-        KeyStore sunKeyStore = getJksKeyStore(certificates, pkcs12KeyStore, authCertAlias, authCertPassword);
+        Set<Certificate> certificates = CertificateManager.getCertificates(certAuthorityFiles);
+        KeyStore pkcs12KeyStore = CertificateManager.getPkcs12KeyStore(authCert, authCertPassword);
+        KeyStore sunKeyStore = CertificateManager.getJksKeyStore(certificates, pkcs12KeyStore, authCertAlias, authCertPassword);
         SSLContext sslContext = getSSLContext(sunKeyStore, pkcs12KeyStore, authCertPassword, acceptSelfSignedCert);
 
         return new SSLConnectionSocketFactory(sslContext, SUPPORTED_PROTOCOLS, SUPPORTED_CIPHER_SUITES,
@@ -116,19 +104,10 @@ public class SslSocketFactories {
             UnrecoverableKeyException, KeyManagementException {
         validateLightblueClientConfigForCertAuth(config);
 
-        return javaNetSslSocketFactory(getCaCertFiles(config), loadFile(config.getCertFilePath()),
+        return javaNetSslSocketFactory(
+                CertificateManager.getCaCertFiles(config.getCaFilePaths()),
+                CertificateManager.loadFile(config.getCertFilePath()),
                 config.getCertPassword().toCharArray(), config.getCertAlias(), config.isAcceptSelfSignedCert());
-    }
-
-    private static List<InputStream> getCaCertFiles(LightblueClientConfiguration config) throws FileNotFoundException {
-        List<String> caCertFilePaths = config.getCaFilePaths();
-        List<InputStream> caCertFiles = new ArrayList<>();
-
-        for(String caCertFilePath : caCertFilePaths) {
-            caCertFiles.add(loadFile(caCertFilePath));
-        }
-
-        return caCertFiles;
     }
 
     public static SSLSocketFactory javaNetSslSocketFactory(List<InputStream> certAuthorityFiles, InputStream authCert,
@@ -143,63 +122,12 @@ public class SslSocketFactories {
                 + "the certificate file is on the classpath or defined on the file system using the "
                 + "'file://' prefix.");
 
-        Set<Certificate> caCertificates = getCertificates(certAuthorityFiles);
+        Set<Certificate> caCertificates = CertificateManager.getCertificates(certAuthorityFiles);
 
-        KeyStore pkcs12KeyStore = getPkcs12KeyStore(authCert, authCertPassword);
-        KeyStore sunKeyStore = getJksKeyStore(caCertificates, pkcs12KeyStore, authCertAlias, authCertPassword);
+        KeyStore pkcs12KeyStore = CertificateManager.getPkcs12KeyStore(authCert, authCertPassword);
+        KeyStore sunKeyStore = CertificateManager.getJksKeyStore(caCertificates, pkcs12KeyStore, authCertAlias, authCertPassword);
         SSLContext sslContext = getSSLContext(sunKeyStore, pkcs12KeyStore, authCertPassword, acceptSelfSignedCert);
         return sslContext.getSocketFactory();
-    }
-
-    private static Set<Certificate> getCertificates(List<InputStream> certAuthorityFiles) throws CertificateException {
-        Set<Certificate> caCertificates = new LinkedHashSet<>();
-
-        for(InputStream certAuthorityFile : certAuthorityFiles) {
-            caCertificates.add(getCertificate(certAuthorityFile));
-        }
-        return caCertificates;
-    }
-
-    private static InputStream loadFile(String filePath) throws FileNotFoundException {
-        return loadFile(SslSocketFactories.class.getClassLoader(), filePath);
-    }
-
-    private static InputStream loadFile(ClassLoader classLoader, String filePath) throws FileNotFoundException {
-        if (filePath.startsWith(FILE_PROTOCOL)) {
-            return new FileInputStream(filePath.substring(FILE_PROTOCOL.length()));
-        }
-        return classLoader.getResourceAsStream(filePath);
-    }
-
-    private static X509Certificate getCertificate(InputStream certificate)
-            throws CertificateException {
-        CertificateFactory cf = CertificateFactory.getInstance("X509");
-        return (X509Certificate) cf.generateCertificate(certificate);
-    }
-
-    private static KeyStore getPkcs12KeyStore(InputStream lightblueCert, char[] certPassword)
-            throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException {
-        KeyStore ks = KeyStore.getInstance("pkcs12");
-        ks.load(lightblueCert, certPassword);
-        return ks;
-    }
-
-    private static KeyStore getJksKeyStore(Set<Certificate> caCertFiles, KeyStore lightblueCertKeystore,
-                                           String lightblueCertAlias, char[] lightblueCertPassword)
-            throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException,
-            UnrecoverableKeyException {
-        KeyStore jks = KeyStore.getInstance("jks");
-
-        jks.load(null, lightblueCertPassword);
-        for(Certificate caCertFile : caCertFiles) {
-            jks.setCertificateEntry(caCertFile.toString(), caCertFile);
-        }
-
-        Certificate[] chain = lightblueCertKeystore.getCertificateChain(lightblueCertAlias);
-        Key key = lightblueCertKeystore.getKey(lightblueCertAlias, lightblueCertPassword);
-        jks.setKeyEntry("anykey", key, lightblueCertPassword, chain);
-
-        return jks;
     }
 
     /**
@@ -255,8 +183,7 @@ public class SslSocketFactories {
         if (StringUtils.isBlank(config.getCertPassword())) {
             throw new IllegalArgumentException("Must provide a certPassword.");
         }
-        if (StringUtils.isBlank(config.getCertAlias())) {
-            throw new IllegalArgumentException("Must provide certAlias.");
-        }
+
+        // certAlias is not required if only one cert exists in the keystore (usually the case)
     }
 }
