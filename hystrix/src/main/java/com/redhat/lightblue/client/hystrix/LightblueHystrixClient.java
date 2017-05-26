@@ -6,10 +6,12 @@ import com.netflix.hystrix.HystrixCommandKey;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.Locking;
+import com.redhat.lightblue.client.ResultStream;
 import com.redhat.lightblue.client.hystrix.graphite.ServoGraphiteSetup;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueMetadataRequest;
+import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
@@ -211,6 +213,43 @@ public class LightblueHystrixClient implements LightblueClient {
     @Override
     public Locking getLocking(String domain) {
         return new LockingImpl(domain, client.getLocking(domain));
+    }
+
+    private class FindCommand extends HystrixCommand<Object> {
+        private final DataFindRequest request;
+        private final ResultStream.ForEachDoc f;
+
+        public FindCommand(String groupKey, String commandKey,DataFindRequest request, ResultStream.ForEachDoc f) {
+            super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey)).andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
+            
+            this.request = request;
+            this.f=f;
+        }
+        
+        @Override
+        protected Object run() throws Exception {
+            ResultStream r=client.prepareFind(request);
+            r.run(f);
+            return null;
+        }
+   }
+
+    private class StreamingClosure implements ResultStream.RequestCl {
+        private final DataFindRequest req;
+
+        StreamingClosure(DataFindRequest req) {
+            this.req=req;
+        }
+        
+        @Override
+        public void submitAndIterate(ResultStream.ForEachDoc f) throws LightblueException {
+            new FindCommand(groupKey,commandKey,req,f).execute();
+        }
+   }
+    
+    @Override
+    public ResultStream prepareFind(DataFindRequest req) throws LightblueException {
+        return new ResultStream(new StreamingClosure(req),null);
     }
 
 }

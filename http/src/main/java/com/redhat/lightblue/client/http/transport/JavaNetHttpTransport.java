@@ -3,6 +3,7 @@ package com.redhat.lightblue.client.http.transport;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringBufferInputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -113,8 +114,7 @@ public class JavaNetHttpTransport implements HttpTransport {
         }
     }
 
-    @Override
-    public HttpResponse executeRequest(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
+    private HttpURLConnection prepareConnection(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
         try {
             String url = request.getRestURI(baseUri);
             LOGGER.debug("Executing request, url={}", url);
@@ -149,12 +149,32 @@ public class JavaNetHttpTransport implements HttpTransport {
             if (StringUtils.isNotBlank(body)) {
                 sendRequestBody(body, connection);
             }
-
-            return new HttpResponse(response(connection), connection.getHeaderFields());
+            return connection;
         } catch (ProtocolException e) {
             throw new LightblueHttpClientException(e);
         } catch (IOException e) {
             throw new LightblueHttpClientException(e);
+        }
+    }
+        
+    @Override
+    public HttpResponse executeRequest(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
+        HttpURLConnection connection = prepareConnection(request,baseUri);
+        return new HttpResponse(response(connection), connection.getHeaderFields());
+    }
+    
+    @Override
+    public InputStream executeRequestGetStream(LightblueRequest request, String baseUri) throws LightblueHttpClientException {
+        HttpURLConnection connection = prepareConnection(request,baseUri);
+        try {
+            InputStream stream=connection.getInputStream();
+            if (compression == Compression.LZF && "lzf".equals(connection.getHeaderField("Content-Encoding"))) {
+                LOGGER.debug("Decoding lzf");
+                stream = new LZFInputStream(stream);
+            }
+            return stream;
+        } catch (IOException e) {
+            return new StringBufferInputStream(readErrorStream(connection,e));
         }
     }
 
@@ -188,23 +208,27 @@ public class JavaNetHttpTransport implements HttpTransport {
         try (InputStream responseStream = connection.getInputStream()) {
             return readResponseStream(responseStream, connection);
         } catch (IOException e) {
-            try (InputStream errorResponseStream = connection.getErrorStream()) {
-                String errorBody = null;
-                if (errorResponseStream != null) {
-                    errorBody = readResponseStream(errorResponseStream, connection);
-                }
+            return readErrorStream(connection,e);
+        }
+    }
 
-                if (errorBody != null && !errorBody.equals("")) {
-                    // this may be a valid lightblue response containing errors
-                    // but it can also be a standard html 500 or 404 from server
-                    // we will know that when we start parsing
-                    return errorBody;
-                }
-
-                throw new LightblueHttpClientException(e, connection.getResponseCode(), errorBody);
-            } catch (IOException e1) {
-                throw new LightblueHttpClientException(e);
+    private String readErrorStream(HttpURLConnection connection,Exception e) throws LightblueHttpClientException {
+        try (InputStream errorResponseStream = connection.getErrorStream()) {
+            String errorBody = null;
+            if (errorResponseStream != null) {
+                errorBody = readResponseStream(errorResponseStream, connection);
             }
+            
+            if (errorBody != null && !errorBody.equals("")) {
+                // this may be a valid lightblue response containing errors
+                // but it can also be a standard html 500 or 404 from server
+                // we will know that when we start parsing
+                return errorBody;
+            }
+            
+            throw new LightblueHttpClientException(e, connection.getResponseCode(), errorBody);
+        } catch (IOException e1) {
+            throw new LightblueHttpClientException(e);
         }
     }
 

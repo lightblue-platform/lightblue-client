@@ -3,6 +3,7 @@ package com.redhat.lightblue.client;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
 import com.redhat.lightblue.client.request.LightblueMetadataRequest;
+import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
@@ -18,5 +19,11 @@ public interface LightblueClient {
     LightblueBulkDataResponse bulkData(DataBulkRequest requests) throws LightblueException;
 
     <T> T data(LightblueDataRequest lightblueRequest, Class<T> type) throws LightblueException;
+
+    /**
+     * Prepares a resultset stream based on the find request. The find
+     * request will be run when the client calls ResultStream.run
+     */
+    ResultStream prepareFind(DataFindRequest req) throws LightblueException;
 
 }

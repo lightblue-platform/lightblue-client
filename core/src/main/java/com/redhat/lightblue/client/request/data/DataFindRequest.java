@@ -26,6 +26,15 @@ public class DataFindRequest extends CRUDRequest {
         this(entityName,null);
     }
 
+    public DataFindRequest(DataFindRequest r) {
+        super(r);
+        queryExpression=r.queryExpression;
+        projection=r.projection;
+        sort=r.sort;
+        begin=r.begin;
+        maxResults=r.maxResults;
+    }
+
     public DataFindRequest where(Query queryExpression) {
         this.queryExpression = queryExpression;
 

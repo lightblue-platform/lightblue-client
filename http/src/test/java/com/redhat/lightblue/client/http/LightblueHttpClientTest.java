@@ -6,10 +6,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
+
+import java.io.StringBufferInputStream;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueException;
@@ -17,6 +22,7 @@ import com.redhat.lightblue.client.MongoExecution;
 import com.redhat.lightblue.client.MongoExecution.ReadPreference;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
+import com.redhat.lightblue.client.ResultStream;
 import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.http.transport.HttpResponse;
@@ -184,6 +190,86 @@ public class LightblueHttpClientTest {
             String body = findRequest.getBody();
             Assert.assertTrue(body.contains(
                     "\"execution\":{\"readPreference\":\"nearest\"}"));
+        }
+    }
+
+
+    private static final String streamingResponse=
+        "{'entity':'test','status':'COMPLETE'}"+
+        "{'processed':{'field':'value1'},'resultMetadata':{'documentVersion':'123:1231'}}"+
+        "{'processed':{'field':'value2'},'resultMetadata':{'documentVersion':'123:1232'}}"+
+        "{'processed':{'field':'value3'},'resultMetadata':{'documentVersion':'123:1233'}}"+
+        "{'processed':{'field':'value4'},'resultMetadata':{'documentVersion':'123:1234'}}"+
+        "{'processed':{'field':'value5'},'resultMetadata':{'documentVersion':'123:1235'}}"+
+        "{'processed':{'field':'value6'},'resultMetadata':{'documentVersion':'123:1236'}}"+
+        "{'processed':{'field':'value7'},'resultMetadata':{'documentVersion':'123:1237'}}"+
+        "{'processed':{'field':'value8'},'resultMetadata':{'documentVersion':'123:1238'}}"+
+        "{'processed':{'field':'value9'},'resultMetadata':{'documentVersion':'123:1239'},'last':true}";
+    private static final String nonStreamingResponse=
+        "{'entity':'test','status':'COMPLETE',"+
+        "'processed':["+
+        "{'field':'value1'},"+
+        "{'field':'value2'},"+
+        "{'field':'value3'},"+
+        "{'field':'value4'},"+
+        "{'field':'value5'},"+
+        "{'field':'value6'},"+
+        "{'field':'value7'},"+
+        "{'field':'value8'},"+
+        "{'field':'value9'}],"+
+        "'resultMetadata':["+
+        "{'documentVersion':'123:1231'},"+
+        "{'documentVersion':'123:1232'},"+
+        "{'documentVersion':'123:1233'},"+
+        "{'documentVersion':'123:1234'},"+
+        "{'documentVersion':'123:1235'},"+
+        "{'documentVersion':'123:1236'},"+
+        "{'documentVersion':'123:1237'},"+
+        "{'documentVersion':'123:1238'},"+
+        "{'documentVersion':'123:1239'}]}";
+    
+    @Test
+    public void testStreaming() throws Exception {
+        when(httpTransport.executeRequestGetStream(any(LightblueRequest.class),anyString())).
+            thenReturn(new StringBufferInputStream(streamingResponse.replaceAll("'","\"")));
+        LightblueClientConfiguration c = new LightblueClientConfiguration();
+        try (LightblueHttpClient httpClient = new LightblueHttpClient(c, httpTransport)) {
+            DataFindRequest findRequest = new DataFindRequest("test");
+            findRequest.where(Query.withValue("a = b"));
+            findRequest.select(Projection.includeField("foo"));
+            ResultStream response=httpClient.prepareFind(findRequest);
+            final List<JsonNode> docs=new ArrayList<JsonNode>();
+            response.run(new ResultStream.ForEachDoc() {
+                    @Override
+                    public boolean processDocument(ResultStream.StreamDoc doc) {
+                        docs.add(doc.doc);
+                        return true;
+                    }
+                });
+            Assert.assertEquals(9,docs.size());
+            
+        }
+    }
+    @Test
+    public void testNotStreaming() throws Exception {
+        when(httpTransport.executeRequestGetStream(any(LightblueRequest.class),anyString())).
+            thenReturn(new StringBufferInputStream(nonStreamingResponse.replaceAll("'","\"")));
+        LightblueClientConfiguration c = new LightblueClientConfiguration();
+        try (LightblueHttpClient httpClient = new LightblueHttpClient(c, httpTransport)) {
+            DataFindRequest findRequest = new DataFindRequest("test");
+            findRequest.where(Query.withValue("a = b"));
+            findRequest.select(Projection.includeField("foo"));
+            ResultStream response=httpClient.prepareFind(findRequest);
+            final List<JsonNode> docs=new ArrayList<JsonNode>();
+            response.run(new ResultStream.ForEachDoc() {
+                    @Override
+                    public boolean processDocument(ResultStream.StreamDoc doc) {
+                        docs.add(doc.doc);
+                        return true;
+                    }
+                });
+            Assert.assertEquals(9,docs.size());
+            
         }
     }
 
