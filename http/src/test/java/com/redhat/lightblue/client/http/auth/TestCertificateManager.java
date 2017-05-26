@@ -30,7 +30,7 @@ public class TestCertificateManager {
             loadCerts(CACERT, AUTHCERT, ALIAS, "wrongpassword");
             Assert.fail();
         } catch (IOException e) {
-            Assert.assertEquals("keystore password was incorrect", e.getMessage());
+            Assert.assertTrue(e.getMessage().startsWith("keystore password was incorrect") || e.getMessage().startsWith("failed to decrypt safe contents entry"));
         }
     }
 
