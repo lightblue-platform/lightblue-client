@@ -74,7 +74,7 @@ public class LightblueClientConfiguration {
         caFilePath = configuration.caFilePath;
         certFilePath = configuration.certFilePath;
         certPassword = configuration.certPassword;
-        certAlias = FilenameUtils.getBaseName(certFilePath);
+        certAlias = configuration.certAlias;
         compression = configuration.compression;
         readPreference = configuration.readPreference;
         writeConcern = configuration.writeConcern;
@@ -169,7 +169,6 @@ public class LightblueClientConfiguration {
      */
     public void setCertFilePath(String certFilePath) {
         this.certFilePath = certFilePath;
-        certAlias = FilenameUtils.getBaseName(this.certFilePath);
     }
 
     public String getCertPassword() {
@@ -360,6 +359,10 @@ public class LightblueClientConfiguration {
 
     public void setAcceptSelfSignedCert(boolean acceptSelfSignedCert) {
         this.acceptSelfSignedCert = acceptSelfSignedCert;
+    }
+
+    public void setCertAlias(String certAlias) {
+        this.certAlias = certAlias;
     }
 
 }

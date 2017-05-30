@@ -23,6 +23,7 @@ public class LightblueClientConfigurationTest {
         original.setCertPassword("pass");
         original.setCertFilePath("certpath");
         original.setCaFilePath("capath");
+        original.setCertAlias("certalias");
 
         LightblueClientConfiguration copy = new LightblueClientConfiguration(original);
 
@@ -32,7 +33,7 @@ public class LightblueClientConfigurationTest {
         assertEquals("pass", copy.getCertPassword());
         assertEquals("certpath", copy.getCertFilePath());
         assertEquals("capath", copy.getCaFilePath());
-        assertEquals("certpath", copy.getCertAlias());
+        assertEquals("certalias", copy.getCertAlias());
 
         // make sure they are copies
         original.setUseCertAuth(false);
@@ -48,7 +49,7 @@ public class LightblueClientConfigurationTest {
         assertEquals("pass", copy.getCertPassword());
         assertEquals("certpath", copy.getCertFilePath());
         assertEquals("capath", copy.getCaFilePath());
-        assertEquals("certpath", copy.getCertAlias());
+        assertEquals("certalias", copy.getCertAlias());
     }
 
     @Test
