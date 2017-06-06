@@ -8,6 +8,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import com.redhat.lightblue.client.MongoExecution;
+import com.redhat.lightblue.client.MongoExecution.WriteConcern;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.request.data.DataSaveRequest;
 
@@ -66,7 +67,7 @@ public class TestDataSaveRequest {
     @Test
     public void testExecutionWriteConcern() {
         DataSaveRequest request = new DataSaveRequest("fake");
-        request.execution(MongoExecution.withWriteConcern("majority"));
+        request.execution(MongoExecution.withWriteConcern(WriteConcern.majority));
         request.create("");
 
         assertTrue(request.getBody(), request.getBody().contains(

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import com.redhat.lightblue.client.MongoExecution;
+import com.redhat.lightblue.client.MongoExecution.WriteConcern;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
 
@@ -55,7 +56,7 @@ public class TestDataInsertRequest {
     @Test
     public void testExecutionWriteConcern() {
         DataInsertRequest request = new DataInsertRequest("fake");
-        request.execution(MongoExecution.withWriteConcern("majority"));
+        request.execution(MongoExecution.withWriteConcern(WriteConcern.majority));
         request.create("");
 
         assertTrue(request.getBody(), request.getBody().contains(

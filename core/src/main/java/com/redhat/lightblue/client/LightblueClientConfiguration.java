@@ -1,12 +1,13 @@
 package com.redhat.lightblue.client;
 
-import com.redhat.lightblue.client.MongoExecution.ReadPreference;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.redhat.lightblue.client.MongoExecution.ReadPreference;
+import com.redhat.lightblue.client.MongoExecution.WriteConcern;
 
 public class LightblueClientConfiguration {
 
@@ -56,7 +57,7 @@ public class LightblueClientConfiguration {
     private String certAlias;
     private Compression compression = Compression.LZF;
     private ReadPreference readPreference;
-    private String writeConcern;
+    private WriteConcern writeConcern;
     private Integer maxQueryTimeMS;
     private transient Execution execution;
 
@@ -199,11 +200,11 @@ public class LightblueClientConfiguration {
         this.readPreference = readPreference;
     }
 
-    public String getWriteConcern() {
+    public WriteConcern getWriteConcern() {
         return writeConcern;
     }
 
-    public void setWriteConcern(String writeConcern) {
+    public void setWriteConcern(WriteConcern writeConcern) {
         this.writeConcern = writeConcern;
     }
 
