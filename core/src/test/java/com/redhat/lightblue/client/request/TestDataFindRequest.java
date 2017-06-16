@@ -10,6 +10,7 @@ import org.junit.Test;
 import com.redhat.lightblue.client.MongoExecution;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Sort;
+import com.redhat.lightblue.client.MongoExecution.WriteConcern;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 
 public class TestDataFindRequest {
@@ -71,7 +72,7 @@ public class TestDataFindRequest {
     @Test
     public void testExecutionWriteConcern() {
         DataFindRequest request = new DataFindRequest("fake");
-        request.execution(MongoExecution.withWriteConcern("majority"));
+        request.execution(MongoExecution.withWriteConcern(WriteConcern.majority));
 
         assertTrue(request.getBody(), request.getBody().contains(
                 "\"execution\":{\"writeConcern\":\"majority\"}"));

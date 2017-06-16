@@ -29,6 +29,7 @@ public abstract class Expression extends ExpressionPart {
     /**
      * Add field:value
      */
+    // TODO: add is using set, this is confusing. Rename all adds to sets?
     public Expression add(String field, JsonNode value) {
         try {
             ((ObjectNode) node).set(field, value);

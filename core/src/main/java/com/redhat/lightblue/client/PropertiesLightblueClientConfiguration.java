@@ -1,11 +1,5 @@
 package com.redhat.lightblue.client;
 
-import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
-import com.redhat.lightblue.client.MongoExecution.ReadPreference;
-import org.apache.commons.lang.text.StrSubstitutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +10,14 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
+
+import org.apache.commons.lang.text.StrSubstitutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.redhat.lightblue.client.LightblueClientConfiguration.Compression;
+import com.redhat.lightblue.client.MongoExecution.ReadPreference;
+import com.redhat.lightblue.client.MongoExecution.WriteConcern;
 
 /**
  * Provides factory methods for
@@ -206,7 +208,7 @@ public final class PropertiesLightblueClientConfiguration {
                     properties.getProperty(MONGO_READ_PREFERENCE)));
         }
         if (properties.containsKey(MONGO_WRITE_CONCERN)) {
-            config.setWriteConcern(properties.getProperty(MONGO_WRITE_CONCERN));
+            config.setWriteConcern(WriteConcern.valueOf(properties.getProperty(MONGO_WRITE_CONCERN)));
         }
         if (properties.containsKey(MONGO_MAX_QUERY_TIME_MS)) {
             config.setMaxQueryTimeMS(Integer.parseInt(properties.getProperty(MONGO_MAX_QUERY_TIME_MS)));

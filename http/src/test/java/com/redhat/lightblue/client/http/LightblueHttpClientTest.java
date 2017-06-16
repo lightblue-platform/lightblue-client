@@ -20,6 +20,7 @@ import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.MongoExecution;
 import com.redhat.lightblue.client.MongoExecution.ReadPreference;
+import com.redhat.lightblue.client.MongoExecution.WriteConcern;
 import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.Query;
 import com.redhat.lightblue.client.ResultStream;
@@ -134,7 +135,7 @@ public class LightblueHttpClientTest {
         when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(new FakeResponse("{}", null));
 
         LightblueClientConfiguration c = new LightblueClientConfiguration();
-        c.setWriteConcern("majority");
+        c.setWriteConcern(WriteConcern.majority);
 
         try (LightblueHttpClient httpClient = new LightblueHttpClient(c, httpTransport)) {
             DataFindRequest findRequest = new DataFindRequest("someEntity");
