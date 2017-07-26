@@ -2,10 +2,12 @@ package com.redhat.lightblue.client;
 
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
+import com.redhat.lightblue.client.request.LightblueHealthRequest;
 import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
+import com.redhat.lightblue.client.response.LightblueHealthResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
 
 public interface LightblueClient {
@@ -26,4 +28,5 @@ public interface LightblueClient {
      */
     ResultStream prepareFind(DataFindRequest req) throws LightblueException;
 
+    LightblueHealthResponse lightblueHealth(LightblueHealthRequest lightblueHealthRequest) throws LightblueException;
 }

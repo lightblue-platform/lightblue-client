@@ -10,10 +10,12 @@ import com.redhat.lightblue.client.ResultStream;
 import com.redhat.lightblue.client.hystrix.graphite.ServoGraphiteSetup;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
+import com.redhat.lightblue.client.request.LightblueHealthRequest;
 import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
+import com.redhat.lightblue.client.response.LightblueHealthResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
 
 /**
@@ -250,6 +252,12 @@ public class LightblueHystrixClient implements LightblueClient {
     @Override
     public ResultStream prepareFind(DataFindRequest req) throws LightblueException {
         return new ResultStream(new StreamingClosure(req),null);
+    }
+
+    @Override
+    public LightblueHealthResponse lightblueHealth(LightblueHealthRequest lightblueHealthRequest)
+            throws LightblueException {
+        return null;
     }
 
 }

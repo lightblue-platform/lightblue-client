@@ -16,6 +16,7 @@ import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.http.transport.JavaNetHttpTransport;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
+import com.redhat.lightblue.client.request.LightblueHealthRequest;
 import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
@@ -24,6 +25,7 @@ import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
 import com.redhat.lightblue.client.response.DefaultLightblueMetadataResponse;
 import com.redhat.lightblue.client.response.LightblueBulkResponseException;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
+import com.redhat.lightblue.client.response.LightblueHealthResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
 import com.redhat.lightblue.client.response.LightblueResponseException;
 import com.redhat.lightblue.client.response.ResultMetadata;
@@ -405,4 +407,17 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
         }
     }
 
+    @Override
+    public LightblueHealthResponse lightblueHealth(LightblueHealthRequest lightblueHealthRequest)
+            throws LightblueParseException, LightblueResponseException, LightblueException {
+        
+        HttpResponse response = callService(lightblueHealthRequest, configuration.getDataServiceURI());
+
+        try {
+            return new LightblueHealthResponse(response.getBody(), response.getHeaders(), mapper);
+            
+        } catch (LightblueParseException e) {
+            throw new LightblueParseException("Unable to parse response " + response, e);
+        }
+    }
 }

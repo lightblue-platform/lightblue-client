@@ -11,10 +11,12 @@ import com.redhat.lightblue.client.Locking;
 import com.redhat.lightblue.client.ResultStream;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
+import com.redhat.lightblue.client.request.LightblueHealthRequest;
 import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
+import com.redhat.lightblue.client.response.LightblueHealthResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
 import org.junit.Assert;
 import org.junit.Test;
@@ -64,6 +66,12 @@ public class LightblueHystrixClientTest {
 
         @Override
         public ResultStream prepareFind(DataFindRequest req) throws LightblueException {
+            return null;
+        }
+
+        @Override
+        public LightblueHealthResponse lightblueHealth(LightblueHealthRequest lightblueHealthRequest)
+                throws LightblueException {
             return null;
         }
 

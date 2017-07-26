@@ -27,10 +27,12 @@ import com.redhat.lightblue.client.ResultStream;
 import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.http.transport.HttpResponse;
+import com.redhat.lightblue.client.request.LightblueHealthRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.GenerateRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
+import com.redhat.lightblue.client.response.LightblueHealthResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
 import com.redhat.lightblue.client.util.JSON;
 
@@ -270,6 +272,54 @@ public class LightblueHttpClientTest {
                     }
                 });
             Assert.assertEquals(9,docs.size());
+            
+        }
+    }
+    
+    private static final String healthyDiagnosticsResponse = 
+            "{\"MongoCRUDController\":"
+            + "{\"healthy\":true,\"message\":\""
+            + "[Mongo Config [lightbluemongo1.dev.a1.vary.redhat.com:27017, DatabaseName: metadata]=>ping:OK, "
+            + "Mongo Config [lightbluemongo1.dev.a1.vary.redhat.com:27017, DatabaseName: data]=>ping:OK]\"},"
+            + "\"ldap-auth-healthcheck\":{\"healthy\":true,"
+            + "\"message\":\"LDAPConnection [DN: uid=lightblueapp,ou=serviceusers,ou=lightblue,dc=redhat,dc=com, "
+            + "Status: true]\"}}";
+    
+    @Test
+    public void testLightblueHealthy() throws Exception {
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(new FakeResponse(healthyDiagnosticsResponse, null));
+        
+        LightblueClientConfiguration c = new LightblueClientConfiguration();
+        try (LightblueHttpClient httpClient = new LightblueHttpClient(c, httpTransport)) {
+            
+            LightblueHealthRequest request = new LightblueHealthRequest();            
+            LightblueHealthResponse response = httpClient.lightblueHealth(request);
+            
+            Assert.assertTrue(response.isHealthy());
+            
+        }
+    }
+    
+    private static final String unhealthyDiagnosticsResponse = 
+            "{\"MongoCRUDController\":"
+            + "{\"healthy\":false,\"message\":\""
+            + "[Mongo Config [lightbluemongo1.dev.a1.vary.redhat.com:27017, DatabaseName: metadata]=>ping:OK, "
+            + "Mongo Config [lightbluemongo1.dev.a1.vary.redhat.com:27017, DatabaseName: data]=>ping:OK]\"},"
+            + "\"ldap-auth-healthcheck\":{\"healthy\":true,"
+            + "\"message\":\"LDAPConnection [DN: uid=lightblueapp,ou=serviceusers,ou=lightblue,dc=redhat,dc=com, "
+            + "Status: true]\"}}";
+    
+    @Test
+    public void testLightblueUnhealthy() throws Exception {
+        when(httpTransport.executeRequest(any(LightblueRequest.class), anyString())).thenReturn(new FakeResponse(unhealthyDiagnosticsResponse, null));
+        
+        LightblueClientConfiguration c = new LightblueClientConfiguration();
+        try (LightblueHttpClient httpClient = new LightblueHttpClient(c, httpTransport)) {
+            
+            LightblueHealthRequest request = new LightblueHealthRequest();            
+            LightblueHealthResponse response = httpClient.lightblueHealth(request);
+            
+            Assert.assertFalse(response.isHealthy());
             
         }
     }
