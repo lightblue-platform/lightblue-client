@@ -6,35 +6,16 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redhat.lightblue.client.LightblueException;
+import com.redhat.lightblue.client.util.JSON;
 
 public class DefaultLightblueDiagnosticsResponse extends AbstractLightblueResponse
         implements LightblueDiagnosticsResponse {
 
     private static final long serialVersionUID = 5383951657430651771L;
 
-    public DefaultLightblueDiagnosticsResponse(JsonNode responseNode, Map<String, List<String>> headers)
-            throws LightblueResponseException, LightblueException {
-        super(responseNode, headers);
-    }
-
-    public DefaultLightblueDiagnosticsResponse(JsonNode responseNode, ObjectMapper mapper)
-            throws LightblueResponseException, LightblueException {
-        super(responseNode, null, mapper);
-    }
-
-    public DefaultLightblueDiagnosticsResponse(JsonNode responseNode, Map<String, List<String>> headers,
-            ObjectMapper mapper) throws LightblueResponseException, LightblueException {
-        super(responseNode, headers, mapper);
-    }
-
-    public DefaultLightblueDiagnosticsResponse(String responseText)
-            throws LightblueParseException, LightblueResponseException, LightblueException {
-        super(responseText, null);
-    }
-
     public DefaultLightblueDiagnosticsResponse(String responseText, Map<String, List<String>> headers)
             throws LightblueParseException, LightblueResponseException, LightblueException {
-        super(responseText, headers);
+        this(responseText, headers, JSON.getDefaultObjectMapper());
     }
 
     public DefaultLightblueDiagnosticsResponse(String responseText, Map<String, List<String>> headers,

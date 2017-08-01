@@ -301,6 +301,8 @@ public class LightblueHttpClientTest {
             System.out.println(elementDiagnostics);
             
             Assert.assertEquals(expectedElementDiagnostics, elementDiagnostics);
+            Assert.assertTrue(elementDiagnostics.isHealthy());
+            Assert.assertEquals("MongoCRUDController", elementDiagnostics.getElementName());
         }
     }
     
