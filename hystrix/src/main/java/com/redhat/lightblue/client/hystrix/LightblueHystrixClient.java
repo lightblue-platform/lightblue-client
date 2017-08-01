@@ -10,12 +10,12 @@ import com.redhat.lightblue.client.ResultStream;
 import com.redhat.lightblue.client.hystrix.graphite.ServoGraphiteSetup;
 import com.redhat.lightblue.client.request.DataBulkRequest;
 import com.redhat.lightblue.client.request.LightblueDataRequest;
-import com.redhat.lightblue.client.request.LightblueHealthRequest;
+import com.redhat.lightblue.client.request.LightblueDiagnosticsRequest;
 import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
-import com.redhat.lightblue.client.response.LightblueHealthResponse;
+import com.redhat.lightblue.client.response.LightblueDiagnosticsResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
 
 /**
@@ -255,9 +255,20 @@ public class LightblueHystrixClient implements LightblueClient {
     }
 
     @Override
-    public LightblueHealthResponse lightblueHealth(LightblueHealthRequest lightblueHealthRequest)
-            throws LightblueException {
-        return null;
+    public LightblueDiagnosticsResponse diagnostics() throws LightblueException {
+        return new DiagnosticsHystrixCommand(groupKey, commandKey).execute();
     }
+    
+    protected class DiagnosticsHystrixCommand extends HystrixCommand<LightblueDiagnosticsResponse> {
 
+        public DiagnosticsHystrixCommand(String groupKey, String commandKey) {
+            super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
+                    .andCommandKey(HystrixCommandKey.Factory.asKey(groupKey + ":" + commandKey)));
+        }
+
+        @Override
+        protected LightblueDiagnosticsResponse run() throws Exception {
+            return client.diagnostics();
+        }
+    }
 }
