@@ -14,5 +14,6 @@ public class AbstractLightblueRequestTest {
     protected static final String finalDataURI = baseURI + dataOperation + "/" + entityName + "/" + entityVersion;
     protected static final String finalMetadataURI = baseURI + entityName + "/" + entityVersion + "/" + metadataOperation;
     protected static final String finalMetadataURIWithComment = baseURI + entityName + "/" + entityVersion + "/" + MetadataStatus.ACTIVE.toString() + "?comment=" + metadataComment;
+    protected static final String finalDiagnosticsURI = baseURI + "diagnostics";
 
 }
