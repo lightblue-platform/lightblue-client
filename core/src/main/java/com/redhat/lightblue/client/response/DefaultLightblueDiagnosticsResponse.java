@@ -46,6 +46,8 @@ public class DefaultLightblueDiagnosticsResponse extends AbstractLightblueRespon
 
         if (node.get(MESSAGE) != null) {
             message = node.get(MESSAGE).asText();
+        } else {
+            message = new String("Message Unavailable");
         }
 
         return new DiagnosticsElement(diagnosticsElementName, isHealthy, message);
@@ -61,27 +63,44 @@ public class DefaultLightblueDiagnosticsResponse extends AbstractLightblueRespon
     public List<DiagnosticsElement> getDiagnostics() {
         List<DiagnosticsElement> diagnosticsElements = new ArrayList<>();
 
-        Iterator<String> fieldNames = getJson().fieldNames();
-        boolean isHealthy = false;
-        String message = null;
+        if (getJson() != null) {
+            Iterator<String> fieldNames = getJson().fieldNames();
+            boolean isHealthy = false;
+            String message = null;
 
-        while (fieldNames.hasNext()) {
-            String fieldName = fieldNames.next();
-            JsonNode jsonNode = getJson().get(fieldName);
+            while (fieldNames.hasNext()) {
+                String fieldName = fieldNames.next();
+                JsonNode jsonNode = getJson().get(fieldName);
 
-            if (jsonNode != null) {
-                if (jsonNode.get(HEALTHY) != null) {
-                    isHealthy = jsonNode.get(HEALTHY).asBoolean();
+                if (jsonNode != null) {
+                    if (jsonNode.get(HEALTHY) != null) {
+                        isHealthy = jsonNode.get(HEALTHY).asBoolean();
+                    }
+
+                    if (jsonNode.get(MESSAGE) != null) {
+                        message = jsonNode.get(MESSAGE).asText();
+                    } else {
+                        message = new String("Message Unavailable");
+                    }
+
+                    diagnosticsElements.add(new DiagnosticsElement(fieldName, isHealthy, message));
                 }
-
-                if (jsonNode.get(MESSAGE) != null) {
-                    message = jsonNode.get(MESSAGE).asText();
-                }
-
-                diagnosticsElements.add(new DiagnosticsElement(fieldName, isHealthy, message));
             }
         }
 
         return diagnosticsElements;
+    }
+
+    @Override
+    public boolean allHealthy() {
+        
+        List<DiagnosticsElement> diagnosticsElements = getDiagnostics();
+        
+        for (DiagnosticsElement element : diagnosticsElements){
+            if(!element.isHealthy()){
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -11,5 +11,10 @@ public class TestLightblueDiagnosticsResquest extends AbstractLightblueRequestTe
     public void testGetRestURI() {
         Assert.assertEquals(finalDiagnosticsURI, testRequest.getRestURI(baseURI));
     }
+    
+    @Test
+    public void testRequestBodyNull() {
+        Assert.assertEquals(null, testRequest.getBodyJson());
+    }
 
 }

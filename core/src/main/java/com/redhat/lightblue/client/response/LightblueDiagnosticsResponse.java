@@ -9,4 +9,6 @@ public interface LightblueDiagnosticsResponse extends LightblueResponse {
     boolean hasDiagnostics(String diagnosticsElementName);
 
     List<DiagnosticsElement> getDiagnostics();
+    
+    boolean allHealthy();
 }
