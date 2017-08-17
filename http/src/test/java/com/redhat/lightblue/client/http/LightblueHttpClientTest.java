@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-
+import java.util.NoSuchElementException;
 import java.io.StringBufferInputStream;
 
 import org.junit.Assert;
@@ -27,10 +27,13 @@ import com.redhat.lightblue.client.ResultStream;
 import com.redhat.lightblue.client.http.model.SimpleModelObject;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.http.transport.HttpResponse;
+import com.redhat.lightblue.client.request.LightblueDiagnosticsRequest;
 import com.redhat.lightblue.client.request.LightblueRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.GenerateRequest;
 import com.redhat.lightblue.client.response.DefaultLightblueDataResponse;
+import com.redhat.lightblue.client.response.DiagnosticsElement;
+import com.redhat.lightblue.client.response.LightblueDiagnosticsResponse;
 import com.redhat.lightblue.client.response.LightblueParseException;
 import com.redhat.lightblue.client.util.JSON;
 
@@ -271,6 +274,63 @@ public class LightblueHttpClientTest {
                 });
             Assert.assertEquals(9,docs.size());
             
+        }
+    }
+    
+    private static final String diagnosticsResponse = 
+            "{\"MongoCRUDController\":"
+            + "{\"healthy\":true,\"message\":\""
+            + "[Mongo Config [MongoURL, DatabaseName: metadata]=>ping:OK, "
+            + "Mongo Config [MongoURL, DatabaseName: data]=>ping:OK]\"},"
+            + "\"ldap-auth-healthcheck\":{\"healthy\":true,"
+            + "\"message\":\"LDAPConnection [DN: uid=lightblueapp,ou=serviceusers,ou=lightblue,dc=redhat,dc=com, "
+            + "Status: true]\"}}";
+   
+    @Test
+    public void testLightblueDiagnosticsElementPresent() throws Exception {
+        
+        DiagnosticsElement expectedElementDiagnostics = new DiagnosticsElement("MongoCRUDController", true, "[Mongo Config [MongoURL, "
+                + "DatabaseName: metadata]=>ping:OK, Mongo Config [MongoURL, DatabaseName: data]=>ping:OK]");
+        
+        when(httpTransport.executeRequest(any(LightblueDiagnosticsRequest.class), anyString())).thenReturn(new FakeResponse(diagnosticsResponse, null));
+        
+        LightblueClientConfiguration c = new LightblueClientConfiguration();
+        try (LightblueHttpClient httpClient = new LightblueHttpClient(c, httpTransport)) {
+            
+            LightblueDiagnosticsResponse response = httpClient.diagnostics();            
+            DiagnosticsElement elementDiagnostics = response.getDiagnostics("MongoCRUDController");
+            
+            Assert.assertEquals(expectedElementDiagnostics, elementDiagnostics);
+            Assert.assertTrue(elementDiagnostics.isHealthy());
+            Assert.assertEquals("MongoCRUDController", elementDiagnostics.getElementName());
+        }
+    }
+    
+    @Test (expected = NoSuchElementException.class)
+    public void testLightblueDiagnosticsElementNotPresent() throws Exception {        
+        when(httpTransport.executeRequest(any(LightblueDiagnosticsRequest.class), anyString())).thenReturn(new FakeResponse(diagnosticsResponse, null));
+        
+        LightblueClientConfiguration c = new LightblueClientConfiguration();
+        try (LightblueHttpClient httpClient = new LightblueHttpClient(c, httpTransport)) {
+            
+            LightblueDiagnosticsResponse response = httpClient.diagnostics();            
+            DiagnosticsElement elementDiagnostics = response.getDiagnostics("mongocrudcontroller");
+            
+            Assert.assertEquals(null, elementDiagnostics);
+        }
+    }
+    
+    @Test
+    public void testLightblueDiagnosticsAllElements() throws Exception {        
+        when(httpTransport.executeRequest(any(LightblueDiagnosticsRequest.class), anyString())).thenReturn(new FakeResponse(diagnosticsResponse, null));
+        
+        LightblueClientConfiguration c = new LightblueClientConfiguration();
+        try (LightblueHttpClient httpClient = new LightblueHttpClient(c, httpTransport)) {
+            
+            LightblueDiagnosticsResponse response = httpClient.diagnostics();            
+            List<DiagnosticsElement> elementDiagnostics = response.getDiagnostics();
+            
+            Assert.assertEquals(2, elementDiagnostics.size());
         }
     }
 

@@ -15,6 +15,7 @@ import com.redhat.lightblue.client.request.LightblueMetadataRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.response.LightblueBulkDataResponse;
 import com.redhat.lightblue.client.response.LightblueDataResponse;
+import com.redhat.lightblue.client.response.LightblueDiagnosticsResponse;
 import com.redhat.lightblue.client.response.LightblueMetadataResponse;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,6 +33,7 @@ public class LightblueHystrixClientTest {
         boolean data = false;
         boolean dataType = false;
         boolean dataBulk = false;
+        boolean diagnostics = false;
 
         @Override
         public LightblueMetadataResponse metadata(LightblueMetadataRequest lightblueRequest) {
@@ -67,6 +69,11 @@ public class LightblueHystrixClientTest {
             return null;
         }
 
+        @Override
+        public LightblueDiagnosticsResponse diagnostics() throws LightblueException {
+            diagnostics = true;
+            return null;
+        }
     }
 
     @Test
@@ -139,5 +146,25 @@ public class LightblueHystrixClientTest {
         Assert.assertFalse(client.data);
         Assert.assertFalse(client.dataBulk);
         Assert.assertTrue(client.dataType);
+    }
+    
+    @Test
+    public void diagnostics() throws LightblueException {
+        TestLightblueClient client = new TestLightblueClient();
+        LightblueHystrixClient hystrixClient = new LightblueHystrixClient(client, "group", "command");
+
+        Assert.assertFalse(client.diagnostics);
+        Assert.assertFalse(client.metadata);
+        Assert.assertFalse(client.data);
+        Assert.assertFalse(client.dataBulk);
+        Assert.assertFalse(client.dataType);
+        
+        hystrixClient.diagnostics();
+        
+        Assert.assertFalse(client.metadata);
+        Assert.assertFalse(client.data);
+        Assert.assertFalse(client.dataBulk);
+        Assert.assertFalse(client.dataType);
+        Assert.assertTrue(client.diagnostics);
     }
 }
