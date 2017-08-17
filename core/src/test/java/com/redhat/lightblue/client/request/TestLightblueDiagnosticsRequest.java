@@ -3,7 +3,7 @@ package com.redhat.lightblue.client.request;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestLightblueDiagnosticsResquest extends AbstractLightblueRequestTest {
+public class TestLightblueDiagnosticsRequest extends AbstractLightblueRequestTest {
 
     LightblueDiagnosticsRequest testRequest = new LightblueDiagnosticsRequest();
 

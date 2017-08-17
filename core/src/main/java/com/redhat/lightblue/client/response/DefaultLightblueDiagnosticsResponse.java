@@ -65,13 +65,14 @@ public class DefaultLightblueDiagnosticsResponse extends AbstractLightblueRespon
 
         if (getJson() != null) {
             Iterator<String> fieldNames = getJson().fieldNames();
-            boolean isHealthy = false;
-            String message = null;
-
+            
             while (fieldNames.hasNext()) {
+                boolean isHealthy = false;
+                String message = null;
+                
                 String fieldName = fieldNames.next();
                 JsonNode jsonNode = getJson().get(fieldName);
-
+                
                 if (jsonNode != null) {
                     if (jsonNode.get(HEALTHY) != null) {
                         isHealthy = jsonNode.get(HEALTHY).asBoolean();
