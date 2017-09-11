@@ -1,16 +1,34 @@
 package com.redhat.lightblue.client.http;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.LightblueException;
+import com.redhat.lightblue.client.Literal;
 import com.redhat.lightblue.client.Locking;
-import com.redhat.lightblue.client.ResultStream;
+import com.redhat.lightblue.client.Projection;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
+import com.redhat.lightblue.client.Query;
+import com.redhat.lightblue.client.ResultStream;
+import com.redhat.lightblue.client.ResultStream.ForEachDoc;
+import com.redhat.lightblue.client.ResultStream.StreamDoc;
 import com.redhat.lightblue.client.http.transport.HttpResponse;
 import com.redhat.lightblue.client.http.transport.HttpTransport;
 import com.redhat.lightblue.client.http.transport.JavaNetHttpTransport;
@@ -32,18 +50,6 @@ import com.redhat.lightblue.client.response.LightblueResponseException;
 import com.redhat.lightblue.client.response.ResultMetadata;
 import com.redhat.lightblue.client.response.lock.LockResponse;
 import com.redhat.lightblue.client.util.JSON;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.Closeable;
-import java.io.InputStream;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Date;
-import java.util.Objects;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class LightblueHttpClient implements LightblueClient, Closeable {
     private final HttpTransport httpTransport;
@@ -406,6 +412,42 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
             LOGGER.error("Error creating HTTP client: ", e);
             throw new RuntimeException(e);
         }
+    }
+
+    public static void main(String[] args) throws LightblueException {
+
+        LightblueClientConfiguration p = PropertiesLightblueClientConfiguration
+                .fromPath(Paths.get("/home/mpatercz/redhat/lightblue-certs/client/lightblue-client-dev.properties"));
+//                .fromPath(Paths.get("/home/mpatercz/redhat/lightblue-certs/client/lightblue-client-devunit.properties"));
+
+        LightblueClient client = new LightblueHttpClient(p);
+
+        DataFindRequest r = new DataFindRequest("subscription");
+        r.select(new Projection[] { Projection.includeField("_id"),
+                Projection.array("subscriptionProducts", Query.withValue("inactiveDate", Query.eq, Literal.value(null))) });
+        r.where(Query.withValue("_id=0"));
+
+
+//        StreamingDataFindRequest sR = new StreamingDataFindRequest(r);
+
+//        System.out.println(sR);
+
+//        str.run(new ForEachDoc() {
+//
+//            @Override
+//            public boolean processDocument(StreamDoc doc) {
+//                System.out.println(doc.doc.toString());
+//                System.out.println("size="+((ArrayNode)doc.doc.get("subscriptionProducts")).size());
+//                return true;
+//            }
+//        });
+
+        LightblueDataResponse response = client.data(r);
+        System.out.println(response.getText());
+
+
+
+
     }
     
     @Override
