@@ -7,9 +7,14 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.io.StringBufferInputStream;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -277,21 +282,17 @@ public class LightblueHttpClientTest {
         }
     }
     
-    private static final String diagnosticsResponse = 
-            "{\"MongoCRUDController\":"
-            + "{\"healthy\":true,\"message\":\""
-            + "[Mongo Config [MongoURL, DatabaseName: metadata]=>ping:OK, "
-            + "Mongo Config [MongoURL, DatabaseName: data]=>ping:OK]\"},"
-            + "\"ldap-auth-healthcheck\":{\"healthy\":true,"
-            + "\"message\":\"LDAPConnection [DN: uid=lightblueapp,ou=serviceusers,ou=lightblue,dc=redhat,dc=com, "
-            + "Status: true]\"}}";
-   
     @Test
     public void testLightblueDiagnosticsElementPresent() throws Exception {
+        Map<String, String> parameters = new LinkedHashMap<>(3);
+        parameters.put("healthy", "true");
+        parameters.put("database", "data");
         
-        DiagnosticsElement expectedElementDiagnostics = new DiagnosticsElement("MongoCRUDController", true, "[Mongo Config [MongoURL, "
-                + "DatabaseName: metadata]=>ping:OK, Mongo Config [MongoURL, DatabaseName: data]=>ping:OK]");
+        DiagnosticsElement expectedElementDiagnostics = new DiagnosticsElement("MongoCRUDController", parameters);
         
+        URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
+        String diagnosticsResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
         when(httpTransport.executeRequest(any(LightblueDiagnosticsRequest.class), anyString())).thenReturn(new FakeResponse(diagnosticsResponse, null));
         
         LightblueClientConfiguration c = new LightblueClientConfiguration();
@@ -307,7 +308,10 @@ public class LightblueHttpClientTest {
     }
     
     @Test (expected = NoSuchElementException.class)
-    public void testLightblueDiagnosticsElementNotPresent() throws Exception {        
+    public void testLightblueDiagnosticsElementNotPresent() throws Exception {  
+        URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
+        String diagnosticsResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
         when(httpTransport.executeRequest(any(LightblueDiagnosticsRequest.class), anyString())).thenReturn(new FakeResponse(diagnosticsResponse, null));
         
         LightblueClientConfiguration c = new LightblueClientConfiguration();
@@ -321,7 +325,10 @@ public class LightblueHttpClientTest {
     }
     
     @Test
-    public void testLightblueDiagnosticsAllElements() throws Exception {        
+    public void testLightblueDiagnosticsAllElements() throws Exception { 
+        URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
+        String diagnosticsResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
         when(httpTransport.executeRequest(any(LightblueDiagnosticsRequest.class), anyString())).thenReturn(new FakeResponse(diagnosticsResponse, null));
         
         LightblueClientConfiguration c = new LightblueClientConfiguration();

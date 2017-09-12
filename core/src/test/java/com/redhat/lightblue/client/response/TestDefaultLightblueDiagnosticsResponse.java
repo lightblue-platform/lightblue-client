@@ -1,5 +1,9 @@
 package com.redhat.lightblue.client.response;
 
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 
 import org.junit.Assert;
@@ -11,24 +15,6 @@ import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.util.JSON;
 
 public class TestDefaultLightblueDiagnosticsResponse {
-    
-    private static final String diagnosticsSuccessResponse = 
-            "{\"MongoCRUDController\":"
-            + "{\"healthy\":true,\"message\":\""
-            + "[Mongo Config [MongoURL, DatabaseName: metadata]=>ping:OK, "
-            + "Mongo Config [MongoURL, DatabaseName: data]=>ping:OK]\"},"
-            + "\"ldap-auth-healthcheck\":{\"healthy\":true,"
-            + "\"message\":\"LDAPConnection [DN: uid=lightblueapp,ou=serviceusers,ou=lightblue,dc=redhat,dc=com, "
-            + "Status: true]\"}}";
-    
-    private static final String diagnosticsFailureResponse = 
-            "{\"MongoCRUDController\":"
-            + "{\"healthy\":false,\"message\":\""
-            + "[Mongo Config [MongoURL, DatabaseName: metadata]=>ping:OK, "
-            + "Mongo Config [MongoURL, DatabaseName: data]=>ping:OK]\"},"
-            + "\"ldap-auth-healthcheck\":{\"healthy\":true,"
-            + "\"message\":\"LDAPConnection [DN: uid=lightblueapp,ou=serviceusers,ou=lightblue,dc=redhat,dc=com, "
-            + "Status: true]\"}}";
 
     @Test(expected = LightblueException.class)
     public void testConstructor_BadJson() throws LightblueException {
@@ -37,12 +23,18 @@ public class TestDefaultLightblueDiagnosticsResponse {
     
     @Test
     public void testSetText() throws Exception {
+        URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsSuccessResponse, null);
         Assert.assertEquals(diagnosticsSuccessResponse, testResponse.getText());
     }
     
     @Test
     public void testSetJson() throws Exception {
+        URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
         ObjectMapper mapper = JSON.getDefaultObjectMapper();
         JsonNode node = mapper.readTree(diagnosticsSuccessResponse);
 
@@ -52,20 +44,29 @@ public class TestDefaultLightblueDiagnosticsResponse {
     
     @Test
     public void testHasDiagnostics() throws Exception {
+        URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsSuccessResponse, null);
         Assert.assertEquals(true, testResponse.hasDiagnostics("MongoCRUDController"));
     }
     
     @Test
     public void testDiagnostics() throws Exception {
+        URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsSuccessResponse, null);
         
-        DiagnosticsElement element = testResponse.getDiagnostics("MongoCRUDController");
+        DiagnosticsElement element = testResponse.getDiagnostics("MongoCRUDController");        
         Assert.assertEquals(true, element.isHealthy());
     }
     
     @Test(expected = NoSuchElementException.class)
     public void testDiagnostics_ElementNotPresent() throws Exception {
+        URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsSuccessResponse, null);
         
         testResponse.getDiagnostics("LdapCRUDController");
@@ -73,18 +74,27 @@ public class TestDefaultLightblueDiagnosticsResponse {
     
     @Test
     public void testAllDiagnostics() throws Exception {
+        URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsSuccessResponse, null);
         Assert.assertEquals(2, testResponse.getDiagnostics().size());
     }
     
     @Test
     public void testAllHealthy() throws Exception {
+        URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsSuccessResponse, null);
         Assert.assertEquals(true, testResponse.allHealthy());
     }
     
     @Test
     public void testAllNotHealthy() throws Exception {
+        URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-unhealthy-response.json").toURI();
+        String diagnosticsFailureResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsFailureResponse, null);
         Assert.assertEquals(false, testResponse.allHealthy());
     }

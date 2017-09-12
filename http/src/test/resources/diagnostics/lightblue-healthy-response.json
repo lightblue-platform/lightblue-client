@@ -1,0 +1,10 @@
+{
+    "MongoCRUDController": {
+        "healthy": true,
+        "database": "data"
+    },
+    "ldap-auth-healthcheck": {
+        "healthy": true,
+        "bindDn": "uid=lightblueapp,ou=lightblue,dc=io"
+    }
+}

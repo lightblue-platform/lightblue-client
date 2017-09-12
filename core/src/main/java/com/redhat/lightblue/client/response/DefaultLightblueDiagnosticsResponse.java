@@ -2,8 +2,10 @@ package com.redhat.lightblue.client.response;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,8 +16,6 @@ import com.redhat.lightblue.client.util.JSON;
 public class DefaultLightblueDiagnosticsResponse extends AbstractLightblueResponse
         implements LightblueDiagnosticsResponse {
 
-    private static final String MESSAGE = "message";
-    private static final String HEALTHY = "healthy";
     private static final long serialVersionUID = 5383951657430651771L;
 
     public DefaultLightblueDiagnosticsResponse(String responseText, Map<String, List<String>> headers)
@@ -36,21 +36,16 @@ public class DefaultLightblueDiagnosticsResponse extends AbstractLightblueRespon
         }
 
         JsonNode node = getJson().get(diagnosticsElementName);
-
-        boolean isHealthy = false;
-        String message = null;
-
-        if (node.get(HEALTHY) != null) {
-            isHealthy = node.get(HEALTHY).asBoolean();
+        
+        Map<String, String> parameters = new LinkedHashMap<>();
+        Iterator<Entry<String, JsonNode>> iterator = node.fields();
+        
+        while (iterator.hasNext()) {
+            Map.Entry<String, JsonNode> entry = (Map.Entry<String, JsonNode>) iterator.next();
+            parameters.put(entry.getKey(), entry.getValue().asText());
         }
 
-        if (node.get(MESSAGE) != null) {
-            message = node.get(MESSAGE).asText();
-        } else {
-            message = new String("Message Unavailable");
-        }
-
-        return new DiagnosticsElement(diagnosticsElementName, isHealthy, message);
+        return new DiagnosticsElement(diagnosticsElementName, parameters);
 
     }
 
@@ -67,24 +62,19 @@ public class DefaultLightblueDiagnosticsResponse extends AbstractLightblueRespon
             Iterator<String> fieldNames = getJson().fieldNames();
             
             while (fieldNames.hasNext()) {
-                boolean isHealthy = false;
-                String message = null;
-                
                 String fieldName = fieldNames.next();
                 JsonNode jsonNode = getJson().get(fieldName);
                 
                 if (jsonNode != null) {
-                    if (jsonNode.get(HEALTHY) != null) {
-                        isHealthy = jsonNode.get(HEALTHY).asBoolean();
+                    Map<String, String> parameters = new LinkedHashMap<>();
+                    Iterator<Entry<String, JsonNode>> iterator = jsonNode.fields();
+                    
+                    while (iterator.hasNext()) {
+                        Map.Entry<String, JsonNode> entry = (Map.Entry<String, JsonNode>) iterator.next();
+                        parameters.put(entry.getKey(), entry.getValue().asText());
                     }
 
-                    if (jsonNode.get(MESSAGE) != null) {
-                        message = jsonNode.get(MESSAGE).asText();
-                    } else {
-                        message = new String("Message Unavailable");
-                    }
-
-                    diagnosticsElements.add(new DiagnosticsElement(fieldName, isHealthy, message));
+                    diagnosticsElements.add(new DiagnosticsElement(fieldName, parameters));
                 }
             }
         }
