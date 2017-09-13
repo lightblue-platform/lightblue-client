@@ -1,16 +1,40 @@
 package com.redhat.lightblue.client.response;
 
-public class DiagnosticsElement {
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+public class DiagnosticsElement implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    
     private String elementName;
-    private boolean isHealthy;
-    private String message;
+    
+    private boolean healthy;
+    
+    private final Map<String, String> parameters;
 
-    public DiagnosticsElement(String elementName, boolean isHealthy, String message) {
+    public DiagnosticsElement() {
+        this.parameters = new LinkedHashMap<>();
+    }
+    
+    public DiagnosticsElement(String elementName, Map<String, String> parameters) {
         super();
         this.elementName = elementName;
-        this.isHealthy = isHealthy;
-        this.message = message;
+        
+        if(parameters != null){
+            this.parameters = new LinkedHashMap<>(parameters);
+        }else{
+            this.parameters = new LinkedHashMap<>();
+        }
+        
+        if (parameters.get("healthy") != null) {
+            healthy = Boolean.valueOf(parameters.get("healthy"));
+        }
     }
 
     public String getElementName() {
@@ -18,11 +42,11 @@ public class DiagnosticsElement {
     }
 
     public boolean isHealthy() {
-        return isHealthy;
+        return healthy;
     }
 
-    public String getMessage() {
-        return message;
+    public Map<String, String> getParameters() {
+        return Collections.unmodifiableMap(parameters);
     }
 
     @Override
@@ -31,9 +55,9 @@ public class DiagnosticsElement {
         builder.append(elementName);
         builder.append(" [");
         builder.append("isHealthy=");
-        builder.append(isHealthy);
-        builder.append(", message=");
-        builder.append(message);
+        builder.append(healthy);
+        builder.append(", parameters=");
+        builder.append(parameters.toString());
         builder.append("]");
         return builder.toString();
     }
@@ -43,8 +67,8 @@ public class DiagnosticsElement {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((elementName == null) ? 0 : elementName.hashCode());
-        result = prime * result + (isHealthy ? 1231 : 1237);
-        result = prime * result + ((message == null) ? 0 : message.hashCode());
+        result = prime * result + (healthy ? 1231 : 1237);
+        result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
         return result;
     }
 
@@ -62,12 +86,12 @@ public class DiagnosticsElement {
                 return false;
         } else if (!elementName.equals(other.elementName))
             return false;
-        if (isHealthy != other.isHealthy)
+        if (healthy != other.healthy)
             return false;
-        if (message == null) {
-            if (other.message != null)
+        if (parameters == null) {
+            if (other.parameters != null)
                 return false;
-        } else if (!message.equals(other.message))
+        } else if (!parameters.equals(other.parameters))
             return false;
         return true;
     }
