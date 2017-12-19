@@ -140,7 +140,7 @@
     <sonar.projectName>lightblue-platform: ${project.artifactId}</sonar.projectName>
     <sonar.exclusions>**/*Test.java,**/*Exception.java</sonar.exclusions>
     <rpm.install.basedir>/usr/share/jbossas/standalone/deployments</rpm.install.basedir>
-    <lightblue.rest.version>2.23.0-SNAPSHOT</lightblue.rest.version>
+    <lightblue.rest.version>2.25.0-SNAPSHOT</lightblue.rest.version>
 </properties>
 
 <build>
