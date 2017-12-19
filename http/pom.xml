@@ -3,9 +3,9 @@
   <parent>
     <groupId>com.redhat.lightblue.client</groupId>
     <artifactId>lightblue-client-pom</artifactId>
-    <version>5.13.0</version>
+    <version>5.14.0-SNAPSHOT</version>
   </parent>
-  <version>5.13.0</version><artifactId>lightblue-client-http</artifactId>
+  <version>5.14.0-SNAPSHOT</version><artifactId>lightblue-client-http</artifactId>
   <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
   
   <dependencies>
