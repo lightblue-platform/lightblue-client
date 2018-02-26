@@ -14,8 +14,8 @@ import java.util.Objects;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import com.google.common.io.ByteStreams;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,15 +249,9 @@ public class JavaNetHttpTransport implements HttpTransport {
 
         if (contentLength == 0) {
             return "";
+        } else {
+            return new String(ByteStreams.toByteArray(decodedStream), UTF_8);
         }
-
-        if (contentLength > 0) {
-            byte[] responseBytes = new byte[contentLength];
-            IOUtils.readFully(decodedStream, responseBytes);
-            return new String(responseBytes, UTF_8);
-        }
-
-        return IOUtils.toString(decodedStream, UTF_8);
     }
 
     public interface ConnectionFactory {

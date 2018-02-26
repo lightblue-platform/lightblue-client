@@ -154,18 +154,6 @@ public class JavaNetHttpTransportTest {
     }
 
     @Test(timeout = 500)
-    public void shouldReturnSuccessResponseDecodedWithUtf8WhenContentLengthIsKnown() throws Exception {
-        LightblueRequest helloInJapanese = new FakeLightblueRequest("", HttpMethod.GET, "/hello/japanese");
-
-        String konnichiWa = "こんにちは";
-
-        responseStream.print(konnichiWa);
-        when(mockConnection.getContentLength()).thenReturn(konnichiWa.getBytes("UTF-8").length);
-
-        assertThat(client.executeRequest(helloInJapanese, "").getBody(), is(konnichiWa));
-    }
-
-    @Test(timeout = 500)
     public void shouldReturnSuccessResponseDecodedWithUtf8WhenContentLengthIsNotKnown() throws Exception {
         LightblueRequest helloInJapanese = new FakeLightblueRequest("", HttpMethod.GET, "/hello/japanese");
 
@@ -185,19 +173,6 @@ public class JavaNetHttpTransportTest {
         when(mockConnection.getContentLength()).thenReturn(0);
 
         assertThat(client.executeRequest(getFooBar, "").getBody(), is(""));
-    }
-
-    @Test(timeout = 500)
-    public void shouldReturnErrorResponseUsingUtf8WhenContentLengthIsKnown() throws Exception {
-        LightblueRequest badHelloRequest = new FakeLightblueRequest("", HttpMethod.GET, "/hello/%E0%B2%A0_%E0%B2%A0");
-
-        String error = "ಠ_ಠ is not a language";
-
-        doThrow(new IOException()).when(mockConnection).getInputStream();
-        errorResponseStream.print(error);
-        when(mockConnection.getContentLength()).thenReturn(error.getBytes("UTF-8").length);
-
-        Assert.assertEquals(error, client.executeRequest(badHelloRequest, "").getBody());
     }
 
     @Test(timeout = 500)
