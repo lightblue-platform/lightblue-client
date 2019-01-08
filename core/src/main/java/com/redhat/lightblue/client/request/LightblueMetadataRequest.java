@@ -23,6 +23,14 @@ public abstract class LightblueMetadataRequest extends LightblueRequest {
         this(method,operationName,entityName,null);
     }
 
+    public String getEntityName() {
+        return entityName;
+    }
+
+    public String getEntityVersion() {
+        return entityVersion;
+    }
+
     public String getOperationPathParam() {
         return operationName;
     }

@@ -3,14 +3,14 @@
     <parent>
         <groupId>com.redhat.lightblue.client</groupId>
         <artifactId>lightblue-client-pom</artifactId>
-        <version>5.15.0-SNAPSHOT</version>
+        <version>5.16.0-SNAPSHOT</version>
     </parent>
-    <version>5.15.0-SNAPSHOT</version><artifactId>lightblue-client-hystrix</artifactId>
+    <version>5.16.0-SNAPSHOT</version><artifactId>lightblue-client-hystrix</artifactId>
     <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
     
     <properties>
         <hystrix.version>1.5.12</hystrix.version>
-        <netflix.servo.version>0.12.20</netflix.servo.version>
+        <netflix.servo.version>0.12.23</netflix.servo.version>
     </properties>
     
     <dependencies>
