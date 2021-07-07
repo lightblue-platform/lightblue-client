@@ -7,4 +7,17 @@
   </parent>
   <version>5.17.0-SNAPSHOT</version><artifactId>lightblue-client-core</artifactId>
   <name>lightblue-client: ${project.groupId}|${project.artifactId}</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>1.7.0</version>
+     </dependency>
+     <dependency>
+       <groupId>org.powermock</groupId>
+       <artifactId>powermock-api-mockito</artifactId>
+       <version>1.7.0</version>
+     </dependency>
+  </dependencies>
 </project>
