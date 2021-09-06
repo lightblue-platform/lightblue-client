@@ -1,7 +1,10 @@
 name: lightblue Build & Publish CI/CD for main branch
 on:
-  # Trigger the workflow on push but only for the main branch
+  # Trigger the workflow on push/pull_request but only for the main branch
   push:
+    branches:
+      - master
+  pull_request:
     branches:
       - master
 jobs:
