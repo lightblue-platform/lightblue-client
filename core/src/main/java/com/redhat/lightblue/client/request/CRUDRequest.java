@@ -3,9 +3,6 @@ package com.redhat.lightblue.client.request;
 import java.util.Set;
 import java.util.HashSet;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ArrayNode;
