@@ -2,7 +2,7 @@ package com.redhat.lightblue.client.request.data;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.http.HttpMethod;

@@ -3,7 +3,7 @@ package com.redhat.lightblue.client.response;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.redhat.lightblue.client.LightblueException;
 import com.redhat.lightblue.client.model.DataError;

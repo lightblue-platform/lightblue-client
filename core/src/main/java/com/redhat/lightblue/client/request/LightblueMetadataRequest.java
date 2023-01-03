@@ -1,6 +1,6 @@
 package com.redhat.lightblue.client.request;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
