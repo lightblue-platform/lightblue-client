@@ -154,7 +154,7 @@ public final class PropertiesLightblueClientConfiguration {
      */
     public static LightblueClientConfiguration fromInputStream(InputStream propertiesStream) {
         try {
-            Properties properties = new Properties();
+            Properties properties = new SystemEnvironmentAwareProperties();
             properties.load(loadInputStream(propertiesStream));
 
             return fromObject(properties);
