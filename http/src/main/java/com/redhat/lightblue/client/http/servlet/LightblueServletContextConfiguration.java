@@ -7,7 +7,8 @@ import com.redhat.lightblue.client.LightblueClientConfiguration;
 import com.redhat.lightblue.client.PropertiesLightblueClientConfiguration;
 
 import javax.servlet.ServletContext;
-import java.nio.file.Paths;
+
+import java.nio.file.Path;
 
 public class LightblueServletContextConfiguration {
     private static final String LIGHTBLUE_CLIENT_PROPERTIES_PATH_KEY = "lightblueClientPropertiesPath";
@@ -185,7 +186,7 @@ public class LightblueServletContextConfiguration {
             return PropertiesLightblueClientConfiguration.fromDefault();
         }
 
-        return PropertiesLightblueClientConfiguration.fromPath(Paths.get(propertiesFilePath));
+        return PropertiesLightblueClientConfiguration.fromPath(Path.of(propertiesFilePath));
     }
 
     protected final String getInitParameter(String parameter) {

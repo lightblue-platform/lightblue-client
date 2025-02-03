@@ -3,7 +3,7 @@ package com.redhat.lightblue.client.http;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -181,7 +181,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
      * @see com.redhat.lightblue.client.PropertiesLightblueClientConfiguration
      */
     public LightblueHttpClient(String configFilePath) {
-        this(PropertiesLightblueClientConfiguration.fromPath(Paths.get(configFilePath)));
+        this(PropertiesLightblueClientConfiguration.fromPath(Path.of(configFilePath)));
     }
 
     /**
@@ -417,7 +417,7 @@ public class LightblueHttpClient implements LightblueClient, Closeable {
     public static void main(String[] args) throws LightblueException {
 
         LightblueClientConfiguration p = PropertiesLightblueClientConfiguration
-                .fromPath(Paths.get("/home/mpatercz/redhat/lightblue-certs/client/lightblue-client-dev.properties"));
+                .fromPath(Path.of("/home/mpatercz/redhat/lightblue-certs/client/lightblue-client-dev.properties"));
 //                .fromPath(Paths.get("/home/mpatercz/redhat/lightblue-certs/client/lightblue-client-devunit.properties"));
 
         LightblueClient client = new LightblueHttpClient(p);

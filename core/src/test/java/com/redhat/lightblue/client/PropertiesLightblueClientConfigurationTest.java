@@ -11,7 +11,6 @@ import org.junit.runners.JUnit4;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
@@ -58,7 +57,7 @@ public class PropertiesLightblueClientConfigurationTest {
 
     @Test
     public void shouldThrowMeaningfulErrorMessageIfPropertiesCantBeReadViaResourceFromPath() {
-        Path bogusPathResource = Paths.get("this.does.not.exist.properties");
+        Path bogusPathResource = Path.of("this.does.not.exist.properties");
 
         exception.expect(LightblueClientConfigurationException.class);
         exception.expectMessage(CoreMatchers.equalTo("Could not find properties resource at "
@@ -69,7 +68,7 @@ public class PropertiesLightblueClientConfigurationTest {
 
     @Test
     public void shouldThrowMeaningfulErrorMessageIfPropertiesCantBeReadViaPath() throws IOException {
-        Path bogusPath = Paths.get("/path/to/this.does.not.exist.properties");
+        Path bogusPath = Path.of("/path/to/this.does.not.exist.properties");
 
         exception.expect(LightblueClientConfigurationException.class);
         exception.expectCause(CoreMatchers.<Throwable>instanceOf(IOException.class));

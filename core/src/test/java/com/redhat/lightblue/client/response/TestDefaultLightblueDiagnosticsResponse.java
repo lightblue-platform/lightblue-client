@@ -3,7 +3,7 @@ package com.redhat.lightblue.client.response;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.NoSuchElementException;
 
 import org.junit.Assert;
@@ -24,7 +24,7 @@ public class TestDefaultLightblueDiagnosticsResponse {
     @Test
     public void testSetText() throws Exception {
         URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
-        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Path.of(uri)), Charset.forName("utf-8"));
 
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsSuccessResponse, null);
         Assert.assertEquals(diagnosticsSuccessResponse, testResponse.getText());
@@ -33,7 +33,7 @@ public class TestDefaultLightblueDiagnosticsResponse {
     @Test
     public void testSetJson() throws Exception {
         URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
-        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Path.of(uri)), Charset.forName("utf-8"));
 
         ObjectMapper mapper = JSON.getDefaultObjectMapper();
         JsonNode node = mapper.readTree(diagnosticsSuccessResponse);
@@ -45,7 +45,7 @@ public class TestDefaultLightblueDiagnosticsResponse {
     @Test
     public void testHasDiagnostics() throws Exception {
         URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
-        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Path.of(uri)), Charset.forName("utf-8"));
 
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsSuccessResponse, null);
         Assert.assertEquals(true, testResponse.hasDiagnostics("MongoCRUDController"));
@@ -54,7 +54,7 @@ public class TestDefaultLightblueDiagnosticsResponse {
     @Test
     public void testDiagnostics() throws Exception {
         URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
-        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Path.of(uri)), Charset.forName("utf-8"));
 
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsSuccessResponse, null);
         
@@ -65,7 +65,7 @@ public class TestDefaultLightblueDiagnosticsResponse {
     @Test(expected = NoSuchElementException.class)
     public void testDiagnostics_ElementNotPresent() throws Exception {
         URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
-        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Path.of(uri)), Charset.forName("utf-8"));
 
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsSuccessResponse, null);
         
@@ -75,7 +75,7 @@ public class TestDefaultLightblueDiagnosticsResponse {
     @Test
     public void testAllDiagnostics() throws Exception {
         URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
-        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Path.of(uri)), Charset.forName("utf-8"));
 
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsSuccessResponse, null);
         Assert.assertEquals(2, testResponse.getDiagnostics().size());
@@ -84,7 +84,7 @@ public class TestDefaultLightblueDiagnosticsResponse {
     @Test
     public void testAllHealthy() throws Exception {
         URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
-        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String diagnosticsSuccessResponse = new String(Files.readAllBytes(Path.of(uri)), Charset.forName("utf-8"));
 
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsSuccessResponse, null);
         Assert.assertEquals(true, testResponse.allHealthy());
@@ -93,7 +93,7 @@ public class TestDefaultLightblueDiagnosticsResponse {
     @Test
     public void testAllNotHealthy() throws Exception {
         URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-unhealthy-response.json").toURI();
-        String diagnosticsFailureResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String diagnosticsFailureResponse = new String(Files.readAllBytes(Path.of(uri)), Charset.forName("utf-8"));
 
         DefaultLightblueDiagnosticsResponse testResponse = new DefaultLightblueDiagnosticsResponse(diagnosticsFailureResponse, null);
         Assert.assertEquals(false, testResponse.allHealthy());

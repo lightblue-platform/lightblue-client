@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,7 +15,6 @@ import java.io.StringBufferInputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -291,7 +291,7 @@ public class LightblueHttpClientTest {
         DiagnosticsElement expectedElementDiagnostics = new DiagnosticsElement("MongoCRUDController", parameters);
         
         URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
-        String diagnosticsResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String diagnosticsResponse = new String(Files.readAllBytes(Path.of(uri)), Charset.forName("utf-8"));
 
         when(httpTransport.executeRequest(any(LightblueDiagnosticsRequest.class), anyString())).thenReturn(new FakeResponse(diagnosticsResponse, null));
         
@@ -310,7 +310,7 @@ public class LightblueHttpClientTest {
     @Test (expected = NoSuchElementException.class)
     public void testLightblueDiagnosticsElementNotPresent() throws Exception {  
         URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
-        String diagnosticsResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String diagnosticsResponse = new String(Files.readAllBytes(Path.of(uri)), Charset.forName("utf-8"));
 
         when(httpTransport.executeRequest(any(LightblueDiagnosticsRequest.class), anyString())).thenReturn(new FakeResponse(diagnosticsResponse, null));
         
@@ -327,7 +327,7 @@ public class LightblueHttpClientTest {
     @Test
     public void testLightblueDiagnosticsAllElements() throws Exception { 
         URI uri = this.getClass().getClassLoader().getResource("diagnostics/lightblue-healthy-response.json").toURI();
-        String diagnosticsResponse = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String diagnosticsResponse = new String(Files.readAllBytes(Path.of(uri)), Charset.forName("utf-8"));
 
         when(httpTransport.executeRequest(any(LightblueDiagnosticsRequest.class), anyString())).thenReturn(new FakeResponse(diagnosticsResponse, null));
         
